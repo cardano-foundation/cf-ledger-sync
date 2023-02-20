@@ -21,5 +21,12 @@ jobs:
       - name: Run test with Gradle Wrapper
         run: ./gradlew test
 
-      - name: Run allure report
-        run: ./gradlew allureServe
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+            allure_results: target/allure-results
+            gh_pages: gh-pages
+            allure_report: allure-report
+            allure_history: allure-history
