@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id "io.qameta.allure" version "2.11.2"
+}
+
+group = 'org.cardanofoundation'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+def allureVersion = "2.21.0"
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+allure {
+    version = allureVersion
+    useJUnit5 {
+        version = allureVersion
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+//    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'com.bloxbean.cardano:cardano-client-lib:0.4.3'
+    implementation 'io.rest-assured:rest-assured:5.3.0'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    implementation 'io.qameta.allure:allure-junit5:2.21.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'io.qameta.allure:allure-junit5:2.21.0'
+
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
