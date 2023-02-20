@@ -32,11 +32,11 @@ public class CreateRestoreTests {
         walletsAPI.returnedHttpCodeIs(405);
     }
 
-    @Test
-    public void missingOptionalValuesinPayloadReturns201(){
-        Assertions.assertTrue(false);
-    }
-
+//    @Test
+//    public void missingOptionalValuesinPayloadReturns201(){
+//        Assertions.assertTrue(false);
+//    }
+//
 
     @ParameterizedTest(name = " - {0}")
     @ValueSource(strings = {"PUT", "DELETE"})

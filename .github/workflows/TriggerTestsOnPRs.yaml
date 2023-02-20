@@ -14,7 +14,12 @@ jobs:
         with:
             java-version: 17
             distribution: 'adopt'
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+
       - name: Run test with Gradle Wrapper
-        run: ./gradlew clean test
+        run: ./gradlew test
+
+      - name: Run allure report
+        run: ./gradlew allureReport
