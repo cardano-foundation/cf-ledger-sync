@@ -22,4 +22,4 @@ jobs:
         run: ./gradlew test
 
       - name: Run allure report
-        run: ./gradlew allureReport
+        run: ./gradlew allureServe
