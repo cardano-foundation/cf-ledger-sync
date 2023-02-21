@@ -29,7 +29,7 @@ public class CreateRestoreTests {
     @Test
     public void validReqReturns201(){
         walletsAPI.sendCreateRestoreRequest();
-        walletsAPI.returnedHttpCodeIs(405);
+        walletsAPI.returnedHttpCodeIs(201);
     }
 
 //    @Test
