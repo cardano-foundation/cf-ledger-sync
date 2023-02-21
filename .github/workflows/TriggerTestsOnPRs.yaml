@@ -19,10 +19,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Run test with Gradle Wrapper
-        run: ./gradlew test
+        run: gradle test
 
       - name: Get Allure history
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: always()
         continue-on-error: true
         with:
