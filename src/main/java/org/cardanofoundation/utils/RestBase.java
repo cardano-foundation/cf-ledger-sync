@@ -59,6 +59,7 @@ public class RestBase {
             post(url);
         } else {
             overRideHttpMethod(url);
+            overrideHttpMethod.set(null);
         }
     }
 
