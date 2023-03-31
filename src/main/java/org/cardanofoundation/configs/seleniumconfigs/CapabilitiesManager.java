@@ -1,4 +1,4 @@
-package org.cardanofoundation.utils;
+package org.cardanofoundation.configs.seleniumconfigs;
 
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Component;

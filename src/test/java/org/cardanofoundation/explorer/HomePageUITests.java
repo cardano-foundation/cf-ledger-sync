@@ -1,16 +1,17 @@
 package org.cardanofoundation.explorer;
 
-import org.cardanofoundation.explorer.pages.HomePage;
-import org.cardanofoundation.utils.ChangeDisplayName;
+import org.cardanofoundation.configs.junitconfigs.ChangeDisplayName;
+//import org.cardanofoundation.listeners.CustomTestExecutionListener;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.HasAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.test.context.TestExecutionListeners;
 
 @SpringBootTest
+//@TestExecutionListeners(value = {
+//        CustomTestExecutionListener.class,
+//})
 @DisplayNameGeneration(ChangeDisplayName.class)
 @DisplayName("Home Page UI Tests")
 public class HomePageUITests extends ExplorerTestsBase{
@@ -25,6 +26,7 @@ public class HomePageUITests extends ExplorerTestsBase{
     public void verifySelectedNet(){
         homePage.isSelectedNetPresent();
     }
+
     @Test
     public void verifyConnectWalletButtonPresence() throws InterruptedException {
         homePage.isConnectWalletButtonPresent();

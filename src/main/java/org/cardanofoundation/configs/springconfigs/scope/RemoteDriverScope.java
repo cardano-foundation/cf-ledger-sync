@@ -1,4 +1,4 @@
-package org.cardanofoundation.springconfigs.scope;
+package org.cardanofoundation.configs.springconfigs.scope;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;

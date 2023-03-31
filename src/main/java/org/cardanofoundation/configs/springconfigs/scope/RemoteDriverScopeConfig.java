@@ -1,4 +1,4 @@
-package org.cardanofoundation.springconfigs.scope;
+package org.cardanofoundation.configs.springconfigs.scope;
 
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;

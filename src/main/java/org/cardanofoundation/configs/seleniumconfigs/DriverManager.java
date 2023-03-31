@@ -1,10 +1,8 @@
-package org.cardanofoundation.utils;
+package org.cardanofoundation.configs.seleniumconfigs;
 
+import org.cardanofoundation.utils.GeneralUtils;
+import org.cardanofoundation.utils.ParametersUtils;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.v109.network.Network;
-import org.openqa.selenium.devtools.v109.network.model.Headers;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -12,13 +10,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.lang.Thread.sleep;
 
@@ -60,11 +51,11 @@ public class DriverManager {
 
         getDriver().get(parametersUtils.getUrl());
 
-        sleep(15000);
+        sleep(1000);
 
     }
 
-    private WebDriver getDriver() {
+    public WebDriver getDriver() {
         return driver.get();
     }
 

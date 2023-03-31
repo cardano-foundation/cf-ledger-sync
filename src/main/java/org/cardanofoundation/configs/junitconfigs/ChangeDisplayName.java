@@ -1,4 +1,4 @@
-package org.cardanofoundation.utils;
+package org.cardanofoundation.configs.junitconfigs;
 
 import org.junit.jupiter.api.DisplayNameGenerator;
 

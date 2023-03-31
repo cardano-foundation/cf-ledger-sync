@@ -1,0 +1,23 @@
+version: "3"
+services:
+  HubService:
+    image: selenium/hub:4.8.3-20230328
+    container_name: seleniumHub
+    ports:
+      - "4445:4444"
+      - "4442:4442"
+      - "4443:4443"
+
+  ChromeService:
+    image: selenium/node-chrome:4.8.3-20230328
+    shm_size: "2gb"
+    ports:
+      - "5900"
+      - "7900"
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=3
+    depends_on:
+      - HubService

@@ -1,4 +1,4 @@
-package org.cardanofoundation.springconfigs.pageobjects;
+package org.cardanofoundation.configs.springconfigs.pageobjects;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;

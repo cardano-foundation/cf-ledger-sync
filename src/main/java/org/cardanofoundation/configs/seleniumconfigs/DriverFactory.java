@@ -1,11 +1,11 @@
-package org.cardanofoundation.utils;
+package org.cardanofoundation.configs.seleniumconfigs;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.cardanofoundation.utils.ParametersUtils;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
-import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;

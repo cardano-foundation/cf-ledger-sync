@@ -1,15 +1,8 @@
-package org.cardanofoundation.explorer.pages;
+package org.cardanofoundation.pages.explorer;
 
 import io.qameta.allure.Step;
-import org.cardanofoundation.springconfigs.pageobjects.PageObjects;
-import org.cardanofoundation.utils.WebUtils;
+import org.cardanofoundation.configs.springconfigs.pageobjects.PageObjects;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 import static java.lang.Thread.sleep;
 
@@ -29,7 +22,7 @@ public class HomePage extends ExplorerBasePage{
 //                "Actual: " + selectedNet.getText());
     }
 
-    @Step("ajbhuhds")
+    @Step("Step Step")
     public void isConnectWalletButtonPresent() throws InterruptedException {
         sleep(5000);
         Assertions.assertTrue(connectWallet.isEnabled(), "Connect Wallet button is not enabled.");

@@ -1,4 +1,4 @@
-package org.cardanofoundation.explorer.pages;
+package org.cardanofoundation.pages.explorer;
 
 import org.cardanofoundation.utils.WebUtils;
 import org.openqa.selenium.By;

@@ -1,7 +1,7 @@
 package org.cardanofoundation.explorer;
 
-import org.cardanofoundation.explorer.pages.HomePage;
-import org.cardanofoundation.utils.DriverManager;
+import org.cardanofoundation.pages.explorer.HomePage;
+import org.cardanofoundation.configs.seleniumconfigs.DriverManager;
 import org.cardanofoundation.utils.GeneralUtils;
 import org.cardanofoundation.utils.ParametersUtils;
 import org.cardanofoundation.utils.WebUtils;
@@ -35,7 +35,7 @@ public class ExplorerTestsBase {
 
     @BeforeEach
     public void setupDriver() throws InterruptedException {
-        testResult = "unknown";
+        testResult = "failed";
         driverManager.setupDriver();
         homePage.isPageHeaderPresent();
     }

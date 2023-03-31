@@ -1,4 +1,4 @@
-package org.cardanofoundation.springconfigs.pageobjects;
+package org.cardanofoundation.configs.springconfigs.pageobjects;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;

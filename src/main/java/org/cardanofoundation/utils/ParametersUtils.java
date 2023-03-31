@@ -11,10 +11,9 @@ public class ParametersUtils {
     @Autowired
     GeneralUtils generalUtils;
 
-    protected String getUrl(){
+    public String getUrl(){
         return System.getProperty("URL");
     }
-
 
     public String getHubUrl() {
         if (System.getProperty("runMode").equalsIgnoreCase("docker")){
