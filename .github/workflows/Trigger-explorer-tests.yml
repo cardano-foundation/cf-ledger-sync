@@ -1,6 +1,7 @@
 name: Run explorer FE testcases
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
   run-web-test:
