@@ -52,5 +52,5 @@ tasks.named('test') {
     systemProperty 'runMode', "actionlocal"
     systemProperty 'browser', "chrome"
     systemProperty 'SeleniumHub', System.getProperty("SeleniumHub")
-    systemProperty 'URL', System.getProperty("DEVBOXDEPLOYMENT")
+    systemProperty 'URL', "https://cfadmin:l4dSPUVpV8mauhg@dev.cf-explorer-monolith-mainnet.metadata.dev.cf-deployments.org/"
 }
