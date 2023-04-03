@@ -19,7 +19,7 @@ public class CapabilitiesManager {
         options.setExperimentalOption("prefs", preferences);
         options.setExperimentalOption("useAutomationExtension", false);
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
-        options.addArguments("disable-infobars", "--no-sandbox", "--start-maximized",
+        options.addArguments("--no-sandbox", "disable-infobars", "--start-maximized",
                 "--disable-dev-shm-usage", "--disable-gpu",
                 "--ignore-certificate-errors", "--disable-extensions",
                 "--headless", "--remote-debugging-port=9222");
