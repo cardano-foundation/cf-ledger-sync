@@ -32,6 +32,7 @@ public class DriverManager {
         String runMode = System.getProperty("runMode");
         String browser = System.getProperty("browser");
         generalUtils.addInfoLog("Starting " + browser + " driver.....!");
+        System.out.println("IAMHER");
         driver.set(this.ctx.getBean(RemoteWebDriver.class));
         System.out.println("IAMHERE");
         if ((runMode.equalsIgnoreCase("local") && browser.equalsIgnoreCase("chrome")) ||
