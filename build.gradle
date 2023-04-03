@@ -37,13 +37,21 @@ dependencies {
     implementation 'com.bloxbean.cardano:cardano-client-lib:0.4.3'
     implementation 'io.rest-assured:rest-assured:5.3.0'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    implementation 'org.junit.platform:junit-platform-launcher:1.9.2'
     implementation 'io.qameta.allure:allure-junit5:2.21.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'io.qameta.allure:allure-junit5:2.21.0'
-
+    implementation 'org.seleniumhq.selenium:selenium-java:4.8.3'
+    implementation 'org.seleniumhq.selenium:selenium-http-jdk-client:4.8.3'
+    implementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
 
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    systemProperty 'runMode', "local"
+    systemProperty 'browser', "chrome"
+    systemProperty 'URL', "https://cfadmin:l4dSPUVpV8mauhg@dev.cf-explorer-monolith-mainnet.metadata.dev.cf-deployments.org/"
+    systemProperty 'username', "cfadmin"
+    systemProperty 'password', "[8QIF7sZ%dD[%X("
 }

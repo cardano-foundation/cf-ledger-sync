@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cardanofoundation.pojos.wallets.shelly.sequential.walletsapi.createrestore.request.CreateRestoreWallet;
-import org.cardanofoundation.utils.RestBase;
+import org.cardanofoundation.configs.restassuredconfigs.RestBase;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

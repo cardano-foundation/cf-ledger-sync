@@ -1,4 +1,4 @@
-package org.cardanofoundation.utils;
+package org.cardanofoundation.configs.restassuredconfigs;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -16,8 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.cardanofoundation.utils.RestBase.KeyType.httpmethod;
-import static org.cardanofoundation.utils.RestBase.RequestFunctions.clear;
+import static org.cardanofoundation.configs.restassuredconfigs.RestBase.KeyType.httpmethod;
 
 @Component
 public class RestBase {
@@ -59,7 +58,6 @@ public class RestBase {
             post(url);
         } else {
             overRideHttpMethod(url);
-            overrideHttpMethod.set(null);
         }
     }
 

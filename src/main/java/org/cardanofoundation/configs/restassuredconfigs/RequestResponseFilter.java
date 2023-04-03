@@ -1,4 +1,4 @@
-package org.cardanofoundation.utils;
+package org.cardanofoundation.configs.restassuredconfigs;
 
 import io.qameta.allure.Allure;
 import io.restassured.filter.Filter;
