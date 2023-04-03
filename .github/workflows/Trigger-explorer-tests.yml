@@ -1,5 +1,6 @@
 name: Run explorer FE testcases
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
   run-web-test:
