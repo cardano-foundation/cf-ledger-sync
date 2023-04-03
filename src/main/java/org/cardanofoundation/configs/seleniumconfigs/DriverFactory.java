@@ -40,7 +40,9 @@ public class DriverFactory {
         if (System.getProperty("runMode").equalsIgnoreCase("local")){
             WebDriverManager.chromedriver().setup();
             return new ChromeDriver();
-        }else {
+        }else if(System.getProperty("runMode").equalsIgnoreCase("actionlocal")){
+            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilitiesManager.getChromeOptions());
+        }else{
             return new RemoteWebDriver(new URL(parametersUtils.getHubUrl()), capabilitiesManager.getChromeOptions());
         }
     }
