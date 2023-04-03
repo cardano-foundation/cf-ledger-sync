@@ -1,0 +1,14 @@
+name: Run explorer FE testcases
+on: workflow_dispatch
+
+jobs:
+  run-web-test:
+    runs_on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run the FE tests
+        run: |
+          gradle clean test -plocal
