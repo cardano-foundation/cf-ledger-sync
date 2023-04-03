@@ -29,7 +29,6 @@ public class ParametersUtils {
     }
 
     private String getGridUrl() {
-        System.out.printf("Printjas" + System.getProperty("SeleniumHub"));
         return System.getProperty("SeleniumHub");
     }
 }
