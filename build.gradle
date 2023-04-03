@@ -49,7 +49,7 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-    systemProperty 'runMode', "hub"
+    systemProperty 'runMode', "actionlocal"
     systemProperty 'browser', "chrome"
     systemProperty 'SeleniumHub', System.getProperty("SeleniumHub")
     systemProperty 'URL', System.getProperty("DEVBOXDEPLOYMENT")
