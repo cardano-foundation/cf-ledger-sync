@@ -1,6 +1,6 @@
 package org.cardanofoundation.explorer;
 
-import org.cardanofoundation.configs.junitconfigs.ChangeDisplayName;
+import org.cardanofoundation.configs.junitconfigs.DisplayNameHelper;
 //import org.cardanofoundation.listeners.CustomTestExecutionListener;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -12,7 +12,7 @@ import org.springframework.test.context.TestExecutionListeners;
 //@TestExecutionListeners(value = {
 //        CustomTestExecutionListener.class,
 //})
-@DisplayNameGeneration(ChangeDisplayName.class)
+@DisplayNameGeneration(DisplayNameHelper.class)
 @DisplayName("Home Page UI Tests")
 public class HomePageUITests extends ExplorerTestsBase{
 

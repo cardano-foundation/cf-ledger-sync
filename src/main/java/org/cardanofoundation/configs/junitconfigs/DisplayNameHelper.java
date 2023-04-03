@@ -4,7 +4,8 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 
 import java.lang.reflect.Method;
 
-public class ChangeDisplayName implements DisplayNameGenerator {
+public class DisplayNameHelper implements DisplayNameGenerator {
+
     @Override
     public String generateDisplayNameForClass(Class<?> testClass) {
         return testClass.getSimpleName().replace("_", " ");
