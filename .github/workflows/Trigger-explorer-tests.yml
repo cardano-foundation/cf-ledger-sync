@@ -13,4 +13,4 @@ jobs:
 
       - name: Run the FE tests
         run: |
-          gradle clean test -plocal
+          gradle clean test
