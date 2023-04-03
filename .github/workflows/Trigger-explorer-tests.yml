@@ -1,4 +1,4 @@
-name: Run explorer FE testcases
+name: Run Explorer FE testcases
 on:
   pull_request:
     types: [opened, synchronize]
