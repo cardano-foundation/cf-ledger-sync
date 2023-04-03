@@ -38,7 +38,7 @@ public class DriverFactory {
 
     private RemoteWebDriver getChromeDriver() throws MalformedURLException {
         if (System.getProperty("runMode").equalsIgnoreCase("local")){
-//            WebDriverManager.chromedriver().setup();
+            WebDriverManager.chromedriver().setup();
             return new ChromeDriver();
         }else {
             return new RemoteWebDriver(new URL(parametersUtils.getHubUrl()), capabilitiesManager.getChromeOptions());
