@@ -1,4 +1,4 @@
-name: Run Explorer FE testcases
+name: Run AQA testcases
 
 on:
   pull_request:
