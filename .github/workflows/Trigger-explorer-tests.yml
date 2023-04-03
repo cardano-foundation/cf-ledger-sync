@@ -11,8 +11,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Start selenoid
-        uses: Xotabu4/selenoid-github-action@v2
+#      - name: Start selenoid
+#        uses: Xotabu4/selenoid-github-action@v2
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -22,7 +22,7 @@ jobs:
 
       - name: Run the FE tests
         run: |
-          gradle clean test
+          gradle clean test -DSeleniumHub=${{secrets.SELENIUM_HUB_DEPLOYMENT}} -DURL=${{secrets.DEVBOXDEPLOYMENT}}
 
       - name: Get Allure history
         uses: actions/checkout@v3

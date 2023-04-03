@@ -49,7 +49,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-    systemProperty 'runMode', "actionlocal"
+    systemProperty 'runMode', "hub"
     systemProperty 'browser', "chrome"
-    systemProperty 'URL', "https://cfadmin:l4dSPUVpV8mauhg@dev.cf-explorer-monolith-mainnet.metadata.dev.cf-deployments.org/"
+    systemProperty 'SeleniumHub', System.getProperty("SeleniumHub")
+    systemProperty 'URL', System.getProperty("DEVBOXDEPLOYMENT")
 }

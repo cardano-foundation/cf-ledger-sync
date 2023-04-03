@@ -16,7 +16,7 @@ public class ParametersUtils {
     }
 
     public String getHubUrl() {
-        if (System.getProperty("runMode").equalsIgnoreCase("docker")){
+        if (System.getProperty("runMode").equalsIgnoreCase("hub")){
             return getGridUrl();
         }else if (System.getProperty("runMode").equalsIgnoreCase("mobile")){
             return getSauceHub();
@@ -29,6 +29,6 @@ public class ParametersUtils {
     }
 
     private String getGridUrl() {
-        return "http://dev.cf-jkaur-cardano-wallet.metadata.dev.cf-deployments.org:14444/wd/hub";
+        return System.getProperty("SeleniumHub");
     }
 }
