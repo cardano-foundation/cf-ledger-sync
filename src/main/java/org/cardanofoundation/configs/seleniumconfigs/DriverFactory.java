@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
 import java.net.MalformedURLException;
@@ -21,6 +22,9 @@ public class DriverFactory {
 
     @Autowired
     CapabilitiesManager capabilitiesManager;
+
+    @Value( "${SeleniumHub}" )
+    String SeleniumHub;
 
     @Scope("remotedriverscope")
     @Bean
@@ -38,17 +42,16 @@ public class DriverFactory {
     }
 
     private RemoteWebDriver getChromeDriver() throws MalformedURLException {
-//        if (System.getProperty("runMode").equalsIgnoreCase("local")){
-//            WebDriverManager.chromedriver().setup();
-//            return new ChromeDriver();
-//        }else if(System.getProperty("runMode").equalsIgnoreCase("actionlocal")){
-//            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilitiesManager.getChromeOptions());
-//        }else if(System.getProperty("runMode").equalsIgnoreCase("hub")){
-            System.out.println("in hub" + parametersUtils.getHubUrl());
+        if (System.getProperty("runMode").equalsIgnoreCase("local")){
+            WebDriverManager.chromedriver().setup();
+            return new ChromeDriver();
+        }else if(System.getProperty("runMode").equalsIgnoreCase("actionlocal")){
+            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilitiesManager.getChromeOptions());
+        }else if(System.getProperty("runMode").equalsIgnoreCase("hub")){
             return new RemoteWebDriver(new URL(parametersUtils.getHubUrl()), capabilitiesManager.getChromeOptions());
-//        }else {
-//            return null;
-//        }
+        }else {
+            return null;
+        }
     }
 
     private RemoteWebDriver getFirefoxDriver() {
