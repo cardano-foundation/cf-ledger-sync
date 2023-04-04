@@ -23,6 +23,9 @@ jobs:
           echo 'Selenium_Hub=${SELENIUM_HUB_DEPLOYMENT}' >> src/main/resources/application-test.properties
           echo 'FE_URL=${DEVBOXDEPLOYMENT}' >> src/main/resources/application-test.properties
 
+      - name: cat
+        run: cat src/main/resources/application-test.properties
+
       - name: Run the FE tests
         run: |
           gradle clean test
