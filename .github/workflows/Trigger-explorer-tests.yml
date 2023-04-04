@@ -1,4 +1,5 @@
 name: Run Explorer FE testcases
+
 on:
   pull_request:
     types: [opened, synchronize]
@@ -22,7 +23,7 @@ jobs:
 
       - name: Run the FE tests
         run: |
-          gradle clean test -DURL=${{DEVBOXDEPLOYMENT}}
+          gradle clean test
 
       - name: Get Allure history
         uses: actions/checkout@v3
