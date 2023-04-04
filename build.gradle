@@ -49,8 +49,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-    systemProperty 'runMode', "actionlocal"
+    systemProperty 'runMode', "hub"
     systemProperty 'browser', "chrome"
-    systemProperty 'SeleniumHub', System.getProperty("SeleniumHub")
+    systemProperty 'SeleniumHub', "http://dev.cf-jkaur-cardano-wallet.metadata.dev.cf-deployments.org:14444/wd/hub"
     systemProperty 'URL', "https://cfadmin:l4dSPUVpV8mauhg@dev.cf-explorer-monolith-mainnet.metadata.dev.cf-deployments.org/"
 }

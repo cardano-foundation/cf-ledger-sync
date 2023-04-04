@@ -21,8 +21,11 @@ jobs:
           distribution: 'adopt'
 
       - name: Run the FE tests
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gradle clean test -DSeleniumHub=${{secrets.SELENIUM_HUB_DEPLOYMENT}} -DURL=${{secrets.DEVBOXDEPLOYMENT}}
+#          echo '${NPM_TOKEN}' > .npmrc
+          gradle clean test -DURL=${{DEVBOXDEPLOYMENT}}
 
       - name: Get Allure history
         uses: actions/checkout@v3
@@ -46,3 +49,6 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
+    env:
+      SELENIUM_HUB_DEPLOYMENT: ${{ secrets.SELENIUM_HUB_DEPLOYMENT }}
+      DEVBOXDEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
