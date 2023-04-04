@@ -38,16 +38,17 @@ public class DriverFactory {
     }
 
     private RemoteWebDriver getChromeDriver() throws MalformedURLException {
-        if (System.getProperty("runMode").equalsIgnoreCase("local")){
-            WebDriverManager.chromedriver().setup();
-            return new ChromeDriver();
-        }else if(System.getProperty("runMode").equalsIgnoreCase("actionlocal")){
-            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilitiesManager.getChromeOptions());
-        }else if(System.getProperty("runMode").equalsIgnoreCase("hub")){
+//        if (System.getProperty("runMode").equalsIgnoreCase("local")){
+//            WebDriverManager.chromedriver().setup();
+//            return new ChromeDriver();
+//        }else if(System.getProperty("runMode").equalsIgnoreCase("actionlocal")){
+//            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilitiesManager.getChromeOptions());
+//        }else if(System.getProperty("runMode").equalsIgnoreCase("hub")){
+            System.out.println("in hub" + parametersUtils.getHubUrl());
             return new RemoteWebDriver(new URL(parametersUtils.getHubUrl()), capabilitiesManager.getChromeOptions());
-        }else {
-            return null;
-        }
+//        }else {
+//            return null;
+//        }
     }
 
     private RemoteWebDriver getFirefoxDriver() {
