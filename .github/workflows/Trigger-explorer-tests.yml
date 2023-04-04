@@ -22,7 +22,6 @@ jobs:
 
       - name: Run the FE tests
         run: |
-#          echo '${NPM_TOKEN}' > .npmrc
           gradle clean test -DURL=${{DEVBOXDEPLOYMENT}}
 
       - name: Get Allure history
