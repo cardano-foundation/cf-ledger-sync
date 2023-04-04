@@ -11,8 +11,8 @@ public class ParametersUtils {
 
     @Autowired
     GeneralUtils generalUtils;
-    @Value( "${Selenium_Hub}" )
-    String seleniumHub;
+//    @Value( "${Selenium_Hub}" )
+//    String seleniumHub;
 
     @Value( "${FE_URL}" )
     String URL;
@@ -23,7 +23,7 @@ public class ParametersUtils {
 
     public String getHubUrl() {
         if (System.getProperty("runMode").equalsIgnoreCase("hub")){
-            return seleniumHub;
+            return "";
         }else if (System.getProperty("runMode").equalsIgnoreCase("mobile")){
             return getSauceHub();
         }
