@@ -11,7 +11,7 @@ public class ParametersUtils {
 
     @Autowired
     GeneralUtils generalUtils;
-    @Value( "${SeleniumHub}" )
+    @Value( "${Selenium_Hub}" )
     String seleniumHub;
 
     @Value( "${FE_URL}" )
