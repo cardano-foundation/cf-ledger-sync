@@ -21,8 +21,6 @@ jobs:
           distribution: 'adopt'
 
       - name: Run the FE tests
-        env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
 #          echo '${NPM_TOKEN}' > .npmrc
           gradle clean test -DURL=${{DEVBOXDEPLOYMENT}}
