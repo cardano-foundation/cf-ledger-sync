@@ -23,9 +23,6 @@ public class DriverFactory {
     @Autowired
     CapabilitiesManager capabilitiesManager;
 
-    @Value( "${SeleniumHub}" )
-    String SeleniumHub;
-
     @Scope("remotedriverscope")
     @Bean
     public RemoteWebDriver initializeDriver() throws MalformedURLException {

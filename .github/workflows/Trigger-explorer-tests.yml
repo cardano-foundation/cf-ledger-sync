@@ -22,7 +22,7 @@ jobs:
         run: |
           pwd
           ls -la
-          echo 'Selenium_Hub=${SELENIUM_HUB}' >> src/main/resources/application-test.properties
+          echo 'SeleniumHub=${SELENIUM_HUB}' >> src/main/resources/application-test.properties
           echo 'FE_URL=${DEV_DEPLOYMENT}' >> src/main/resources/application-test.properties
           ls -la
 
