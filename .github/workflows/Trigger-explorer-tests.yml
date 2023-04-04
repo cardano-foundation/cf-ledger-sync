@@ -20,8 +20,8 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo 'Selenium_Hub=${{ secrets.SELENIUM_HUB_DEPLOYMENT }}' >> src/main/resources/application-test.properties
-          echo 'FE_URL=${{ secrets.DEVBOXDEPLOYMENT }}' >> src/main/resources/application-test.properties
+          echo 'Selenium_Hub=${SELENIUM_HUB}' >> src/main/resources/application-test.properties
+          echo 'FE_URL=${DEV_DEPLOYMENT}' >> src/main/resources/application-test.properties
 
       - name: cat
         run: cat src/main/resources/application-test.properties
@@ -52,6 +52,7 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
-#    env:
-#      SELENIUM_HUB_DEPLOYMENT: ${{ secrets.SELENIUM_HUB_DEPLOYMENT }}
-#      DEVBOXDEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
+
+    env:
+      SELENIUM_HUB: ${{ secrets.SELENIUM_HUB_DEPLOYMENT }}
+      DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
