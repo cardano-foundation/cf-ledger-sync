@@ -1,0 +1,54 @@
+name: Run Explorer FE testcases
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  run-web-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      - name: Set environment variables
+        run: |
+          echo 'Selenium_Hub=${SELENIUM_HUB}' >> src/main/resources/application-test.properties
+          echo 'FE_URL=${DEV_DEPLOYMENT}' >> src/main/resources/application-test.properties
+
+      - name: Run the FE tests
+        run: |
+          gradle clean test
+
+      - name: Get allure history
+        uses: actions/checkout@v3
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: build/allure-results
+          allure_history: allure-history
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
+
+    env:
+      SELENIUM_HUB: ${{ secrets.SELENIUM_HUB_DEPLOYMENT }}
+      DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}

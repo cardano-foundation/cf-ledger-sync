@@ -3,8 +3,10 @@ package org.cardanofoundation.configs.seleniumconfigs;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.cardanofoundation.utils.ParametersUtils;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
 import java.net.MalformedURLException;
@@ -40,8 +42,12 @@ public class DriverFactory {
         if (System.getProperty("runMode").equalsIgnoreCase("local")){
             WebDriverManager.chromedriver().setup();
             return new ChromeDriver();
-        }else {
+        }else if(System.getProperty("runMode").equalsIgnoreCase("actionlocal")){
+            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilitiesManager.getChromeOptions());
+        }else if(System.getProperty("runMode").equalsIgnoreCase("hub")){
             return new RemoteWebDriver(new URL(parametersUtils.getHubUrl()), capabilitiesManager.getChromeOptions());
+        }else {
+            return null;
         }
     }
 

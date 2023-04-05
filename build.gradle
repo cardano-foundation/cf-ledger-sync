@@ -49,9 +49,6 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-    systemProperty 'runMode', "local"
+    systemProperty 'runMode', "hub"
     systemProperty 'browser', "chrome"
-    systemProperty 'URL', "https://cfadmin:l4dSPUVpV8mauhg@dev.cf-explorer-monolith-mainnet.metadata.dev.cf-deployments.org/"
-    systemProperty 'username', "cfadmin"
-    systemProperty 'password', "[8QIF7sZ%dD[%X("
 }

@@ -1,3 +1,5 @@
+#name: Run AQA testcases
+#
 #on:
 #  pull_request:
 #    types: [opened, synchronize]
@@ -19,7 +21,7 @@
 #        uses: gradle/gradle-build-action@v2
 #
 #      - name: Run test with Gradle Wrapper
-#        run: gradle test
+#        run: gradle clean build
 #
 #      - name: Get Allure history
 #        uses: actions/checkout@v3

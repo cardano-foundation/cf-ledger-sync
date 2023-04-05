@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 
 @SpringBootTest
-//@TestExecutionListeners(value = {
-//        CustomTestExecutionListener.class,
-//})
 @DisplayNameGeneration(DisplayNameHelper.class)
 @DisplayName("Home Page UI Tests")
 public class HomePageUITests extends ExplorerTestsBase{
@@ -30,5 +27,6 @@ public class HomePageUITests extends ExplorerTestsBase{
     @Test
     public void verifyConnectWalletButtonPresence() throws InterruptedException {
         homePage.isConnectWalletButtonPresent();
+
     }
 }
