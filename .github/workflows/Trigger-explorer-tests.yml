@@ -1,9 +1,8 @@
 name: Run Explorer FE testcases
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-
+  workflow_dispatch:
+    
 jobs:
   run-web-test:
     runs-on: ubuntu-latest
