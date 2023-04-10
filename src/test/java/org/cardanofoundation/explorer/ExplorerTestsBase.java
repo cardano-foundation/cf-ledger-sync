@@ -3,7 +3,6 @@ package org.cardanofoundation.explorer;
 import org.cardanofoundation.pages.explorer.HomePage;
 import org.cardanofoundation.configs.seleniumconfigs.DriverManager;
 import org.cardanofoundation.utils.GeneralUtils;
-import org.cardanofoundation.utils.ParametersUtils;
 import org.cardanofoundation.utils.WebUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +17,6 @@ public class ExplorerTestsBase {
     @Autowired
     protected DriverManager driverManager;
 
-    @Lazy
-    @Autowired
-    protected ParametersUtils parametersUtils;
     @Lazy
     @Autowired
     protected GeneralUtils generalUtils;
