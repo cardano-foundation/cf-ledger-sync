@@ -33,7 +33,7 @@ public class ExplorerTestsBase {
     public void setupDriver() throws InterruptedException {
         testResult = "failed";
         driverManager.setupDriver();
-        homePage.isPageHeaderPresent();
+        homePage.isPageHeaderDisplayed();
     }
 
     @AfterEach
