@@ -1,12 +1,10 @@
 package org.cardanofoundation.explorer;
 
 import org.cardanofoundation.configs.junitconfigs.DisplayNameHelper;
-//import org.cardanofoundation.listeners.CustomTestExecutionListener;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestExecutionListeners;
 
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameHelper.class)
@@ -29,4 +27,5 @@ public class HomePageUITests extends ExplorerTestsBase{
         homePage.isConnectWalletButtonPresent();
 
     }
+
 }

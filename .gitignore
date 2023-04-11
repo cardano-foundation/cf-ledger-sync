@@ -4,4 +4,6 @@ HELP.md
 build/
 .DS_Store
 src/main/resources/application.properties
-src/main/resources/application.properties
+src/main/resources/application-local.properties
+src/main/resources/application.yml
+src/test/resources/apps/
