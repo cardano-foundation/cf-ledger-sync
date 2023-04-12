@@ -56,32 +56,7 @@ public class ExplorerBasePage {
     @FindBy(xpath = "//input[@placeholder='Search transactions, address, blocks, epochs, pools...'][@type='search']")
     public WebElement searchField;
 
-    @FindBy(xpath = "//img[@alt='Ada Price']/ancestor::div[@class='MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-lg-3 MuiGrid-grid-xl-true css-1253ibq-MuiGrid-root']")
-    public WebElement adaPriceBox;
 
-    @FindBy(xpath = "//img[@alt='Ada Price']/following-sibling::div/h4")
-    public WebElement adaPriceBoxTitle;
-
-    @FindBy(xpath = "//img[@alt='Ada Price']")
-    public WebElement adaPriceIcon;
-
-    @FindBy(xpath = "//img[@alt='Market Cap']/ancestor::div[@class='MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-lg-3 MuiGrid-grid-xl-true css-1253ibq-MuiGrid-root']")
-    public WebElement marketCapBox;
-
-    @FindBy(xpath = "//img[@alt='Market cap']")
-    public WebElement marketCapIcon;
-
-    @FindBy(xpath = "//img[@alt='Market cap']/following-sibling::div/h4")
-    public WebElement marketCapBoxTitle;
-
-    @FindBy(xpath = "//img[@alt='Current Epoch']/ancestor::div[@class='MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-lg-3 MuiGrid-grid-xl-true css-1253ibq-MuiGrid-root']")
-    public WebElement currentEpochBox;
-
-    @FindBy(xpath = "//img[@alt='Current Epoch']")
-    public WebElement currentEpochIcon;
-
-    @FindBy(xpath = "//img[@alt='Current Epoch']/following-sibling::div/h4")
-    public WebElement currentEpochBoxTitle;
 
 
 }

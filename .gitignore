@@ -7,3 +7,4 @@ src/main/resources/application.properties
 src/main/resources/application-local.properties
 src/main/resources/application.yml
 src/test/resources/apps/
+src/main/resources/application.yml
