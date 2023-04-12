@@ -138,7 +138,7 @@ public class HomePage extends ExplorerBasePage{
         List<String> expectedOptions = Arrays.asList("All Filters", "Epochs", "Blocks", "Transactions",
                 "Tokens", "Stake Keys", "Addresses", "Pools");
 
-        Assertions.assertEquals(8, filterOptions.size(),
+        Assertions.assertEquals(expectedOptions.size(), filterOptions.size(),
                 "Incorrect number of options in the All Filter dropdown.");
 
         List<String> actualOptions = filterOptions.stream().map(WebElement::getText).toList();
@@ -166,7 +166,7 @@ public class HomePage extends ExplorerBasePage{
         List<String> expectedNetworks = Arrays.asList("Mainnet", "Preprod", "Preview", "Testnet");
         //TODO Talk to Satya about it.
         networkSelectionDropdown.click();
-        Assertions.assertEquals(4, networkOptions.size(),
+        Assertions.assertEquals(expectedNetworks.size(), networkOptions.size(),
                 "Incorrect count." +
                         " Expected options: 4" +
                         " Actual options: " + networkOptions.size());
