@@ -22,7 +22,6 @@ jobs:
           echo 'SAUCE_HUB=${SAUCEHUB}' >> src/main/resources/application-test.properties
           echo 'SELENIUM_HUB=${SELENIUMHUB}' >> src/main/resources/application-test.properties
           echo 'FE_URL=${DEV_DEPLOYMENT}' >> src/main/resources/application-test.properties
-          cat src/main/resources/application-test.properties
 
       - name: Run the FE tests
         run: |
