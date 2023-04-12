@@ -185,19 +185,6 @@ public class HomePage extends ExplorerBasePage{
         return this;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Step("Verify Ada Price box is displayed.")
     public HomePage isAdaPriceBoxDisplayed() {
         Assertions.assertTrue(adaPriceBox.isDisplayed(), "Ada Price box is not displayed.");
