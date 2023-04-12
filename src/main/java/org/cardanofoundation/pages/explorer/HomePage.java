@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import org.apache.commons.collections4.CollectionUtils;
 import org.cardanofoundation.configs.springconfigs.pageobjects.PageObjects;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -16,101 +17,103 @@ import static java.lang.Thread.sleep;
 @PageObjects
 public class HomePage extends ExplorerBasePage{
 
-    @FindBy(xpath = "//div[@data-testid='NetworkSelectionDropdown']/div[@aria-haspopup='listbox']")
+    @FindBy(xpath = "//div[@data-testid='network-selection-dropdown']/div[@aria-haspopup='listbox']")
     public WebElement networkSelectionDropdown;
 
-    @FindBy(xpath = "//li[@data-testid='NetworkOptions']")
+    @FindBy(xpath = "//li[@data-testid='network-options']")
     public List<WebElement> networkOptions;
 
-    @FindBy(xpath = "//div[@data-testid='AdaPriceBox']")
+    @FindBy(xpath = "//div[@data-testid='ada-price-box']")
     public WebElement adaPriceBox;
 
-    @FindBy(xpath = "//img[@data-testid='AdaPriceIcon']")
+    @FindBy(xpath = "//img[@data-testid='ada-price-icon']")
     public WebElement adaPriceIcon;
 
-    @FindBy(xpath = "//h4[@data-testid='AdaPriceBoxTitle']")
+    @FindBy(xpath = "//h4[@data-testid='ada-price-box-title']")
     public WebElement adaPriceBoxTitle;
 
-    @FindBy(xpath = "//h3[@data-testid='AdaCurrentPrice']")
+    @FindBy(xpath = "//h3[@data-testid='ada-current-price']")
     public WebElement adaCurrentPrice;
 
-    @FindBy(xpath = "//small[@data-testid='AdaPriceInBTC']")
+    @FindBy(xpath = "//small[@data-testid='ada-24Hr-price-change']")
+    public WebElement ada24HrPriceChange;
+
+    @FindBy(xpath = "//small[@data-testid='ada-price-in-BTC']")
     public WebElement adaPriceInBTC;
 
-    @FindBy(xpath = "//div[@data-testid='MarketCapBox']")
+    @FindBy(xpath = "//div[@data-testid='market-cap-box']")
     public WebElement marketCapBox;
 
-    @FindBy(xpath = "//img[@data-testid='MarketCapIcon']")
+    @FindBy(xpath = "//img[@data-testid='market-cap-icon']")
     public WebElement marketCapIcon;
 
-    @FindBy(xpath = "//h4[@data-testid='MarketCapBoxTitle']")
+    @FindBy(xpath = "//h4[@data-testid='market-cap-box-title']")
     public WebElement marketCapBoxTitle;
 
-    @FindBy(xpath = "//h3[@data-testid='MarketCapValue']")
+    @FindBy(xpath = "//h3[@data-testid='market-cap-value']")
     public WebElement currentMarketCap;
 
-    @FindBy(xpath = "//div[@data-testid='CurrentEpochBox']")
+    @FindBy(xpath = "//div[@data-testid='current-epoch-box']")
     public WebElement currentEpochBox;
 
-    @FindBy(xpath = "//img[@data-testid='CurrentEpochIcon']")
+    @FindBy(xpath = "//img[@data-testid='current-epoch-icon']")
     public WebElement currentEpochIcon;
 
-    @FindBy(xpath = "//h4[@data-testid='CurrentEpochBoxTitle']")
+    @FindBy(xpath = "//h4[@data-testid='current-epoch-box-title']")
     public WebElement currentEpochBoxTitle;
 
-    @FindBy(xpath = "//span[@data-testid='EpochLabel']")
+    @FindBy(xpath = "//span[@data-testid='epoch-label']")
     public WebElement epochLabel;
 
-    @FindBy(xpath = "//span[@data-testid='CurrentEpochNumber']")
+    @FindBy(xpath = "//span[@data-testid='current-epoch-number']")
     public WebElement currentEpochNumber;
 
-    @FindBy(xpath = "//span[@data-testid='SlotLabel']")
+    @FindBy(xpath = "//span[@data-testid='slot-label']")
     public WebElement slotLabel;
 
-    @FindBy(xpath = "//span[@data-testid='CurrentSlotNumber']")
+    @FindBy(xpath = "//span[@data-testid='current-slot-number']")
     public WebElement currentSlotNumber;
 
-    @FindBy(xpath = "//span[@data-testid='TotalSlots']")
+    @FindBy(xpath = "//span[@data-testid='total-slots']")
     public WebElement totalSlots;
 
-    @FindBy(xpath = "//div[@data-testid='LiveStakeBox']")
+    @FindBy(xpath = "//div[@data-testid='live-stake-box']")
     public WebElement liveStakeBox;
 
-    @FindBy(xpath = "//img[@data-testid='LiveStakeIcon']")
+    @FindBy(xpath = "//img[@data-testid='live-stake-icon']")
     public WebElement liveStakeIcon;
 
-    @FindBy(xpath = "//h4[@data-testid='LiveStakeBoxTitle']")
+    @FindBy(xpath = "//h4[@data-testid='live-stake-box-title']")
     public WebElement liveStakeBoxTitle;
 
-    @FindBy(xpath = "//small[@data-testid='ActiveStakeLabel']")
+    @FindBy(xpath = "//small[@data-testid='active-stake-label']")
     public WebElement activeStakeLabel;
 
-    @FindBy(xpath = "//small[@data-testid='ActiveStakeValue']")
+    @FindBy(xpath = "//small[@data-testid='active-stake-value']")
     public WebElement activeStakeValue;
 
-    @FindBy(xpath = "//small[@data-testid='ActiveStakePercentage']")
+    @FindBy(xpath = "//small[@data-testid='active-stake-percentage']")
     public WebElement activeStakePercentage;
 
-    @FindBy(xpath = "//small[@data-testid='CirculatingSupplyLabel']")
+    @FindBy(xpath = "//small[@data-testid='circulating-supply-label']")
     public WebElement circulatingSupplyLabel;
 
-    @FindBy(xpath = "//small[@data-testid='CirculatingSupplyValue']")
+    @FindBy(xpath = "//small[@data-testid='circulating-supply-value']")
     public WebElement circulatingSupplyValue;
 
-
-    @FindBy(xpath = "//small[@data-testid='CirculatingSupplyPercentage']")
+    @FindBy(xpath = "//small[@data-testid='circulating-supply-percentage']")
     public WebElement circulatingSupplyPercentage;
 
-    @FindBy(xpath = "//div[@data-testid='LiveStakeProgressBar']")
+    @FindBy(xpath = "//div[@data-testid='live-stake-progress-bar']")
     public WebElement liveStakeProgressBar;
 
-    @FindBy(xpath = "//div[@data-testid='AllFiltersDropdown']")
+    @FindBy(xpath = "//div[@data-testid='all-filters-dropdown']")
     public WebElement allFiltersDropdown;
 
-    @FindBy(xpath = "//li[@data-testid='FilterOptions']")
+    @FindBy(xpath = "//li[@data-testid='filter-options']")
     public List<WebElement> filterOptions;
 
-    @FindBy(xpath = "//div[@data-testid='SearchBar']/input")
+    @FindBy(xpath = "//div[@data-testid='search-bar']/input")
     public WebElement searchBar;
 
     public void isPageHeaderDisplayed() {
@@ -136,7 +139,7 @@ public class HomePage extends ExplorerBasePage{
         allFiltersDropdown.click();
         sleep(2000);
         List<String> expectedOptions = Arrays.asList("All Filters", "Epochs", "Blocks", "Transactions",
-                "Tokens", "Stake Keys", "Addresses", "Pools");
+                "Tokens", "Addresses", "Pools");
 
         Assertions.assertEquals(expectedOptions.size(), filterOptions.size(),
                 "Incorrect number of options in the All Filter dropdown.");
@@ -144,7 +147,7 @@ public class HomePage extends ExplorerBasePage{
         List<String> actualOptions = filterOptions.stream().map(WebElement::getText).toList();
         Assertions.assertTrue(CollectionUtils.isEqualCollection(expectedOptions, actualOptions), "Values in filter dropdown are incorrect. " +
                 " Expected Values: " + expectedOptions +
-                " Actual Values: " +actualOptions);
+                " Actual Values: " + actualOptions);
         return this;
     }
 
@@ -168,7 +171,7 @@ public class HomePage extends ExplorerBasePage{
         networkSelectionDropdown.click();
         Assertions.assertEquals(expectedNetworks.size(), networkOptions.size(),
                 "Incorrect count." +
-                        " Expected options: 4" +
+                        " Expected options: " + expectedNetworks.size() +
                         " Actual options: " + networkOptions.size());
 
         List<String> actualNetworks = networkOptions.stream().map(WebElement::getText).toList();
