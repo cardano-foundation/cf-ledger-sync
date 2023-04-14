@@ -19,7 +19,6 @@ jobs:
 
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v2
-      - uses: actions/checkout@v1
 
       - name: Set environment variables
         run: |
@@ -55,5 +54,4 @@ jobs:
           PUBLISH_DIR: allure-history
 
     env:
-      ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
       DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
