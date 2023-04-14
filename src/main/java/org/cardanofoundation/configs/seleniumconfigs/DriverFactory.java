@@ -30,12 +30,6 @@ public class DriverFactory {
     @Value( "${run.mode}" )
     String runMode;
 
-    @Value( "${SELENIUM_HUB}" )
-    String seleniumHub;
-
-    @Value( "${SAUCE_HUB}" )
-    String sauceHub;
-
     @Lazy
     @Autowired
     ApplicationContext ctx;
@@ -58,13 +52,11 @@ public class DriverFactory {
         if (runMode.equalsIgnoreCase("local")){
             WebDriverManager.chromedriver().setup();
             return new ChromeDriver();
-        }else if(runMode.equalsIgnoreCase("seleniumhub")){
-            return new RemoteWebDriver(new URL(seleniumHub), getChromeOptions());
-        }else if(runMode.equalsIgnoreCase("saucehub")){
-            return new RemoteWebDriver(new URL(sauceHub), getChromeOptions());
+        }else if(runMode.equalsIgnoreCase("githubaction")){
+            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), getChromeOptions());
         }else{
             throw new IllegalArgumentException("Invalid run mode: " + browserType +
-                    ". Acceptable options are: local, seleniumhub, saucehub.");
+                    ". Acceptable options are: local, githubaction.");
         }
     }
 
@@ -77,10 +69,10 @@ public class DriverFactory {
     }
 
     private RemoteWebDriver getIosDriver() throws MalformedURLException {
-        MutableCapabilities asdsd = getIosCapabilities();
+        MutableCapabilities iosCapabilities = getIosCapabilities();
 
-        URL url = new URL("https://oauth-jaspreet.kaur-bb783:6809639d-25d1-4f6b-b960-0a2efe086852@ondemand.eu-central-1.saucelabs.com:443/wd/hub");
-        IOSDriver driver = new IOSDriver(url, asdsd);
+        URL url = new URL("");
+        IOSDriver driver = new IOSDriver(url, iosCapabilities);
     return driver;
     }
 

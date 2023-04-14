@@ -19,9 +19,11 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo 'SAUCE_HUB=${SAUCEHUB}' >> src/main/resources/application-test.properties
-          echo 'SELENIUM_HUB=${SELENIUMHUB}' >> src/main/resources/application-test.properties
           echo 'FE_URL=${DEV_DEPLOYMENT}' >> src/main/resources/application-test.properties
+
+      - name: Local chrome/selenium setup
+        uses: Xotabu4/selenoid-github-action@v2
+      - uses: actions/checkout@v1
 
       - name: Run the FE tests
         run: |
@@ -51,6 +53,4 @@ jobs:
           PUBLISH_DIR: allure-history
 
     env:
-      SAUCE_HUB: ${{ secrets.SAUCEHUB }}
-      SELENIUMHUB: ${{ secrets.SELENIUM_HUB_DEPLOYMENT }}
       DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
