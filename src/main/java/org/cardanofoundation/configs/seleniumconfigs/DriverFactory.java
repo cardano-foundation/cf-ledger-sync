@@ -30,12 +30,6 @@ public class DriverFactory {
     @Value( "${run.mode}" )
     String runMode;
 
-    @Value( "${SELENIUM_HUB}" )
-    String seleniumHub;
-
-    @Value( "${SAUCE_HUB}" )
-    String sauceHub;
-
     @Lazy
     @Autowired
     ApplicationContext ctx;
@@ -55,16 +49,13 @@ public class DriverFactory {
 
     private RemoteWebDriver getChromeDriver() throws MalformedURLException {
         System.setProperty("webdriver.http.factory", "jdk-http-client");
-        if (runMode.equalsIgnoreCase("local")){
+        if (runMode.equalsIgnoreCase("githubaction")) {
+            return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), getChromeOptions());
+        } else if (runMode.equalsIgnoreCase("local")) {
             WebDriverManager.chromedriver().setup();
-            return new ChromeDriver();
-        }else if(runMode.equalsIgnoreCase("seleniumhub")){
-            return new RemoteWebDriver(new URL(seleniumHub), getChromeOptions());
-        }else if(runMode.equalsIgnoreCase("saucehub")){
-            return new RemoteWebDriver(new URL(sauceHub), getChromeOptions());
-        }else{
-            throw new IllegalArgumentException("Invalid run mode: " + browserType +
-                    ". Acceptable options are: local, seleniumhub, saucehub.");
+            return new ChromeDriver(getChromeOptions());
+        } else{throw new IllegalArgumentException("Invalid run mode: " + browserType +
+                ". Acceptable options are: local, githubaction.");
         }
     }
 
@@ -77,11 +68,11 @@ public class DriverFactory {
     }
 
     private RemoteWebDriver getIosDriver() throws MalformedURLException {
-        MutableCapabilities asdsd = getIosCapabilities();
+        MutableCapabilities iosCapabilities = getIosCapabilities();
 
-        URL url = new URL("https://oauth-jaspreet.kaur-bb783:6809639d-25d1-4f6b-b960-0a2efe086852@ondemand.eu-central-1.saucelabs.com:443/wd/hub");
-        IOSDriver driver = new IOSDriver(url, asdsd);
-    return driver;
+        URL url = new URL("");
+        IOSDriver driver = new IOSDriver(url, iosCapabilities);
+        return driver;
     }
 
     public ChromeOptions getChromeOptions(){
@@ -93,7 +84,7 @@ public class DriverFactory {
         options.setExperimentalOption("prefs", preferences);
         options.setExperimentalOption("useAutomationExtension", false);
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
-        options.addArguments("--no-sandbox", "--start-maximized", "--disable-dev-shm-usage", "--disable-gpu",
+        options.addArguments("--disable-dev-shm-usage", "--no-sandbox", "--start-maximized", "--disable-gpu",
                 "--ignore-certificate-errors", "--disable-extensions", "--remote-debugging-port=9222");
 
         return options;
@@ -121,3 +112,4 @@ public class DriverFactory {
         return null;
     }
 }
+

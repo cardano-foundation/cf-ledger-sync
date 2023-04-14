@@ -2,7 +2,7 @@ name: Run Explorer FE testcases
 
 on:
   workflow_dispatch:
-    
+
 jobs:
   run-web-test:
     runs-on: ubuntu-latest
@@ -17,11 +17,14 @@ jobs:
           java-version: 17
           distribution: 'adopt'
 
+      - name: Start selenoid
+        uses: Xotabu4/selenoid-github-action@v2
+
       - name: Set environment variables
         run: |
-          echo 'SAUCE_HUB=${SAUCEHUB}' >> src/main/resources/application-test.properties
-          echo 'SELENIUM_HUB=${SELENIUMHUB}' >> src/main/resources/application-test.properties
+          pwd
           echo 'FE_URL=${DEV_DEPLOYMENT}' >> src/main/resources/application-test.properties
+          cat src/main/resources/application-test.properties
 
       - name: Run the FE tests
         run: |
@@ -51,6 +54,4 @@ jobs:
           PUBLISH_DIR: allure-history
 
     env:
-      SAUCE_HUB: ${{ secrets.SAUCEHUB }}
-      SELENIUMHUB: ${{ secrets.SELENIUM_HUB_DEPLOYMENT }}
       DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
