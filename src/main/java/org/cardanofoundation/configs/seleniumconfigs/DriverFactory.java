@@ -50,13 +50,11 @@ public class DriverFactory {
     private RemoteWebDriver getChromeDriver() throws MalformedURLException {
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         if (runMode.equalsIgnoreCase("githubaction")) {
-//            WebDriverManager.chromedriver().setup();
-//            return new ChromeDriver(getChromeOptions());
             return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), getChromeOptions());
-//        }else if(runMode.equalsIgnoreCase("saucehub")){
-//            return new RemoteWebDriver(new URL(sauceHub), getChromeOptions());
-//        }else{
-        }else{throw new IllegalArgumentException("Invalid run mode: " + browserType +
+        } else if (runMode.equalsIgnoreCase("local")) {
+            WebDriverManager.chromedriver().setup();
+            return new ChromeDriver(getChromeOptions());
+        } else{throw new IllegalArgumentException("Invalid run mode: " + browserType +
                 ". Acceptable options are: local, githubaction.");
         }
     }
