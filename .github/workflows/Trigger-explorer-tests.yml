@@ -56,5 +56,4 @@ jobs:
 
     env:
       ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
-#      DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
-      DEV_DEPLOYMENT: 'https://cardanofoundation.org/'
+      DEV_DEPLOYMENT: ${{ secrets.DEVBOXDEPLOYMENT }}
