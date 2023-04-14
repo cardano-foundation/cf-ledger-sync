@@ -49,14 +49,15 @@ public class DriverFactory {
 
     private RemoteWebDriver getChromeDriver() throws MalformedURLException {
         System.setProperty("webdriver.http.factory", "jdk-http-client");
-        if (runMode.equalsIgnoreCase("local")){
-            WebDriverManager.chromedriver().setup();
-            return new ChromeDriver();
-        }else if(runMode.equalsIgnoreCase("githubaction")){
+        if (runMode.equalsIgnoreCase("githubaction")) {
+//            WebDriverManager.chromedriver().setup();
+//            return new ChromeDriver(getChromeOptions());
             return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), getChromeOptions());
-        }else{
-            throw new IllegalArgumentException("Invalid run mode: " + browserType +
-                    ". Acceptable options are: local, githubaction.");
+//        }else if(runMode.equalsIgnoreCase("saucehub")){
+//            return new RemoteWebDriver(new URL(sauceHub), getChromeOptions());
+//        }else{
+        }else{throw new IllegalArgumentException("Invalid run mode: " + browserType +
+                ". Acceptable options are: local, githubaction.");
         }
     }
 
@@ -73,7 +74,7 @@ public class DriverFactory {
 
         URL url = new URL("");
         IOSDriver driver = new IOSDriver(url, iosCapabilities);
-    return driver;
+        return driver;
     }
 
     public ChromeOptions getChromeOptions(){
@@ -85,7 +86,7 @@ public class DriverFactory {
         options.setExperimentalOption("prefs", preferences);
         options.setExperimentalOption("useAutomationExtension", false);
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
-        options.addArguments("--no-sandbox", "--start-maximized", "--disable-dev-shm-usage", "--disable-gpu",
+        options.addArguments("--disable-dev-shm-usage", "--no-sandbox", "--start-maximized", "--disable-gpu",
                 "--ignore-certificate-errors", "--disable-extensions", "--remote-debugging-port=9222");
 
         return options;
@@ -113,3 +114,4 @@ public class DriverFactory {
         return null;
     }
 }
+
