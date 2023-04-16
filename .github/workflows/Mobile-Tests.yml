@@ -20,7 +20,7 @@ jobs:
         run: |
           npm install -g appium@next
           appium driver install xcuitest
-#          appium &>/dev/null &
+          appium &>/dev/null &
 
       - name: run appium ios tests
         run: gradle clean test

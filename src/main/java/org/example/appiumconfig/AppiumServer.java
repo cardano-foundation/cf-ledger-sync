@@ -42,15 +42,15 @@ public class AppiumServer {
 
     public IOSDriver launchApp() throws InterruptedException, MalformedURLException {
 
-        AppiumServer appiumServer = new AppiumServer();
-        AppiumDriverLocalService as = appiumServer.get();
+//        AppiumServer appiumServer = new AppiumServer();
+//        AppiumDriverLocalService as = appiumServer.get();
 
         XCUITestOptions xcuiTestOptions = new XCUITestOptions();
         xcuiTestOptions.setPlatformName("iOS")
                 .setAutomationName("xcuitest")
                 .setApp("/Users/jaspreetkaur/GitHub/cf-qa-testsuite/src/main/resources/TestApp.app.zip");
-//        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), xcuiTestOptions);
-        IOSDriver iosDriver = new IOSDriver(as, xcuiTestOptions);
+        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), xcuiTestOptions);
+//        IOSDriver iosDriver = new IOSDriver(as, xcuiTestOptions);
 
         return iosDriver;
 //        AppiumDriver appiumDriver = new AppiumDriver();
