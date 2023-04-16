@@ -62,7 +62,7 @@ public class AppiumServer {
         desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
         desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
         desiredCapabilities.setCapability(MobileCapabilityType.APP, "/Users/jaspreetkaur/GitHub/cf-qa-testsuite/src/main/resources/TestApp.app.zip");
-        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), desiredCapabilities);
+        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/wd/hub/"), desiredCapabilities);
 
         return iosDriver;
     }
