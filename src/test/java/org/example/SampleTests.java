@@ -30,11 +30,11 @@ public class SampleTests {
 
         IOSDriver iosDriver = appiumServer.launchApp();
 
-        By.ByXPath asds = new By.ByXPath("//XCUIElementTypeTextField[@name=\"IntegerA\"]");
-
-        WebElement element = iosDriver.findElement(asds);
-        element.sendKeys("123");
-        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
+//        By.ByXPath asds = new By.ByXPath("//XCUIElementTypeTextField[@name=\"IntegerA\"]");
+//
+//        WebElement element = iosDriver.findElement(asds);
+//        element.sendKeys("123");
+//        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
 
         sleep(2000);
     }
