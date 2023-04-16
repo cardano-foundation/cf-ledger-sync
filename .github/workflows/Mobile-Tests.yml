@@ -18,8 +18,9 @@ jobs:
 
       - name: setup appium
         run: |
-          npm install -g appium@next
-          appium driver install xcuitest
+          npm install -g appium@v1.22
+          appium -v
+#          appium driver install xcuitest
           appium &>/dev/null &
 
       - name: run appium ios tests

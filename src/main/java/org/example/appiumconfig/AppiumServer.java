@@ -2,8 +2,11 @@ package org.example.appiumconfig;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
+import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -45,14 +48,22 @@ public class AppiumServer {
 //        AppiumServer appiumServer = new AppiumServer();
 //        AppiumDriverLocalService as = appiumServer.get();
 
-        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
-        xcuiTestOptions.setPlatformName("iOS")
-                .setAutomationName("xcuitest")
-                .setApp("/Users/jaspreetkaur/GitHub/cf-qa-testsuite/src/main/resources/TestApp.app.zip");
-        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), xcuiTestOptions);
-//        IOSDriver iosDriver = new IOSDriver(as, xcuiTestOptions);
+//        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
+//        xcuiTestOptions.setPlatformName("iOS")
+//                .setAutomationName("xcuitest")
+//                .setApp("/Users/jaspreetkaur/GitHub/cf-qa-testsuite/src/main/resources/TestApp.app.zip");
+//        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), xcuiTestOptions);
+////        IOSDriver iosDriver = new IOSDriver(as, xcuiTestOptions);
+//
+//        return iosDriver;
+//        AppiumDriver appiumDriver = new AppiumDriver();
+
+        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
+        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        desiredCapabilities.setCapability(MobileCapabilityType.APP, "/Users/jaspreetkaur/GitHub/cf-qa-testsuite/src/main/resources/TestApp.app.zip");
+        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), desiredCapabilities);
 
         return iosDriver;
-//        AppiumDriver appiumDriver = new AppiumDriver();
     }
 }
