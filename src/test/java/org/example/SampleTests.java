@@ -27,8 +27,8 @@ public class SampleTests {
 
     @Step("Take Screenshot")
     private void extracted() throws InterruptedException, MalformedURLException {
-        AppiumServer appiumServer = new AppiumServer();
-        IOSDriver iosDriver = appiumServer.launchApp();
+//        AppiumServer appiumServer = new AppiumServer();
+//        IOSDriver iosDriver = appiumServer.launchApp();
 
 //        By.ByXPath asds = new By.ByXPath("//XCUIElementTypeTextField[@name=\"IntegerA\"]");
 //
