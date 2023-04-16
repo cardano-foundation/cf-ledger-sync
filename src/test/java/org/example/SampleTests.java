@@ -34,7 +34,7 @@ public class SampleTests {
 //
 //        WebElement element = iosDriver.findElement(asds);
 //        element.sendKeys("123");
-//        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
+        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
 
         sleep(2000);
     }
