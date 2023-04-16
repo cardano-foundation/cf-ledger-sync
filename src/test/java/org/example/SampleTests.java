@@ -19,7 +19,6 @@ public class SampleTests {
 
     @Test
     public void setup() throws InterruptedException, MalformedURLException {
-
         extracted();
         System.out.printf("asdkalsdk");
     }
@@ -27,14 +26,15 @@ public class SampleTests {
 
     @Step("Take Screenshot")
     private void extracted() throws InterruptedException, MalformedURLException {
-//        AppiumServer appiumServer = new AppiumServer();
-//        IOSDriver iosDriver = appiumServer.launchApp();
+        AppiumServer appiumServer = new AppiumServer();
 
-//        By.ByXPath asds = new By.ByXPath("//XCUIElementTypeTextField[@name=\"IntegerA\"]");
-//
-//        WebElement element = iosDriver.findElement(asds);
-//        element.sendKeys("123");
-//        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
+        IOSDriver iosDriver = appiumServer.launchApp();
+
+        By.ByXPath asds = new By.ByXPath("//XCUIElementTypeTextField[@name=\"IntegerA\"]");
+
+        WebElement element = iosDriver.findElement(asds);
+        element.sendKeys("123");
+        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
 
         sleep(2000);
     }

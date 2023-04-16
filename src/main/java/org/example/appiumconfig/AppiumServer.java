@@ -18,12 +18,12 @@ public class AppiumServer {
     private AppiumDriverLocalService server;
     private int port;
 
-    public AppiumServer() {
-        this.port = getAvailablePort();
-        this.serviceBuilder.usingPort(port);
-        this.server = AppiumDriverLocalService.buildService(serviceBuilder);
-        this.server.start();
-    }
+//    public AppiumServer() {
+//        this.port = getAvailablePort();
+//        this.serviceBuilder.usingPort(port);
+//        this.server = AppiumDriverLocalService.buildService(serviceBuilder);
+//        this.server.start();
+//    }
 
     public AppiumDriverLocalService get(){
         return this.server;
@@ -44,6 +44,11 @@ public class AppiumServer {
     }
 
     public IOSDriver launchApp() throws InterruptedException, MalformedURLException {
+
+//        this.port = getAvailablePort();
+//        this.serviceBuilder.usingPort(port);
+//        this.server = AppiumDriverLocalService.buildService(serviceBuilder);
+//        this.server.start();
 
 //        AppiumServer appiumServer = new AppiumServer();
 //        AppiumDriverLocalService as = appiumServer.get();
