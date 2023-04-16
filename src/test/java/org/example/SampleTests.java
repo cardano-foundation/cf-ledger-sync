@@ -18,14 +18,14 @@ import static java.lang.Thread.sleep;
 public class SampleTests {
 
     @Test
-    public void setup() throws InterruptedException, MalformedURLException {
+    public static void main(String[] args) throws InterruptedException, MalformedURLException {
         extracted();
         System.out.printf("asdkalsdk");
     }
 
 
-    @Step("Take Screenshot")
-    private void extracted() throws InterruptedException, MalformedURLException {
+//    @Step("Take Screenshot")
+    private static void extracted() throws InterruptedException, MalformedURLException {
         AppiumServer appiumServer = new AppiumServer();
 
         IOSDriver iosDriver = appiumServer.launchApp();

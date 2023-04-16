@@ -18,11 +18,11 @@ jobs:
 
       - name: setup appium
         run: |
-          npm install appium@v1.22
+          npm install appium@next
           appium &>/dev/null &
 
       - name: run appium ios tests
-        run: gradle clean test
+        run: gradle clean build
 
       - name: Get Allure history
         uses: actions/checkout@v2

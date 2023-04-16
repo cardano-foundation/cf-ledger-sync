@@ -68,7 +68,7 @@ public class AppiumServer {
         desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         desiredCapabilities.setCapability(MobileCapabilityType.APP, System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
-        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/wd/hub"), desiredCapabilities);
+        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), desiredCapabilities);
 
         return iosDriver;
     }
