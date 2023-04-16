@@ -22,7 +22,7 @@ jobs:
           appium &>/dev/null &
 
       - name: run appium ios tests
-        run: gradle clean build
+        run: ./gradlew run
 
       - name: Get Allure history
         uses: actions/checkout@v2

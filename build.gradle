@@ -3,8 +3,17 @@ plugins {
     id'io.qameta.allure' version '2.11.2'
 }
 
-plugins {
 
+plugins {
+    id "application"
+}
+apply plugin : "java"
+ext {
+    javaMainClass = "org.example.appiumconfig.SampleTests"
+}
+
+application {
+    mainClassName = javaMainClass
 }
 
 group = 'org.example'
@@ -24,3 +33,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+
+
+

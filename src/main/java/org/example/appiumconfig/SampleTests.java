@@ -1,10 +1,7 @@
-package org.example;
+package org.example.appiumconfig;
 
 import io.appium.java_client.ios.IOSDriver;
-import io.qameta.allure.Allure;
-import io.qameta.allure.Step;
 import org.example.appiumconfig.AppiumServer;
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -17,7 +14,6 @@ import static java.lang.Thread.sleep;
 
 public class SampleTests {
 
-    @Test
     public static void main(String[] args) throws InterruptedException, MalformedURLException {
         extracted();
         System.out.printf("asdkalsdk");
@@ -34,7 +30,7 @@ public class SampleTests {
 //
 //        WebElement element = iosDriver.findElement(asds);
 //        element.sendKeys("123");
-        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
+//        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
 
         sleep(2000);
     }
