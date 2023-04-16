@@ -15,10 +15,10 @@ jobs:
 
       - name: pull the project in to the runner
         uses: actions/checkout@v3
-
+        
       - name: setup appium
         run: |
-          npm install -g appium@v1.22
+          npm install appium@v1.22
           appium -v
 #          appium driver install xcuitest
           appium &>/dev/null &
