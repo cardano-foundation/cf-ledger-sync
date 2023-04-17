@@ -28,8 +28,12 @@ jobs:
           appium driver install uiautomator2
           appium &>/dev/null &
 
-      - name: run appium ios tests
-        run: ./gradlew run
+      - name: run appium android tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+            api-level: 29
+            script: /gradlew run
+  
 
       - name: Get Allure history
         uses: actions/checkout@v2
