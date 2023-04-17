@@ -26,7 +26,7 @@ jobs:
         run: |
           npm i -g appium@next
           appium driver install uiautomator2
-          appium &>/dev/null &
+#          appium &>/dev/null &
 
       - name: run appium android tests
         uses: reactivecircus/android-emulator-runner@v2
