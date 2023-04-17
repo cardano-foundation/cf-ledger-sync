@@ -101,7 +101,7 @@ public class SampleTests {
         AndroidDriver androidDriver = new AndroidDriver(server.getUrl(), desiredCapabilities);
 //        androidDriver.findElement(By"Animation").click();
         WebElement ele = androidDriver.findElement(By.xpath("//android.widget.TextView[@content-desc=\"Animation\"]"));
-        System.out.println(ele.getAttribute("accessibility id").equalsIgnoreCase("Animation"));
+        System.out.println(ele.getAttribute("text").equalsIgnoreCase("Animation"));
         return androidDriver;
     }
 
