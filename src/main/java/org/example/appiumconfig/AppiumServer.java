@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
+import java.time.Duration;
 
 public class AppiumServer {
     private final AppiumServiceBuilder serviceBuilder = new AppiumServiceBuilder();
@@ -63,14 +64,20 @@ public class AppiumServer {
 //        return iosDriver;
 //        AppiumDriver appiumDriver = new AppiumDriver();
 
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
-        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
-        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
-        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
+        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
+        xcuiTestOptions.setPlatformName("iOS")
+                .setPlatformVersion("16.2")
+                .setAutomationName("XCUITest")
+                .setDeviceName("iPhone 14")
+                .setSimulatorStartupTimeout(Duration.ofMinutes(5));
+//        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+//        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
+//        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+//        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
+//        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        desiredCapabilities.setCapability(MobileCapabilityType.APP, System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
-        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), desiredCapabilities);
+        xcuiTestOptions.setApp(System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
+        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), xcuiTestOptions);
 
         return iosDriver;
     }
