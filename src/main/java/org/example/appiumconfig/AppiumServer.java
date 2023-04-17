@@ -45,7 +45,7 @@ public class AppiumServer {
         return port;
     }
 
-    public IOSDriver launchApp() throws MalformedURLException {
+    public IOSDriver launchApp() {
 
         serviceBuilder.usingPort(getAvailablePort());
         server = AppiumDriverLocalService.buildService(serviceBuilder);
@@ -55,7 +55,7 @@ public class AppiumServer {
         xcuiTestOptions.setPlatformName("iOS")
                 .setPlatformVersion("16.2")
                 .setAutomationName("XCUITest")
-                .setDeviceName("iPhone 14")
+                .setDeviceName("iPhone 12 Pro")
                 .setSimulatorStartupTimeout(Duration.ofMinutes(5));
 //                .setWdaStartupRetries(4)
 //                .setWdaStartupRetryInterval(Duration.ofSeconds(1));
