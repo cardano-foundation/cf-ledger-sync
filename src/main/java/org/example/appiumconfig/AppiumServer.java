@@ -66,6 +66,8 @@ public class AppiumServer {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
         desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
+        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         desiredCapabilities.setCapability(MobileCapabilityType.APP, System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
         IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), desiredCapabilities);
