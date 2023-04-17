@@ -1,4 +1,4 @@
-name: run Android tests in github runner
+name: Run Android tests in github runner
 
 on: push
 
