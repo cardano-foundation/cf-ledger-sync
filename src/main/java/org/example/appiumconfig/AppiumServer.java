@@ -2,6 +2,7 @@ package org.example.appiumconfig;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
+import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
@@ -64,20 +65,31 @@ public class AppiumServer {
 //        return iosDriver;
 //        AppiumDriver appiumDriver = new AppiumDriver();
 
-        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
-        xcuiTestOptions.setPlatformName("iOS")
-                .setPlatformVersion("16.2")
-                .setAutomationName("XCUITest")
-                .setDeviceName("iPhone 14")
-                .setSimulatorStartupTimeout(Duration.ofMinutes(5));
-//        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-//        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
-//        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
-//        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
-//        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
+//        IOSMobileCapabilityType.IOS_INSTALL_PAUSE
+//
+
+//        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
+//        xcuiTestOptions.setPlatformName("iOS")
+//                .setPlatformVersion("16.2")
+//                .setAutomationName("XCUITest")
+//                .setDeviceName("iPhone 14")
+//                .setSimulatorStartupTimeout(Duration.ofMinutes(5))
+//                .setWdaStartupRetries(4)
+//                .setWdaStartupRetryInterval(Duration.ofSeconds(1))
+
+        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
+        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
+        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
+        desiredCapabilities.setCapability("simulatorStartupTimeout", 240000);
+        desiredCapabilities.setCapability("wdaStartupRetries", 4);
+        desiredCapabilities.setCapability("wdaStartupRetryInterval", 20000);
+        desiredCapabilities.setCapability("iosInstallPause", 8000);
+
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        xcuiTestOptions.setApp(System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
-        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), xcuiTestOptions);
+        desiredCapabilities.setCapability("app", System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
+        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), desiredCapabilities);
 
         return iosDriver;
     }
