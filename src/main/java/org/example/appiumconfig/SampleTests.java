@@ -20,25 +20,10 @@ public class SampleTests {
 
 
 
-    public static void main(String[] args) throws InterruptedException, MalformedURLException {
-        extracted();
-        System.out.printf("asdkalsdk");
+    public static void main(String[] args) {
+        AndroidDriver androidDriver = launchAppAndroid();
     }
 
-
-//    @Step("Take Screenshot")
-    private static void extracted() throws InterruptedException {
-
-        AndroidDriver iosDriver = launchAppAndroid();
-
-        By.ByXPath asds = new By.ByXPath("//XCUIElementTypeTextField[@name=\"IntegerA\"]");
-
-        WebElement element = iosDriver.findElement(asds);
-        element.sendKeys("123");
-//        Allure.addAttachment("Any text", new ByteArrayInputStream(((TakesScreenshot) iosDriver).getScreenshotAs(OutputType.BYTES)));
-
-        sleep(2000);
-    }
 
     public static IOSDriver launchAppiOS() {
 
@@ -100,8 +85,8 @@ public class SampleTests {
         desiredCapabilities.setCapability("app", System.getProperty("user.dir") + "/src/main/resources/ApiDemos-debug.apk");
         AndroidDriver androidDriver = new AndroidDriver(server.getUrl(), desiredCapabilities);
 //        androidDriver.findElement(By"Animation").click();
-        WebElement ele = androidDriver.findElement(By.xpath("//android.widget.TextView[@content-desc=\"Animation\"]"));
-        System.out.println(ele.getAttribute("text").equalsIgnoreCase("Animation"));
+        WebElement ele = androidDriver.findElement(By.className("android.widget.TextView"));
+        System.out.println(ele.getAttribute("text"));
         return androidDriver;
     }
 
