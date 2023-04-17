@@ -45,51 +45,35 @@ public class AppiumServer {
         return port;
     }
 
-    public IOSDriver launchApp() throws InterruptedException, MalformedURLException {
+    public IOSDriver launchApp() throws MalformedURLException {
 
-//        this.port = getAvailablePort();
-//        this.serviceBuilder.usingPort(port);
-//        this.server = AppiumDriverLocalService.buildService(serviceBuilder);
-//        this.server.start();
+        serviceBuilder.usingPort(getAvailablePort());
+        server = AppiumDriverLocalService.buildService(serviceBuilder);
+        server.start();
 
-//        AppiumServer appiumServer = new AppiumServer();
-//        AppiumDriverLocalService as = appiumServer.get();
-
-//        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
-//        xcuiTestOptions.setPlatformName("iOS")
-//                .setAutomationName("xcuitest")
-//                .setApp("/Users/jaspreetkaur/GitHub/cf-qa-testsuite/src/main/resources/TestApp.app.zip");
-//        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723/"), xcuiTestOptions);
-////        IOSDriver iosDriver = new IOSDriver(as, xcuiTestOptions);
-//
-//        return iosDriver;
-//        AppiumDriver appiumDriver = new AppiumDriver();
-
-//        IOSMobileCapabilityType.IOS_INSTALL_PAUSE
-//
-
-//        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
-//        xcuiTestOptions.setPlatformName("iOS")
-//                .setPlatformVersion("16.2")
-//                .setAutomationName("XCUITest")
-//                .setDeviceName("iPhone 14")
-//                .setSimulatorStartupTimeout(Duration.ofMinutes(5))
+        XCUITestOptions xcuiTestOptions = new XCUITestOptions();
+        xcuiTestOptions.setPlatformName("iOS")
+                .setPlatformVersion("16.2")
+                .setAutomationName("XCUITest")
+                .setDeviceName("iPhone 14")
+                .setSimulatorStartupTimeout(Duration.ofMinutes(5));
 //                .setWdaStartupRetries(4)
-//                .setWdaStartupRetryInterval(Duration.ofSeconds(1))
+//                .setWdaStartupRetryInterval(Duration.ofSeconds(1));
 
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
-        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
-        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
-        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
-        desiredCapabilities.setCapability("simulatorStartupTimeout", 240000);
-        desiredCapabilities.setCapability("wdaStartupRetries", 4);
-        desiredCapabilities.setCapability("wdaStartupRetryInterval", 20000);
-        desiredCapabilities.setCapability("iosInstallPause", 8000);
+//        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+//        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS);
+//        desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+//        desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "16.2");
+//        desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 14");
+//        desiredCapabilities.setCapability("simulatorStartupTimeout", 240000);
+//        desiredCapabilities.setCapability("wdaStartupRetries", 4);
+//        desiredCapabilities.setCapability("wdaStartupRetryInterval", 20000);
+//        desiredCapabilities.setCapability("iosInstallPause", 8000);
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        desiredCapabilities.setCapability("app", System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
-        IOSDriver iosDriver = new IOSDriver(new URL("http://127.0.0.1:4723"), desiredCapabilities);
+        System.out.println("Working Directory = " + server.getUrl());
+        xcuiTestOptions.setApp(System.getProperty("user.dir") + "/src/main/resources/TestApp.app.zip");
+        IOSDriver iosDriver = new IOSDriver(server.getUrl(), xcuiTestOptions);
 
         return iosDriver;
     }
