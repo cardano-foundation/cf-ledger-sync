@@ -1,4 +1,4 @@
-name: run ios tests in github runner
+name: run Android tests in github runner
 
 on: push
 
@@ -32,8 +32,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
             api-level: 29
-            script: /gradlew run
-  
+            script: ./gradlew run
+
 
       - name: Get Allure history
         uses: actions/checkout@v2
