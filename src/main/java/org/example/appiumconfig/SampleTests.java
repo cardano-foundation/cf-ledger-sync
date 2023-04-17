@@ -99,7 +99,9 @@ public class SampleTests {
         System.out.println("Working Directory = " + server.getUrl());
         desiredCapabilities.setCapability("app", System.getProperty("user.dir") + "/src/main/resources/ApiDemos-debug.apk");
         AndroidDriver androidDriver = new AndroidDriver(server.getUrl(), desiredCapabilities);
-
+//        androidDriver.findElement(By"Animation").click();
+        WebElement ele = androidDriver.findElement(By.xpath("//android.widget.TextView[@content-desc=\"Animation\"]"));
+        System.out.println(ele.getAttribute("accessibility id").equalsIgnoreCase("Animation"));
         return androidDriver;
     }
 
