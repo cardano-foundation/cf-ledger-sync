@@ -15,7 +15,7 @@ if (!name.equalsIgnoreCase("components")) {
                     classifier = 'javadoc'
                 }
 
-                artifactId 'yaci-store-' + project.name
+                artifactId 'ledger-sync-' + project.name
 
                 pom {
                     url = 'https://github.com/cardanofoundation/cf-ledger-sync'
