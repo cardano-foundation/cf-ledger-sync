@@ -1,0 +1,43 @@
+plugins {
+    id 'org.springframework.boot' version '3.0.5'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.data:spring-data-redis'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'redis.clients:jedis'
+    implementation 'io.lettuce:lettuce-core'
+
+    implementation project(':components:common')
+    implementation project(':components:consumer-common')
+
+    implementation(libs.yaci.store.starter)
+    implementation(libs.cardano.client.lib)
+
+    implementation(libs.snakeyaml)
+    implementation(libs.guava)
+    implementation(libs.log4j.core)
+    implementation(libs.log4j.api)
+    implementation(libs.map.struct)
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    annotationProcessor(libs.lombok.mapstruct.binding)
+    annotationProcessor(libs.mapstruct.processor)
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation('org.hsqldb:hsqldb')
+    testImplementation(libs.pitest)
+}
+
+compileJava {
+    options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring']
+}

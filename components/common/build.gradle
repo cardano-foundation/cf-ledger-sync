@@ -1,0 +1,22 @@
+dependencies {
+    implementation(libs.lombok)
+    implementation(libs.cbor)
+    implementation(libs.bouncycastle.bcprov)
+    implementation(libs.cardano.client.lib)
+    implementation(libs.common.codec)
+    implementation(libs.gson)
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Ledger Sync Common'
+                description = 'Ledger Sync Common Module'
+            }
+        }
+    }
+}
