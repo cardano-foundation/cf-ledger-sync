@@ -74,7 +74,6 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleByronBlockEvent(ByronMainBlockEvent byronMainBlockEvent) {
-        System.out.println("BlockEventListener.handleByronBlockEvent");
         AggregatedBlock aggregatedBlock = byronMainAggregatorService.aggregateBlock(byronMainBlockEvent);
         handleAggregateBlock(byronMainBlockEvent.getEventMetadata(), aggregatedBlock);
     }
@@ -82,7 +81,6 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleByronEbBlock(ByronEbBlockEvent byronEbBlockEvent) {
-        System.out.println("BlockEventListener.handleByronEbBlock");
         AggregatedBlock aggregatedBlock = byronEbbAggregatorService.aggregateBlock(byronEbBlockEvent);
         handleAggregateBlock(byronEbBlockEvent.getEventMetadata(), aggregatedBlock);
     }
@@ -90,7 +88,7 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleGenesisBlock(GenesisBlockEvent genesisBlockEvent) {
-        System.out.println("BlockEventListener.handleGenesisBlock");
+        log.info("BlockEventListener.handleGenesisBlock");
         AggregatedBlock aggregatedBlock = AggregatedBlock.builder()
                 .hash(genesisBlockEvent.getBlockHash())
                 .blockNo(0L)
