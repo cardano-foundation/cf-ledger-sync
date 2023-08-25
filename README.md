@@ -22,5 +22,5 @@ spring.datasource.password=
 2. Run
 
 ```bash
-java -jar ledger-sync-app/build/libs/ledger-sync-ledger-sync-app-<version>-SNAPSHOT.jar
+java -jar application/build/libs/ledger-sync-application-<version>-SNAPSHOT.jar
 ```

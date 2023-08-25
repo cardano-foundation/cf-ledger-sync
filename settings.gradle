@@ -10,5 +10,5 @@ rootProject.name = 'ledger-sync'
 include 'components:common'
 include 'components:consumer-common'
 
-include 'ledger-sync-app'
+include 'application'
 
