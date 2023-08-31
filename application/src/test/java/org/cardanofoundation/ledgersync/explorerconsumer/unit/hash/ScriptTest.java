@@ -1,34 +1,19 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.unit.hash;
 
-import java.nio.ByteBuffer;
-
-import org.cardanofoundation.explorer.consumercommon.entity.Script;
-import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.explorer.consumercommon.enumeration.ScriptType;
-import org.cardanofoundation.ledgersync.common.common.nativescript.NativeScript;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
 import co.nstant.in.cbor.model.ByteString;
-import com.bloxbean.cardano.client.crypto.Blake2bUtil;
 import com.bloxbean.cardano.client.exception.CborDeserializationException;
 import com.bloxbean.cardano.client.exception.CborSerializationException;
-import com.bloxbean.cardano.client.transaction.spec.PlutusV1Script;
+import com.bloxbean.cardano.client.plutus.spec.PlutusV1Script;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.factory.NativeScriptFactory;
 import org.cardanofoundation.ledgersync.explorerconsumer.factory.PlutusScriptFactory;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.ScriptRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.ScriptService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.ScriptServiceImpl;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import java.nio.ByteBuffer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

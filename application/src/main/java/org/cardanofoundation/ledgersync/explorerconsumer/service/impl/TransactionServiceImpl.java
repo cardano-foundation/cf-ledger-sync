@@ -131,7 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
         aggregatedDataCachingService.addTxCount(txMap.size());
 
         scriptService.handleScripts(aggregatedTxList, txMap);
-        Map<String, Datum> datumMap = datumService.handleDatum(aggregatedTxList, txMap); //TODO yaci
+        Map<String, Datum> datumMap = datumService.handleDatum(aggregatedTxList, txMap); //TODO refactor
         handleTxs(successTxs, failedTxs, txMap, datumMap);
     }
 

@@ -57,7 +57,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                 .entrySet()
                 .stream()
                 .map(entrySet -> {
-                    ProtocolParamUpdate protocolParamUpdate = entrySet.getValue(); //TODO yaci
+                    ProtocolParamUpdate protocolParamUpdate = entrySet.getValue(); //TODO refactor
                     if (Objects.isNull(protocolParamUpdate)) {
                         return null;
                     }
@@ -68,7 +68,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                     var maxTxSize = toBigInteger(protocolParamUpdate.getMaxTxSize());
                     var maxBhSize = toBigInteger(protocolParamUpdate.getMaxBlockHeaderSize());
                     var keyDeposit = protocolParamUpdate.getKeyDeposit();
-                    var optimalPoolCount = toBigInteger(protocolParamUpdate.getNOpt());//toBigInteger(protocolParamUpdate.getOptimalPoolCount()); //TODO yaci
+                    var optimalPoolCount = toBigInteger(protocolParamUpdate.getNOpt());//toBigInteger(protocolParamUpdate.getOptimalPoolCount()); //TODO refactor
                     var influence = toDouble(protocolParamUpdate.getPoolPledgeInfluence());
                     var monetaryExpandRate = toDouble(protocolParamUpdate.getExpansionRate());
                     var poolDeposit = protocolParamUpdate.getPoolDeposit();
@@ -76,10 +76,10 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                     var treasuryGrowthRate = toDouble(protocolParamUpdate.getTreasuryGrowthRate());
                     var decentralisation = toDouble(protocolParamUpdate.getDecentralisationParam());
 
-//          var cborEntropy = protocolParamUpdate.getExtraEntropy(); //TODO yaci
+//          var cborEntropy = protocolParamUpdate.getExtraEntropy(); //TODO refactor
                     String entropy = protocolParamUpdate.getExtraEntropy();
 
-//          if (!CollectionUtils.isEmpty(cborEntropy) &&            //TODO yaci
+//          if (!CollectionUtils.isEmpty(cborEntropy) &&            //TODO refactor
 //              (int) cborEntropy.get(0) == BigInteger.ONE.intValue()) {
 //            entropy = cborEntropy.get(BigInteger.ONE.intValue()).toString();
 //          }

@@ -75,7 +75,7 @@ public class DatumServiceImpl implements DatumService {
                 datumHashes.addAll(txWitnesses
                         .getDatums()
                         .stream()
-                        .map(datum -> toDatumHash(datum))  //TODO yaci
+                        .map(datum -> toDatumHash(datum))  //TODO refactor
                         .collect(Collectors.toSet()));
             }
 

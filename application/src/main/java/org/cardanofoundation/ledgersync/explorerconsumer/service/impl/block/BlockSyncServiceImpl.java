@@ -105,7 +105,7 @@ public class BlockSyncServiceImpl implements BlockSyncService {
 
         if (Boolean.FALSE.equals(aggregatedBlock.getIsGenesis())) {
 
-            Optional.ofNullable(blockMap.get(aggregatedBlock.getPrevBlockHash())) //TODO yaci
+            Optional.ofNullable(blockMap.get(aggregatedBlock.getPrevBlockHash())) //TODO refactor
                     .or(() -> blockRepository.findBlockByHash(aggregatedBlock.getPrevBlockHash()))
                     .ifPresentOrElse(block::setPrevious, () -> {
                         if (aggregatedBlock.getBlockNo().equals(BigInteger.ZERO.longValue()) &&

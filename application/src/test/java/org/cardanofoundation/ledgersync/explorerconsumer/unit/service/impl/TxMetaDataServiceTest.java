@@ -1,30 +1,31 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.unit.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.test.util.ReflectionTestUtils;
-
+import com.bloxbean.cardano.client.metadata.cbor.CBORMetadataMap;
+import com.bloxbean.cardano.yaci.core.model.AuxData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
 import org.cardanofoundation.explorer.consumercommon.entity.TxMetadataHash;
-import org.cardanofoundation.ledgersync.common.common.AuxData;
+import org.cardanofoundation.ledgersync.common.util.CborSerializationUtil;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxMetadataRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.TxMetaDataServiceImpl;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TxMetaDataServiceTest {
@@ -72,9 +73,10 @@ class TxMetaDataServiceTest {
     txMap.put(validTx.getHash(), validTx);
 
     Map<Integer, AuxData> auxiliaryDataMap = new HashMap();
-    Map<BigDecimal, String> cborMap = new HashMap<>();
-    cborMap.put(BigDecimal.ONE, "56ef9d2933811580c7beb451bcf69d305153644d9ba149dee95e455536ee8b8f");
-    AuxData auxData = new AuxData(cborMap,
+    CBORMetadataMap cborMap = new CBORMetadataMap();
+    cborMap.put(BigInteger.ONE, "56ef9d2933811580c7beb451bcf69d305153644d9ba149dee95e455536ee8b8f");
+    String cbor = HexUtil.encodeHexString(CborSerializationUtil.serialize(cborMap.getMap()));
+    AuxData auxData = new AuxData(cbor,
         """
             {"1":{"cardano": "First Metadata from cardanocli-js"}}
             """, null, null, null);

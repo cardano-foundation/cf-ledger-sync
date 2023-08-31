@@ -90,7 +90,7 @@ public class TxMetaDataServiceImpl implements TxMetaDataService {
                             .tx(tx)
                             .json(metadataJson)
                             .key(entry.getKey().toBigInteger())
-                            .bytes(valueBytes) //TODO yaci
+                            .bytes(valueBytes) //TODO refactor
                             .build();
                 }).distinct().collect(Collectors.toList());
             } catch (Exception ex) {

@@ -2,9 +2,9 @@ package org.cardanofoundation.ledgersync.explorerconsumer.unit.service.impl.cert
 
 import java.util.Collections;
 
+import com.bloxbean.cardano.yaci.core.model.certs.GenesisKeyDelegation;
 import org.cardanofoundation.explorer.consumercommon.entity.Redeemer;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.common.common.certs.GenesisKeyDelegation;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.certificate.GenesisKeyDelegationServiceImpl;
 import org.mockito.Mockito;

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -44,7 +45,6 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxOutReposit
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.RedisAggregatedDataCachingServiceImpl;
 import org.mockito.Mockito;
-import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

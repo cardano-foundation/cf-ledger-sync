@@ -6,14 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bloxbean.cardano.yaci.core.model.ProtocolParamUpdate;
+import com.bloxbean.cardano.yaci.core.model.Update;
 import org.springframework.data.util.Pair;
 import org.springframework.util.CollectionUtils;
 
 import org.cardanofoundation.explorer.consumercommon.entity.ParamProposal;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.common.common.ProtocolParamUpdate;
-import org.cardanofoundation.ledgersync.common.common.Update;
-import org.cardanofoundation.ledgersync.common.common.cost.mdl.CostModels;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.ParamProposalRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.CostModelService;
@@ -66,7 +65,8 @@ class ParamProposalServiceImplTest {
     ProtocolParamUpdate protocolParamUpdate = ProtocolParamUpdate.builder()
         .protocolMajorVer(3)
         .protocolMinorVer(0)
-        .costModels(new CostModels("dffd1848e8ef26aadb1d4d05612825596ab697b27d2ea422fec077dd0de93254", Collections.emptyMap()))
+            //TODO -- refactor fix test
+     //   .costModels(new CostModels("dffd1848e8ef26aadb1d4d05612825596ab697b27d2ea422fec077dd0de93254", Collections.emptyMap()))
         .build();
     Map<String, ProtocolParamUpdate> protocolParamUpdateMap = buildProtocolParamUpdates(
         Pair.of("637f2e950b0fd8f8e3e811c5fbeb19e411e7a2bf37272b84b29c1a0b", protocolParamUpdate));

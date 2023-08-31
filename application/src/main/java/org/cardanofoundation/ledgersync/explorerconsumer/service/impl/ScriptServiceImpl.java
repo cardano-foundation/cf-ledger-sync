@@ -252,7 +252,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     public Map<String, Script> getScriptsByHashes(Set<String> hashes) {
-        if (CollectionUtils.isEmpty(hashes)) { //TODO yaci
+        if (CollectionUtils.isEmpty(hashes)) { //TODO refactor
             return Collections.emptyMap();
         }
         return scriptRepository.getScriptByHashes(hashes)

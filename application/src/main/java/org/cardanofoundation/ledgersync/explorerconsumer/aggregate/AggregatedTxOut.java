@@ -43,7 +43,7 @@ public class AggregatedTxOut {
         BigInteger nativeAmount = calculateOutSum(List.of(transactionOutput));
         Datum inlineDatum = null;
         if (transactionOutput.getInlineDatum() != null) {
-            inlineDatum = new Datum(transactionOutput.getInlineDatum(), ""); //TODO yaci convert to json
+            inlineDatum = new Datum(transactionOutput.getInlineDatum(), ""); //TODO refactor convert to json
         }
 
         return AggregatedTxOut.builder()
@@ -51,7 +51,7 @@ public class AggregatedTxOut {
                 .nativeAmount(nativeAmount)
                 .amounts(transactionOutput.getAmounts())
                 .datumHash(transactionOutput.getDatumHash())
-                .inlineDatum(inlineDatum) //TODO yaci convert to json
+                .inlineDatum(inlineDatum) //TODO refactor convert to json
                 .scriptRef(transactionOutput.getScriptRef())
                 .build();
 

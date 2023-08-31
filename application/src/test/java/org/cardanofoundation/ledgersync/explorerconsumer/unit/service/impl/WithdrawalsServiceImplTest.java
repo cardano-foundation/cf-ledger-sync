@@ -1,18 +1,6 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.unit.service.impl;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.springframework.data.util.Pair;
-
-import com.bloxbean.cardano.client.transaction.spec.RedeemerTag;
+import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
 import org.cardanofoundation.explorer.consumercommon.entity.Redeemer;
 import org.cardanofoundation.explorer.consumercommon.entity.StakeAddress;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
@@ -20,15 +8,21 @@ import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.WithdrawalRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.WithdrawalsServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.util.TestStringUtils;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.util.Pair;
+
+import java.math.BigInteger;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @ExtendWith(MockitoExtension.class)
 class WithdrawalsServiceImplTest {

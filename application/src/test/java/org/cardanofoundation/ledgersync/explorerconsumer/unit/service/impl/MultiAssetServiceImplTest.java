@@ -1,27 +1,7 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.unit.service.impl;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.data.util.Pair;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import org.cardanofoundation.explorer.consumercommon.entity.Block;
-import org.cardanofoundation.explorer.consumercommon.entity.MaTxMint;
-import org.cardanofoundation.explorer.consumercommon.entity.MaTxOut;
-import org.cardanofoundation.explorer.consumercommon.entity.MultiAsset;
-import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.explorer.consumercommon.entity.TxOut;
-import org.cardanofoundation.ledgersync.common.common.Amount;
-import org.cardanofoundation.ledgersync.common.util.HexUtil;
+import com.bloxbean.cardano.yaci.core.model.Amount;
+import org.cardanofoundation.explorer.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTxOut;
 import org.cardanofoundation.ledgersync.explorerconsumer.projection.MaTxMintProjection;
@@ -34,17 +14,23 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.MultiAssetTx
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.MultiAssetServiceImpl;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.util.Pair;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.math.BigInteger;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 class MultiAssetServiceImplTest {
@@ -110,7 +96,7 @@ class MultiAssetServiceImplTest {
     txMap.values().forEach(tx -> Mockito.when(tx.getBlock()).thenReturn(block));
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
     Mockito.when(amount.getAssetName())
-        .thenReturn(Base64.getDecoder().decode("U1VNTUlUQVdBUkRTRGVmaQ=="));
+        .thenReturn("SUMMITAWARDSDefi");
     Mockito.when(amount.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(aggregatedTx.getHash())
         .thenReturn("a86d5246c1e5ce7d66446d0a68355abe6622545d8ffe7dd832a062f6cde010bd");
@@ -155,10 +141,10 @@ class MultiAssetServiceImplTest {
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Amount amount = Mockito.mock(Amount.class);
     String policyId = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb337999";
-    byte[] assetName = Base64.getDecoder().decode("U1VNTUlUQVdBUkRTRGVmaQ==");
+    String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
     MultiAsset existingAsset = MultiAsset.builder()
-        .name(HexUtil.encodeHexString(assetName))
+        .name(assetName)
         .fingerprint(assetFingerprint)
         .policy(policyId)
         .supply(BigInteger.ONE)
@@ -224,7 +210,7 @@ class MultiAssetServiceImplTest {
     Amount amount = Mockito.mock(Amount.class);
     TxOut txOut = Mockito.mock(TxOut.class);
     String policyId = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb337999";
-    byte[] assetName = Base64.getDecoder().decode("U1VNTUlUQVdBUkRTRGVmaQ==");
+    String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
 
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);

@@ -3,9 +3,9 @@ package org.cardanofoundation.ledgersync.explorerconsumer.unit.service.impl.cert
 import java.util.Collections;
 import java.util.Optional;
 
+import com.bloxbean.cardano.yaci.core.model.certs.PoolRetirement;
 import org.cardanofoundation.explorer.consumercommon.entity.PoolHash;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.common.common.certs.PoolRetirement;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BatchCertificateDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.certificate.PoolRetirementServiceImpl;

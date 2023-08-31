@@ -2,11 +2,11 @@ package org.cardanofoundation.ledgersync.explorerconsumer.unit.service.impl.cert
 
 import java.util.Map;
 
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredential;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeRegistration;
 import org.cardanofoundation.explorer.consumercommon.entity.StakeAddress;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredential;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredentialType;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeRegistration;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BatchCertificateDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.certificate.StakeRegistrationServiceImpl;
@@ -40,9 +40,10 @@ class StakeRegistrationServiceImplTest {
     AggregatedBlock aggregatedBlock = Mockito.mock(AggregatedBlock.class);
     String stakeKeyHash = "c568341dc347876c1c79e07de3e76265560bca4bb9e6af9f36e40923";
     StakeCredential credential = new StakeCredential(
-        StakeCredentialType.ADDR_KEYHASH, stakeKeyHash);
-    StakeRegistration stakeRegistration = new StakeRegistration();
-    stakeRegistration.setStakeCredential(credential);
+        StakeCredType.ADDR_KEYHASH, stakeKeyHash);
+    StakeRegistration stakeRegistration = StakeRegistration.builder()
+            .stakeCredential(credential)
+            .build();
     Map<String, StakeAddress> stakeAddressMap = Map.of(
         "e0" + stakeKeyHash, Mockito.mock(StakeAddress.class)
     );

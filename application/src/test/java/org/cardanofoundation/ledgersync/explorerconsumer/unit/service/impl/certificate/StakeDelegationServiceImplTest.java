@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredential;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeDelegation;
+import com.bloxbean.cardano.yaci.core.model.certs.StakePoolId;
 import org.cardanofoundation.explorer.consumercommon.entity.PoolHash;
 import org.cardanofoundation.explorer.consumercommon.entity.StakeAddress;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredential;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredentialType;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeDelegation;
-import org.cardanofoundation.ledgersync.common.common.certs.StakePoolId;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BatchCertificateDataService;
@@ -44,13 +44,17 @@ class StakeDelegationServiceImplTest {
     Tx tx = Mockito.mock(Tx.class);
     AggregatedBlock aggregatedBlock = Mockito.mock(AggregatedBlock.class);
     String stakeKeyHash = "968d1021ebd7178e1fb0e79676982825cabc779b653e1234d58ce3c6";
-    StakeCredential credential = new StakeCredential(
-        StakeCredentialType.ADDR_KEYHASH, stakeKeyHash);
+    StakeCredential credential = StakeCredential.builder()
+            .type(StakeCredType.ADDR_KEYHASH)
+            .hash(stakeKeyHash)
+            .build();
+
     StakePoolId stakePoolId = new StakePoolId(
         HexUtil.decodeHexString("a57cbcb8ecdf24f469928da924b5bc6e4cbc3b57859577211a0daf6f"));
-    StakeDelegation stakeDelegation = new StakeDelegation();
-    stakeDelegation.setStakeCredential(credential);
-    stakeDelegation.setStakePoolId(stakePoolId);
+      StakeDelegation stakeDelegation = StakeDelegation.builder()
+              .stakeCredential(credential)
+              .stakePoolId(stakePoolId)
+              .build();
     Map<String, StakeAddress> stakeAddressMap = Map.of(
         "e0" + stakeKeyHash, Mockito.mock(StakeAddress.class)
     );
@@ -77,9 +81,10 @@ class StakeDelegationServiceImplTest {
     AggregatedBlock aggregatedBlock = Mockito.mock(AggregatedBlock.class);
     String stakeKeyHash = "968d1021ebd7178e1fb0e79676982825cabc779b653e1234d58ce3c6";
     StakeCredential credential = new StakeCredential(
-        StakeCredentialType.ADDR_KEYHASH, stakeKeyHash);
-    StakeDelegation stakeDelegation = new StakeDelegation();
-    stakeDelegation.setStakeCredential(credential);
+        StakeCredType.ADDR_KEYHASH, stakeKeyHash);
+    StakeDelegation stakeDelegation = StakeDelegation.builder()
+                    .stakeCredential(credential)
+                            .build();
     Map<String, StakeAddress> stakeAddressMap = Collections.emptyMap();
 
     Mockito.when(aggregatedBlock.getNetwork()).thenReturn(1);
@@ -96,12 +101,14 @@ class StakeDelegationServiceImplTest {
     AggregatedBlock aggregatedBlock = Mockito.mock(AggregatedBlock.class);
     String stakeKeyHash = "968d1021ebd7178e1fb0e79676982825cabc779b653e1234d58ce3c6";
     StakeCredential credential = new StakeCredential(
-        StakeCredentialType.ADDR_KEYHASH, stakeKeyHash);
+        StakeCredType.ADDR_KEYHASH, stakeKeyHash);
     StakePoolId stakePoolId = new StakePoolId(
         HexUtil.decodeHexString("a57cbcb8ecdf24f469928da924b5bc6e4cbc3b57859577211a0daf6f"));
-    StakeDelegation stakeDelegation = new StakeDelegation();
-    stakeDelegation.setStakeCredential(credential);
-    stakeDelegation.setStakePoolId(stakePoolId);
+      StakeDelegation stakeDelegation = StakeDelegation.builder()
+              .stakeCredential(credential)
+              .stakePoolId(stakePoolId)
+              .build();
+
     Map<String, StakeAddress> stakeAddressMap = Map.of(
         "e0" + stakeKeyHash, Mockito.mock(StakeAddress.class)
     );

@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.bloxbean.cardano.yaci.core.model.certs.MoveInstataneous;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredential;
 import org.cardanofoundation.explorer.consumercommon.entity.Reserve;
 import org.cardanofoundation.explorer.consumercommon.entity.StakeAddress;
 import org.cardanofoundation.explorer.consumercommon.entity.Treasury;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.common.common.certs.MoveInstataneous;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredential;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredentialType;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BatchCertificateDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.certificate.MoveInstantaneousServiceImpl;
@@ -128,6 +128,6 @@ class MoveInstantaneousServiceImplTest {
   }
 
   private StakeCredential buildKeyHashStakeCredential(String hash) {
-    return new StakeCredential(StakeCredentialType.ADDR_KEYHASH, hash);
+    return new StakeCredential(StakeCredType.ADDR_KEYHASH, hash);
   }
 }
