@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.common.common.Era;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
-import org.cardanofoundation.ledgersync.explorerconsumer.factory.BlockAggregatorServiceFactory;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.BlockRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockSyncService;
@@ -15,7 +14,6 @@ import org.cardanofoundation.ledgersync.explorerconsumer.service.RollbackService
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.BlockAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.ByronEbbAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.ByronMainAggregatorServiceImpl;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +30,6 @@ public class BlockEventListener {
     private final ByronEbbAggregatorServiceImpl byronEbbAggregatorService;
     private final ByronMainAggregatorServiceImpl byronMainAggregatorService;
 
-    private final BlockAggregatorServiceFactory aggregatorServiceFactory;
     private final BlockSyncService blockSyncService;
     private final BlockDataService blockDataService;
     private final RollbackService rollbackService;
@@ -41,19 +38,9 @@ public class BlockEventListener {
     private final MetricCollectorService metricCollectorService;
 
     private final AtomicInteger blockCount = new AtomicInteger(0);
-    private final AtomicLong lastMessageReceivedTime = new AtomicLong(System.currentTimeMillis());
     private AtomicLong blockHeight;
 
-    //@Value("${blocks.batch-size}")
-    private Integer batchSize = 1;
-
-    //@Value("${blocks.commitThreshold}")
-    private Long commitThreshold = 1L;
-
     private long lastLog;
-
-    @Value("${store.cardano.protocol-magic}")
-    private int protocolMagic;
 
     @PostConstruct
     private void initBlockHeight() {
@@ -66,14 +53,17 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleBlockEvent(BlockEvent blockEvent) {
+        if (checkIfBlockExists(blockEvent.getMetadata())) return;
+
         AggregatedBlock aggregatedBlock = blockAggregatorService.aggregateBlock(blockEvent);
         handleAggregateBlock(blockEvent.getMetadata(), aggregatedBlock);
     }
 
-
     @EventListener
     @Transactional
     public void handleByronBlockEvent(ByronMainBlockEvent byronMainBlockEvent) {
+        if (checkIfBlockExists(byronMainBlockEvent.getEventMetadata())) return;
+
         AggregatedBlock aggregatedBlock = byronMainAggregatorService.aggregateBlock(byronMainBlockEvent);
         handleAggregateBlock(byronMainBlockEvent.getEventMetadata(), aggregatedBlock);
     }
@@ -81,6 +71,8 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleByronEbBlock(ByronEbBlockEvent byronEbBlockEvent) {
+        if (checkIfBlockExists(byronEbBlockEvent.getEventMetadata())) return;
+
         AggregatedBlock aggregatedBlock = byronEbbAggregatorService.aggregateBlock(byronEbBlockEvent);
         handleAggregateBlock(byronEbBlockEvent.getEventMetadata(), aggregatedBlock);
     }
@@ -109,20 +101,7 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleRollback(RollbackEvent rollbackEvent) {
-
-//            if (Boolean.TRUE.equals(blockRepository.existsBlockByHash(rollbackEvent.getRollbackTo().getHash()))) {
-//                //Skip this block as It can be safe block that crawler use to fetch when get rollback message
-////                log.warn("Skip rollback block no {}, hash {}", eraBlock.getBlockNumber(),
-////                        eraBlock.getBlockHash());
-////                if (Objects.nonNull(acknowledgment)) {
-////                    acknowledgment.acknowledge();
-////                }
-//                return;
-//            } else {// The real block that need to rollback
-////                if (rollbackEvent.getRollbackTo().getHash() == null)
-//                    return;
-
-        Long rollbackBlockNo = blockRepository.findBySlotNo(rollbackEvent.getRollbackTo().getSlot()) //TODO -- change in yaci store for + 1
+        Long rollbackBlockNo = blockRepository.findBySlotNo(rollbackEvent.getRollbackTo().getSlot())
                 .map(block -> block.getBlockNo())
                 .orElse(0L);
 
@@ -136,48 +115,33 @@ public class BlockEventListener {
         rollbackService.rollBackFrom(rollbackBlockNo);
         metricCollectorService.collectRollbackMetric();
         blockCount.set(0);
-//            }
+    }
 
-//        if (eventMetadata.getBlock() != 0) {// skip block height with ebb or genesis block
-//            blockHeight.set(eventMetadata.getBlock());
-//        }
-//
-//        //AggregatedBlock aggregatedBlock = aggregatorServiceFactory.aggregateBlock(eraBlock);
-//        blockDataService.saveAggregatedBlock(aggregatedBlock);
-//
-//        int currentBlockCount = blockCount.incrementAndGet();
-//        if ((currentBlockCount % batchSize == 0) ||
-//                (lastReceivedTimeElapsed >= commitThreshold)) {
-//            blockSyncService.startBlockSyncing();
-////                if (Objects.nonNull(acknowledgment)) {
-////                    acknowledgment.acknowledge();
-////                }
-//            blockCount.set(0);
-//        }
-
+    private boolean checkIfBlockExists(EventMetadata metadata) {
+        var optional = blockRepository.findBlockByHash(metadata.getBlockHash());
+        if (optional.isPresent()) {
+            log.info("Block already exists. Skipping block no {}, hash {}", metadata.getEpochSlot(),
+                    metadata.getBlockHash());
+            return true;
+        }
+        return false;
     }
 
     private void handleAggregateBlock(EventMetadata eventMetadata, AggregatedBlock aggregatedBlock) {
         try {
             long currentTime = System.currentTimeMillis();
-            long lastReceivedTimeElapsed = currentTime - lastMessageReceivedTime.getAndSet(currentTime);
-            //  var eraBlock = consumerRecord.value();
             if (currentTime - lastLog >= 500) {//reduce log
                 log.info("Block  number {}, slot_no {}, hash {}",
                         eventMetadata.getBlock(), eventMetadata.getSlot(), eventMetadata.getBlockHash());
                 lastLog = currentTime;
             }
 
-//            if (!eraBlock.isRollback()) {
             if (eventMetadata.getBlock() == 0) {//EBB or genesis block
                 boolean isExists = blockRepository.existsBlockByHash(eventMetadata.getBlockHash());
                 if (isExists) {
                     log.warn("Skip existed block : number {}, slot_no {}, hash {}",
                             eventMetadata.getBlock(),
                             eventMetadata.getSlot(), eventMetadata.getBlockHash());
-//                        if (Objects.nonNull(acknowledgment)) {
-//                            acknowledgment.acknowledge();
-//                        }
                     return;
                 }
             } else if (eventMetadata.getBlock() <= blockHeight.get()) {
@@ -189,7 +153,6 @@ public class BlockEventListener {
 ////                    }
 //                    return;
             }
-//            }
 
             if (Boolean.TRUE.equals(blockRepository.existsBlockByHash(aggregatedBlock.getHash()))) {
                 log.warn("Skip existed block : number {}, slot_no {}, hash {}",
@@ -198,45 +161,19 @@ public class BlockEventListener {
                 return;
             }
 
-//            if (eraBlock.isRollback()) {
-//                if (Boolean.TRUE.equals(blockRepository.existsBlockByHash(eraBlock.getBlockHash()))) {
-//                    //Skip this block as It can be safe block that crawler use to fetch when get rollback message
-//                    log.warn("Skip rollback block no {}, hash {}", eraBlock.getBlockNumber(),
-//                            eraBlock.getBlockHash());
-//                    if (Objects.nonNull(acknowledgment)) {
-//                        acknowledgment.acknowledge();
-//                    }
-//                    return;
-//                } else {// The real block that need to rollback
-//                    blockSyncService.startBlockSyncing();
-//                    rollbackService.rollBackFrom(eraBlock.getBlockNumber());
-//                    metricCollectorService.collectRollbackMetric();
-//                    blockCount.set(0);
-//                }
-//            }
-
             if (eventMetadata.getBlock() != 0) {// skip block height with ebb or genesis block
                 blockHeight.set(eventMetadata.getBlock());
             }
 
             //AggregatedBlock aggregatedBlock = aggregatorServiceFactory.aggregateBlock(eraBlock);
             blockDataService.saveAggregatedBlock(aggregatedBlock);
-
-//            int currentBlockCount = blockCount.incrementAndGet();
-//            if ((currentBlockCount % batchSize == 0) ||
-//                    (lastReceivedTimeElapsed >= commitThreshold)) {
             blockSyncService.startBlockSyncing();
-//                if (Objects.nonNull(acknowledgment)) {
-//                    acknowledgment.acknowledge();
-//                }
             blockCount.set(0);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
             System.exit(1);
         }
     }
-
 
 }

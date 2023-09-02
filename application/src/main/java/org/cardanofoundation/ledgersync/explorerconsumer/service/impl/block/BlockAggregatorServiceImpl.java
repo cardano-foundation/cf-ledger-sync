@@ -305,7 +305,7 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
         }
 
         var outSum = BigInteger.ZERO;
-        if (validContract) {
+        if (validContract) { //TODO -- verify how validContract is set
             outSum = AggregatedTxOut.calculateOutSum(transactionBody.getOutputs());
         } else if (Objects.nonNull(transactionBody.getCollateralReturn())) {
             outSum = AggregatedTxOut.calculateOutSum(List.of(transactionBody.getCollateralReturn()));
