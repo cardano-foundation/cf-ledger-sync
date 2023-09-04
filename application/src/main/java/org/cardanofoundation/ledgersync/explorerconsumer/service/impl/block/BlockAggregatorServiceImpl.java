@@ -94,9 +94,9 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
                 HexUtil.decodeHexString(headerBody.getVrfVkey()), ConsumerConstant.VRF_KEY_PREFIX);
 
         //TODO: Initialize operational certificate
-//    var opCert = headerBody.getOperationalCert();
-//    var actualOpCert = opCert.getHotKey();
-//    var opCertCounter = (long) opCert.getSequenceNumber();
+        var opCert = headerBody.getOperationalCert();
+        var actualOpCert = opCert.getHotVKey();
+        var opCertCounter = (long) opCert.getSequenceNumber();
 
         List<AggregatedTx> txList = mapCddlTxToAggregatedTx(eventMetadata, blockCddl);
         return AggregatedBlock.builder()
@@ -115,8 +115,8 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
                 .protoMajor(protoMajor)
                 .protoMinor(protoMinor)
                 .vrfKey(vrfKey)
-//                .opCert(actualOpCert)       //TODO: Initialize operational certificate
-//                .opCertCounter(opCertCounter) //TODO: Initialize operational certificate
+                .opCert(actualOpCert)       //TODO: Initialize operational certificate
+                .opCertCounter(opCertCounter) //TODO: Initialize operational certificate
                 .txList(txList)
                 .auxiliaryDataMap(blockCddl.getAuxiliaryDataMap())
                 .isGenesis(Boolean.FALSE)
