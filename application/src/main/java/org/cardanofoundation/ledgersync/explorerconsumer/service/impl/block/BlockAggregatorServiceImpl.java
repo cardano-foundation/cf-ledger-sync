@@ -95,8 +95,8 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
 
         //TODO: Initialize operational certificate
         var opCert = headerBody.getOperationalCert();
-        var actualOpCert = opCert.getHotVKey();
-        var opCertCounter = (long) opCert.getSequenceNumber();
+        var actualOpCert = opCert != null? opCert.getHotVKey(): null;
+        Long opCertCounter = opCert != null? (long) opCert.getSequenceNumber(): null;
 
         List<AggregatedTx> txList = mapCddlTxToAggregatedTx(eventMetadata, blockCddl);
         return AggregatedBlock.builder()
