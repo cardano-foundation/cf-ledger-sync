@@ -50,7 +50,7 @@ spring:
     sql-migration-suffixes: .sql
     locations:
       - classpath:db/migration/consumer
-      - classpath:db/migration/{vendor}
+      - classpath:db/store/{vendor}
     validate-on-migrate: ${FLYWAY_VALIDATE:true}
     default-schema: ${spring.jpa.properties.hibernate.default_schema}
     schemas: ${spring.jpa.properties.hibernate.default_schema}

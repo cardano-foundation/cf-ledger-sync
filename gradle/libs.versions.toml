@@ -1,5 +1,5 @@
 [libraries]
-yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.12-beta3.2-SNAPSHOT"
+yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.12-beta3.3-SNAPSHOT"
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.0-beta2"
 snakeyaml="org.yaml:snakeyaml:2.0"
 guava="com.google.guava:guava:31.1-jre"
