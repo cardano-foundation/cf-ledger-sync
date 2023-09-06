@@ -1,7 +1,7 @@
 # Ledger Sync
 
 
-## Build
+## Build Jar
 
 ```bash
 ./gradlew clean build -x test
@@ -23,4 +23,27 @@ spring.datasource.password=
 
 ```bash
 java -jar application/build/libs/ledger-sync-application-<version>-SNAPSHOT.jar
+```
+
+## Docker Build & Run
+
+Build the jar file first
+
+```bash
+./gradlew clean build -x test
+```
+
+Build docker image
+
+
+```shell
+docker build -t cardanofoundation/ledger-sync:<version> .
+```
+
+### Docker Run
+
+Edit env file with database and network details
+
+```shell
+docker run -p 8080:8080 --env-file env cardanofoundation/ledger-sync:<version>
 ```
