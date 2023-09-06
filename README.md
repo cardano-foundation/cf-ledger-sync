@@ -12,11 +12,13 @@
 1. Edit ``config/application.properties`` to add datasource url, username & password.
 
 ```
-spring.datasource.url=jdbc:postgresql://localhost:5432/<db>?currentSchema=<schema>
+spring.datasource.url=jdbc:postgresql://localhost:5432/<db>
 
 spring.datasource.username=user
 
 spring.datasource.password=
+
+SCHEMA=<schema>
 ```
 
 2. Run

@@ -71,8 +71,8 @@ blocks:
   commitThreshold: ${COMMIT_THRESHOLD:3000}
 
 genesis:
-  submit-api-config: ${SUBMIT_API_CONFIG_URL:classpath:networks/preprod/submit-api-config.json}
-  byron: ${BYRON_GENESIS_URL:classpath:networks/preprod/byron-genesis.json}
-  shelley: ${SHELLEY_GENESIS_URL:classpath:networks/preprod/shelley-genesis.json}
-  alonzo: ${ALONZO_GENESIS_URL:classpath:networks/preprod/alonzo-genesis.json}
-  conway: ${CONWAY_GENESIS_URL:classpath:networks/preprod/conway-genesis.json}
+  submit-api-config: ${SUBMIT_API_CONFIG_URL:classpath:networks/${NETWORK}/submit-api-config.json}
+  byron: ${BYRON_GENESIS_URL:classpath:networks/${NETWORK}/byron-genesis.json}
+  shelley: ${SHELLEY_GENESIS_URL:classpath:networks/${NETWORK}/shelley-genesis.json}
+  alonzo: ${ALONZO_GENESIS_URL:classpath:networks/${NETWORK}/alonzo-genesis.json}
+  conway: ${CONWAY_GENESIS_URL:classpath:networks/${NETWORK}/conway-genesis.json}
