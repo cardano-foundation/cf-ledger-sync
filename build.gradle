@@ -31,14 +31,7 @@ subprojects {
     }
 
     dependencies {
-//        compileOnly 'org.projectlombok:lombok'
-//        implementation(libs.map.struct)
 
-//        annotationProcessor 'org.projectlombok:lombok'
-//        annotationProcessor(libs.mapstruct.processor)
-
-//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//        testImplementation 'io.projectreactor:reactor-test'
     }
 
     compileJava {
