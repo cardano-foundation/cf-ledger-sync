@@ -82,8 +82,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     public static final String EX_UNITS_MEM = "exUnitsMem";
     public static final String EX_UNITS_STEPS = "exUnitsSteps";
     public static final String MAX_VALUE_SIZE = "maxValueSize";
-    @Value("${genesis.submit-api-config}")
-    String submitApiConfig;
+
     @Value("${genesis.byron}")
     String genesisByron;
     @Value("${genesis.shelley}")
@@ -93,7 +92,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     @Value("${genesis.conway}")
     String genesisConway; // conway have no data to handle
 
-
+    String genesisHash;
     final ObjectMapper objectMapper;
     final BlockRepository blockRepository;
     final SlotLeaderRepository slotLeaderRepository;
@@ -106,8 +105,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     final GenesisFetching genesisFetching;
 
     @Transactional
-    public void setupData() {
-
+    public void setupData(String genesisHash) {
+        this.genesisHash = genesisHash;
         GenesisData genesisData = GenesisData.builder()
                 .txs(new ArrayList<>())
                 .txOuts(new ArrayList<>())
@@ -229,23 +228,14 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     }
 
     /**
-     * Fetching data from submit-api-config.json link as json string then deserialize json string into
-     * map for extracting genesis hash and get slot leader hash from genesis hash first 28 bytes.
+     * Get slot leader hash from genesis hash first 28 bytes.
      *
      * @param genesisData
      */
     public void fetchBlockAndSlotLeader(GenesisData genesisData) {
-        log.info("Fetch block from url {}", submitApiConfig);
-        String submitApiConfigJson = genesisFetching.getContent(submitApiConfig);
-
         try {
-            Map<String, Object> submitApiConfigMap = objectMapper.readValue(submitApiConfigJson,
-                    new TypeReference<>() {
-                    });
-
-            final String blockHash = submitApiConfigMap.get(GENESIS_HASH).toString();
             final String slotLeaderHash = new String(
-                    Arrays.copyOf(blockHash.getBytes(), SLOT_LEADER_LENGTH));
+                    Arrays.copyOf(genesisHash.getBytes(), SLOT_LEADER_LENGTH));
 
             final SlotLeader genesisSlotLeader = SlotLeader.builder()
                     .hash(slotLeaderHash)
@@ -260,7 +250,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             genesisData.setSlotLeaders(List.of(genesisSlotLeader, epochBoundary));
 
             Block genesisBlock = Block.builder()
-                    .hash(blockHash)
+                    .hash(genesisHash)
                     .protoMajor(BigInteger.ZERO.intValue())
                     .protoMinor(BigInteger.ZERO.intValue())
                     .time(genesisData.getStartTime())
@@ -272,8 +262,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
 
             genesisData.setBlock(genesisBlock);
         } catch (Exception e) {
-            log.error("Genesis data at {} can't parse from json to java object", submitApiConfig);
-            log.error("{} value \n {}", submitApiConfig, submitApiConfigJson);
+            log.error("Genesis data error");
             log.error("{}", e.getMessage());
             System.exit(0);
         }
