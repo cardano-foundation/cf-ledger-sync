@@ -1,8 +1,8 @@
 [libraries]
-yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.12-beta3.3-SNAPSHOT"
-cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.0-beta2"
+yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.12-beta3"
+cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.0-beta3"
 snakeyaml="org.yaml:snakeyaml:2.0"
-guava="com.google.guava:guava:31.1-jre"
+guava="com.google.guava:guava:32.1.2-jre"
 log4j-api="org.apache.logging.log4j:log4j-api:2.20.0"
 log4j-core="org.apache.logging.log4j:log4j-core:2.20.0"
 jakarta-validation-api="jakarta.validation:jakarta.validation-api:3.0.2"

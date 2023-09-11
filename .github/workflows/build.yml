@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - store_int
   pull_request:
     branches:
       - main
