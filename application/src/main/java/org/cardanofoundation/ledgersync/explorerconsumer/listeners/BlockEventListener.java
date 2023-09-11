@@ -4,13 +4,9 @@ import com.bloxbean.cardano.yaci.store.events.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.common.common.Era;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.BlockRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockSyncService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.MetricCollectorService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.RollbackService;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.BlockAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.ByronEbbAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.ByronMainAggregatorServiceImpl;
@@ -18,7 +14,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -29,6 +24,8 @@ public class BlockEventListener {
     private final BlockAggregatorServiceImpl blockAggregatorService;
     private final ByronEbbAggregatorServiceImpl byronEbbAggregatorService;
     private final ByronMainAggregatorServiceImpl byronMainAggregatorService;
+
+    private final GenesisDataService genesisDataService;
 
     private final BlockSyncService blockSyncService;
     private final BlockDataService blockDataService;
@@ -81,21 +78,14 @@ public class BlockEventListener {
     @Transactional
     public void handleGenesisBlock(GenesisBlockEvent genesisBlockEvent) {
         log.info("BlockEventListener.handleGenesisBlock");
-        AggregatedBlock aggregatedBlock = AggregatedBlock.builder()
-                .hash(genesisBlockEvent.getBlockHash())
-                .blockNo(0L)
-                .era(Era.BYRON)
-                .isGenesis(true)
-                .txList(Collections.emptyList())
-                .build();
+        String genesisHash = genesisBlockEvent.getBlockHash();
+        if (genesisHash != null && genesisHash.startsWith("Genesis")) {
+            //Yaci store returns genesis hash as "Genesis" when it is not able to find it. It happens for preview network
+            throw new IllegalStateException("Genesis hash could not be found. " +
+                    "Please set store.cardano.default-genesis-hash property in application.yml");
+        }
 
-        EventMetadata eventMetadata = EventMetadata.builder()
-                .epochSlot(0)
-                .blockTime(0)
-                .blockHash(genesisBlockEvent.getBlockHash())
-                .build();
-
-        handleAggregateBlock(eventMetadata, aggregatedBlock);
+        genesisDataService.setupData(genesisHash);
     }
 
     @EventListener
