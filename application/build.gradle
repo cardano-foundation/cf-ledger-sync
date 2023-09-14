@@ -15,6 +15,9 @@ dependencies {
     implementation project(':components:consumer-common')
 
     implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.utxo.starter)
+    implementation(libs.yaci.store.account.starter)
+
     implementation(libs.cardano.client.lib)
 
     implementation(libs.snakeyaml)
