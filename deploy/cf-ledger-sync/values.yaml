@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync
-  tag: "713c6c2"
+  tag: "d5f1455"
   pullPolicy: Always
 
 imagePullSecrets: []
