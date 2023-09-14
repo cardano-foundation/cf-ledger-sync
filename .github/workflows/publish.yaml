@@ -2,6 +2,10 @@ name: Publish artifacts to (internal) Gitlab Packages
 
 on:
   workflow_dispatch:
+      branch:
+        description: 'Select the branch which shall be built'
+        required: true
+        default: 'main'
 
 env:
   PRIVATE_DOCKER_REGISTRY_URL: ${{ secrets.GITLAB_DOCKER_REGISTRY_URL }}
@@ -17,10 +21,12 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: '${{ github.event.inputs.branch }}'
 
       - name: Set extra environment and metadata
         id: metadata
