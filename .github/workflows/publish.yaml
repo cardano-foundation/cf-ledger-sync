@@ -2,6 +2,7 @@ name: Publish artifacts to (internal) Gitlab Packages
 
 on:
   workflow_dispatch:
+    inputs:
       branch:
         description: 'Select the branch which shall be built'
         required: true
