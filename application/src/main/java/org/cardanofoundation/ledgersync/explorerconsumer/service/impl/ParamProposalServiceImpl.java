@@ -76,13 +76,11 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                     var treasuryGrowthRate = toDouble(protocolParamUpdate.getTreasuryGrowthRate());
                     var decentralisation = toDouble(protocolParamUpdate.getDecentralisationParam());
 
-//          var cborEntropy = protocolParamUpdate.getExtraEntropy(); //TODO refactor
-                    String entropy = protocolParamUpdate.getExtraEntropy();
-
-//          if (!CollectionUtils.isEmpty(cborEntropy) &&            //TODO refactor
-//              (int) cborEntropy.get(0) == BigInteger.ONE.intValue()) {
-//            entropy = cborEntropy.get(BigInteger.ONE.intValue()).toString();
-//          }
+                    var extraEntropyTuple = protocolParamUpdate.getExtraEntropy();
+                    String entropy = null;
+                    if (extraEntropyTuple != null) {
+                        entropy = extraEntropyTuple._2;
+                    }
 
                     var protocolMajor = protocolParamUpdate.getProtocolMajorVer();
                     var protocolMinor = protocolParamUpdate.getProtocolMinorVer();
