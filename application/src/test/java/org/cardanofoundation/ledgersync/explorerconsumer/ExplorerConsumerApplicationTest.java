@@ -6,7 +6,6 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource("classpath:application.yaml")
-@Profile("test-integration")
 public class ExplorerConsumerApplicationTest {
 
 }
