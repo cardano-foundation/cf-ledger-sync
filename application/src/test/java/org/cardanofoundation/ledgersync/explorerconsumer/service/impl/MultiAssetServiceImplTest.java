@@ -2,6 +2,7 @@ package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import org.cardanofoundation.explorer.consumercommon.entity.*;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTxOut;
 import org.cardanofoundation.ledgersync.explorerconsumer.projection.MaTxMintProjection;
@@ -31,6 +32,8 @@ import org.springframework.util.MultiValueMap;
 
 import java.math.BigInteger;
 import java.util.*;
+
+import static org.cardanofoundation.ledgersync.explorerconsumer.util.ConsumerAssetUtil.assetNameToBytes;
 
 @ExtendWith(MockitoExtension.class)
 class MultiAssetServiceImplTest {
@@ -144,7 +147,7 @@ class MultiAssetServiceImplTest {
     String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
     MultiAsset existingAsset = MultiAsset.builder()
-        .name(assetName)
+        .name(HexUtil.encodeHexString(assetNameToBytes(assetName)))
         .fingerprint(assetFingerprint)
         .policy(policyId)
         .supply(BigInteger.ONE)

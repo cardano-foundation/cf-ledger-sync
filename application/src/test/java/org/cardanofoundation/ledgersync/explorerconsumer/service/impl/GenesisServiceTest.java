@@ -71,8 +71,8 @@ class GenesisServiceTest {
         .txs(new ArrayList<>())
         .build();
 
-    ReflectionTestUtils.setField(genesisDataService, "submitApiConfig",
-        "https://book.world.dev.cardano.org/environments/mainnet/submit-api-config.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisHash",
+        "5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb");
     ReflectionTestUtils.setField(genesisDataService, "genesisByron",
         "https://book.world.dev.cardano.org/environments/mainnet/byron-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisShelley",
@@ -216,8 +216,8 @@ class GenesisServiceTest {
         .txs(new ArrayList<>())
         .build();
 
-    ReflectionTestUtils.setField(genesisDataService, "submitApiConfig",
-        "https://book.world.dev.cardano.org/environments/preprod/submit-api-config.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisHash",
+        "d4b8de7a11d929a323373cbab6c1a9bdc931beffff11db111cf9d57356ee1937");
     ReflectionTestUtils.setField(genesisDataService, "genesisByron",
         "https://book.world.dev.cardano.org/environments/preprod/byron-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisShelley",
@@ -342,9 +342,8 @@ class GenesisServiceTest {
         .txOuts(new ArrayList<>())
         .txs(new ArrayList<>())
         .build();
-
-    ReflectionTestUtils.setField(genesisDataService, "submitApiConfig",
-        "classpath:networks/mainnet/submit-api-config.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisHash",
+        "5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb");
     ReflectionTestUtils.setField(genesisDataService, "genesisByron",
         "classpath:networks/mainnet/byron-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisShelley",
@@ -488,8 +487,8 @@ class GenesisServiceTest {
         .txs(new ArrayList<>())
         .build();
 
-    ReflectionTestUtils.setField(genesisDataService, "submitApiConfig",
-        "classpath:networks/preprod/submit-api-config.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisHash",
+        "d4b8de7a11d929a323373cbab6c1a9bdc931beffff11db111cf9d57356ee1937");
     ReflectionTestUtils.setField(genesisDataService, "genesisByron",
         "classpath:networks/preprod/byron-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisShelley",

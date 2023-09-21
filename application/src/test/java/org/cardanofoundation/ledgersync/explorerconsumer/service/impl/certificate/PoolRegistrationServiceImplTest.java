@@ -72,7 +72,6 @@ class PoolRegistrationServiceImplTest {
             Relay.builder()
                 .port(3001)
                 .dnsName("preprod-relay1.angelstakepool.net")
-//                .relayType(RelayType.SINGLE_HOST_NAME) //TODO refactor check
                 .build()))
         .poolMetadataUrl("https://angelstakepool.net/preprod/angel.json")
         .poolMetadataHash("bf44709dd714742688eeff2b6ca5573fe312a2e5f49d564c4c2311923c63952c")
@@ -80,7 +79,6 @@ class PoolRegistrationServiceImplTest {
     PoolRegistration poolRegistration = PoolRegistration.builder()
         .poolParams(poolParams)
         .build();
-   // poolRegistration.setIndex(1); //TODO refactor check
 
     Mockito.when(aggregatedBlock.getEpochNo()).thenReturn(1);
     Mockito.when(batchCertificateDataService.findPoolHashByHashRaw(Mockito.anyString()))
@@ -143,7 +141,6 @@ class PoolRegistrationServiceImplTest {
             Relay.builder()
                 .port(3001)
                 .dnsName("preprod-relay1.angelstakepool.net")
-              //  .relayType(RelayType.SINGLE_HOST_NAME) //TODO refactor check
                 .build()))
         .poolMetadataUrl("https://angelstakepool.net/preprod/angel.json")
         .poolMetadataHash("bf44709dd714742688eeff2b6ca5573fe312a2e5f49d564c4c2311923c63952c")
@@ -151,7 +148,6 @@ class PoolRegistrationServiceImplTest {
     PoolRegistration poolRegistration = PoolRegistration.builder()
         .poolParams(poolParams)
         .build();
-//    poolRegistration.setIndex(1); //TODO refactor check
 
     Mockito.when(aggregatedBlock.getEpochNo()).thenReturn(1);
     Mockito.when(batchCertificateDataService.findPoolHashByHashRaw(Mockito.anyString()))
@@ -215,13 +211,11 @@ class PoolRegistrationServiceImplTest {
             Relay.builder()
                 .port(30000)
                 .dnsName("preprod-node.world.dev.cardano.org")
-//                .relayType(RelayType.SINGLE_HOST_NAME) //TODO refactor check
                 .build()))
         .build();
     PoolRegistration poolRegistration = PoolRegistration.builder()
         .poolParams(poolParams)
         .build();
-//    poolRegistration.setIndex(1); //TODO refactor check
 
     Mockito.when(aggregatedBlock.getEpochNo()).thenReturn(1);
     Mockito.when(batchCertificateDataService.findPoolHashByHashRaw(Mockito.anyString()))
@@ -275,23 +269,19 @@ class PoolRegistrationServiceImplTest {
                 .port(1234)
                 .ipv4("12.345.67.89")
                 .ipv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
-//                .relayType(RelayType.SINGLE_HOST_ADDR) //TODO refactor check
                 .build(),
             Relay.builder()
                 .port(30000)
                 .dnsName("preprod-node.world.dev.cardano.org")
-//                .relayType(RelayType.SINGLE_HOST_NAME) //TODO refactor check
                 .build(),
             Relay.builder()
                 .dnsName("relays-new.cardano-testnet.iohkdev.io")
-//                .relayType(RelayType.MULTI_HOST_NAME)  //TODO refactor check
                 .build()
         ))
         .build();
     PoolRegistration poolRegistration = PoolRegistration.builder()
         .poolParams(poolParams)
         .build();
-//    poolRegistration.setIndex(1);  //TODO refactor check
 
     Mockito.when(aggregatedBlock.getEpochNo()).thenReturn(1);
     Mockito.when(batchCertificateDataService.findPoolHashByHashRaw(Mockito.anyString()))
@@ -328,12 +318,13 @@ class PoolRegistrationServiceImplTest {
     Assertions.assertNull(poolRelays.get(1).getIpv4());
     Assertions.assertNull(poolRelays.get(1).getIpv6());
     Assertions.assertEquals("preprod-node.world.dev.cardano.org", poolRelays.get(1).getDnsName());
-    Assertions.assertNull(poolRelays.get(1).getDnsSrvName());
+    Assertions.assertEquals("preprod-node.world.dev.cardano.org", poolRelays.get(1).getDnsSrvName());
 
     Assertions.assertNull(poolRelays.get(2).getPort());
     Assertions.assertNull(poolRelays.get(2).getIpv4());
     Assertions.assertNull(poolRelays.get(2).getIpv6());
-    Assertions.assertNull(poolRelays.get(2).getDnsName());
+    Assertions.assertEquals("relays-new.cardano-testnet.iohkdev.io",
+        poolRelays.get(2).getDnsName());
     Assertions.assertEquals("relays-new.cardano-testnet.iohkdev.io",
         poolRelays.get(2).getDnsSrvName());
   }

@@ -2,6 +2,7 @@ package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,7 @@ class ParamProposalServiceImplTest {
     ProtocolParamUpdate protocolParamUpdate = ProtocolParamUpdate.builder()
         .protocolMajorVer(3)
         .protocolMinorVer(0)
-            //TODO -- refactor fix test
-     //   .costModels(new CostModels("dffd1848e8ef26aadb1d4d05612825596ab697b27d2ea422fec077dd0de93254", Collections.emptyMap()))
+        .costModelsHash("dffd1848e8ef26aadb1d4d05612825596ab697b27d2ea422fec077dd0de93254")
         .build();
     Map<String, ProtocolParamUpdate> protocolParamUpdateMap = buildProtocolParamUpdates(
         Pair.of("637f2e950b0fd8f8e3e811c5fbeb19e411e7a2bf37272b84b29c1a0b", protocolParamUpdate));
