@@ -2,29 +2,25 @@ package org.cardanofoundation.ledgersync.explorerconsumer.util;
 
 import java.util.Set;
 
-import org.cardanofoundation.ledgersync.common.common.PoolParams;
-import org.cardanofoundation.ledgersync.common.common.certs.PoolRegistration;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredential;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredentialType;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeDelegation;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeRegistration;
+import com.bloxbean.cardano.yaci.core.model.PoolParams;
+import com.bloxbean.cardano.yaci.core.model.certs.PoolRegistration;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeCredential;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeDelegation;
+import com.bloxbean.cardano.yaci.core.model.certs.StakePoolId;
+import com.bloxbean.cardano.yaci.core.model.certs.StakeRegistration;
 
 public final class CertificateUtil {
 
   private CertificateUtil() {}
 
-  public static StakeRegistration buildStakeRegistrationCert(int certIdx,
-                                                             StakeCredentialType type,
-                                                             String hash) {
+  public static StakeRegistration buildStakeRegistrationCert(StakeCredType type, String hash) {
     StakeCredential credential = new StakeCredential(type, hash);
-    StakeRegistration stakeRegistration = new StakeRegistration();
-    stakeRegistration.setStakeCredential(credential);
-    stakeRegistration.setIndex(certIdx);
-    return stakeRegistration;
+
+    return new StakeRegistration(credential);
   }
 
-  public static PoolRegistration buildPoolRegistrationCert(int certIdx,
-                                                           String rewardAccount,
+  public static PoolRegistration buildPoolRegistrationCert(String rewardAccount,
                                                            String... poolOwners) {
     PoolParams poolParams = PoolParams.builder()
         .rewardAccount(rewardAccount)
@@ -34,17 +30,15 @@ public final class CertificateUtil {
     PoolRegistration poolRegistration = PoolRegistration.builder()
         .poolParams(poolParams)
         .build();
-    poolRegistration.setIndex(certIdx);
+
     return poolRegistration;
   }
 
-  public static StakeDelegation buildStakeDelegationCert(int certIdx,
-                                                         StakeCredentialType type,
+  public static StakeDelegation buildStakeDelegationCert(StakeCredType type,
                                                          String hash) {
     StakeCredential credential = new StakeCredential(type, hash);
-    StakeDelegation stakeDelegation = new StakeDelegation();
-    stakeDelegation.setStakeCredential(credential);
-    stakeDelegation.setIndex(certIdx);
+    StakeDelegation stakeDelegation = new StakeDelegation(credential, new StakePoolId());
+
     return stakeDelegation;
   }
 }
