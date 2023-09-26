@@ -1,21 +1,23 @@
-package org.cardanofoundation.ledgersync.explorerconsumer.amount;
+package org.cardanofoundation.ledgersync.common.util;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.cardanofoundation.ledgersync.common.common.Amount;
 import org.cardanofoundation.ledgersync.common.common.constant.Constant;
-import java.math.BigInteger;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.jupiter.api.Test;
 
- class AmountTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class AmountTest {
 
   private final byte[] lovelace = "LOVELACE".getBytes();
 
   @Test
-   void calculateLovelace() {
+  void calculateLovelace() {
     List<Amount> amounts = new ArrayList<>();
     amounts.add(
         Amount.builder().quantity(BigInteger.valueOf(1000)).assetName(lovelace).policyId("p1")
@@ -38,7 +40,7 @@ import org.junit.jupiter.api.Test;
       }
     });
 
-    assertEquals(6500,value.get().intValue());
+    assertEquals(6500, value.get().intValue());
   }
 
 }
