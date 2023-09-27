@@ -2,36 +2,12 @@ package org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block;
 
 import com.bloxbean.cardano.client.crypto.Bech32;
 import com.bloxbean.cardano.client.plutus.spec.ExUnits;
-import com.bloxbean.cardano.client.plutus.spec.PlutusScript;
-import com.bloxbean.cardano.client.plutus.spec.PlutusV2Script;
-import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
-import com.bloxbean.cardano.yaci.core.model.Amount;
-import com.bloxbean.cardano.yaci.core.model.Block;
-import com.bloxbean.cardano.yaci.core.model.BlockHeader;
-import com.bloxbean.cardano.yaci.core.model.Datum;
-import com.bloxbean.cardano.yaci.core.model.Epoch;
-import com.bloxbean.cardano.yaci.core.model.Era;
-import com.bloxbean.cardano.yaci.core.model.HeaderBody;
-import com.bloxbean.cardano.yaci.core.model.OperationalCert;
-import com.bloxbean.cardano.yaci.core.model.ProtocolParamUpdate;
-import com.bloxbean.cardano.yaci.core.model.ProtocolVersion;
-import com.bloxbean.cardano.yaci.core.model.Redeemer;
-import com.bloxbean.cardano.yaci.core.model.TransactionBody;
-import com.bloxbean.cardano.yaci.core.model.TransactionInput;
-import com.bloxbean.cardano.yaci.core.model.TransactionOutput;
-import com.bloxbean.cardano.yaci.core.model.Update;
-import com.bloxbean.cardano.yaci.core.model.VkeyWitness;
-import com.bloxbean.cardano.yaci.core.model.Witnesses;
-import com.bloxbean.cardano.yaci.core.model.byron.ByronEbBlock;
+import com.bloxbean.cardano.yaci.core.model.*;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
 import com.bloxbean.cardano.yaci.store.events.BlockEvent;
-//import org.cardanofoundation.ledgersync.common.common.*;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
-//import org.cardanofoundation.ledgersync.common.common.certs.Certificate;
-import org.cardanofoundation.ledgersync.common.common.certs.StakeCredentialType;
 import org.cardanofoundation.ledgersync.common.common.constant.Constant;
-import org.cardanofoundation.ledgersync.common.common.cost.mdl.CostModels;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
@@ -41,17 +17,13 @@ import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataServic
 import org.cardanofoundation.ledgersync.explorerconsumer.service.SlotLeaderService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.BlockDataServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.SlotLeaderServiceImpl;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.BlockAggregatorServiceImpl;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.springframework.data.util.Pair;
 
 import java.math.BigInteger;
@@ -249,108 +221,106 @@ class BlockAggregatorServiceImplTest {
     Assertions.assertEquals(Collections.emptyMap(), aggregatedBlock.getAuxiliaryDataMap());
   }
 
-//  @Test
-//  @DisplayName("Aggregate block with failed tx")
-//  void aggregateBlockWithFailedTxTest() {
-//    // Block 949034 preprod
-//    int protocolMagic = 1;
-//    int epochNo = 70;
-//    long slotNo = 28687610L;
-//    long epochSlotNo = 89210L;
-//    long blockNo = 949034L;
-//    long blockTimeEpoch = 1684370810L;
-//    int protoMajor = 8;
-//    int protoMinor = 0;
-//    long blockBodySize = 395L;
-//    Era shelleyEra = Era.Babbage;
-//    String blockHash = "8555cbdfa779c65b1e86d22ebb69673a5504abe78abdde855fe686874eaa5301";
-//    String prevBlockHash = "ec25d747154d56c5d73b7f18450aa6c91ec82b459eaf7ca5bea3cbdfe5d48886";
-//    String issuerVrfKey = "9e4035bb7028fafe9df82db88d9534d0f7ec08121e570276465c6cd2dc888f0f";
-//    String vrfKey = "ca8491ea0847481804609a8b79aa6bf9dfeb20002777d90274ea28db73ff0dae";
-//    Timestamp blockTime = Timestamp.valueOf(LocalDateTime.ofEpochSecond(
-//        blockTimeEpoch, 0, ZoneOffset.ofHours(0)));
-//    OperationalCert operationalCert = Mockito.mock(OperationalCert.class);
-//    String opCert = "c33c045370d6570ea884012fc54b510beb2d0660de98c52acd71af92585fb367";
-//    Integer opCertCounter = 1;
-//    List<TransactionBody> transactionBodies = givenTxBodiesBlock949034Preprod();
-//    List<Witnesses> witnesses = givenTxWitnessesBlock949034Preprod();
-//    EventMetadata metadata = Mockito.mock(EventMetadata.class);
-//    Block blockCddl = Mockito.mock(Block.class);
-//    Mockito.when(blockEvent.getBlock()).thenReturn(blockCddl);
-//    Mockito.when(blockEvent.getMetadata()).thenReturn(metadata);
-//    Mockito.when(blockCddl.getEra()).thenReturn(Era.Shelley);
-//    Mockito.when(blockCddl.getHeader()).thenReturn(blockHeader);
-//    Mockito.when(blockHeader.getHeaderBody()).thenReturn(headerBody);
-//    Mockito.when(metadata.getBlock()).thenReturn(blockNo);
-//    Mockito.when(metadata.getSlot()).thenReturn(slotNo);
-//    Mockito.when(metadata.getEpochNumber()).thenReturn(epochNo);
-//    Mockito.when(metadata.getEpochSlot()).thenReturn(epochSlotNo);
-//    Mockito.when(headerBody.getPrevHash()).thenReturn(prevBlockHash);
-//    Mockito.when(headerBody.getIssuerVkey()).thenReturn(issuerVrfKey);
-//    Mockito.when(headerBody.getVrfVkey()).thenReturn(vrfKey);
-//    Mockito.when(headerBody.getBlockBodySize()).thenReturn(blockBodySize);
-//    Mockito.when(headerBody.getProtocolVersion())
-//        .thenReturn(new ProtocolVersion(protoMajor, protoMinor));
-//    Mockito.when(headerBody.getOperationalCert()).thenReturn(operationalCert);
-//    Mockito.when(headerBody.getOperationalCert()).thenReturn(operationalCert);
-//    Mockito.when(operationalCert.getHotVKey()).thenReturn(opCert);
-//    Mockito.when(operationalCert.getSequenceNumber()).thenReturn(opCertCounter);
-//    Mockito.when(headerBody.getBlockHash()).thenReturn(blockHash);
-//    Mockito.when(metadata.getBlockTime()).thenReturn(blockTimeEpoch);
-//    Mockito.when(blockCddl.getTransactionBodies()).thenReturn(transactionBodies);
-//    Mockito.when(blockCddl.getTransactionWitness()).thenReturn(witnesses);
-//    Mockito.when(blockCddl.getInvalidTransactions()).thenReturn(List.of(0));
-//
-//    SlotLeaderRepository slotLeaderRepository = Mockito.mock(SlotLeaderRepository.class);
-//    PoolHashRepository poolHashRepository = Mockito.mock(PoolHashRepository.class);
-//    SlotLeaderServiceImpl slotLeaderServiceImpl =
-//        new SlotLeaderServiceImpl(slotLeaderRepository, poolHashRepository);
-//    AggregatedBatchBlockData aggregatedBatchBlockData = new AggregatedBatchBlockData();
-//    BlockDataServiceImpl blockDataServiceImpl = new BlockDataServiceImpl(aggregatedBatchBlockData);
-//    BlockAggregatorServiceImpl victim =
-//        new BlockAggregatorServiceImpl(slotLeaderServiceImpl, blockDataServiceImpl, protocolMagic);
-//    AggregatedBlock aggregatedBlock = victim.aggregateBlock(blockEvent);
-//    Assertions.assertEquals(shelleyEra.getValue(), aggregatedBlock.getEra().getValue());
-//    Assertions.assertEquals(protocolMagic, aggregatedBlock.getNetwork());
-//    Assertions.assertEquals(blockHash, aggregatedBlock.getHash());
-//    Assertions.assertEquals(epochNo, aggregatedBlock.getEpochNo());
-//    Assertions.assertEquals((int) epochSlotNo, aggregatedBlock.getEpochSlotNo());
-//    Assertions.assertEquals((int) slotNo, aggregatedBlock.getSlotNo());
-//    Assertions.assertEquals(blockNo, aggregatedBlock.getBlockNo());
-//    Assertions.assertEquals(prevBlockHash, aggregatedBlock.getPrevBlockHash());
-//    Assertions.assertEquals(
-//        ConsumerConstant.SHELLEY_SLOT_LEADER_PREFIX, aggregatedBlock.getSlotLeader().getPrefix());
-//    Assertions.assertEquals("9b4c92eb5cb4c072a0e6670777e1bc8586a202bceebc702e81b1315e",
-//        aggregatedBlock.getSlotLeader().getHashRaw());
-//    Assertions.assertEquals(blockBodySize, aggregatedBlock.getBlockSize());
-//    Assertions.assertEquals(blockTime, aggregatedBlock.getBlockTime());
-//    Assertions.assertEquals(1L, aggregatedBlock.getTxCount());
-//    Assertions.assertEquals(protoMajor, aggregatedBlock.getProtoMajor());
-//    Assertions.assertEquals(protoMinor, aggregatedBlock.getProtoMinor());
-//    Assertions.assertEquals(Bech32.encode(
-//            HexUtil.decodeHexString(headerBody.getVrfVkey()), ConsumerConstant.VRF_KEY_PREFIX),
-//        aggregatedBlock.getVrfKey());
-//    Assertions.assertEquals(opCert, aggregatedBlock.getOpCert());
-//    Assertions.assertEquals((long) opCertCounter, aggregatedBlock.getOpCertCounter());
-//
-//    List<AggregatedTx> aggregatedTxList = aggregatedBlock.getTxList();
-//    Assertions.assertEquals(1L, aggregatedTxList.size());
-//    AggregatedTx aggregatedTx = aggregatedTxList.get(0);
-//    TransactionBody transactionBody = transactionBodies.get(0);
-//    Assertions.assertFalse(aggregatedTx.isValidContract());
-//
-//    TransactionOutput collateralReturn = transactionBody.getCollateralReturn();
-//    AggregatedTxOut aggregatedTxCollateralReturn = aggregatedTx.getCollateralReturn();
-//    Assertions.assertNotNull(aggregatedTxCollateralReturn);
-//    Assertions.assertEquals(1, aggregatedTxCollateralReturn.getIndex());
-//
-//    AggregatedAddress aggregatedAddress = aggregatedTxCollateralReturn.getAddress();
-//    Assertions.assertNotNull(aggregatedAddress);
-//    Assertions.assertEquals(collateralReturn.getAddress(), aggregatedAddress.getAddress());
-//    Assertions.assertEquals(collateralReturn.getAmounts().get(0).getQuantity(),
-//        aggregatedTxCollateralReturn.getNativeAmount());
-//  }
+  @Test
+  @DisplayName("Aggregate block with failed tx")
+  void aggregateBlockWithFailedTxTest() {
+    // Block 949034 preprod
+    int protocolMagic = 1;
+    int epochNo = 70;
+    long slotNo = 28687610L;
+    long epochSlotNo = 89210L;
+    long blockNo = 949034L;
+    long blockTimeEpoch = 1684370810L;
+    int protoMajor = 8;
+    int protoMinor = 0;
+    long blockBodySize = 395L;
+    Era babbageEra = Era.Babbage;
+    String blockHash = "8555cbdfa779c65b1e86d22ebb69673a5504abe78abdde855fe686874eaa5301";
+    String prevBlockHash = "ec25d747154d56c5d73b7f18450aa6c91ec82b459eaf7ca5bea3cbdfe5d48886";
+    String issuerVrfKey = "9e4035bb7028fafe9df82db88d9534d0f7ec08121e570276465c6cd2dc888f0f";
+    String vrfKey = "ca8491ea0847481804609a8b79aa6bf9dfeb20002777d90274ea28db73ff0dae";
+    Timestamp blockTime = Timestamp.valueOf(LocalDateTime.ofEpochSecond(
+        blockTimeEpoch, 0, ZoneOffset.ofHours(0)));
+    OperationalCert operationalCert = Mockito.mock(OperationalCert.class);
+    String opCert = "c33c045370d6570ea884012fc54b510beb2d0660de98c52acd71af92585fb367";
+    Integer opCertCounter = 1;
+    List<TransactionBody> transactionBodies = givenTxBodiesBlock949034Preprod();
+    List<Witnesses> witnesses = givenTxWitnessesBlock949034Preprod();
+    EventMetadata metadata = Mockito.mock(EventMetadata.class);
+    Block blockCddl = Mockito.mock(Block.class);
+    Mockito.when(blockEvent.getBlock()).thenReturn(blockCddl);
+    Mockito.when(blockEvent.getMetadata()).thenReturn(metadata);
+    Mockito.when(blockCddl.getEra()).thenReturn(Era.Babbage);
+    Mockito.when(blockCddl.getHeader()).thenReturn(blockHeader);
+    Mockito.when(blockHeader.getHeaderBody()).thenReturn(headerBody);
+    Mockito.when(metadata.getBlock()).thenReturn(blockNo);
+    Mockito.when(metadata.getSlot()).thenReturn(slotNo);
+    Mockito.when(metadata.getEpochNumber()).thenReturn(epochNo);
+    Mockito.when(metadata.getEpochSlot()).thenReturn(epochSlotNo);
+    Mockito.when(headerBody.getPrevHash()).thenReturn(prevBlockHash);
+    Mockito.when(headerBody.getIssuerVkey()).thenReturn(issuerVrfKey);
+    Mockito.when(headerBody.getVrfVkey()).thenReturn(vrfKey);
+    Mockito.when(headerBody.getBlockBodySize()).thenReturn(blockBodySize);
+    Mockito.when(headerBody.getProtocolVersion())
+        .thenReturn(new ProtocolVersion(protoMajor, protoMinor));
+    Mockito.when(headerBody.getOperationalCert()).thenReturn(operationalCert);
+    Mockito.when(headerBody.getOperationalCert()).thenReturn(operationalCert);
+    Mockito.when(operationalCert.getHotVKey()).thenReturn(opCert);
+    Mockito.when(operationalCert.getSequenceNumber()).thenReturn(opCertCounter);
+    Mockito.when(headerBody.getBlockHash()).thenReturn(blockHash);
+    Mockito.when(metadata.getBlockTime()).thenReturn(blockTimeEpoch);
+    Mockito.when(blockCddl.getTransactionBodies()).thenReturn(transactionBodies);
+    Mockito.when(blockCddl.getTransactionWitness()).thenReturn(witnesses);
+    Mockito.when(blockCddl.getInvalidTransactions()).thenReturn(List.of(0));
 
+    SlotLeaderRepository slotLeaderRepository = Mockito.mock(SlotLeaderRepository.class);
+    PoolHashRepository poolHashRepository = Mockito.mock(PoolHashRepository.class);
+    SlotLeaderServiceImpl slotLeaderServiceImpl =
+        new SlotLeaderServiceImpl(slotLeaderRepository, poolHashRepository);
+    AggregatedBatchBlockData aggregatedBatchBlockData = new AggregatedBatchBlockData();
+    BlockDataServiceImpl blockDataServiceImpl = new BlockDataServiceImpl(aggregatedBatchBlockData);
+    BlockAggregatorServiceImpl victim =
+        new BlockAggregatorServiceImpl(slotLeaderServiceImpl, blockDataServiceImpl, protocolMagic);
+    AggregatedBlock aggregatedBlock = victim.aggregateBlock(blockEvent);
+    Assertions.assertEquals(babbageEra.getValue(), aggregatedBlock.getEra().getValue());
+    Assertions.assertEquals(protocolMagic, aggregatedBlock.getNetwork());
+    Assertions.assertEquals(blockHash, aggregatedBlock.getHash());
+    Assertions.assertEquals(epochNo, aggregatedBlock.getEpochNo());
+    Assertions.assertEquals((int) epochSlotNo, aggregatedBlock.getEpochSlotNo());
+    Assertions.assertEquals((int) slotNo, aggregatedBlock.getSlotNo());
+    Assertions.assertEquals(blockNo, aggregatedBlock.getBlockNo());
+    Assertions.assertEquals(prevBlockHash, aggregatedBlock.getPrevBlockHash());
+    Assertions.assertEquals(
+        ConsumerConstant.SHELLEY_SLOT_LEADER_PREFIX, aggregatedBlock.getSlotLeader().getPrefix());
+    Assertions.assertEquals("9b4c92eb5cb4c072a0e6670777e1bc8586a202bceebc702e81b1315e",
+        aggregatedBlock.getSlotLeader().getHashRaw());
+    Assertions.assertEquals(blockBodySize, aggregatedBlock.getBlockSize());
+    Assertions.assertEquals(blockTime, aggregatedBlock.getBlockTime());
+    Assertions.assertEquals(1L, aggregatedBlock.getTxCount());
+    Assertions.assertEquals(protoMajor, aggregatedBlock.getProtoMajor());
+    Assertions.assertEquals(protoMinor, aggregatedBlock.getProtoMinor());
+    Assertions.assertEquals(Bech32.encode(
+            HexUtil.decodeHexString(headerBody.getVrfVkey()), ConsumerConstant.VRF_KEY_PREFIX),
+        aggregatedBlock.getVrfKey());
+    Assertions.assertEquals(opCert, aggregatedBlock.getOpCert());
+    Assertions.assertEquals((long) opCertCounter, aggregatedBlock.getOpCertCounter());
+
+    List<AggregatedTx> aggregatedTxList = aggregatedBlock.getTxList();
+    Assertions.assertEquals(1L, aggregatedTxList.size());
+    AggregatedTx aggregatedTx = aggregatedTxList.get(0);
+    TransactionBody transactionBody = transactionBodies.get(0);
+    Assertions.assertFalse(aggregatedTx.isValidContract());
+
+    TransactionOutput collateralReturn = transactionBody.getCollateralReturn();
+    AggregatedTxOut aggregatedTxCollateralReturn = aggregatedTx.getCollateralReturn();
+    Assertions.assertNotNull(aggregatedTxCollateralReturn);
+    Assertions.assertEquals(1, aggregatedTxCollateralReturn.getIndex());
+
+    AggregatedAddress aggregatedAddress = aggregatedTxCollateralReturn.getAddress();
+    Assertions.assertNotNull(aggregatedAddress);
+    Assertions.assertEquals(collateralReturn.getAddress(), aggregatedAddress.getAddress());
+    Assertions.assertEquals(BigInteger.ZERO, aggregatedTxCollateralReturn.getNativeAmount()); //
+  }
 
   @Test
   @DisplayName("Aggregate block with tx having cert")
@@ -649,30 +619,26 @@ class BlockAggregatorServiceImplTest {
     return List.of(Witnesses.builder().vkeyWitnesses(vkeyWitnesses).build());
   }
 
-//  private static List<Witnesses> givenTxWitnessesBlock949034Preprod() {
-//    // VkeyWitness is not even used, just fake it
-//    List<VkeyWitness> vkeyWitnesses = List.of(Mockito.mock(VkeyWitness.class));
-//    List<Datum> datumList = List.of(
-//        buildDatum("19077a", "{\\\"int\\\":1914}")
-//    );
-//    List<Redeemer> redeemers = List.of(
-//        buildRedeemer(RedeemerTag.Spend, BigInteger.ZERO,
-//            buildDatum("187b", "{\\\"int\\\":123}"),
-//            buildExUnits(BigInteger.TEN, BigInteger.TEN))
-//    );
-//    List<PlutusScript> plutusV2Scripts = List.of(
-//        buildPlutusV2Script(null, "4746010000222601")
-//    );
-//
-//    Witnesses witnesses = Witnesses.builder()
-//        .vkeyWitnesses(vkeyWitnesses)
-//        .datums(datumList)
-//        .redeemers(redeemers)
-//        .plutusV2Scripts(plutusV2Scripts)
-//        .build();
-//
-//    return List.of(witnesses);
-//  }
+  private static List<Witnesses> givenTxWitnessesBlock949034Preprod() {
+    // VkeyWitness is not even used, just fake it
+    List<VkeyWitness> vkeyWitnesses = List.of(Mockito.mock(VkeyWitness.class));
+    List<Datum> datumList = List.of(
+        buildDatum("19077a", "{\\\"int\\\":1914}")
+    );
+    List<Redeemer> redeemers = List.of(
+        // fake for test
+        new Redeemer(
+            "840000d87b9f5820561940091ccf4859b053c522d7b82be8de0d39c0ce9221c4e18289e0192ec95dff821a00109f3e1a14616369")
+    );
+
+    Witnesses witnesses = Witnesses.builder()
+        .vkeyWitnesses(vkeyWitnesses)
+        .datums(datumList)
+        .redeemers(redeemers)
+        .build();
+
+    return List.of(witnesses);
+  }
 
   private static TransactionInput buildTxIn(String txId, int index) {
     return new TransactionInput(txId, index);
@@ -709,23 +675,5 @@ class BlockAggregatorServiceImplTest {
 
   private static ExUnits buildExUnits(BigInteger mem, BigInteger steps) {
     return ExUnits.builder().mem(mem).steps(steps).build();
-  }
-
-//  private static Redeemer buildRedeemer(RedeemerTag tag, BigInteger index,
-//                                        Datum plutusData, ExUnits exUnits) {
-//    return new Redeemer(tag, index, plutusData, exUnits);
-//  }
-
-  private static Redeemer buildRedeemer(String cbor) {
-    return new Redeemer(cbor);
-  }
-
-  private static PlutusV2Script buildPlutusV2Script(String description, String cborHex) {
-    PlutusV2Script plutusV2Script = new PlutusV2Script();
-
-    plutusV2Script.setDescription(description);
-    plutusV2Script.setCborHex(cborHex);
-
-    return plutusV2Script;
   }
 }
