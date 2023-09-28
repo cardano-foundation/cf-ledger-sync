@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.cardanofoundation.explorer.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.CustomAddressTokenBalanceRepository;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.util.Pair;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,7 @@ public class CustomAddressTokenBalanceRepositoryImpl implements
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Retryable(retryFor = InvalidDataAccessApiUsageException.class, backoff = @Backoff(delay = 1000, multiplier = 2))
     public Collection<AddressTokenBalance> findAllByAddressFingerprintPairIn(
             Collection<Pair<String, String>> addressFingerprintPairs) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
