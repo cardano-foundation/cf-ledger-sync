@@ -1,0 +1,66 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'org.flywaydb.flyway'
+//apply plugin: 'nu.studer.jooq'
+
+if (!name.equalsIgnoreCase("components")) {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact(sourceJar) {
+                    classifier = 'sources'
+                }
+                artifact(javadocJar) {
+                    classifier = 'javadoc'
+                }
+
+                artifactId 'ledger-sync-' + project.name
+
+                pom {
+                    url = 'https://github.com/cardanofoundation/cf-ledger-sync'
+                    licenses {
+                        license {
+                            name = 'Apache License 2.0'
+                            url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                        }
+                    }
+                    developers {
+                        developer {
+//                            id = ''
+//                            name = ''
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/cardanofoundation/cf-ledger-sync'
+                        developerConnection = 'scm:git:ssh://git@github.com/cardanofoundation/cf-ledger-sync'
+                        url = 'https://github.com/cardanofoundation/cf-ledger-sync'
+                    }
+                }
+            }
+        }
+
+        repositories {
+            String ossrhUsername = System.getenv('MAVEN_USERNAME')
+            String ossrhPassword = System.getenv('MAVEN_PASSWORD')
+
+            maven {
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
+        }
+    }
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+if (isReleaseVersion && !project.hasProperty("skipSigning")) {
+    signing {
+        sign publishing.publications
+    }
+}
