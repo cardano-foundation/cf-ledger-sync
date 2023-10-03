@@ -1,13 +1,17 @@
 dependencies {
-    implementation(libs.lombok)
     implementation(libs.cbor)
     implementation(libs.bouncycastle.bcprov)
     implementation(libs.cardano.client.lib)
     implementation(libs.common.codec)
     implementation(libs.gson)
+    implementation(libs.commons.io)
 
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
+
+    testImplementation(libs.junit.engine)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.assertj.core)
 }
 
 publishing {

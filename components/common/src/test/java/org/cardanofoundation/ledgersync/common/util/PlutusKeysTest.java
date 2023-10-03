@@ -1,10 +1,11 @@
 package org.cardanofoundation.ledgersync.common.util;
 
-import com.google.common.collect.Maps;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.cardanofoundation.ledgersync.common.common.cost.mdl.CostModelKeys;
 import org.cardanofoundation.ledgersync.common.common.cost.mdl.PlutusV2Keys;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -12,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PlutusKeysTest {
 
@@ -206,14 +207,14 @@ class PlutusKeysTest {
     List<Integer> value = Arrays.asList(205665, 812, 1, 1, 1000, 571, 0, 1, 1000, 24177, 4, 1, 1000, 32, 117366, 10475, 4, 23000, 100, 23000, 100, 23000, 100, 23000, 100, 23000, 100, 23000, 100, 100, 100, 23000, 100, 19537, 32, 175354, 32, 46417, 4, 221973, 511, 0, 1, 89141, 32, 497525, 14068, 4, 2, 196500, 453240, 220, 0, 1, 1, 1000, 28662, 4, 2, 245000, 216773, 62, 1, 1060367, 12586, 1, 208512, 421, 1, 187000, 1000, 52998, 1, 80436, 32, 43249, 32, 1000, 32, 80556, 1, 57667, 4, 1000, 10, 197145, 156, 1, 197145, 156, 1, 204924, 473, 1, 208896, 511, 1, 52467, 32, 64832, 32, 65493, 32, 22558, 32, 16563, 32, 76511, 32, 196500, 453240, 220, 0, 1, 1, 69522, 11687, 0, 1, 60091, 32, 196500, 453240, 220, 0, 1, 1, 196500, 453240, 220, 0, 1, 1, 1159724, 392670, 0, 2, 806990, 30482, 4, 1927926, 82523, 4, 265318, 0, 4, 0, 85931, 32, 205665, 812, 1, 1, 41182, 32, 212342, 32, 31220, 32, 32696, 32, 43357, 32, 32247, 32, 38314, 32, 35892428, 10, 9462713, 1021, 10, 38887044, 32947, 10);
     CostModelKeys costModelKeys = new PlutusV2Keys();
     Map<String, BigInteger> actual = costModelKeys.getCostModelMap(value.stream().map(BigInteger::valueOf).collect(Collectors.toList()));
-    Assertions.assertEquals(Boolean.TRUE,Maps.difference(expectMap,actual).areEqual());
+    assertThat(actual).isEqualTo(expectMap);
   }
 
 
   @Test
   void plutusV2_3721973(){
     var gson = new Gson();
-    Type type = new TypeToken<Map<String, String>>(){}.getType();
+    Type type = new TypeToken<Map<String, String>>() {}.getType();
     Map<String, String> gsonMap = gson.fromJson("{"
         + "    bData-cpu-arguments: 1000,"
         + "    iData-cpu-arguments: 1000,"
@@ -398,6 +399,6 @@ class PlutusKeysTest {
     List<? extends Number> value = Arrays.asList(205665, 812, 1, 1, 1000, 571, 0, 1, 1000, 24177, 4, 1, 1000, 32, 117366, 10475, 4, 23000, 100, 23000, 100, 23000, 100, 23000, 100, 23000, 100, 23000, 100, 100, 100, 23000, 100, 19537, 32, 175354, 32, 46417, 4, 221973, 511, 0, 1, 89141, 32, 497525, 14068, 4, 2, 196500, 453240, 220, 0, 1, 1, 1000, 28662, 4, 2, 245000, 216773, 62, 1, 1060367, 12586, 1, 208512, 421, 1, 187000, 1000, 52998, 1, 80436, 32, 43249, 32, 1000, 32, 80556, 1, 57667, 4, 1000, 10, 197145, 156, 1, 197145, 156, 1, 204924, 473, 1, 208896, 511, 1, 52467, 32, 64832, 32, 65493, 32, 22558, 32, 16563, 32, 76511, 32, 196500, 453240, 220, 0, 1, 1, 69522, 11687, 0, 1, 60091, 32, 196500, 453240, 220, 0, 1, 1, 196500, 453240, 220, 0, 1, 1, 1159724, 392670, 0, 2, 806990, 30482, 4, 1927926, 82523, 4, 265318, 0, 4, 0, 85931, 32, 205665, 812, 1, 1, 41182, 32, 212342, 32, 31220, 32, 32696, 32, 43357, 32, 32247, 32, 38314, 32, 20000000000L, 20000000000L, 9462713, 1021, 10, 20000000000L, 0, 20000000000L);
     CostModelKeys costModelKeys = new PlutusV2Keys();
     var actual = costModelKeys.getCostModelMap(value.stream().map(number -> BigInteger.valueOf(number.longValue())).collect(Collectors.toList()));
-    Assertions.assertEquals(Boolean.TRUE,Maps.difference(expectMap,actual).areEqual());
+    assertThat(actual).isEqualTo(expectMap);
   }
 }
