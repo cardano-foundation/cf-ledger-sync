@@ -4,6 +4,7 @@ import com.bloxbean.cardano.client.crypto.Base58;
 import com.bloxbean.cardano.client.crypto.Blake2bUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -93,6 +95,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     String genesisConway; // conway have no data to handle
 
     String genesisHash;
+    GenesisData genesisData;
     final ObjectMapper objectMapper;
     final BlockRepository blockRepository;
     final SlotLeaderRepository slotLeaderRepository;
@@ -104,10 +107,9 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     final EpochParamService epochParamService;
     final GenesisFetching genesisFetching;
 
-    @Transactional
-    public void setupData(String genesisHash) {
-        this.genesisHash = genesisHash;
-        GenesisData genesisData = GenesisData.builder()
+    @PostConstruct
+    void init(){
+        genesisData = GenesisData.builder()
                 .txs(new ArrayList<>())
                 .txOuts(new ArrayList<>())
                 .build();
@@ -124,6 +126,11 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         epochParamService.setDefBabbageEpochParam(genesisData.getBabbage());
         log.info("setup genesis cost model");
         costModelService.setGenesisCostModel(genesisData.getCostModel());
+    }
+
+    @Transactional
+    public void setupData(String genesisHash) {
+        this.genesisHash = genesisHash;
         // if block table have blocks do not thing
         if (blockRepository.getBlockIdHeight().isPresent()) {
             return;
