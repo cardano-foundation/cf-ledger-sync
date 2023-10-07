@@ -1,6 +1,7 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 
 import co.nstant.in.cbor.model.Array;
+import co.nstant.in.cbor.model.SimpleValue;
 import co.nstant.in.cbor.model.UnsignedInteger;
 import com.bloxbean.cardano.client.plutus.spec.Language;
 import com.bloxbean.cardano.client.util.HexUtil;
@@ -140,6 +141,7 @@ public class CostModelServiceImpl implements CostModelService {
     private List<BigInteger> convertCborCostModelToBigIntegerList(String cborCostModel) {
         Array costModelArray = (Array) CborSerializationUtil.deserializeOne(HexUtil.decodeHexString(cborCostModel));
         return costModelArray.getDataItems().stream()
+                .filter(item -> item != SimpleValue.BREAK)
                 .map(item -> ((UnsignedInteger) item).getValue())
                 .collect(Collectors.toList());
     }
