@@ -1,35 +1,25 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.data.util.Pair;
-
 import org.cardanofoundation.explorer.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.BlockRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.EpochParamService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.EpochService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.MetricCollectorService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.SlotLeaderService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.TransactionService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.TxChartService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.BlockSyncServiceImpl;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.ArgumentMatchers.anyInt;
-
+import org.cardanofoundation.ledgersync.explorerconsumer.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.util.Pair;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyInt;
 
 @ExtendWith(MockitoExtension.class)
 class BlockSyncServiceImplTest {
@@ -95,6 +85,7 @@ class BlockSyncServiceImplTest {
     // Prev hash from block 46 preprod
     Mockito.when(aggregatedBlock.getPrevBlockHash())
         .thenReturn("45899e8002b27df291e09188bfe3aeb5397ac03546a7d0ead93aa2500860f1af");
+    Mockito.when(aggregatedBlock.getBlockNo()).thenReturn(47L);
     Mockito.when(blockDataService.getBlockSize()).thenReturn(1);
     Mockito.when(blockDataService.getFirstAndLastBlock())
         .thenReturn(Pair.of(aggregatedBlock, aggregatedBlock));
@@ -129,6 +120,7 @@ class BlockSyncServiceImplTest {
     // Prev hash from block 0 preprod
     Mockito.when(aggregatedBlock.getPrevBlockHash())
         .thenReturn("d4b8de7a11d929a323373cbab6c1a9bdc931beffff11db111cf9d57356ee1937");
+    Mockito.when(aggregatedBlock.getBlockNo()).thenReturn(1L);
     Mockito.when(blockDataService.getBlockSize()).thenReturn(1);
     Mockito.when(blockDataService.getFirstAndLastBlock())
         .thenReturn(Pair.of(aggregatedBlock, aggregatedBlock));
@@ -180,6 +172,7 @@ class BlockSyncServiceImplTest {
     // Prev hash, slot leader from block 46 preprod
     Mockito.when(aggregatedBlock.getPrevBlockHash())
         .thenReturn("45899e8002b27df291e09188bfe3aeb5397ac03546a7d0ead93aa2500860f1af");
+    Mockito.when(aggregatedBlock.getBlockNo()).thenReturn(47l);
     Mockito.when(aggregatedBlock.getSlotLeader()).thenReturn(slotLeader);
     Mockito.when(slotLeader.getHashRaw())
         .thenReturn("aae9293510344ddd636364c2673e34e03e79e3eefa8dbaa70e326f7d");
