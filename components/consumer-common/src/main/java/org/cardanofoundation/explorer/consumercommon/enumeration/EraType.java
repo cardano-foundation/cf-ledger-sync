@@ -15,7 +15,8 @@ public enum EraType {
   ALLEGRA(3),
   MARY(4),
   ALONZO(5),
-  BABBAGE(6);
+  BABBAGE(6),
+  CONWAY(7);
 
   int value;
 
@@ -33,6 +34,8 @@ public enum EraType {
         return ALONZO;
       case 6:
         return BABBAGE;
+      case 7:
+        return CONWAY;
       case 0:
         return BYRON;
       default:

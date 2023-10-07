@@ -34,14 +34,15 @@ public final class ConsumerConstant {
             Map.entry(Constant.MAINNET, FIVE_DAYS),
             Map.entry(Constant.TESTNET, FIVE_DAYS),
             Map.entry(Constant.PREPROD_TESTNET, FIVE_DAYS),
-            Map.entry(Constant.PREVIEW_TESTNET, ONE_DAYS)
+            Map.entry(Constant.PREVIEW_TESTNET, ONE_DAYS),
+            Map.entry(Constant.SANCHONET, ONE_DAYS)
     );
 
     public static Integer getShelleyEpochLength(int networkMagic) {
         return shelleyEpochLength.get(networkMagic);
     }
 
-    private static final List<Integer> networkNotStartWithByron = List.of(Constant.PREVIEW_TESTNET);
+    private static final List<Integer> networkNotStartWithByron = List.of(Constant.PREVIEW_TESTNET, Constant.SANCHONET);
 
     private static final Map<Integer, Long> mByronKnownTime = Map.ofEntries(
             Map.entry(Constant.MAINNET, MAINNET_BYRON_KNOWN_TIME),
