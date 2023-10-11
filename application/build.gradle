@@ -13,6 +13,7 @@ dependencies {
 
     implementation project(':components:common')
     implementation project(':components:consumer-common')
+    implementation project(':components:scheduler')
 
     implementation(libs.yaci.store.starter)
     implementation(libs.yaci.store.utxo.starter)

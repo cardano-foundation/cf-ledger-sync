@@ -1,0 +1,31 @@
+plugins {
+	id 'org.springframework.boot' version '3.1.4'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-configuration-processor'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation project(':components:common')
+	implementation project(':components:consumer-common')
+	implementation project(':components:scheduler')
+	runtimeOnly 'org.postgresql:postgresql'
+
+	compileOnly(libs.lombok)
+	annotationProcessor(libs.lombok)
+	annotationProcessor(libs.lombok.mapstruct.binding)
+	annotationProcessor(libs.mapstruct.processor)
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation('org.hsqldb:hsqldb')
+	testImplementation(libs.pitest)
+	testCompileOnly(libs.lombok)
+	testAnnotationProcessor(libs.lombok)
+}
+
+compileJava {
+	options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring']
+}

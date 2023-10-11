@@ -23,6 +23,7 @@ spring:
         elideSetAutoCommits: true
         maintainTimeStats: false
   # JPA specific configs
+  # JPA specific configs
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -37,24 +38,6 @@ spring:
         order_updates: true
         hbm2ddl:
           auto: none
-  ## Flyway config
-  flyway:
-    enabled: true
-    url: ${spring.datasource.url}
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
-    group: true
-    sql-migration-prefix: V
-    sql-migration-separator: __
-    sql-migration-suffixes: .sql
-    locations:
-      - classpath:db/migration/consumer
-      - classpath:db/store/{vendor}
-    validate-on-migrate: ${FLYWAY_VALIDATE:true}
-    default-schema: ${spring.jpa.properties.hibernate.default_schema}
-    schemas: ${spring.jpa.properties.hibernate.default_schema}
-    create-schemas: ${ALLOW_CREATE_SCHEMA:true}
-    out-of-order: true
   codec:
     max-in-memory-size: 10MB
 #      props: |
@@ -64,18 +47,11 @@ spring:
 logging:
   level:
     org.cardanofoundation: ${LOG:TRACE}
+server:
+  port: 8081
 
-blocks:
-  batch-size: ${BLOCKS_BATCH_SIZE:1000}
-  commitThreshold: ${COMMIT_THRESHOLD:3000}
-
-genesis:
-  byron: ${BYRON_GENESIS_URL:classpath:networks/${NETWORK}/byron-genesis.json}
-  shelley: ${SHELLEY_GENESIS_URL:classpath:networks/${NETWORK}/shelley-genesis.json}
-  alonzo: ${ALONZO_GENESIS_URL:classpath:networks/${NETWORK}/alonzo-genesis.json}
-  conway: ${CONWAY_GENESIS_URL:classpath:networks/${NETWORK}/conway-genesis.json}
-  config: ${GENESIS_CONFIG_URL:classpath:networks/${NETWORK}/config.json}
-store:
-  cardano:
-    byron-genesis-file: classpath:networks/${NETWORK}/byron-genesis.json
-    shelley-genesis-file: classpath:networks/${NETWORK}/shelley-genesis.json
+ledger-sync:
+  scheduler:
+    enabled: true
+    pool-offline-data:
+      fixed-delay: 178000

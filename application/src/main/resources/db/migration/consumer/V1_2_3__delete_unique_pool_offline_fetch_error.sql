@@ -1,0 +1,2 @@
+ALTER TABLE pool_offline_fetch_error
+DROP CONSTRAINT unique_pool_offline_fetch_error;
