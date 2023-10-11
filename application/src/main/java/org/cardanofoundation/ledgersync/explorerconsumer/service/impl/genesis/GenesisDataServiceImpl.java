@@ -44,6 +44,7 @@ import java.util.*;
 public class GenesisDataServiceImpl implements GenesisDataService {
 
     public static final String GENESIS_HASH = "GenesisHash";
+    public static final String BYRON_GENESIS_HASH = "ByronGenesisHash";
     public static final int SLOT_LEADER_LENGTH = 56;
     public static final String AVVM_DISTR = "avvmDistr";
     public static final String NON_AVVM_BALANCES = "nonAvvmBalances";
@@ -93,6 +94,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     String genesisAlonzo;
     @Value("${genesis.conway}")
     String genesisConway; // conway have no data to handle
+    @Value("${genesis.config}")
+    String genesisConfig;
 
     String genesisHash;
     GenesisData genesisData;
@@ -130,7 +133,14 @@ public class GenesisDataServiceImpl implements GenesisDataService {
 
     @Transactional
     public void setupData(String genesisHash) {
-        this.genesisHash = genesisHash;
+        if (genesisHash == null) {
+            this.genesisHash = fetchGenesisHash();
+        } else {
+            this.genesisHash = genesisHash;
+        }
+
+        log.info("Genesis hash: {}", this.genesisHash);
+
         // if block table have blocks do not thing
         if (blockRepository.getBlockIdHeight().isPresent()) {
             return;
@@ -399,6 +409,28 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             log.error("{}", e.getMessage());
             System.exit(0);
         }
+    }
+
+    /**
+     * Read genesis hash from config.json
+     */
+    public String fetchGenesisHash() {
+        String genesisConfigJson = genesisFetching.getContent(genesisConfig);
+
+        try {
+            Map<String, Object> genesisConfigJsonMap = objectMapper.readValue(genesisConfigJson,
+                    new TypeReference<>() {
+                    });
+
+            return (String) genesisConfigJsonMap.get(BYRON_GENESIS_HASH);
+        } catch (Exception e) {
+            log.error("Genesis data at {} can't parse from json to java object", genesisConfig);
+            log.error("{} value \n {}", genesisConfig, genesisConfigJson);
+            log.error("{}", e.getMessage());
+            System.exit(0);
+        }
+
+        return null;
     }
 
     /**

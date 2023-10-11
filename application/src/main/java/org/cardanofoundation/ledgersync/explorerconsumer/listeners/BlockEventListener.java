@@ -80,9 +80,8 @@ public class BlockEventListener {
         log.info("BlockEventListener.handleGenesisBlock");
         String genesisHash = genesisBlockEvent.getBlockHash();
         if (genesisHash != null && genesisHash.startsWith("Genesis")) {
-            //Yaci store returns genesis hash as "Genesis" when it is not able to find it. It happens for preview network
-            throw new IllegalStateException("Genesis hash could not be found. " +
-                    "Please set store.cardano.default-genesis-hash property in application.yml");
+            //Yaci store returns genesis hash as "Genesis" when it is not able to find it. It happens for preview/sanchonet network
+            genesisHash = null;
         }
 
         genesisDataService.setupData(genesisHash);
