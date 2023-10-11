@@ -9,7 +9,7 @@ pluginManagement {
 rootProject.name = 'ledger-sync'
 include 'components:common'
 include 'components:consumer-common'
-include 'components:scheduler-common'
+include 'components:scheduler'
 
 include 'application'
 include 'scheduler-app'

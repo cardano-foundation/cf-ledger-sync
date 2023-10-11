@@ -1,0 +1,25 @@
+dependencies {
+    implementation project(":components:common")
+    implementation project(':components:consumer-common')
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation(libs.cardano.client.lib)
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Ledger Sync Scheduler'
+                description = 'Ledger Sync Scheduler Module'
+            }
+        }
+    }
+}
