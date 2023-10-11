@@ -75,6 +75,7 @@ genesis:
   shelley: ${SHELLEY_GENESIS_URL:classpath:networks/${NETWORK}/shelley-genesis.json}
   alonzo: ${ALONZO_GENESIS_URL:classpath:networks/${NETWORK}/alonzo-genesis.json}
   conway: ${CONWAY_GENESIS_URL:classpath:networks/${NETWORK}/conway-genesis.json}
+  config: ${GENESIS_CONFIG_URL:classpath:networks/${NETWORK}/config.json}
 
 store:
   cardano:

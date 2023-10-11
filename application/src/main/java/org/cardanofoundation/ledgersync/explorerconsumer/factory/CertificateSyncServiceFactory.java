@@ -38,8 +38,13 @@ public class CertificateSyncServiceFactory extends
     public void handle(AggregatedBlock aggregatedBlock,
                        Certificate certificate, int certificateIdx, Tx tx, Redeemer redeemer,
                        Map<String, StakeAddress> stakeAddressMap) {
-        serviceMap.get(certificate.getClass()).handle(
-                aggregatedBlock, certificate, certificateIdx, tx,
-                redeemer, stakeAddressMap);
+        //TODO: This will happen for new certificates types introduced in Conway era
+        if (serviceMap.get(certificate.getClass()) == null) {
+            return;
+        } else {
+            serviceMap.get(certificate.getClass()).handle(
+                    aggregatedBlock, certificate, certificateIdx, tx,
+                    redeemer, stakeAddressMap);
+        }
     }
 }
