@@ -9,20 +9,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-configuration-processor'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 	implementation project(':components:common')
 	implementation project(':components:consumer-common')
 	implementation project(':components:scheduler')
-//	implementation(libs.yaci.store.starter)
-//	implementation(libs.yaci.store.utxo.starter)
-//	implementation(libs.yaci.store.account.starter)
-//	implementation(libs.cardano.client.lib)
-//	implementation(libs.snakeyaml)
-//	implementation(libs.guava)
-//	implementation(libs.log4j.core)
-//	implementation(libs.log4j.api)
-//	implementation(libs.map.struct)
-//	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'org.postgresql:postgresql'
 
 	compileOnly(libs.lombok)
