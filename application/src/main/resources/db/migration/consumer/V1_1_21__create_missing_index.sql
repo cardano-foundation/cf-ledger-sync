@@ -4,6 +4,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS address_tx_balance_tx_id_idx ON address_tx_bal
 CREATE INDEX IF NOT EXISTS multi_asset_supply_idx ON multi_asset (supply);
 CREATE INDEX IF NOT EXISTS multi_asset_time_idx ON multi_asset ("time");
 
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA pg_catalog;
 CREATE INDEX IF NOT EXISTS name_view_gin_lower ON multi_asset USING gin (lower(name_view) gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS pool_name_gin_lower ON pool_offline_data USING gin (lower(pool_name) gin_trgm_ops);

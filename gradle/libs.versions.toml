@@ -28,3 +28,9 @@ pitest="org.pitest:pitest:1.14.2"
 junit-engine="org.junit.jupiter:junit-jupiter-engine:5.9.0"
 junit-api="org.junit.jupiter:junit-jupiter-api:5.9.0"
 assertj-core="org.assertj:assertj-core:3.23.1"
+
+jackson-core="com.fasterxml.jackson.core:jackson-core:2.15.2"
+jackson-annotation="com.fasterxml.jackson.core:jackson-annotations:2.15.2"
+
+jgit="org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
+javax-api="javax.xml.bind:jaxb-api:2.2.3"
