@@ -103,8 +103,8 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         block.setSlotNo(aggregatedBlock.getSlotNo());
         block.setBlockNo(aggregatedBlock.getBlockNo());
 
-        if (Boolean.FALSE.equals(aggregatedBlock.getIsGenesis())) {
-
+        if (Boolean.FALSE.equals(aggregatedBlock.getIsGenesis())
+                && aggregatedBlock.getBlockNo() != null && aggregatedBlock.getBlockNo() != 0) {
             Optional.ofNullable(blockMap.get(aggregatedBlock.getPrevBlockHash())) //TODO refactor
                     .or(() -> blockRepository.findBlockByHash(aggregatedBlock.getPrevBlockHash()))
                     .ifPresentOrElse(block::setPrevious, () -> {

@@ -12,6 +12,7 @@ public final class Constant {
   public static final int TESTNET = 1097911063;
   public static final int PREPROD_TESTNET = 1;
   public static final int PREVIEW_TESTNET = 2;
+  public static final int SANCHONET = 4;
   public static final int MAINNET = 764824073;
 
   public static final String LOVELACE = "LOVELACE";

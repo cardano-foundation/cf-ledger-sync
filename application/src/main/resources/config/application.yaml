@@ -23,7 +23,6 @@ spring:
         elideSetAutoCommits: true
         maintainTimeStats: false
   # JPA specific configs
-  # JPA specific configs
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -75,6 +74,7 @@ genesis:
   shelley: ${SHELLEY_GENESIS_URL:classpath:networks/${NETWORK}/shelley-genesis.json}
   alonzo: ${ALONZO_GENESIS_URL:classpath:networks/${NETWORK}/alonzo-genesis.json}
   conway: ${CONWAY_GENESIS_URL:classpath:networks/${NETWORK}/conway-genesis.json}
+  config: ${GENESIS_CONFIG_URL:classpath:networks/${NETWORK}/config.json}
 store:
   cardano:
     byron-genesis-file: classpath:networks/${NETWORK}/byron-genesis.json
