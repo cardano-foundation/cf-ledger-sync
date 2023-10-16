@@ -16,8 +16,6 @@ dependencies {
     implementation project(':components:scheduler')
 
     implementation(libs.yaci.store.starter)
-    implementation(libs.yaci.store.utxo.starter)
-    implementation(libs.yaci.store.account.starter)
 
     implementation(libs.cardano.client.lib)
 
