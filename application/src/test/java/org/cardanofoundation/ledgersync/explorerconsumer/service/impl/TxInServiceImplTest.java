@@ -1,5 +1,5 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
-;
+
 import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
 import org.cardanofoundation.explorer.consumercommon.entity.*;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx.TxBuilder;
