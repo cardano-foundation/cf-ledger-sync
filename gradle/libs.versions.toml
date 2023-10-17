@@ -1,7 +1,5 @@
 [libraries]
-yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.13-0bfab9f-SNAPSHOT"
-yaci-store-utxo-starter="com.bloxbean.cardano:yaci-store-utxo-spring-boot-starter:0.0.13-0bfab9f-SNAPSHOT"
-yaci-store-account-starter="com.bloxbean.cardano:yaci-store-account-spring-boot-starter:0.0.13-0bfab9f-SNAPSHOT"
+yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.13-b1e2780-SNAPSHOT"
 
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.0"
 snakeyaml="org.yaml:snakeyaml:2.0"
@@ -10,7 +8,7 @@ log4j-api="org.apache.logging.log4j:log4j-api:2.20.0"
 log4j-core="org.apache.logging.log4j:log4j-core:2.20.0"
 jakarta-validation-api="jakarta.validation:jakarta.validation-api:3.0.2"
 
-lombok="org.projectlombok:lombok:1.18.26"
+lombok="org.projectlombok:lombok:1.18.30"
 lombok-mapstruct-binding="org.projectlombok:lombok-mapstruct-binding:0.2.0"
 map-struct="org.mapstruct:mapstruct:1.5.3.Final"
 mapstruct-processor="org.mapstruct:mapstruct-processor:1.5.3.Final"
