@@ -9,6 +9,7 @@ import org.cardanofoundation.explorer.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.explorerconsumer.projection.AddressTxBalanceProjection;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.*;
+import org.cardanofoundation.ledgersync.explorerconsumer.repository.custom.CustomAddressTokenBalanceRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AddressBalanceService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
@@ -42,6 +43,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     AddressTokenRepository addressTokenRepository;
     AddressTxBalanceRepository addressTxBalanceRepository;
     AddressTokenBalanceRepository addressTokenBalanceRepository;
+    CustomAddressTokenBalanceRepository customAddressTokenBalanceRepository;
     StakeAddressRepository stakeAddressRepository;
 
     MultiAssetService multiAssetService;
@@ -163,14 +165,14 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
 
         // Find all address token balance records
-        var addressTokenBalanceMap = addressTokenBalanceRepository
+        var addressTokenBalanceMap = customAddressTokenBalanceRepository
                 .findAllByAddressMultiAssetIdPairIn(addressMultiAssetIdPairs)
                 .stream()
                 .collect(Collectors.toMap(
                         addressTokenBalance ->
                                 Pair.of(addressTokenBalance.getAddressId(),
                                         addressTokenBalance.getMultiAssetId()),
-                        Function.identity()
+                        addressTokenBalance -> addressTokenBalanceRepository.findById(addressTokenBalance.getId()).get()
                 ));
 
         // Rollback address native balances
@@ -370,14 +372,14 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         var queryBatches = Lists.partition(
                 new ArrayList<>(addressFingerprintPairs), ADDRESS_TOKEN_BALANCE_BATCH_QUERY_SIZE);
 
-        queryBatches.parallelStream().forEach(batch -> addressTokenBalanceRepository
+        queryBatches.parallelStream().forEach(batch -> customAddressTokenBalanceRepository
                 .findAllByAddressFingerprintPairIn(batch)
                 .parallelStream()
                 .forEach(addressTokenBalance -> {
                     Pair<Long, Long> key = Pair.of(
                             addressTokenBalance.getAddressId(),
                             addressTokenBalance.getMultiAssetId());
-                    addressTokenBalanceMap.put(key, addressTokenBalance);
+                    addressTokenBalanceMap.put(key, addressTokenBalanceRepository.findById(addressTokenBalance.getId()).get());
                 }));
         return addressTokenBalanceMap;
     }
