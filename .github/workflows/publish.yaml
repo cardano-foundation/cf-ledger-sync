@@ -50,9 +50,9 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ steps.metadata.outputs.DOCKER_LATEST_IMAGE_TAG }}
-            ${{ secrets.PRIVATE_DOCKER_REGISTRY_URL }}/${{ steps.metadata.output.DOCKER_IMAGE_NAME }}:${{ steps.metadata.outputs.ARTIFACT_VERSION }}
-            ${{ secrets.PRIVATE_DOCKER_REGISTRY_URL }}/${{ steps.metadata.output.DOCKER_IMAGE_NAME }}:${{ steps.metdata.outputs.ARTIFACT_VERSION }}-${{ steps.metadata.outputs.GITHUB_RUN_ID }}
+            ${{ env.DOCKER_LATEST_IMAGE_TAG }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.ARTIFACT_VERSION }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
           build-args: |
             PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
             PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
