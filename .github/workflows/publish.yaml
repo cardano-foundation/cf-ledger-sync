@@ -29,8 +29,9 @@ jobs:
           DOCKER_IMAGE_NAME=$(basename ${GITHUB_REPOSITORY})
 
           echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-          echo "ARTIFACT_VERSION=${CURRENT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          echo "ARTIFACT_VERSION=${ARTIFACT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "DOCKER_LATEST_IMAGE_TAG=${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/${DOCKER_IMAGE_NAME}:latest" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          echo "GITHUB_RUN_ID=${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
       - name: Docker Login
         uses: docker/login-action@v2
