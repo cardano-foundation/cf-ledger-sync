@@ -81,7 +81,7 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         epochService.handleEpoch(allAggregatedBlocks);
 
         // Handle epoch param
-        epochParamService.handleEpochParams(firstBlock.getNetwork());
+        epochParamService.handleEpochParams();
 
         // Cache latest txs
         aggregatedDataCachingService.saveLatestTxs();

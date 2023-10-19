@@ -6,12 +6,12 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.cardanofoundation.ledgersync.common.common.Era;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
-import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.MetricCollectorService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
-@RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class MetricCollectorServiceImpl implements MetricCollectorService {
 
@@ -37,6 +36,13 @@ public class MetricCollectorServiceImpl implements MetricCollectorService {
     Counter blockProcessingCounter;
     AtomicReference<Float> networkSyncPercent;
     Long timeStartEra;
+
+    final GenesisDataService genesisDataService;
+
+    public MetricCollectorServiceImpl(MeterRegistry meterRegistry, @Lazy GenesisDataService genesisDataService) {
+        this.meterRegistry = meterRegistry;
+        this.genesisDataService = genesisDataService;
+    }
 
     @PostConstruct
     private void init() {
@@ -105,7 +111,7 @@ public class MetricCollectorServiceImpl implements MetricCollectorService {
 
 
     public void collectNetworkSyncPercentMetric(AggregatedBlock block) {
-        Long startDate = ConsumerConstant.getByronKnownTime(block.getNetwork());
+        Long startDate = genesisDataService.getByronKnownTime();
         if (Objects.isNull(startDate)) {
             return;
         }

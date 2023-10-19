@@ -7,4 +7,7 @@ public interface GenesisDataService {
     @Transactional
     void setupData(String genesisHash);
 
+    Long getByronKnownTime();
+
+    Integer getShelleyEpochLength();
 }

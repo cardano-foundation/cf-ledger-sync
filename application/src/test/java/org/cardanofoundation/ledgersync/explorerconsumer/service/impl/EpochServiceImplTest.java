@@ -7,11 +7,10 @@ import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlo
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.EpochRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxRepository;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.EpochServiceImpl;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class EpochServiceImplTest {
@@ -31,6 +30,7 @@ class EpochServiceImplTest {
         EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
         TxRepository txRepository = Mockito.mock(TxRepository.class);
         AggregatedDataCachingService aggregatedDataCachingService = Mockito.mock(AggregatedDataCachingService.class);
+        GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
         AggregatedBlock aggregatedBlock = Mockito.mock(AggregatedBlock.class);
         Epoch epoch = new Epoch();
         Era epochEra = Era.BYRON;
@@ -51,7 +51,7 @@ class EpochServiceImplTest {
         Optional<Epoch> epochOptional = Optional.of(epoch);
         Mockito.when(epochRepository.findEpochByNo(32231)).thenReturn(epochOptional);
 
-        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService);
+        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService, genesisDataService);
 
         assertEquals(BigInteger.valueOf(1000), epoch.getFees());
         assertEquals(BigInteger.valueOf(10), epoch.getOutSum());
@@ -70,6 +70,7 @@ class EpochServiceImplTest {
         EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
         TxRepository txRepository = Mockito.mock(TxRepository.class);
         AggregatedDataCachingService aggregatedDataCachingService = Mockito.mock(AggregatedDataCachingService.class);
+        GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
         AggregatedBlock aggregatedBlock = Mockito.mock(AggregatedBlock.class);
         Era epochEra = Era.BYRON;
 
@@ -77,7 +78,7 @@ class EpochServiceImplTest {
         Mockito.when(aggregatedBlock.getEra()).thenReturn(epochEra);
         Mockito.when(aggregatedBlock.getTxList()).thenReturn(null);
 
-        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService);
+        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService,genesisDataService);
 
         epochService.handleEpoch(List.of(aggregatedBlock));
         Mockito.verify(epochRepository,Mockito.times(1)).findEpochByNo(32231);
@@ -90,7 +91,8 @@ class EpochServiceImplTest {
         EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
         TxRepository txRepository = Mockito.mock(TxRepository.class);
         AggregatedDataCachingService aggregatedDataCachingService = Mockito.mock(AggregatedDataCachingService.class);
-        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService);
+        GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
+        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService,genesisDataService);
         Epoch epoch = Mockito.mock(Epoch.class);
 
         List<Epoch> listEpoch = Arrays.asList(epoch);
@@ -114,7 +116,8 @@ class EpochServiceImplTest {
         EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
         TxRepository txRepository = Mockito.mock(TxRepository.class);
         AggregatedDataCachingService aggregatedDataCachingService = Mockito.mock(AggregatedDataCachingService.class);
-        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService);
+        GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
+        EpochServiceImpl epochService = new EpochServiceImpl(epochRepository, txRepository, aggregatedDataCachingService, genesisDataService);
         Epoch epoch = Mockito.mock(Epoch.class);
 
         List<Epoch> listEpoch = Arrays.asList(epoch);

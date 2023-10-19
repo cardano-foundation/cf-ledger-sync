@@ -15,5 +15,5 @@ public interface EpochParamService {
      * Handle epoch params
      */
     @Transactional
-    void handleEpochParams(int networkMagic);
+    void handleEpochParams();
 }

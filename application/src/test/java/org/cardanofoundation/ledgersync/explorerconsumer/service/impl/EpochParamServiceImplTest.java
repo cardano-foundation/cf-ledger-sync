@@ -1,14 +1,10 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.cardanofoundation.explorer.consumercommon.entity.Block;
 import org.cardanofoundation.explorer.consumercommon.entity.Epoch;
 import org.cardanofoundation.explorer.consumercommon.entity.EpochParam;
 import org.cardanofoundation.explorer.consumercommon.entity.ParamProposal;
 import org.cardanofoundation.explorer.consumercommon.enumeration.EraType;
-import org.cardanofoundation.ledgersync.common.common.constant.Constant;
 import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
 import org.cardanofoundation.ledgersync.explorerconsumer.mapper.EpochParamMapper;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.BlockRepository;
@@ -16,14 +12,16 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.EpochParamRe
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.EpochRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.ParamProposalRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.CostModelService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.EpochParamServiceImpl;
-import org.mockito.Mockito;
-
-import static org.mockito.ArgumentMatchers.any;
-
+import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 
 class EpochParamServiceImplTest {
 
@@ -38,6 +36,7 @@ class EpochParamServiceImplTest {
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
     CostModelService costModelService = Mockito.mock(CostModelService.class);
+    GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
     EpochParam defAlonzoEpochParam = Mockito.mock(EpochParam.class);
@@ -51,12 +50,13 @@ class EpochParamServiceImplTest {
     Mockito.when(epochRepository.findAll()).thenReturn(epoches);
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
-        paramProposalRepository, epochParamRepository, epochRepository, costModelService,
+        paramProposalRepository, epochParamRepository, epochRepository, costModelService, genesisDataService,
         epochParamMapper);
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
 
-    epochParamServiceImpl.handleEpochParams(Constant.MAINNET);
+    epochParamServiceImpl.handleEpochParams();
+
   }
 
   @Test
@@ -66,6 +66,7 @@ class EpochParamServiceImplTest {
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
     CostModelService costModelService = Mockito.mock(CostModelService.class);
+    GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
     EpochParam defAlonzoEpochParam = Mockito.mock(EpochParam.class);
@@ -76,6 +77,7 @@ class EpochParamServiceImplTest {
     Mockito.when(epoch.getNo()).thenReturn(34);
     Mockito.when(epoch.getMaxSlot()).thenReturn(ConsumerConstant.FIVE_DAYS);
     Mockito.when(epoch.getEra()).thenReturn(EraType.valueOf(EraType.SHELLEY.getValue()));
+    Mockito.when(genesisDataService.getShelleyEpochLength()).thenReturn(ConsumerConstant.FIVE_DAYS);
     Mockito.when(epochRepository.findEpochNoByMaxSlotAndEpochNoMoreThanLastEpochParam(
             Mockito.eq(ConsumerConstant.FIVE_DAYS), Mockito.anyInt()))
         .thenReturn(List.of(34));
@@ -86,11 +88,11 @@ class EpochParamServiceImplTest {
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
         paramProposalRepository, epochParamRepository, epochRepository,
-        costModelService, epochParamMapper);
+        costModelService, genesisDataService, epochParamMapper);
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
     Assertions.assertThrows(RuntimeException.class,
-        () -> epochParamServiceImpl.handleEpochParams(any(Integer.class)));
+            epochParamServiceImpl::handleEpochParams);
     Mockito.verify(epochParamRepository, Mockito.times(0)).save(any());
   }
 
@@ -101,6 +103,7 @@ class EpochParamServiceImplTest {
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
     CostModelService costModelService = Mockito.mock(CostModelService.class);
+    GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
     EpochParam defAlonzoEpochParam = Mockito.mock(EpochParam.class);
@@ -118,6 +121,7 @@ class EpochParamServiceImplTest {
     Mockito.when(epoch2.getNo()).thenReturn(2);
     Mockito.when(epoch2.getMaxSlot()).thenReturn(ConsumerConstant.BYRON_SLOT);
     Mockito.when(epoch2.getEra()).thenReturn(EraType.valueOf(EraType.BYRON.getValue()));
+    Mockito.when(genesisDataService.getShelleyEpochLength()).thenReturn(ConsumerConstant.FIVE_DAYS);
     Mockito.when(epochRepository.findEpochNoByMaxSlotAndEpochNoMoreThanLastEpochParam(
             Mockito.eq(ConsumerConstant.FIVE_DAYS), Mockito.anyInt()))
         .thenReturn(List.of(3));
@@ -132,11 +136,11 @@ class EpochParamServiceImplTest {
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
         paramProposalRepository, epochParamRepository, epochRepository,
-        costModelService, epochParamMapper);
+        costModelService, genesisDataService, epochParamMapper);
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
 
-    epochParamServiceImpl.handleEpochParams(Constant.MAINNET);
+    epochParamServiceImpl.handleEpochParams();
     Mockito.verify(epochParamRepository, Mockito.times(1)).save(any());
     Mockito.verify(epochParamMapper, Mockito.times(2))
         .updateByEpochParam(any(), any());
@@ -149,6 +153,7 @@ class EpochParamServiceImplTest {
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
     CostModelService costModelService = Mockito.mock(CostModelService.class);
+    GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
     EpochParam defAlonzoEpochParam = Mockito.mock(EpochParam.class);
@@ -169,6 +174,7 @@ class EpochParamServiceImplTest {
     Mockito.when(epochRepository.findEpochNoByMaxSlotAndEpochNoMoreThanLastEpochParam(
             Mockito.eq(ConsumerConstant.FIVE_DAYS), Mockito.anyInt()))
         .thenReturn(List.of(5));
+    Mockito.when(genesisDataService.getShelleyEpochLength()).thenReturn(ConsumerConstant.FIVE_DAYS);
     Optional<Epoch> optionalEpoch = Optional.of(epoch);
     Optional<Epoch> optionalEpoch2 = Optional.of(epoch2);
 
@@ -184,11 +190,11 @@ class EpochParamServiceImplTest {
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
         paramProposalRepository, epochParamRepository, epochRepository,
-        costModelService, epochParamMapper);
+        costModelService, genesisDataService, epochParamMapper);
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
 
-    epochParamServiceImpl.handleEpochParams(Constant.MAINNET);
+    epochParamServiceImpl.handleEpochParams();
     Mockito.verify(epochParamRepository, Mockito.times(1)).save(any());
     Mockito.verify(epochParamMapper, Mockito.times(2))
         .updateByEpochParam(any(), any());

@@ -12,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.explorer.consumercommon.entity.*;
 import org.cardanofoundation.explorer.consumercommon.enumeration.TokenType;
 import org.cardanofoundation.ledgersync.common.common.Era;
+import org.cardanofoundation.ledgersync.common.common.constant.Constant;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.*;
+import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
 import org.cardanofoundation.ledgersync.explorerconsumer.converter.AvvmAddressConverter;
 import org.cardanofoundation.ledgersync.explorerconsumer.converter.CostModelConverter;
 import org.cardanofoundation.ledgersync.explorerconsumer.dto.GenesisData;
@@ -85,6 +87,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     public static final String EX_UNITS_MEM = "exUnitsMem";
     public static final String EX_UNITS_STEPS = "exUnitsSteps";
     public static final String MAX_VALUE_SIZE = "maxValueSize";
+    public static final String EPOCH_LENGTH = "epochLength";
 
     @Value("${genesis.byron}")
     String genesisByron;
@@ -99,6 +102,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
 
     String genesisHash;
     GenesisData genesisData;
+    Integer shelleyEpochLength;
+    Long byronKnownTime;
     final ObjectMapper objectMapper;
     final BlockRepository blockRepository;
     final SlotLeaderRepository slotLeaderRepository;
@@ -206,6 +211,16 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         blockSyncService.startBlockSyncing();
     }
 
+    @Override
+    public Long getByronKnownTime() {
+        return byronKnownTime;
+    }
+
+    @Override
+    public Integer getShelleyEpochLength() {
+        return shelleyEpochLength;
+    }
+
     /**
      * Fetching data from byron-genesis.json link as json string then deserialize json string into map
      * for extracting, mapping to Java object. If Webclient can't fetch data from it will retry 10
@@ -232,6 +247,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             }
 
             var epochOfSeconds = Long.valueOf(genesisByronJsonMap.get(START_TIME).toString());
+            byronKnownTime = epochOfSeconds;
             genesisData.setStartTime(
                     Timestamp.valueOf(LocalDateTime.ofEpochSecond(epochOfSeconds, 0, ZoneOffset.UTC)));
 
@@ -377,6 +393,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     new TypeReference<>() {
                     });
 
+            shelleyEpochLength = Integer.parseInt(genesisShelleyJsonMap.get(EPOCH_LENGTH).toString());
+
             var protocolParams = (Map<String, Object>) genesisShelleyJsonMap.get(PROTOCOL_PARAMS);
             var extraEntropy = (Map<String, Object>) protocolParams.get(EXTRA_ENTROPY);
             var protocolVersion = (Map<String, Object>) protocolParams.get(PROTOCOL_VERSION);
@@ -403,6 +421,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .build();
 
             genesisData.setShelley(genesisShelleyProtocols);
+
         } catch (Exception e) {
             log.error("Genesis data at {} can't parse from json to java object", genesisShelley);
             log.error("{} value \n {}", genesisShelley, genesisShelleyJson);

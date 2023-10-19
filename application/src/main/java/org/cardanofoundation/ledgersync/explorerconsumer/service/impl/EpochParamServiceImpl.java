@@ -1,7 +1,6 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.explorer.consumercommon.entity.Block;
@@ -16,17 +15,17 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.EpochReposit
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.ParamProposalRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.CostModelService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.EpochParamService;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import static org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant.getShelleyEpochLength;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
 @Service
 public class EpochParamServiceImpl implements EpochParamService {
 
@@ -35,11 +34,25 @@ public class EpochParamServiceImpl implements EpochParamService {
     final EpochParamRepository epochParamRepository;
     final EpochRepository epochRepository;
     final CostModelService costModelService;
+    final GenesisDataService genesisDataService;
     final EpochParamMapper epochParamMapper;
-
     EpochParam defShelleyEpochParam;
     EpochParam defAlonzoEpochParam;
     EpochParam defBabbageEpochParam;
+
+    public EpochParamServiceImpl(BlockRepository blockRepository, ParamProposalRepository paramProposalRepository,
+                                 EpochParamRepository epochParamRepository, EpochRepository epochRepository,
+                                 CostModelService costModelService,
+                                 @Lazy GenesisDataService genesisDataService,
+                                 EpochParamMapper epochParamMapper) {
+        this.blockRepository = blockRepository;
+        this.paramProposalRepository = paramProposalRepository;
+        this.epochParamRepository = epochParamRepository;
+        this.epochRepository = epochRepository;
+        this.costModelService = costModelService;
+        this.genesisDataService = genesisDataService;
+        this.epochParamMapper = epochParamMapper;
+    }
 
     @Override
     public void setDefShelleyEpochParam(EpochParam defShelleyEpochParam) {
@@ -57,14 +70,14 @@ public class EpochParamServiceImpl implements EpochParamService {
     }
 
     @Override
-    public void handleEpochParams(int networkMagic) {
+    public void handleEpochParams() {
         Integer lastEpochParam = epochParamRepository.findLastEpochParam()
                 .map(EpochParam::getEpochNo)
                 .orElse(0);
 
         epochRepository
                 .findEpochNoByMaxSlotAndEpochNoMoreThanLastEpochParam(
-                        getShelleyEpochLength(networkMagic), lastEpochParam)
+                        genesisDataService.getShelleyEpochLength(), lastEpochParam)
                 .forEach(this::handleEpochParam);
     }
 

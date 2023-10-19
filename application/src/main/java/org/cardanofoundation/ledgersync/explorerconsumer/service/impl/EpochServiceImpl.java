@@ -1,6 +1,5 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.explorer.consumercommon.entity.Block;
 import org.cardanofoundation.explorer.consumercommon.entity.Epoch;
@@ -14,6 +13,8 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.EpochReposit
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.EpochService;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -24,17 +25,24 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant.getShelleyEpochLength;
-
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class EpochServiceImpl implements EpochService {
 
     private final EpochRepository epochRepository;
     private final TxRepository txRepository;
 
     private final AggregatedDataCachingService aggregatedDataCachingService;
+    private final GenesisDataService genesisDataService;
+
+    public EpochServiceImpl(EpochRepository epochRepository, TxRepository txRepository,
+                            AggregatedDataCachingService aggregatedDataCachingService,
+                            @Lazy GenesisDataService genesisDataService) {
+        this.epochRepository = epochRepository;
+        this.txRepository = txRepository;
+        this.aggregatedDataCachingService = aggregatedDataCachingService;
+        this.genesisDataService = genesisDataService;
+    }
 
     @Override
     public void handleEpoch(Collection<AggregatedBlock> aggregatedBlocks) {
@@ -74,8 +82,7 @@ public class EpochServiceImpl implements EpochService {
                     .no(aggregatedBlock.getEpochNo())
                     .maxSlot(aggregatedBlock.getEra() == Era.BYRON ?
                             ConsumerConstant.BYRON_SLOT :
-                            getShelleyEpochLength(
-                                    aggregatedBlock.getNetwork()).intValue())
+                            genesisDataService.getShelleyEpochLength())
                     .era(eraType)
                     .build();
             epochMap.put(entityEpoch.getNo(), entityEpoch);

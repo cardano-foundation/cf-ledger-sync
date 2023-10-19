@@ -3,7 +3,6 @@ package org.cardanofoundation.ledgersync.explorerconsumer.constant;
 import org.cardanofoundation.ledgersync.common.common.constant.Constant;
 
 import java.util.List;
-import java.util.Map;
 
 public final class ConsumerConstant {
 
@@ -25,34 +24,7 @@ public final class ConsumerConstant {
     public static final String BYTE_NULL = "\u0000";
     public static final String UNDERSCORE = "_";
 
-    public static final Long MAINNET_BYRON_KNOWN_TIME = 1506203091L;
-    public static final Long TESTNET_BYRON_KNOWN_TIME = 1564020236L;
-    public static final Long PREPROD_BYRON_KNOWN_TIME = 1654041640L;
-    public static final Long PREVIEW_SHELLEY_KNOWN_TIME = 1666656000L;
-
-    private static final Map<Integer, Integer> shelleyEpochLength = Map.ofEntries(
-            Map.entry(Constant.MAINNET, FIVE_DAYS),
-            Map.entry(Constant.TESTNET, FIVE_DAYS),
-            Map.entry(Constant.PREPROD_TESTNET, FIVE_DAYS),
-            Map.entry(Constant.PREVIEW_TESTNET, ONE_DAYS),
-            Map.entry(Constant.SANCHONET, ONE_DAYS)
-    );
-
-    public static Integer getShelleyEpochLength(int networkMagic) {
-        return shelleyEpochLength.get(networkMagic);
-    }
-
     private static final List<Integer> networkNotStartWithByron = List.of(Constant.PREVIEW_TESTNET, Constant.SANCHONET);
-
-    private static final Map<Integer, Long> mByronKnownTime = Map.ofEntries(
-            Map.entry(Constant.MAINNET, MAINNET_BYRON_KNOWN_TIME),
-            Map.entry(Constant.TESTNET, TESTNET_BYRON_KNOWN_TIME),
-            Map.entry(Constant.PREPROD_TESTNET, PREPROD_BYRON_KNOWN_TIME)
-    );
-
-    public static Long getByronKnownTime(int networkMagic) {
-        return mByronKnownTime.get(networkMagic);
-    }
 
     public static List<Integer> getNetworkNotStartWithByron() {
         return networkNotStartWithByron;
