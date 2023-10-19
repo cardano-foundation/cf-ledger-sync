@@ -151,7 +151,7 @@ class BlockSyncServiceImplTest {
     Mockito.verifyNoMoreInteractions(slotLeaderService);
     Mockito.verify(epochService, Mockito.times(1)).handleEpoch(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(epochService);
-    Mockito.verify(epochParamService, Mockito.times(1)).handleEpochParams(anyInt());
+    Mockito.verify(epochParamService, Mockito.times(1)).handleEpochParams();
     Mockito.verifyNoMoreInteractions(epochParamService);
     Mockito.verify(txChartService, Mockito.times(1)).handleTxChart(Mockito.any());
     Mockito.verifyNoMoreInteractions(txChartService);
@@ -209,7 +209,7 @@ class BlockSyncServiceImplTest {
     Mockito.verifyNoMoreInteractions(slotLeaderService);
     Mockito.verify(epochService, Mockito.times(1)).handleEpoch(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(epochService);
-    Mockito.verify(epochParamService, Mockito.times(1)).handleEpochParams(anyInt());
+    Mockito.verify(epochParamService, Mockito.times(1)).handleEpochParams();
     Mockito.verifyNoMoreInteractions(epochParamService);
     Mockito.verify(txChartService, Mockito.times(1)).handleTxChart(Mockito.any());
     Mockito.verifyNoMoreInteractions(txChartService);
