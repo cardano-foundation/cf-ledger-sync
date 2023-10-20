@@ -2,12 +2,13 @@ package org.cardanofoundation.ledgersync.explorerconsumer.service;
 
 
 import com.bloxbean.cardano.client.api.util.AssetUtil;
-import com.bloxbean.cardano.client.transaction.spec.Asset;
+import com.bloxbean.cardano.yaci.core.util.HexUtil;
 import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedAddress;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTxOut;
+import org.cardanofoundation.ledgersync.explorerconsumer.util.ConsumerAssetUtil;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -67,8 +68,8 @@ public abstract class BlockAggregatorService<T> // NOSONAR
                         //byte[] assetName = amount.getAssetName();
                         String assetName = amount.getAssetName();
                         String policyId = amount.getPolicyId();
-                        String fingerPrint = AssetUtil.calculateFingerPrint(policyId, new Asset(assetName, BigInteger.ZERO).getNameAsHex());
-                        String fingerprint = fingerPrint;
+                        String assetNameAsHex = HexUtil.encodeHexString(ConsumerAssetUtil.assetNameToBytes(assetName), true);
+                        String fingerprint = AssetUtil.calculateFingerPrint(policyId, assetNameAsHex);
                         BigInteger quantity = amount.getQuantity();
                         aggregatedAddressBalance.addAssetBalance(txHash, fingerprint, quantity);
                     });
