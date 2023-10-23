@@ -14,7 +14,6 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.MultiAssetRe
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.MultiAssetTxOutRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.MultiAssetServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +32,7 @@ import org.springframework.util.MultiValueMap;
 import java.math.BigInteger;
 import java.util.*;
 
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.ConsumerAssetUtil.assetNameToBytes;
+import static org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil.assetNameToBytes;
 
 @ExtendWith(MockitoExtension.class)
 class MultiAssetServiceImplTest {

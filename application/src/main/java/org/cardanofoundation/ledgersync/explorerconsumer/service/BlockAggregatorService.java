@@ -8,7 +8,7 @@ import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedAdd
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTxOut;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.ConsumerAssetUtil;
+import org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -68,7 +68,7 @@ public abstract class BlockAggregatorService<T> // NOSONAR
                         //byte[] assetName = amount.getAssetName();
                         String assetName = amount.getAssetName();
                         String policyId = amount.getPolicyId();
-                        String assetNameAsHex = HexUtil.encodeHexString(ConsumerAssetUtil.assetNameToBytes(assetName), true);
+                        String assetNameAsHex = HexUtil.encodeHexString(LedgerSyncAssetUtil.assetNameToBytes(assetName), true);
                         String fingerprint = AssetUtil.calculateFingerPrint(policyId, assetNameAsHex);
                         BigInteger quantity = amount.getQuantity();
                         aggregatedAddressBalance.addAssetBalance(txHash, fingerprint, quantity);

@@ -21,7 +21,7 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.MultiAssetTx
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.MultiAssetService;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.ConsumerAssetUtil;
+import org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 import static com.bloxbean.cardano.yaci.core.util.Constants.LOVELACE;
 import static org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant.BATCH_QUERY_SIZE;
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.ConsumerAssetUtil.assetNameToBytes;
+import static org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil.assetNameToBytes;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -68,7 +68,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
         // Get all asset fingerprints
         Set<String> fingerprints = txWithMintAssetsList.stream()
                 .flatMap(aggregatedTx -> aggregatedTx.getMint().stream())
-                .map(amount -> ConsumerAssetUtil.getFingerPrint(assetNameToBytes(amount.getAssetName()), amount.getPolicyId()))
+                .map(amount -> LedgerSyncAssetUtil.getFingerPrint(assetNameToBytes(amount.getAssetName()), amount.getPolicyId()))
                 .collect(Collectors.toSet());
 
         /*
@@ -144,7 +144,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
              * This asset has not been minted before so mark its first appearance at current tx's
              * index and block number
              */
-            String fingerPrint = ConsumerAssetUtil.getFingerPrint(HexUtil.decodeHexString(name), policy);
+            String fingerPrint = LedgerSyncAssetUtil.getFingerPrint(HexUtil.decodeHexString(name), policy);
             blockDataService.setFingerprintFirstAppearedBlockNoAndTxIdx(
                     fingerPrint, tx.getBlock().getBlockNo(), tx.getBlockIndex());
 
@@ -176,7 +176,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
         txOutput.getAmounts().stream()
                 .filter(amount -> !LOVELACE.equals(amount.getAssetName()))
                 .forEach(amount -> {
-                    String fingerprint = ConsumerAssetUtil
+                    String fingerprint = LedgerSyncAssetUtil
                             .getFingerPrint(assetNameToBytes(amount.getAssetName()), amount.getPolicyId());
                     MaTxOut maTxOut = MaTxOut.builder()
                             .txOut(txOut)

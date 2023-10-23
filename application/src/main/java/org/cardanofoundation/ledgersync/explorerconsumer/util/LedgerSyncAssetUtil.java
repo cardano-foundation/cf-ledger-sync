@@ -5,7 +5,7 @@ import com.bloxbean.cardano.client.transaction.spec.Asset;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
-public class ConsumerAssetUtil {
+public class LedgerSyncAssetUtil {
     public static String getFingerPrint(byte[] assetName, String policyId) {
         return org.cardanofoundation.ledgersync.common.util.AssetUtil.getFingerPrint(assetName, policyId);
     }
