@@ -13,3 +13,4 @@ include 'components:scheduler'
 
 include 'application'
 include 'scheduler-app'
+include 'streamer-app'
