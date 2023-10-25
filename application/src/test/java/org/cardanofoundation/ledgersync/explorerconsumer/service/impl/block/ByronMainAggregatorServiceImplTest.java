@@ -90,7 +90,7 @@ class ByronMainAggregatorServiceImplTest {
     String pubKey = "3fb2637923c78dec4d5b932c09ac92ad445aa95da00a05edb447b40a07c59d5645187692f40e31114ad0f375532cf8e4f875740e2d7d0e343e0e14b533a31fec";
     Timestamp blockTime = Timestamp.valueOf(LocalDateTime.ofEpochSecond(
         blockTimeEpoch, 0, ZoneOffset.ofHours(0)));
-    Mockito.when(byronMainBlockEvent.getEventMetadata()).thenReturn(eventMetadata);
+    Mockito.when(byronMainBlockEvent.getMetadata()).thenReturn(eventMetadata);
     Mockito.when(byronMainBlockEvent.getByronMainBlock()).thenReturn(blockCddl);
     Mockito.when(blockCddl.getBody()).thenReturn(byronMainBody);
     Mockito.when(byronMainBody.getTxPayload()).thenReturn(Collections.emptyList());
@@ -160,7 +160,7 @@ class ByronMainAggregatorServiceImplTest {
     String pubKey = "0bdb1f5ef3d994037593f2266255f134a564658bb2df814b3b9cefb96da34fa9c888591c85b770fd36726d5f3d991c668828affc7bbe0872fd699136e664d9d8";
     Timestamp blockTime = Timestamp.valueOf(LocalDateTime.ofEpochSecond(
         blockTimeEpoch, 0, ZoneOffset.ofHours(0)));
-    Mockito.when(byronMainBlockEvent.getEventMetadata()).thenReturn(eventMetadata);
+    Mockito.when(byronMainBlockEvent.getMetadata()).thenReturn(eventMetadata);
     Mockito.when(byronMainBlockEvent.getByronMainBlock()).thenReturn(blockCddl);
     List<ByronTxPayload> byronTxPayloads = givenTxPayloadBlock23265Mainnet();
     Mockito.when(blockCddl.getBody()).thenReturn(byronMainBody);

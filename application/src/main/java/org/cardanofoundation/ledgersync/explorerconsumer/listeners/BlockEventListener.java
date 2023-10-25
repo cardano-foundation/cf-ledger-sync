@@ -59,19 +59,19 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleByronBlockEvent(ByronMainBlockEvent byronMainBlockEvent) {
-        if (checkIfBlockExists(byronMainBlockEvent.getEventMetadata())) return;
+        if (checkIfBlockExists(byronMainBlockEvent.getMetadata())) return;
 
         AggregatedBlock aggregatedBlock = byronMainAggregatorService.aggregateBlock(byronMainBlockEvent);
-        handleAggregateBlock(byronMainBlockEvent.getEventMetadata(), aggregatedBlock);
+        handleAggregateBlock(byronMainBlockEvent.getMetadata(), aggregatedBlock);
     }
 
     @EventListener
     @Transactional
     public void handleByronEbBlock(ByronEbBlockEvent byronEbBlockEvent) {
-        if (checkIfBlockExists(byronEbBlockEvent.getEventMetadata())) return;
+        if (checkIfBlockExists(byronEbBlockEvent.getMetadata())) return;
 
         AggregatedBlock aggregatedBlock = byronEbbAggregatorService.aggregateBlock(byronEbBlockEvent);
-        handleAggregateBlock(byronEbBlockEvent.getEventMetadata(), aggregatedBlock);
+        handleAggregateBlock(byronEbBlockEvent.getMetadata(), aggregatedBlock);
     }
 
     @EventListener

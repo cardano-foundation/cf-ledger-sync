@@ -49,7 +49,7 @@ public class ByronMainAggregatorServiceImpl extends BlockAggregatorService<Byron
 
     @Override
     public AggregatedBlock aggregateBlock(ByronMainBlockEvent blockEvent) {
-        return mapBlockCddlToAggregatedBlock(blockEvent.getEventMetadata(), blockEvent.getByronMainBlock());
+        return mapBlockCddlToAggregatedBlock(blockEvent.getMetadata(), blockEvent.getByronMainBlock());
     }
 
     private AggregatedBlock mapBlockCddlToAggregatedBlock(EventMetadata metadata, ByronMainBlock blockCddl) {

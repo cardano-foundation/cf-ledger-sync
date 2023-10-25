@@ -31,7 +31,7 @@ class ByronEbbAggregatorServiceImplTest {
     EventMetadata metadata = Mockito.mock(EventMetadata.class);
     ByronEbBlock blockCddl = Mockito.mock(ByronEbBlock.class);
     Mockito.when(byronEbBlockEvent.getByronEbBlock()).thenReturn(blockCddl);
-    Mockito.when(byronEbBlockEvent.getEventMetadata()).thenReturn(metadata);
+    Mockito.when(byronEbBlockEvent.getMetadata()).thenReturn(metadata);
     ByronEbHead byronEbHead = Mockito.mock(ByronEbHead.class);
 //    ByronEbBlockCons byronEbBlockCons = Mockito.mock(ByronEbBlockCons.class);
     // Block 0 preprod
