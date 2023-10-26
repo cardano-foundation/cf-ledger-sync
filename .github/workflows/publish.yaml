@@ -43,7 +43,39 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and Push docker image
+      - name: Build and Push ledger sync docker image
+        uses: docker/build-push-action@v4
+        with:
+          file: ./Dockerfile
+          context: .
+          push: true
+          target: ledger-sync
+          tags: |
+            ${{ env.DOCKER_LATEST_IMAGE_TAG }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
+          build-args: |
+            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
+            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
+            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
+
+      - name: Build and Push scheduler docker image
+        uses: docker/build-push-action@v4
+        with:
+          file: ./Dockerfile
+          context: .
+          push: true
+          target: scheduler
+          tags: |
+            ${{ env.DOCKER_LATEST_IMAGE_TAG }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
+          build-args: |
+            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
+            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
+            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
+
+      - name: Build and Push streamer docker image
         uses: docker/build-push-action@v4
         with:
           file: ./Dockerfile
@@ -51,9 +83,11 @@ jobs:
           push: true
           tags: |
             ${{ env.DOCKER_LATEST_IMAGE_TAG }}
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.ARTIFACT_VERSION }}
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
+          target: streamer
           build-args: |
+            TARGET=streamer
             PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
             PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
             PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
