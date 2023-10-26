@@ -1,0 +1,27 @@
+spring:
+  banner:
+    location: classpath:/banner.txt
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: ${SCHEMA}
+
+  flyway:
+    locations: classpath:db/store/{vendor}
+    out-of-order: true
+    schemas: ${SCHEMA}
+
+  logging:
+
+    file:
+      name: ./logs/ledger-sync-streamer.log
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          producer-properties:
+            max.request.size: 200000000
+
+      defaultBinder: ${scs_binder}

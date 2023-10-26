@@ -36,7 +36,7 @@ public class ByronEbbAggregatorServiceImpl extends BlockAggregatorService<ByronE
 
     @Override
     public AggregatedBlock aggregateBlock(ByronEbBlockEvent byronEbBlockEvent) {
-        EventMetadata metadata = byronEbBlockEvent.getEventMetadata();
+        EventMetadata metadata = byronEbBlockEvent.getMetadata();
         ByronEbBlock blockCddl = byronEbBlockEvent.getByronEbBlock();
         var blockHash = metadata.getBlockHash();
         var consensusData = blockCddl.getHeader().getConsensusData();
