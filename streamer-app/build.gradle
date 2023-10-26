@@ -34,3 +34,7 @@ dependencies {
 compileJava {
 	options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring']
 }
+
+jar {
+    enabled = false
+}
