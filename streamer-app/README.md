@@ -1,6 +1,6 @@
 ## Ledger Sync Streamer App
 
-Ledger Sync Stream app reads data from a Cardano node and publishes blockchain data to a messaging middleware like Kafka or RabbitMQ.
+Ledger Sync Streamer app reads data from a Cardano node and publishes blockchain data to a messaging middleware like Kafka or RabbitMQ.
 It publishes blockchain data in the form of events. There are various types of events that can be published by the streamer app, but you can configure which events you want to publish.
 
 As this app uses Spring Cloud Stream, it can support other supported binders in Spring Cloud Stream with some minor changes. 
