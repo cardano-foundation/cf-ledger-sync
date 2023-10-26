@@ -49,12 +49,12 @@ jobs:
           file: ./Dockerfile
           context: .
           push: true
+          target: ledger-sync
           tags: |
             ${{ env.DOCKER_LATEST_IMAGE_TAG }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
           build-args: |
-            TARGET=ledger-sync
             PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
             PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
             PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
@@ -65,12 +65,12 @@ jobs:
           file: ./Dockerfile
           context: .
           push: true
+          target: scheduler
           tags: |
             ${{ env.DOCKER_LATEST_IMAGE_TAG }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
           build-args: |
-            TARGET=scheduler
             PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
             PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
             PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
@@ -85,6 +85,7 @@ jobs:
             ${{ env.DOCKER_LATEST_IMAGE_TAG }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
+          target: streamer
           build-args: |
             TARGET=streamer
             PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
