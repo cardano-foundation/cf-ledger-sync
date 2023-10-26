@@ -120,3 +120,10 @@ For docker environment, you can set the following environment variables.
 STORE_CARDANO_SYNC-START-SLOT=<absolute_slot>
 STORE_CARDANO_SYNC-START-BLOCKHASH=<block_hash>
 ```
+
+### Kafka Configuration
+The default message size in Kafka is 1 MB. To accommodate larger JSON payloads, which can exceed 1 MB in the case of some blocks, you will need to increase this value.
+
+```
+KAFKA_MESSAGE_MAX_BYTES=20000000
+```
