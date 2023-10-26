@@ -18,7 +18,7 @@ To run the streamer app, you need to have following components:
 Events are published as JSON messages, and each event contains two fields:
 
 - metadata: Contains metadata about the event, such as block number, slot number, era, etc.
-- <payload>: Contains the actual data of the event.
+- ``<payload>``: Contains the actual data of the event.
 
 The supported events are:
 
