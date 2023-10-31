@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressTokenBalanceRepository
-        extends JpaRepository<AddressTokenBalance, Long>, CustomAddressTokenBalanceRepository {
+        extends JpaRepository<AddressTokenBalance, Long> {
 
 }
