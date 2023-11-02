@@ -82,7 +82,7 @@ jooq {
                         }
                     }
                     target {
-                        directory = file('src/main/java/generated')
+                        directory = file('src/generated')
                         packageName = 'org.cardanofoundation.ledgersync.jooq';
                     }
                     generate {
