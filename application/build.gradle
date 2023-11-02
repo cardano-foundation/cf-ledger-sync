@@ -1,5 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '3.1.4'
+    id 'nu.studer.jooq' version '8.2'
 }
 
 dependencies {
@@ -9,6 +10,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     implementation project(':components:common')
@@ -41,6 +43,61 @@ dependencies {
 
 compileJava {
     options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring']
+}
+
+dependencies {
+    jooqGenerator 'org.postgresql:postgresql'
+}
+
+ext {
+    dbUrl = 'jdbc:postgresql://localhost:5432/ledger_sync'
+    dbUser = 'postgres'
+    dbPassword = '1'
+    dbSchema = 'mainnet'
+}
+
+jooq {
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+            generationTool {
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = dbUrl
+                    user = dbUser
+                    password = dbPassword
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        includes = "${dbSchema}.*"
+                        excludes = 'FLYWAY_SCHEMA_HISTORY | UNUSED_TABLE | PREFIX_.* | SECRET_SCHEMA.SECRET_TABLE | SECRET_ROUTINE'
+                        schemata {
+                            schema {
+                                inputSchema =  dbSchema
+                                outputSchemaToDefault = true
+                            }
+                        }
+                    }
+                    target {
+                        directory = file('src/generated')
+                        packageName = 'org.cardanofoundation.ledgersync.jooq';
+                    }
+                    generate {
+                        // Generate the DAO classes
+                        daos = true
+                        // Annotate DAOs (and other types) with spring annotations, such as @Repository and @Autowired
+                        // for auto-wiring the Configuration instance, e.g. from Spring Boot's jOOQ starter
+                        springAnnotations = true
+                        // Generate Spring-specific DAOs containing @Transactional annotations
+                        springDao = true
+                    }
+                }
+            }
+        }
+    }
 }
 
 jar {

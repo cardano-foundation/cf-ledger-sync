@@ -19,6 +19,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("org.cardanofoundation.*")
 public class ExplorerConsumerApplication {
 
+    static {
+        System.setProperty("org.jooq.no-logo", "true");
+        System.setProperty("org.jooq.no-tips", "true");
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(ExplorerConsumerApplication.class, args);
     }
