@@ -1,5 +1,17 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.testcontainers:postgresql:1.18.1')
+    }
+}
+
+import org.testcontainers.containers.PostgreSQLContainer
+
 plugins {
     id 'org.springframework.boot' version '3.1.4'
+    id 'org.flywaydb.flyway' version '9.7.0'
     id 'nu.studer.jooq' version '8.2'
 }
 
@@ -45,15 +57,41 @@ compileJava {
     options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring']
 }
 
+configurations {
+    flywayMigration
+}
+
 dependencies {
+    flywayMigration 'org.postgresql:postgresql'
     jooqGenerator 'org.postgresql:postgresql'
 }
 
 ext {
-    dbUrl = 'jdbc:postgresql://localhost:5432/ledger_sync'
-    dbUser = 'postgres'
-    dbPassword = '1'
+    dbUrl = ''
+    dbUser = ''
+    dbPassword = ''
     dbSchema = 'mainnet'
+    instance = null
+}
+
+task postgresqlContainer {
+    def postgresContainer = new PostgreSQLContainer<>("postgres:14.5")
+            .withDatabaseName('ledger_sync')
+    postgresContainer.start()
+    dbUrl = postgresContainer.getJdbcUrl()
+    dbUser = postgresContainer.getUsername()
+    dbPassword = postgresContainer.getPassword()
+    instance = postgresContainer
+}
+
+flyway {
+    configurations = ['flywayMigration']
+    url = dbUrl
+    user = dbUser
+    password = dbPassword
+    locations = ['filesystem:src/main/resources/db/migration/consumer']
+    createSchemas = true
+    schemas = [dbSchema]
 }
 
 jooq {
@@ -76,7 +114,7 @@ jooq {
                         excludes = 'FLYWAY_SCHEMA_HISTORY | UNUSED_TABLE | PREFIX_.* | SECRET_SCHEMA.SECRET_TABLE | SECRET_ROUTINE'
                         schemata {
                             schema {
-                                inputSchema =  dbSchema
+                                inputSchema = dbSchema
                                 outputSchemaToDefault = true
                             }
                         }
@@ -97,6 +135,22 @@ jooq {
                 }
             }
         }
+    }
+}
+
+tasks.named('generateJooq').configure {
+    dependsOn tasks.named('postgresqlContainer')
+    dependsOn tasks.named('flywayMigrate')
+
+    inputs.files(fileTree('src/main/resources/db/migration/consumer'))
+            .withPropertyName('migrations')
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+
+    allInputsDeclared = true
+
+    doLast {
+        // stop container
+        instance.stop()
     }
 }
 
