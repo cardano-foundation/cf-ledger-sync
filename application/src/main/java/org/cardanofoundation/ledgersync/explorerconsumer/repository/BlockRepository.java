@@ -20,6 +20,8 @@ public interface BlockRepository extends JpaRepository<Block, Long> {
 
     @Query("SELECT MAX(block.blockNo) FROM Block block")
     Optional<Long> getBlockHeight();
+    @Query("SELECT MAX(block.slotNo) FROM Block block")
+    Optional<Long> getSlotHeight();
 
     @Query("SELECT MAX(block.id) FROM Block block")
     Optional<Long> getBlockIdHeight();

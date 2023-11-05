@@ -10,6 +10,7 @@ import org.cardanofoundation.ledgersync.explorerconsumer.service.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.BlockAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.ByronEbbAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.ByronMainAggregatorServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,15 @@ public class BlockEventListener {
 
     private final BlockRepository blockRepository;
     private final MetricCollectorService metricCollectorService;
-
     private final AtomicInteger blockCount = new AtomicInteger(0);
-    private AtomicLong blockHeight;
 
+    @Value("${blocks.batch-size}")
+    private Integer batchSize;
+    @Value("${blocks.commitThreshold}")
+    private Long commitThreshold;
+
+    private final AtomicLong lastMessageReceivedTime = new AtomicLong(System.currentTimeMillis());
+    private AtomicLong blockHeight;
     private long lastLog;
 
     @PostConstruct
@@ -45,7 +51,6 @@ public class BlockEventListener {
         blockHeight = new AtomicLong(blockNo);
         log.info("Block height {}", blockNo);
     }
-
 
     @EventListener
     @Transactional
@@ -119,6 +124,8 @@ public class BlockEventListener {
     private void handleAggregateBlock(EventMetadata eventMetadata, AggregatedBlock aggregatedBlock) {
         try {
             long currentTime = System.currentTimeMillis();
+            long lastReceivedTimeElapsed = currentTime - lastMessageReceivedTime.getAndSet(currentTime);
+
             if (currentTime - lastLog >= 500) {//reduce log
                 log.info("Block  number {}, slot_no {}, hash {}",
                         eventMetadata.getBlock(), eventMetadata.getSlot(), eventMetadata.getBlockHash());
@@ -156,8 +163,12 @@ public class BlockEventListener {
 
             //AggregatedBlock aggregatedBlock = aggregatorServiceFactory.aggregateBlock(eraBlock);
             blockDataService.saveAggregatedBlock(aggregatedBlock);
-            blockSyncService.startBlockSyncing();
-            blockCount.set(0);
+            int currentBlockCount = blockCount.incrementAndGet();
+            if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold) {
+                blockSyncService.startBlockSyncing();
+                blockCount.set(0);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
