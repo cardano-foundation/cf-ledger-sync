@@ -1,6 +1,8 @@
 # Ledger Sync
 
 
+[![Clean, Build](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/build.yml/badge.svg)](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/build.yml)
+
 ## Build Jar
 
 ```bash
