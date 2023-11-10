@@ -164,7 +164,7 @@ public class BlockEventListener {
             //AggregatedBlock aggregatedBlock = aggregatorServiceFactory.aggregateBlock(eraBlock);
             blockDataService.saveAggregatedBlock(aggregatedBlock);
             int currentBlockCount = blockCount.incrementAndGet();
-            if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold) {
+            if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold || eventMetadata.isSyncMode()) {
                 blockSyncService.startBlockSyncing();
                 blockCount.set(0);
             }
