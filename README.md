@@ -12,6 +12,11 @@ For more details about Streaming App, please check [here](https://github.com/car
 
 # Ledger Sync
 
+## Pre-requisites
+- Java 21
+- Cardano Node or connect to a remote Cardano node
+- PostgreSQL DB
+
 ## Build Jar
 
 ```bash
