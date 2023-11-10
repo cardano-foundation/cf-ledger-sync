@@ -2,7 +2,7 @@
 
 This repository contains the following applications:
 
-1. **Ledger Sync:** This is the main indexer application that reads data from the Cardano blockchain and writes it to a PostgreSQL database.
+1. **Ledger Sync:** This is the main indexer application that reads data from the Cardano blockchain and writes to a PostgreSQL database.
 
 2. **Ledger Sync - Scheduler App:** This is an optional application for scheduling jobs in Ledger Sync. By default, specific Ledger Sync schedule jobs are executed as part of the main Ledger Sync application, but you can also run them independently with this application. 
 
