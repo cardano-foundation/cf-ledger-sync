@@ -1,7 +1,7 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.repository.custom;
 
-import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.cardanofoundation.explorer.consumercommon.entity.Address;
 import org.cardanofoundation.explorer.consumercommon.entity.AddressTokenBalance;
@@ -9,11 +9,9 @@ import org.cardanofoundation.explorer.consumercommon.entity.MultiAsset;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
@@ -22,16 +20,10 @@ import static org.cardanofoundation.ledgersync.jooq.Tables.*;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 // TODO: add integration tests
 public class CustomAddressTokenBalanceRepository {
     private final DSLContext dsl;
-    private String schema;
-
-    public CustomAddressTokenBalanceRepository(DSLContext dsl,
-                                               @Value("${spring.jpa.properties.hibernate.default_schema}") String schema) {
-        this.dsl = dsl;
-        this.schema = schema;
-    }
 
     public List<AddressTokenBalance> findAllByAddressFingerprintPairIn(Collection<Pair<String, String>> addressFingerprintPairs) {
 
@@ -43,8 +35,6 @@ public class CustomAddressTokenBalanceRepository {
                     .and(MULTI_ASSET.FINGERPRINT.eq(fingerprint));
             condition = condition == null ? pairCondition : condition.or(pairCondition);
         }
-
-        this.dsl.setSchema(schema).execute();
 
         var query = dsl.select()
                 .from(ADDRESS_TOKEN_BALANCE)
@@ -64,8 +54,6 @@ public class CustomAddressTokenBalanceRepository {
                     .and(ADDRESS_TOKEN_BALANCE.IDENT.eq(multiAssetId));
             condition = condition == null ? pairCondition : condition.or(pairCondition);
         }
-
-        this.dsl.setSchema(schema).execute();
 
         var query = dsl.select()
                 .from(ADDRESS_TOKEN_BALANCE)
