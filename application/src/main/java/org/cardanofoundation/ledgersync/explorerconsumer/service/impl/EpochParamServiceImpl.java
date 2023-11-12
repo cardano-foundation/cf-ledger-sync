@@ -73,7 +73,7 @@ public class EpochParamServiceImpl implements EpochParamService {
     public void handleEpochParams() {
         Integer lastEpochParam = epochParamRepository.findLastEpochParam()
                 .map(EpochParam::getEpochNo)
-                .orElse(0);
+                .orElse(-1);
 
         epochRepository
                 .findEpochNoByMaxSlotAndEpochNoMoreThanLastEpochParam(
@@ -90,7 +90,7 @@ public class EpochParamServiceImpl implements EpochParamService {
         EraType curEra = getEra(epochNo);
         EraType prevEra = getEra(epochNo - BigInteger.ONE.intValue());
 
-        if (curEra == EraType.BYRON || prevEra == null) {
+        if (curEra == EraType.BYRON) {
             return;
         }
         log.info("Handling epoch param for epoch: {}", epochNo);
@@ -103,7 +103,7 @@ public class EpochParamServiceImpl implements EpochParamService {
                 epochParam -> epochParamMapper.updateByEpochParam(curEpochParam, epochParam));
 
         // setting for preview network and other network start with alonzo in future
-        if (prevEra.equals(EraType.ALONZO)) {
+        if (curEra == EraType.ALONZO && prevEra == null) {
             epochParamMapper.updateByEpochParam(curEpochParam, defShelleyEpochParam);
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
 
