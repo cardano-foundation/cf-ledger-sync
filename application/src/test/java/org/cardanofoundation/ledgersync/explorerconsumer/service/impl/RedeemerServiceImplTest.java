@@ -227,7 +227,6 @@ class RedeemerServiceImplTest {
   void shouldHandleSpendRedeemerFromFallbackTxOutSuccessfullyTest() {
     String txHash = "a4d36bf5bacf4a658dcb22b721c4d128239a5cb9dd1273f751ea2882cbace81f";
     String paymentCred = "168376d9c3f792610e5ecbfd2895de76f52d6ba06842e24d03814535";
-    TxOutProjection txOutProjection = Mockito.mock(TxOutProjection.class);
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Witnesses witnesses = Mockito.mock(Witnesses.class);
     Map<String, Tx> txMap = Map.of(txHash, Mockito.mock(Tx.class));
@@ -237,7 +236,7 @@ class RedeemerServiceImplTest {
         txOut
     );
 
-    Mockito.when(txOutProjection.getAddressHasScript()).thenReturn(Boolean.FALSE);
+    Mockito.when(txOut.getAddressHasScript()).thenReturn(Boolean.TRUE);
     Mockito.when(txOut.getPaymentCred()).thenReturn(paymentCred);
     Mockito.when(aggregatedTx.getHash()).thenReturn(txHash);
     Mockito.when(aggregatedTx.getWitnesses()).thenReturn(witnesses);
@@ -246,9 +245,6 @@ class RedeemerServiceImplTest {
     Mockito.when(witnesses.getRedeemers()).thenReturn(List.of(spendRedeemer));
     Mockito.when(redeemerDataRepository.findAllByHashIn(Mockito.anySet()))
         .thenReturn(Collections.emptyList());
-    Mockito.when(txOutRepository.findTxOutByTxHashAndTxOutIndex(
-            Mockito.anyString(), Mockito.anyShort()))
-        .thenReturn(Optional.of(txOutProjection));
 
     victim.handleRedeemers(List.of(aggregatedTx), txMap, newTxOutMap);
 

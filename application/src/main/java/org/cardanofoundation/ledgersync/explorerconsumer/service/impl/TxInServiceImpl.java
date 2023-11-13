@@ -48,6 +48,10 @@ public class TxInServiceImpl implements TxInService {
                             Map<String, Tx> txMap, Map<Pair<String, Short>, TxOut> newTxOutMap,
                             Map<Long, List<MaTxOut>> newMaTxOutMap,
                             Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap) {
+        if (CollectionUtils.isEmpty(txInMap)) {
+            return;
+        }
+
         AtomicBoolean shouldFindAssets = new AtomicBoolean(false);
         Map<Pair<String, Short>, TxOut> txOutMap = getTxOutFromTxInsMap(txInMap);
 
@@ -237,7 +241,8 @@ public class TxInServiceImpl implements TxInService {
     @Override
     public List<UnconsumeTxIn> handleUnconsumeTxIn(
             Map<String, Set<AggregatedTxIn>> unconsumedTxInMap,
-            Map<Pair<String, Short>, TxOut> newTxOutMap, Map<String, Tx> txMap) {
+            Map<Pair<String, Short>, TxOut> newTxOutMap, Map<String, Tx> txMap,
+            Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap) {
         if (CollectionUtils.isEmpty(unconsumedTxInMap)) {
             return Collections.emptyList();
         }
@@ -248,13 +253,20 @@ public class TxInServiceImpl implements TxInService {
         List<UnconsumeTxIn> unconsumeTxIns = new ArrayList<>();
         unconsumedTxInMap.forEach((txHash, unconsumedTxInSet) -> {
             Tx tx = txMap.get(txHash);
+            Map<Pair<RedeemerTag, Integer>, Redeemer> redeemerInTxMap = redeemersMap.get(txHash);
 
             unconsumedTxInSet.forEach(unconsumedTxIn -> {
+                Redeemer redeemer = null;
+                Integer redeemerPointerIdx = unconsumedTxIn.getRedeemerPointerIdx();
+                if (!CollectionUtils.isEmpty(redeemerInTxMap) && Objects.nonNull(redeemerPointerIdx)) {
+                    redeemer = redeemerInTxMap.get(Pair.of(RedeemerTag.Spend, redeemerPointerIdx));
+                }
                 TxIn txIn = handleTxIn(tx, unconsumedTxIn, txOutMap, newTxOutMap, null);
                 unconsumeTxIns.add(UnconsumeTxIn.builder()
                         .txIn(txIn.getTxInput())
                         .txOut(txIn.getTxOut())
                         .txOutIndex(txIn.getTxOutIndex())
+                        .redeemer(redeemer)
                         .build());
             });
         });
