@@ -652,7 +652,7 @@ class BlockAggregatorServiceImplTest {
 
   private static Amount buildAmount(String unit, String policyId,
                                     String assetNameB64, BigInteger quantity) {
-    return new Amount(unit, policyId, assetNameB64, quantity);
+    return new Amount(unit, policyId, assetNameB64, Base64.getDecoder().decode(assetNameB64), quantity);
   }
 
   private static Datum buildDatum(String cbor, String json) {
