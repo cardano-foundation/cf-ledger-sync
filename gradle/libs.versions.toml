@@ -1,7 +1,7 @@
 [libraries]
 yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.0.13-beta2-3e96927-SNAPSHOT"
 yaci-store-remote-starter="com.bloxbean.cardano:yaci-store-remote-spring-boot-starter:0.0.13-beta2-3e96927-SNAPSHOT"
-
+transaction-store-starter="com.bloxbean.cardano:yaci-store-transaction-spring-boot-starter:0.0.13-beta2-1dcb6ef-SNAPSHOT"
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.0"
 snakeyaml="org.yaml:snakeyaml:2.0"
 guava="com.google.guava:guava:32.1.2-jre"
@@ -33,3 +33,4 @@ jackson-annotation="com.fasterxml.jackson.core:jackson-annotations:2.15.2"
 
 jgit="org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
 javax-api="javax.xml.bind:jaxb-api:2.2.3"
+hibernate-types-60="com.vladmihalcea:hibernate-types-60:2.21.1"

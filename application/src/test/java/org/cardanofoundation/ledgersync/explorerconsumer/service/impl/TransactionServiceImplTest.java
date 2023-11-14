@@ -21,22 +21,7 @@ import org.cardanofoundation.ledgersync.explorerconsumer.dto.EUTXOWrapper;
 import org.cardanofoundation.ledgersync.explorerconsumer.factory.CertificateSyncServiceFactory;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.ExtraKeyWitnessRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.AddressBalanceService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.BatchCertificateDataService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.BlockDataService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.DatumService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.MultiAssetService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.ParamProposalService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.RedeemerService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.ReferenceInputService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.ScriptService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.StakeAddressService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.TxInService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.TxMetaDataHashService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.TxMetaDataService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.TxOutService;
-import org.cardanofoundation.ledgersync.explorerconsumer.service.WithdrawalsService;
+import org.cardanofoundation.ledgersync.explorerconsumer.service.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -114,6 +99,12 @@ class TransactionServiceImplTest {
   @Mock
   TxMetaDataHashService txMetaDataHashService;
 
+  @Mock
+  TxWitnessService txWitnessService;
+
+  @Mock
+  TxBootstrapWitnessService txBootstrapWitnessService;
+
   TransactionServiceImpl victim;
 
   @BeforeEach
@@ -124,7 +115,7 @@ class TransactionServiceImplTest {
         redeemerService, scriptService, datumService, blockDataService, txOutService, txInService,
         referenceInputService, aggregatedDataCachingService,
         certificateSyncServiceFactory, batchCertificateDataService,
-        txMetaDataHashService
+        txMetaDataHashService, txWitnessService, txBootstrapWitnessService
     );
   }
 

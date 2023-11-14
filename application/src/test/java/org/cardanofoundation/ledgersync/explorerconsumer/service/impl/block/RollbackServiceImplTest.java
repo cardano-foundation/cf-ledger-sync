@@ -7,38 +7,7 @@ import java.util.Optional;
 
 import org.cardanofoundation.explorer.consumercommon.entity.Block;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.AddressTokenRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.AddressTxBalanceRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.BlockRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.DatumRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.DelegationRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.EpochParamRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.ExtraKeyWitnessRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.FailedTxOutRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.MaTxMintRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.MultiAssetTxOutRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.ParamProposalRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.PoolMetadataRefRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.PoolOwnerRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.PoolRelayRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.PoolRetireRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.PoolUpdateRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.PotTransferRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.RedeemerDataRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.RedeemerRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.ReferenceInputRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.ReserveRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.RollbackHistoryRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.ScriptRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.StakeDeregistrationRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.StakeRegistrationRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.TreasuryRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxInRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxMetadataRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxOutRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.UnconsumeTxInRepository;
-import org.cardanofoundation.ledgersync.explorerconsumer.repository.WithdrawalRepository;
+import org.cardanofoundation.ledgersync.explorerconsumer.repository.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AddressBalanceService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.EpochService;
@@ -168,6 +137,12 @@ class RollbackServiceImplTest {
   @Mock
   AggregatedDataCachingService aggregatedDataCachingService;
 
+  @Mock
+  TxBootstrapWitnessRepository txBootstrapWitnessRepository;
+
+  @Mock
+  TxWitnessRepository txWitnessRepository;
+
   private static final long ROLLBACK_BLOCK_NO = 123456;
 
   RollbackServiceImpl victim;
@@ -185,6 +160,7 @@ class RollbackServiceImplTest {
         stakeDeregistrationRepository,
         stakeRegistrationRepository, treasuryRepository, txInRepository, txMetadataRepository,
         txOutRepository, unconsumeTxInRepository, withdrawalRepository, rollbackHistoryRepository,
+        txBootstrapWitnessRepository, txWitnessRepository,
         epochService, addressBalanceService, multiAssetService, txChartService,
         aggregatedDataCachingService
     );
@@ -423,6 +399,10 @@ class RollbackServiceImplTest {
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .saveLatestTxs();
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1)).commit();
+    Mockito.verify(txBootstrapWitnessRepository, Mockito.times(1))
+            .deleteAllByTxIn(Mockito.anyCollection());
+    Mockito.verify(txWitnessRepository, Mockito.times(1))
+            .deleteAllByTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(aggregatedDataCachingService);
   }
 }

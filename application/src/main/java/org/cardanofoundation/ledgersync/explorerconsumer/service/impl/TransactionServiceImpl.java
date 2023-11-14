@@ -59,6 +59,8 @@ public class TransactionServiceImpl implements TransactionService {
     CertificateSyncServiceFactory certificateSyncServiceFactory;
     BatchCertificateDataService batchCertificateDataService;
     TxMetaDataHashService txMetaDataHashService;
+    TxWitnessService txWitnessService;
+    TxBootstrapWitnessService txBootstrapWitnessService;
 
     @Override
     public void prepareAndHandleTxs(Map<String, Block> blockMap,
@@ -131,6 +133,7 @@ public class TransactionServiceImpl implements TransactionService {
         aggregatedDataCachingService.addTxCount(txMap.size());
 
         scriptService.handleScripts(aggregatedTxList, txMap);
+        handleTxWitnesses(aggregatedTxList, txMap);
         Map<String, Datum> datumMap = datumService.handleDatum(aggregatedTxList, txMap); //TODO refactor
         handleTxs(successTxs, failedTxs, txMap, datumMap);
     }
@@ -344,5 +347,10 @@ public class TransactionServiceImpl implements TransactionService {
         if (!CollectionUtils.isEmpty(extraKeyWitnesses)) {
             extraKeyWitnessRepository.saveAll(extraKeyWitnesses);
         }
+    }
+
+    public void handleTxWitnesses(Collection<AggregatedTx> aggregatedTxList, Map<String, Tx> txMap) {
+        txWitnessService.handleTxWitness(aggregatedTxList, txMap);
+        txBootstrapWitnessService.handleBootstrapWitnesses(aggregatedTxList, txMap);
     }
 }
