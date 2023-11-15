@@ -3,6 +3,7 @@ package org.cardanofoundation.ledgersync.explorerconsumer.aggregate;
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.bloxbean.cardano.yaci.core.model.Update;
 import com.bloxbean.cardano.yaci.core.model.Witnesses;
+import com.bloxbean.cardano.yaci.core.model.byron.ByronTxWitnesses;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,6 +38,7 @@ public class AggregatedTx {
     List<Amount> mint;
     Set<String> requiredSigners;
     Witnesses witnesses;
+    List<ByronTxWitnesses> byronTxWitnesses;
     String auxiliaryDataHash;
 
     public void setFee(BigInteger fee) {

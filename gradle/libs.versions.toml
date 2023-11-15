@@ -33,3 +33,4 @@ jackson-annotation="com.fasterxml.jackson.core:jackson-annotations:2.15.2"
 
 jgit="org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
 javax-api="javax.xml.bind:jaxb-api:2.2.3"
+hibernate-types-60="com.vladmihalcea:hibernate-types-60:2.21.1"

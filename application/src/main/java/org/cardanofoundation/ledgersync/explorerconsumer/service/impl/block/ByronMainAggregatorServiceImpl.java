@@ -148,6 +148,7 @@ public class ByronMainAggregatorServiceImpl extends BlockAggregatorService<Byron
                 .txOutputs(aggregatedTxOuts)
                 .outSum(outSum)
                 .fee(BigInteger.ZERO)
+                .byronTxWitnesses(txPayload.getWitnesses())
                 .build();
 
         return aggregatedTx;

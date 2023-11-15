@@ -54,12 +54,14 @@ public class RollbackServiceImpl implements RollbackService {
     UnconsumeTxInRepository unconsumeTxInRepository;
     WithdrawalRepository withdrawalRepository;
     RollbackHistoryRepository rollbackHistoryRepository;
-
+    TxBootstrapWitnessRepository txBootstrapWitnessRepository;
+    TxWitnessRepository txWitnessRepository;
     EpochService epochService;
     AddressBalanceService addressBalanceService;
     MultiAssetService multiAssetService;
     TxChartService txChartService;
     AggregatedDataCachingService aggregatedDataCachingService;
+
 
     @Override
     @Transactional
@@ -161,6 +163,8 @@ public class RollbackServiceImpl implements RollbackService {
         txOutRepository.deleteAllByTxIn(txsForRollback);
         unconsumeTxInRepository.deleteAllByTxInIn(txsForRollback);
         withdrawalRepository.deleteAllByTxIn(txsForRollback);
+        txBootstrapWitnessRepository.deleteAllByTxIn(txsForRollback);
+        txWitnessRepository.deleteAllByTxIn(txsForRollback);
 
         int txsForRollbackCount = txsForRollback.size();
         log.info("Deleting {} txs", txsForRollbackCount);
