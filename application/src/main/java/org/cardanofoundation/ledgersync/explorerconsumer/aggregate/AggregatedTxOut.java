@@ -43,7 +43,7 @@ public class AggregatedTxOut {
         BigInteger nativeAmount = calculateOutSum(List.of(transactionOutput));
         Datum inlineDatum = null;
         if (transactionOutput.getInlineDatum() != null) {
-            inlineDatum = new Datum(transactionOutput.getInlineDatum(), ""); //TODO refactor convert to json
+            inlineDatum = new Datum(transactionOutput.getDatumHash(), transactionOutput.getInlineDatum(), ""); //TODO refactor convert to json
         }
 
         return AggregatedTxOut.builder()
