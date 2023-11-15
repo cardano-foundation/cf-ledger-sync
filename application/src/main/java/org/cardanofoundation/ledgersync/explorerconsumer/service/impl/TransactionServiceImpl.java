@@ -80,11 +80,8 @@ public class TransactionServiceImpl implements TransactionService {
          * Handle tx metadata hash
          * key: metadata hash value: TxMetadataHash
          */
-        Map<String, TxMetadataHash> metaDataHashes = txMetaDataHashService
-                .handleMetaDataHash(blockDataService.getAllAggregatedBlocks()
-                        .stream().map(AggregatedBlock::getTxList)
-                        .flatMap(List::stream)
-                        .toList());
+        Map<String, TxMetadataHash> metaDataHashes =
+                txMetaDataHashService.handleMetaDataHash(aggregatedTxList);
 
         /*
          * For each aggregated tx, map it to a new tx entity, and check if the currently
@@ -191,6 +188,7 @@ public class TransactionServiceImpl implements TransactionService {
         // redeemer
         Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap =
                 redeemerService.handleRedeemers(successTxs, txMap, newTxOutMap);
+        redeemersMap.putAll(redeemerService.handleRedeemers(failedTxs, txMap, newTxOutMap));
 
         // tx in
         txInService.handleTxIns(successTxs,
@@ -219,9 +217,10 @@ public class TransactionServiceImpl implements TransactionService {
         withdrawalsService.handleWithdrawal(successTxs, txMap, stakeAddressMap, redeemersMap);
 
         // Unconsumed tx in
-        txInService.handleUnconsumeTxIn(buildCollateralTxInsMap(successTxs), newTxOutMap, txMap);
+        txInService.handleUnconsumeTxIn(
+                buildCollateralTxInsMap(successTxs), newTxOutMap, txMap, redeemersMap);
 
-        txInService.handleUnconsumeTxIn(buildTxInsMap(failedTxs), newTxOutMap, txMap);
+        txInService.handleUnconsumeTxIn(buildTxInsMap(failedTxs), newTxOutMap, txMap, redeemersMap);
 
         // Failed tx outs:
         // - Collateral return if tx success

@@ -200,7 +200,7 @@ class TransactionServiceImplTest {
     Mockito.verify(txMetaDataService, Mockito.times(1))
         .handleAuxiliaryDataMaps(Mockito.anyMap());
     Mockito.verifyNoMoreInteractions(txMetaDataService);
-    Mockito.verify(redeemerService, Mockito.times(1))
+    Mockito.verify(redeemerService, Mockito.times(2))
         .handleRedeemers(Mockito.anyCollection(), Mockito.anyMap(), Mockito.anyMap());
     Mockito.verifyNoMoreInteractions(redeemerService);
     Mockito.verify(scriptService, Mockito.times(1))
@@ -213,8 +213,6 @@ class TransactionServiceImplTest {
         .getStakeAddressTxHashMap();
     Mockito.verify(blockDataService, Mockito.times(1))
         .getAggregatedAddressBalanceMap();
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAllAggregatedBlocks();
     Mockito.verify(blockDataService, Mockito.times(100))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);
@@ -229,7 +227,7 @@ class TransactionServiceImplTest {
         .handleTxIns(Mockito.anyCollection(), Mockito.anyMap(),
             Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap());
     Mockito.verify(txInService, Mockito.times(2))
-        .handleUnconsumeTxIn(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap());
+        .handleUnconsumeTxIn(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap());
     Mockito.verifyNoMoreInteractions(txInService);
     Mockito.verify(referenceInputService, Mockito.times(1))
         .handleReferenceInputs(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap());

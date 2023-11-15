@@ -83,6 +83,19 @@ class TxInServiceImplTest {
     );
   }
 
+  @DisplayName("Should skip tx in handling if no tx ins supplied")
+  void shouldSkipTxInHandlingTest() {
+    victim.handleTxIns(Collections.emptyList(), Collections.emptyMap(),
+            Collections.emptyMap(), Collections.emptyMap(),
+            Collections.emptyMap(), Collections.emptyMap());
+
+    Mockito.verifyNoInteractions(blockDataService);
+    Mockito.verifyNoInteractions(txOutService);
+    Mockito.verifyNoInteractions(multiAssetService);
+    Mockito.verifyNoInteractions(txInRepository);
+    Mockito.verifyNoInteractions(unconsumeTxInRepository);
+  }
+
   @Test
   @DisplayName("Should fail when tx in not found")
   void shouldFailWhenTxInNotFound() {
@@ -501,7 +514,7 @@ class TxInServiceImplTest {
   void shouldSkipUnconsumedTxInHandlingTest() {
     victim.handleUnconsumeTxIn(
         Collections.emptyMap(), Collections.emptyMap(),
-        Collections.emptyMap());
+        Collections.emptyMap(), Collections.emptyMap());
 
     Mockito.verifyNoInteractions(blockDataService);
     Mockito.verifyNoInteractions(txOutService);
@@ -524,13 +537,14 @@ class TxInServiceImplTest {
     Map<String, Set<AggregatedTxIn>> unconsumedTxInMap = new ConcurrentHashMap<>();
     Map<Pair<String, Short>, TxOut> newTxOutMap = Collections.emptyMap();
     Map<String, Tx> txMap = new ConcurrentHashMap<>();
+    Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap = Collections.emptyMap();
     unconsumedTxInMap.put(txHash, Set.of(aggregatedTxIn));
     txMap.put(txHash, tx);
 
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(List.of(txOutFromTxIn));
 
-    victim.handleUnconsumeTxIn(unconsumedTxInMap, newTxOutMap, txMap);
+    victim.handleUnconsumeTxIn(unconsumedTxInMap, newTxOutMap, txMap, redeemersMap);
 
     Mockito.verifyNoInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
@@ -572,8 +586,9 @@ class TxInServiceImplTest {
 
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
+    Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap = Collections.emptyMap();
 
-    victim.handleUnconsumeTxIn(unconsumedTxInMap, newTxOutMap, txMap);
+    victim.handleUnconsumeTxIn(unconsumedTxInMap, newTxOutMap, txMap, redeemersMap);
 
     Mockito.verifyNoInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
@@ -607,14 +622,17 @@ class TxInServiceImplTest {
     Map<String, Set<AggregatedTxIn>> unconsumedTxInMap = new ConcurrentHashMap<>();
     Map<Pair<String, Short>, TxOut> newTxOutMap = Collections.emptyMap();
     Map<String, Tx> txMap = new ConcurrentHashMap<>();
+    Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap = new ConcurrentHashMap<>();
     unconsumedTxInMap.put(txHash, Set.of(aggregatedTxIn));
     txMap.put(txHash, tx);
-
+    Map<Pair<RedeemerTag, Integer>, Redeemer> redeemerInTxMap = redeemersMap
+            .computeIfAbsent(txHash, unused -> new ConcurrentHashMap<>());
+    redeemerInTxMap.put(Pair.of(RedeemerTag.Spend, 1), Mockito.mock(Redeemer.class));
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
 
     Assertions.assertThrows(IllegalStateException.class,
-        () -> victim.handleUnconsumeTxIn(unconsumedTxInMap, newTxOutMap, txMap));
+        () -> victim.handleUnconsumeTxIn(unconsumedTxInMap, newTxOutMap, txMap, redeemersMap));
 
     Mockito.verifyNoInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
