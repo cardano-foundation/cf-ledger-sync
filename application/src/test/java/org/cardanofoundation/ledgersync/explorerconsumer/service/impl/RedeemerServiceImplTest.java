@@ -360,18 +360,21 @@ class RedeemerServiceImplTest {
             "1cf569e1ec3e0fee92f1f5002bfd4213b796c151c708db46e6e2d3a4.",
             "1cf569e1ec3e0fee92f1f5002bfd4213b796c151c708db46e6e2d3a4",
             "assetName1",
+            "assetName1".getBytes(),
             BigInteger.ONE
         ),
         new Amount(
             "8b14b900bbf9f43d911da209a28e7bd2cce500d8e4bc928c9ca714fb.",
             "8b14b900bbf9f43d911da209a28e7bd2cce500d8e4bc928c9ca714fb",
             "assetName2",
+            "assetName2".getBytes(),
             BigInteger.ONE
         ),
         new Amount(
             "b413bc466dadcb6bcf93e840a9eedabe04e83aa9d55f9deeb94d9743.",
             "b413bc466dadcb6bcf93e840a9eedabe04e83aa9d55f9deeb94d9743",
             "assetName3",
+            "assetName3".getBytes(),
             BigInteger.ONE
         )
     );
