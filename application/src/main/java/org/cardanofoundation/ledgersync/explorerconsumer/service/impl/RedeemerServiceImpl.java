@@ -20,6 +20,7 @@ import org.cardanofoundation.explorer.consumercommon.entity.TxOut;
 import org.cardanofoundation.explorer.consumercommon.enumeration.ScriptPurposeType;
 import org.cardanofoundation.ledgersync.common.common.Datum;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
+import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTxIn;
 import org.cardanofoundation.ledgersync.explorerconsumer.projection.TxOutProjection;
@@ -256,7 +257,7 @@ public class RedeemerServiceImpl implements RedeemerService {
         RedeemerDataBuilder<?, ?> redeemerDataBuilder = RedeemerData.builder();
 
         redeemerDataBuilder.hash(plutusData.getHash());
-        redeemerDataBuilder.value(datumJsonRemoveSpace(plutusData.getJson()));
+        redeemerDataBuilder.value(JsonUtil.getPrettyJson(plutusData.getJson()));
         redeemerDataBuilder.bytes(HexUtil.decodeHexString(plutusData.getCbor()));
         redeemerDataBuilder.tx(tx);
 

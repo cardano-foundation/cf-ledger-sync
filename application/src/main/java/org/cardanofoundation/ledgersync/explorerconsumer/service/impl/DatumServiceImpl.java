@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.explorer.consumercommon.entity.Datum;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
+import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.DatumRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.DatumService;
@@ -110,7 +111,7 @@ public class DatumServiceImpl implements DatumService {
                 mDatumNeedSave.put(datumHash,
                         Datum.builder().
                                 hash(datumHash).
-                                value(DatumFormatUtil.datumJsonRemoveSpace(datum.getJson())).
+                                value(JsonUtil.getPrettyJson(datum.getJson())).
                                 tx(tx).
                                 bytes(HexUtil.decodeHexString(datum.getCbor())).
                                 build());
@@ -137,7 +138,7 @@ public class DatumServiceImpl implements DatumService {
                                         hash(toDatumHash(inlineDatum)).
                                         bytes(HexUtil.decodeHexString(inlineDatum.getCbor())).
                                         tx(tx).
-                                        value(DatumFormatUtil.datumJsonRemoveSpace(inlineDatum.getJson())).
+                                        value(JsonUtil.getPrettyJson(inlineDatum.getJson())).
                                         build());
                     }
                 });
