@@ -291,7 +291,7 @@ public class TransactionServiceImpl implements TransactionService {
 
                 Redeemer redeemer = null;
                 if (!CollectionUtils.isEmpty(redeemerInTxMap)) {
-                    redeemer = redeemerInTxMap.get(Pair.of(RedeemerTag.Reward, idx));
+                    redeemer = redeemerInTxMap.get(Pair.of(RedeemerTag.Cert, idx));
                 }
 
                 AggregatedBlock aggregatedBlock = blockDataService

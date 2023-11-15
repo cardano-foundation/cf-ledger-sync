@@ -16,7 +16,7 @@ public class RedeemerWrapper {
         this.yaciRedeemer = yaciRedeemer;
         try {
             this.redeemer = com.bloxbean.cardano.client.plutus.spec.Redeemer.deserialize((Array) CborSerializationUtil.deserialize(HexUtil.decodeHexString(yaciRedeemer.getCbor())));
-        } catch (CborDeserializationException e) {
+        } catch (Exception e) {
             throw new IllegalStateException("Failed to deserialize redeemer", e);
         }
     }
