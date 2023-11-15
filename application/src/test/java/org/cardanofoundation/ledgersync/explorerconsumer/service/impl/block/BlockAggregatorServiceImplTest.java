@@ -1,13 +1,17 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block;
 
+import co.nstant.in.cbor.model.Array;
 import com.bloxbean.cardano.client.crypto.Bech32;
+import com.bloxbean.cardano.client.crypto.Blake2bUtil;
 import com.bloxbean.cardano.client.plutus.spec.ExUnits;
 import com.bloxbean.cardano.yaci.core.model.*;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
 import com.bloxbean.cardano.yaci.store.events.BlockEvent;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
+import lombok.SneakyThrows;
 import org.cardanofoundation.ledgersync.common.common.constant.Constant;
+import org.cardanofoundation.ledgersync.common.util.CborSerializationUtil;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
@@ -619,16 +623,17 @@ class BlockAggregatorServiceImplTest {
     return List.of(Witnesses.builder().vkeyWitnesses(vkeyWitnesses).build());
   }
 
+  @SneakyThrows
   private static List<Witnesses> givenTxWitnessesBlock949034Preprod() {
     // VkeyWitness is not even used, just fake it
     List<VkeyWitness> vkeyWitnesses = List.of(Mockito.mock(VkeyWitness.class));
     List<Datum> datumList = List.of(
         buildDatum("19077a", "{\\\"int\\\":1914}")
     );
+    var redeemer = Redeemer.deserialize((Array) CborSerializationUtil.deserialize(HexUtil.decodeHexString("840000d87b9f5820561940091ccf4859b053c522d7b82be8de0d39c0ce9221c4e18289e0192ec95dff821a00109f3e1a14616369")));
     List<Redeemer> redeemers = List.of(
         // fake for test
-        new Redeemer(
-            "840000d87b9f5820561940091ccf4859b053c522d7b82be8de0d39c0ce9221c4e18289e0192ec95dff821a00109f3e1a14616369")
+        redeemer
     );
 
     Witnesses witnesses = Witnesses.builder()
@@ -656,7 +661,7 @@ class BlockAggregatorServiceImplTest {
   }
 
   private static Datum buildDatum(String cbor, String json) {
-    return new Datum(cbor, json);
+    return new Datum(HexUtil.encodeHexString(Blake2bUtil.blake2bHash256(HexUtil.decodeHexString(cbor))), cbor, json);
   }
 
   @SafeVarargs
