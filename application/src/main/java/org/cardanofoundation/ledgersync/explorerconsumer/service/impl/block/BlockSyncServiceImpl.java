@@ -57,9 +57,9 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         AggregatedBlock firstBlock = firstAndLastBlock.getFirst();
         AggregatedBlock lastBlock = firstAndLastBlock.getSecond();
 
-//    log.trace("Commit from block {} to block {} ",
-//        firstBlock.getBlockNo(),
-//        lastBlock.getBlockNo());
+        log.trace("Commit from block {} to block {} ",
+                firstBlock.getBlockNo(),
+                lastBlock.getBlockNo());
 
         metricCollectorService.collectCountBlockProcessingMetric(firstBlock, lastBlock);
         metricCollectorService.collectCurrentBlockMetric(lastBlock);
