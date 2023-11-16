@@ -58,7 +58,7 @@ public class RedeemerServiceImpl implements RedeemerService {
                 .filter(tx -> !CollectionUtils.isEmpty(tx.getWitnesses().getRedeemers()))
                 .toList();
         if (CollectionUtils.isEmpty(txsWithRedeemers)) {
-            return Collections.emptyMap();
+            return new ConcurrentHashMap<>();
         }
 
         Set<String> redeemerDataHash = txsWithRedeemers.stream()
@@ -202,28 +202,28 @@ public class RedeemerServiceImpl implements RedeemerService {
             Map<Pair<String, Short>, TxOut> newTxOutMap) {
         AggregatedTxIn txIn = txInputs.get(pointerIndex);
 
-        // Find target TxOut from DB
+        // Find target TxOut from provided TxOuts
+        Pair<String, Short> txOutKey = Pair.of(txIn.getTxId(), (short) txIn.getIndex());
+        TxOut txOut = newTxOutMap.get(txOutKey);
+        if (Objects.nonNull(txOut) && txOut.getAddressHasScript().equals(Boolean.TRUE)) {
+            txIn.setRedeemerPointerIdx(pointerIndex);
+            return txOut.getPaymentCred();
+        }
+
+        // Fallback to TxOut from DB
         Optional<TxOutProjection> txOutOptional = txOutRepository
                 .findTxOutByTxHashAndTxOutIndex(txIn.getTxId(), (short) txIn.getIndex());
         if (txOutOptional.isPresent()) {
-            TxOutProjection txOut = txOutOptional.get();
-            if (txOut.getAddressHasScript().equals(Boolean.TRUE)) {
+            TxOutProjection txOutProjection = txOutOptional.get();
+            if (txOutProjection.getAddressHasScript().equals(Boolean.TRUE)) {
                 txIn.setRedeemerPointerIdx(pointerIndex);
-                return txOut.getPaymentCred();
+                return txOutProjection.getPaymentCred();
             }
         }
 
-        // Fallback to provided TxOuts
-        Pair<String, Short> txOutKey = Pair.of(txIn.getTxId(), (short) txIn.getIndex());
-        TxOut txOut = newTxOutMap.get(txOutKey);
-        if (Objects.isNull(txOut)) {
-            log.error("Can not find payment cred tx id {}, index {}",
-                    txIn.getTxId(), txIn.getIndex());
-            throw new IllegalStateException();
-        }
-
-        txIn.setRedeemerPointerIdx(pointerIndex);
-        return txOut.getPaymentCred();
+        log.error("Can not find payment cred tx id {}, index {}",
+                txIn.getTxId(), txIn.getIndex());
+        throw new IllegalStateException();
     }
 
     private String handleMintingScriptHash(List<Amount> mints, int pointerIndex) {

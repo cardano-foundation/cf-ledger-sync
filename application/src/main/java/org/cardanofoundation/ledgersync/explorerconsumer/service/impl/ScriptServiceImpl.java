@@ -52,26 +52,22 @@ public class ScriptServiceImpl implements ScriptService {
                 .stream()
                 .filter(aggregatedTx -> Objects.nonNull(aggregatedTx.getWitnesses()))
                 .forEach(aggregatedTx -> {
-                    //if tx is valid then get script from witnesses a tx_out
-                    if (aggregatedTx.isValidContract()) {
-                        Witnesses txWitnesses = aggregatedTx.getWitnesses();
-                        getAllScript(txWitnesses,
-                                txMap.get(aggregatedTx.getHash()))
-                                .forEach(scriptMap::putIfAbsent);
-                    } else {// if tx is invalid then get script from collateral return
-                        AggregatedTxOut collateralReturn = aggregatedTx.getCollateralReturn();
-                        if (Objects.isNull(collateralReturn)) {
-                            return;
-                        }
+                    Witnesses txWitnesses = aggregatedTx.getWitnesses();
+                    getAllScript(txWitnesses,
+                            txMap.get(aggregatedTx.getHash()))
+                            .forEach(scriptMap::putIfAbsent);
+                    AggregatedTxOut collateralReturn = aggregatedTx.getCollateralReturn();
+                    if (Objects.isNull(collateralReturn)) {
+                        return;
+                    }
 
-                        if (StringUtils.hasText(collateralReturn.getScriptRef())) {
-                            log.info("Handle collateral script reference when tx {} failed!",
-                                    aggregatedTx.getHash());
-                            Script script = getScriptFromScriptRef(
-                                    collateralReturn.getScriptRef(),
-                                    txMap.get(aggregatedTx.getHash()));
-                            updateTxForScript(script, scriptMap);
-                        }
+                    if (StringUtils.hasText(collateralReturn.getScriptRef())) {
+                        log.info("Handle collateral script reference when tx {} failed!",
+                                aggregatedTx.getHash());
+                        Script script = getScriptFromScriptRef(
+                                collateralReturn.getScriptRef(),
+                                txMap.get(aggregatedTx.getHash()));
+                        updateTxForScript(script, scriptMap);
                     }
                 });
         handleScriptFromTxOut(aggregatedTxs, txMap, scriptMap);

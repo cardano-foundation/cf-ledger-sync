@@ -38,9 +38,13 @@ public interface TxInService {
      *                          associated unconsumed tx ins
      * @param newTxOutMap       a map of newly created txOut entities that are not inserted yet
      * @param txMap             a map with key is tx hash and value is the respective tx entity
+     * @param redeemersMap      a map of redeemers, with key is tx hash, and value is another map of
+     *                          redeemers executed within a transaction (key is redeemer pointer,
+     *                          value is target redeemer record)
      * @return a list of handled unconsumed tx ins
      */
     List<UnconsumeTxIn> handleUnconsumeTxIn(
             Map<String, Set<AggregatedTxIn>> unconsumedTxInMap,
-            Map<Pair<String, Short>, TxOut> newTxOutMap, Map<String, Tx> txMap);
+            Map<Pair<String, Short>, TxOut> newTxOutMap, Map<String, Tx> txMap,
+            Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap);
 }
