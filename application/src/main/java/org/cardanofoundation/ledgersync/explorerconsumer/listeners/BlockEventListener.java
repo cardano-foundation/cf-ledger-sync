@@ -40,7 +40,7 @@ public class BlockEventListener {
     private Integer batchSize;
     @Value("${blocks.commitThreshold}")
     private Long commitThreshold;
-
+    private final long startTime = System.currentTimeMillis();
     private final AtomicLong lastMessageReceivedTime = new AtomicLong(System.currentTimeMillis());
     private AtomicLong blockHeight;
     private long lastLog;
@@ -160,10 +160,13 @@ public class BlockEventListener {
             if (eventMetadata.getBlock() != 0) {// skip block height with ebb or genesis block
                 blockHeight.set(eventMetadata.getBlock());
             }
-
             //AggregatedBlock aggregatedBlock = aggregatorServiceFactory.aggregateBlock(eraBlock);
             blockDataService.saveAggregatedBlock(aggregatedBlock);
             int currentBlockCount = blockCount.incrementAndGet();
+            if (eventMetadata.isSyncMode()) {
+                log.info("Sync Mode is enabled");
+                log.info("Time from service start: {} ms", System.currentTimeMillis() - startTime);
+            }
             if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold || eventMetadata.isSyncMode()) {
                 blockSyncService.startBlockSyncing();
                 blockCount.set(0);
