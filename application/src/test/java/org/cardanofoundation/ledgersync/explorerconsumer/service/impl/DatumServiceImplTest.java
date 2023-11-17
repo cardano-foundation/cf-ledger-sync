@@ -9,7 +9,10 @@ import java.util.Set;
 
 import com.bloxbean.cardano.yaci.core.model.Datum;
 import com.bloxbean.cardano.yaci.core.model.Witnesses;
+import lombok.SneakyThrows;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
+import org.cardanofoundation.ledgersync.common.util.CborSerializationUtil;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTxOut;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.DatumRepository;
@@ -21,6 +24,7 @@ import org.junit.jupiter.api.Test;
 class DatumServiceImplTest {
 
   @Test
+  @SneakyThrows
   void handleDatum() {
     DatumRepository datumRepository = Mockito.mock(DatumRepository.class);
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
@@ -42,10 +46,8 @@ class DatumServiceImplTest {
     List<Datum> datumsWitness = List.of(
         datumWitness);
 
-    com.bloxbean.cardano.yaci.core.model.Datum inlineDatum = Mockito.mock(
-        com.bloxbean.cardano.yaci.core.model.Datum.class);
-    Datum inlineDatum2 = Mockito.mock(
-        Datum.class);
+    Datum inlineDatum = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
+    Datum inlineDatum2 = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff")));
 
     Mockito.when(aggregatedTx.getHash()).thenReturn(txHash);
     Mockito.when(aggregatedTx.getWitnesses()).thenReturn(transactionWitness);
@@ -56,14 +58,6 @@ class DatumServiceImplTest {
 
     Mockito.when(aggregatedTxOut.getInlineDatum()).thenReturn(inlineDatum);
     Mockito.when(aggregatedTxOut2.getInlineDatum()).thenReturn(inlineDatum2);
-    Mockito.when(inlineDatum.getCbor()).thenReturn(
-        "d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff");
-    Mockito.when(inlineDatum.getJson()).thenReturn(
-        "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
-    Mockito.when(inlineDatum2.getCbor()).thenReturn(
-        "d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff");
-    Mockito.when(inlineDatum2.getJson()).thenReturn(
-        "{\"bytes\":\"a8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
 
     DatumServiceImpl laclase = new DatumServiceImpl(datumRepository);
     laclase.handleDatum(aggregatedTxs, txMap);
@@ -73,6 +67,7 @@ class DatumServiceImplTest {
   }
 
   @Test
+  @SneakyThrows
   void handleDatumWitnessOutputExist() {
     DatumRepository datumRepository = Mockito.mock(DatumRepository.class);
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
@@ -95,10 +90,8 @@ class DatumServiceImplTest {
     List<Datum> datumsWitness = List.of(
         datumWitness);
 
-    Datum inlineDatum = Mockito.mock(
-        Datum.class);
-    Datum inlineDatum2 = Mockito.mock(
-        Datum.class);
+    Datum inlineDatum = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
+    Datum inlineDatum2 = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff")));
 
     Mockito.when(aggregatedTx.getHash()).thenReturn(txHash);
     Mockito.when(aggregatedTx.getWitnesses()).thenReturn(transactionWitness);
@@ -109,14 +102,6 @@ class DatumServiceImplTest {
 
     Mockito.when(aggregatedTxOut.getInlineDatum()).thenReturn(inlineDatum);
     Mockito.when(aggregatedTxOut2.getInlineDatum()).thenReturn(inlineDatum2);
-    Mockito.when(inlineDatum.getCbor()).thenReturn(
-        "d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff");
-    Mockito.when(inlineDatum.getJson()).thenReturn(
-        "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
-    Mockito.when(inlineDatum2.getCbor()).thenReturn(
-        "d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff");
-    Mockito.when(inlineDatum2.getJson()).thenReturn(
-        "{\"bytes\":\"a8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
 
     Set<org.cardanofoundation.explorer.consumercommon.entity.Datum> datums = new HashSet<>();
     datums.add(org.cardanofoundation.explorer.consumercommon.entity.Datum.builder()
@@ -197,6 +182,7 @@ class DatumServiceImplTest {
   }
 
   @Test
+  @SneakyThrows
   void handleDatumWithExistsData() {
     DatumRepository datumRepository = Mockito.mock(DatumRepository.class);
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
@@ -215,23 +201,11 @@ class DatumServiceImplTest {
     Mockito.when(datumWitness.getJson()).thenReturn(
         "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
 
-    Datum inlineDatum = Mockito.mock(
-        Datum.class);
-    Datum inlineDatum2 = Mockito.mock(
-        Datum.class);
+    Datum inlineDatum = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
+    Datum inlineDatum2 = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff")));
 
     Mockito.when(aggregatedTxOut.getInlineDatum()).thenReturn(inlineDatum);
     Mockito.when(aggregatedTxOut2.getInlineDatum()).thenReturn(inlineDatum2);
-
-    Mockito.when(inlineDatum.getCbor()).thenReturn(
-        "d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff");
-    Mockito.when(inlineDatum.getJson()).thenReturn(
-        "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
-
-    Mockito.when(inlineDatum2.getCbor()).thenReturn(
-        "d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff");
-    Mockito.when(inlineDatum2.getJson()).thenReturn(
-        "{\"bytes\":\"a8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
 
     List<Datum> datumsWitness = List
         .of(datumWitness);

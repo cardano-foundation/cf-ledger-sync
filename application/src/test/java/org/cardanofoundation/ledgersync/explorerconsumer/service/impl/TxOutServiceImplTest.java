@@ -17,7 +17,6 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.MultiAssetTx
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxOutRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.MultiAssetService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.ScriptService;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.DatumUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,7 +120,7 @@ class TxOutServiceImplTest {
                 Map.entry("4143afe2f4b17537f73e7c95f3fcf2fbfe35d0eb95b91336891bbe547e22ef7d", List.of(aggregatedTxOut)));
         final Map<String, Tx> txMap = givenTxMap();
         final Map<String, StakeAddress> stakeAddressMap = givenStakeAddressMap();
-        final Map<String, Datum> datumMap = givenDatumMap(DatumUtil.toDatumHash(aggregatedTxOut.getInlineDatum()));
+        final Map<String, Datum> datumMap = givenDatumMap(aggregatedTxOut.getInlineDatum().getHash());
         Mockito.when(scriptService.getHashOfReferenceScript(anyString())).thenReturn("hash");
         Mockito.when(scriptService.getScriptsByHashes(any())).thenReturn(Map.of("hash",
                 Script.builder().hash("hash").build()));
@@ -155,7 +154,7 @@ class TxOutServiceImplTest {
         Assertions.assertEquals(aggregatedTxOut.getAddress().isAddressHasScript(), txOutsForSaving.get(0).getAddressHasScript());
         Assertions.assertEquals(aggregatedTxOut.getNativeAmount(), txOutsForSaving.get(0).getValue());
         Assertions.assertEquals(TokenType.ALL_TOKEN_TYPE, txOutsForSaving.get(0).getTokenType());
-        Assertions.assertEquals(DatumUtil.toDatumHash(aggregatedTxOut.getInlineDatum()), txOutsForSaving.get(0).getInlineDatum().getHash());
+        Assertions.assertEquals(aggregatedTxOut.getInlineDatum().getHash(), txOutsForSaving.get(0).getInlineDatum().getHash());
         Assertions.assertEquals("hash", txOutsForSaving.get(0).getReferenceScript().getHash());
         Assertions.assertEquals(maTxOutMultiValueMap.get("asset1sjk0uucljv4qxxnhq8gjy7r5mar64erhfuh4q8"),
                 maTxOutMultiValueMapForUpdating.get("asset1sjk0uucljv4qxxnhq8gjy7r5mar64erhfuh4q8"));
