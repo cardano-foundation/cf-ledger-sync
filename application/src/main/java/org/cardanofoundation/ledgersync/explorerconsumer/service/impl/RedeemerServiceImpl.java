@@ -38,8 +38,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.DatumFormatUtil.datumJsonRemoveSpace;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -77,6 +75,9 @@ public class RedeemerServiceImpl implements RedeemerService {
         Map<String, Map<Pair<RedeemerTag, Integer>, Redeemer>> redeemersMap = new ConcurrentHashMap<>();
         List<Redeemer> redeemersToSave = new ArrayList<>();
 
+        // Track redeemer data hash usage frequency
+        Map<String, Integer> redeemerDataHashUsageCountMap = new HashMap<>();
+
         txsWithRedeemers.forEach(aggregatedTx -> {
             Tx tx = txMap.get(aggregatedTx.getHash());
             var redeemers = aggregatedTx.getWitnesses().getRedeemers();
@@ -100,6 +101,10 @@ public class RedeemerServiceImpl implements RedeemerService {
                             }
                             return previousRedeemerData;
                         });
+                // Increment redeemer data hash use count
+                Integer redeemerDataHashUsageCount = redeemerDataHashUsageCountMap
+                        .computeIfAbsent(plutusData.getHash(), unused -> 0);
+                redeemerDataHashUsageCountMap.put(plutusData.getHash(), ++redeemerDataHashUsageCount);
 
                 // Get existing redeemer record. If it exists, update its data
                 int pointerIndex = cclRedeemer.getIndex().intValue();
@@ -111,21 +116,24 @@ public class RedeemerServiceImpl implements RedeemerService {
                     if (Objects.equals(plutusData.getHash(), existingRedeemerData.getHash())) {
                         return;
                     }
-
-                    // Re-assign redeemer's data to new record and delete old one
-                    redeemerDataMap.remove(existingRedeemerData.getHash());
+                    // Re-assign redeemer's data to new record
                     redeemerEntity.setRedeemerData(redeemerData);
+                    // Decrement redeemer data hash use count
+                    Integer existingRedeemerDataHashUsageCount = redeemerDataHashUsageCountMap
+                            .computeIfAbsent(existingRedeemerData.getHash(), unused -> 0);
+                    redeemerDataHashUsageCountMap.put(existingRedeemerData.getHash(), --existingRedeemerDataHashUsageCount);
                     return;
                 }
-
                 // Otherwise, create new redeemer record and commit
                 Redeemer redeemer = buildRedeemer(cclRedeemer, redeemerData, tx, aggregatedTx, newTxOutMap);
                 redeemerInTxMap.put(redeemerPointer, redeemer);
                 redeemersToSave.add(redeemer);
             });
         });
-
-        redeemerDataRepository.saveAll(redeemerDataMap.values());
+        redeemerDataRepository.saveAll(redeemerDataMap.values()
+                .stream()
+                .filter(redeemerData -> redeemerDataHashUsageCountMap.get(redeemerData.getHash()) > 0)
+                .toList());
         redeemerRepository.saveAll(redeemersToSave);
 
         return redeemersMap;
