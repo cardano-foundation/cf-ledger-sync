@@ -238,7 +238,7 @@ public class TxOutServiceImpl implements TxOutService {
         if (StringUtils.hasText(txOutput.getDatumHash())) {
             datumHash = txOutput.getDatumHash();
         }
-        
+
         if (Objects.nonNull(txOutput.getInlineDatum())) {
             datumHash = txOutput.getInlineDatum().getHash();
         }

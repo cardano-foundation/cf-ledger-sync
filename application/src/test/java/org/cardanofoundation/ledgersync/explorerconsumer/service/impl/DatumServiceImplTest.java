@@ -29,7 +29,7 @@ class DatumServiceImplTest {
     DatumRepository datumRepository = Mockito.mock(DatumRepository.class);
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Witnesses transactionWitness = Mockito.mock(Witnesses.class);
-    Datum datumWitness = Mockito.mock(Datum.class);
+    Datum datumWitness = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
     String txHash = "6497b33b10fa2619c6efbd9f874ecd1c91badb10bf70850732aab45b90524d9e";
     Tx tx = Mockito.mock(Tx.class);
     Map<String, Tx> txMap = Map.of(txHash, tx);
@@ -37,11 +37,6 @@ class DatumServiceImplTest {
     AggregatedTxOut aggregatedTxOut2 = Mockito.mock(AggregatedTxOut.class);
     Collection<AggregatedTx> aggregatedTxs = List.of(aggregatedTx);
     List<AggregatedTxOut> txOutputs = Arrays.asList(aggregatedTxOut, aggregatedTxOut2);
-
-    Mockito.when(datumWitness.getCbor()).thenReturn(
-        "d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff");
-    Mockito.when(datumWitness.getJson()).thenReturn(
-        "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
 
     List<Datum> datumsWitness = List.of(
         datumWitness);
@@ -72,8 +67,7 @@ class DatumServiceImplTest {
     DatumRepository datumRepository = Mockito.mock(DatumRepository.class);
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Witnesses transactionWitness = Mockito.mock(Witnesses.class);
-    Datum datumWitness = Mockito.mock(
-        Datum.class);
+    Datum datumWitness = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
     String txHash = "6497b33b10fa2619c6efbd9f874ecd1c91badb10bf70850732aab45b90524d9e";
     Tx tx = Mockito.mock(Tx.class);
     Map<String, Tx> txMap = Map.of(txHash, tx);
@@ -81,11 +75,6 @@ class DatumServiceImplTest {
     AggregatedTxOut aggregatedTxOut2 = Mockito.mock(AggregatedTxOut.class);
     Collection<AggregatedTx> aggregatedTxs = List.of(aggregatedTx);
     List<AggregatedTxOut> txOutputs = Arrays.asList(aggregatedTxOut, aggregatedTxOut2);
-
-    Mockito.when(datumWitness.getCbor()).thenReturn(
-        "d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff");
-    Mockito.when(datumWitness.getJson()).thenReturn(
-        "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
 
     List<Datum> datumsWitness = List.of(
         datumWitness);
@@ -193,13 +182,7 @@ class DatumServiceImplTest {
     Collection<AggregatedTx> aggregatedTxs = List.of(aggregatedTx);
     List<AggregatedTxOut> txOutputs = Arrays.asList(aggregatedTxOut, aggregatedTxOut2);
 
-    Datum datumWitness = Mockito.mock(
-        Datum.class);
-
-    Mockito.when(datumWitness.getCbor()).thenReturn(
-        "d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff");
-    Mockito.when(datumWitness.getJson()).thenReturn(
-        "{\"bytes\":\"d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff\"}");
+    Datum datumWitness = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
 
     Datum inlineDatum = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d81858a5d8799fd8799fd8799fd8799f582069a4199509a6bc81daf91eea261f14b8e67870fa501accbad154cd8857d5a257ff02ff581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd227447617364666173644b6661736466736164666173d87a9fffd8799fffd8799fd8799f581c0a0297ac3c9004d38307c8601351df65392952dc0f1ee66694dd2274ffd87a9fffff9fff200000486173646661736466ffff")));
     Datum inlineDatum2 = Datum.from(CborSerializationUtil.deserialize(HexUtil.decodeHexString("d8799fd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd8799fd8799f581c70a336982cf23779f016e53625b778f49883050eb1a66ef075f75d24ffd8799fd8799fd8799f581cac537c1a299201d53cac96ff89266711af1bbb51b5dcaec2fa5126e8ffffffffd87a80d8799fd8799f581c4b4ce6898a5b7227d1a22b4ed6be7f01fa36ac84b1adcb97b35a665b4974564153494c696e65ff1a00031549ff1a001e84801a001e8480ff")));
@@ -229,10 +212,9 @@ class DatumServiceImplTest {
 
     Map<String, org.cardanofoundation.explorer.consumercommon.entity.Datum> actualDatum = laclase.handleDatum(aggregatedTxs, txMap);
 
-    Assertions.assertEquals(actualDatum.keySet().size(), 3);
+    Assertions.assertEquals(actualDatum.keySet().size(), 2);
 
     Assertions.assertTrue(actualDatum.containsKey("81c4b709d63f814af964013721d35aa0f4c91e75de8274db47dfd5a4b377eb7d"));
-    Assertions.assertTrue(actualDatum.containsKey("3e7a2d9c94dc9c28521a18215b6088d8db1792a94992324108458beafbac8ed1"));
     Assertions.assertTrue(actualDatum.containsKey("8828013bf8f54bec83b14f96ced5b9061f231c51fc981bd9931a4cf7edc39537"));
 
     Mockito.verify(datumRepository, Mockito.times(1)).getExistHashByHashIn(Mockito.anySet());
