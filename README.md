@@ -67,3 +67,14 @@ Edit ``env`` file with database and network details
 ```shell
 docker run -p 8080:8080 --env-file env cardanofoundation/ledger-sync:<version>
 ```
+
+## Contributing to Ledger Sync
+
+We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+
+- Reporting a bug 
+- Discussing the current state of the code 
+- Submitting a fix 
+- Proposing new features
+
+Please check details [here](CONTRIBUTING.md)
