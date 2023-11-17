@@ -17,8 +17,6 @@ import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.DatumRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.DatumService;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.DatumFormatUtil;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.DatumUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant.BATCH_QUERY_SIZE;
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.DatumUtil.toDatumHash;
 
 @Service
 @RequiredArgsConstructor
@@ -76,13 +73,13 @@ public class DatumServiceImpl implements DatumService {
                 datumHashes.addAll(txWitnesses
                         .getDatums()
                         .stream()
-                        .map(datum -> toDatumHash(datum))  //TODO refactor
+                        .map(datum -> datum.getHash())  //TODO refactor
                         .collect(Collectors.toSet()));
             }
 
             aggregatedTx.getTxOutputs().forEach(transactionOutput -> {
                 if (Objects.nonNull(transactionOutput.getInlineDatum())) {
-                    datumHashes.add(DatumUtil.toDatumHash(transactionOutput.getInlineDatum()));
+                    datumHashes.add(transactionOutput.getInlineDatum().getHash());
                 }
             });
         });
@@ -97,12 +94,7 @@ public class DatumServiceImpl implements DatumService {
 
         Map<String, Datum> mDatumNeedSave = new HashMap<>();
         transactionWitness.getDatums().forEach(datum -> {
-            String datumHash = null;
-            try {
-                datumHash = PlutusData.deserialize(HexUtil.decodeHexString(datum.getCbor())).getDatumHash();
-            } catch (Exception e) {
-                throw new IllegalStateException("Failed to deserialize datum", e);
-            }
+            String datumHash = datum.getHash();
 
             boolean datumExist = existingDatumHashesFromDb.containsKey(datumHash)
                     || existingDatum.containsKey(datumHash);
@@ -131,14 +123,14 @@ public class DatumServiceImpl implements DatumService {
                 .forEach(transactionOutput -> {
                     var inlineDatum = transactionOutput.getInlineDatum();
                     if (Objects.nonNull(inlineDatum) &&
-                            !existingDatumHashesFromDb.containsKey(toDatumHash(inlineDatum)) &&
-                            !existingDatum.containsKey(toDatumHash(inlineDatum))) {
-                        datumInlineNeedSave.put(toDatumHash(inlineDatum),
+                            !existingDatumHashesFromDb.containsKey(inlineDatum.getHash()) &&
+                            !existingDatum.containsKey(inlineDatum.getHash())) {
+                        datumInlineNeedSave.put(inlineDatum.getHash(),
                                 Datum.builder().
-                                        hash(toDatumHash(inlineDatum)).
+                                        hash(inlineDatum.getHash()).
                                         bytes(HexUtil.decodeHexString(inlineDatum.getCbor())).
                                         tx(tx).
-                                        value(JsonUtil.getPrettyJson(inlineDatum.getJson())).
+                                        value(inlineDatum.getJson()).
                                         build());
                     }
                 });

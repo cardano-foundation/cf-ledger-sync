@@ -11,11 +11,10 @@ import com.bloxbean.cardano.yaci.core.model.Datum;
 import com.bloxbean.cardano.yaci.core.model.TransactionOutput;
 import com.bloxbean.cardano.yaci.core.model.byron.ByronTxOut;
 import com.bloxbean.cardano.yaci.core.util.Constants;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.cardanofoundation.ledgersync.common.util.CborSerializationUtil;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 
 import java.math.BigInteger;
 import java.util.Collections;
@@ -35,6 +34,7 @@ public class AggregatedTxOut {
     Datum inlineDatum;
     String scriptRef;
 
+    @SneakyThrows
     public static AggregatedTxOut from(TransactionOutput transactionOutput) {
         if (Objects.isNull(transactionOutput)) {
             return null;
@@ -43,7 +43,8 @@ public class AggregatedTxOut {
         BigInteger nativeAmount = calculateOutSum(List.of(transactionOutput));
         Datum inlineDatum = null;
         if (transactionOutput.getInlineDatum() != null) {
-            inlineDatum = new Datum(transactionOutput.getDatumHash(), transactionOutput.getInlineDatum(), ""); //TODO refactor convert to json
+            var inlineDatumDI = CborSerializationUtil.deserialize(HexUtil.decodeHexString(transactionOutput.getInlineDatum()));
+            inlineDatum = Datum.from(inlineDatumDI);
         }
 
         return AggregatedTxOut.builder()
@@ -54,16 +55,6 @@ public class AggregatedTxOut {
                 .inlineDatum(inlineDatum) //TODO refactor convert to json
                 .scriptRef(transactionOutput.getScriptRef())
                 .build();
-
-//    return new AggregatedTxOut(
-//        transactionOutput.getIndex(),
-//        AggregatedAddress.from(transactionOutput.getAddress()),
-//        nativeAmount,
-//        transactionOutput.getAmounts(),
-//        transactionOutput.getDatumHash(),
-//        transactionOutput.getInlineDatum(),
-//        transactionOutput.getScriptRef()
-//    );
     }
 
     public static AggregatedTxOut from(ByronTxOut byronTxOut, int idx) {

@@ -23,7 +23,6 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxOutReposit
 import org.cardanofoundation.ledgersync.explorerconsumer.service.MultiAssetService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.ScriptService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.TxOutService;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.DatumUtil;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -120,8 +119,8 @@ public class TxOutServiceImpl implements TxOutService {
                 }
                 //TODO -- yaci
                 if (Objects.nonNull(aggregatedTxOut.getInlineDatum())
-                        && StringUtils.hasText(DatumUtil.toDatumHash(aggregatedTxOut.getInlineDatum()))) {
-                    datumHashes.add(DatumUtil.toDatumHash(aggregatedTxOut.getInlineDatum()));
+                        && StringUtils.hasText(aggregatedTxOut.getInlineDatum().getHash())) {
+                    datumHashes.add(aggregatedTxOut.getInlineDatum().getHash());
                 }
                 txOutAndMas.add(txOutAndMa);
             });
@@ -240,9 +239,8 @@ public class TxOutServiceImpl implements TxOutService {
             datumHash = txOutput.getDatumHash();
         }
 
-        //TODO -- yaci
         if (Objects.nonNull(txOutput.getInlineDatum())) {
-            datumHash = DatumUtil.toDatumHash(txOutput.getInlineDatum());
+            datumHash = txOutput.getInlineDatum().getHash();
         }
 
         TxOut txOut = txOutBuilder.build();
