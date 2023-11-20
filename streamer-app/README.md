@@ -51,7 +51,7 @@ configure custom channels as needed.
 - **mintBurnEvent** - mintBurnTopic
 - **scriptEvent** - scriptTopic
 
-The default channel can be changed by changing the following properties in application.properties file or docker environment file.
+The default channel can be changed by changing the following properties in application.properties file or Docker environment file.
 
 ```
 spring.cloud.stream.bindings.<event_name>-out-0.destination=<topic_name>
@@ -62,13 +62,13 @@ For more details on different configuration options, please refer to the applica
 ## How to run (Jar file)
 
 To run the streamer app, you need Java 21 or a newer version. 
-After building the project, you can execute the JAR file using the following command.
+After building the project, you can execute the JAR file using the following commands:
 
 To run with **Kafka** binder:
 
 1. Go to top level directory of the project.
-2. Edit ``config/application-kafka.properties`` file and provide required information for cardano node, datasource, kafka.
-3. Run the streamer jar file with kafka profile.
+2. Edit the ``config/application-kafka.properties`` file and provide required information for Cardano node, datasource, Kafka.
+3. Run the streamer jar file with `kafka` profile.
 
 ```
 java -jar -Dspring.profiles.active=kafka streamer-app/build/libs/ledger-sync-streamer-app-<version>.jar
@@ -77,8 +77,8 @@ java -jar -Dspring.profiles.active=kafka streamer-app/build/libs/ledger-sync-str
 To run with **Rabbit** binder:
 
 1. Go to top level directory of the project.
-2. Edit ``config/application-rabbit.properties`` file and provide required information for cardano node, datasource, RabbitMQ.
-3. Run the streamer jar file with rabbit profile.
+2. Edit the ``config/application-rabbit.properties`` file and provide required information for cardano node, datasource, RabbitMQ.
+3. Run the streamer jar file with `rabbit` profile.
 
 ```
 java -jar -Dspring.profiles.active=rabbit streamer-app/build/libs/ledger-sync-streamer-app-<version>.jar
@@ -88,7 +88,7 @@ java -jar -Dspring.profiles.active=rabbit streamer-app/build/libs/ledger-sync-st
 
 ## How to run (Docker)
 
-There are two docker compose files available to run the streamer app with Kafka or RabbitMQ in **streamer-app** folder.
+There are two Docker compose files available to run the streamer app with Kafka or RabbitMQ in the **streamer-app** folder.
 
 To run with **Kafka** :
 
@@ -107,14 +107,14 @@ docker compose -f docker-compose-rabbit.yml up
 
 ### To start sync from a specific points
 
-Set the following properties in config file to start the sync from a specific point.
+Set the following properties in config file to start the sync from a specific point:
 
 ```
 store.cardano.sync-start-slot=<absolute_slot>
 store.cardano.sync-start-blockhash=<block_hash>
 ```
 
-For docker environment, you can set the following environment variables.
+For Docker environment, you can set the following environment variables:
 
 ```
 STORE_CARDANO_SYNC-START-SLOT=<absolute_slot>
