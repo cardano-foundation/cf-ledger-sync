@@ -11,6 +11,8 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -25,6 +27,7 @@ import static org.cardanofoundation.ledgersync.jooq.Tables.*;
 public class CustomAddressTokenBalanceRepository {
     private final DSLContext dsl;
 
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public List<AddressTokenBalance> findAllByAddressFingerprintPairIn(Collection<Pair<String, String>> addressFingerprintPairs) {
 
         Condition condition = null;
@@ -45,6 +48,7 @@ public class CustomAddressTokenBalanceRepository {
         return query.fetch().map(this::mapToAddressTokenBalance);
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public List<AddressTokenBalance> findAllByAddressMultiAssetIdPairIn(Collection<Pair<Long, Long>> addressMultiAssetIdPairs) {
         Condition condition = null;
         for (Pair<Long, Long> addressMultiAssetIdPair : addressMultiAssetIdPairs) {
