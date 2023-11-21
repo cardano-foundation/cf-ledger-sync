@@ -32,8 +32,6 @@ import org.springframework.util.MultiValueMap;
 import java.math.BigInteger;
 import java.util.*;
 
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil.assetNameToBytes;
-
 @ExtendWith(MockitoExtension.class)
 class MultiAssetServiceImplTest {
 
@@ -146,7 +144,7 @@ class MultiAssetServiceImplTest {
     String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
     MultiAsset existingAsset = MultiAsset.builder()
-        .name(HexUtil.encodeHexString(assetNameToBytes(assetName)))
+        .name(HexUtil.encodeHexString(amount.getAssetNameBytes()))
         .fingerprint(assetFingerprint)
         .policy(policyId)
         .supply(BigInteger.ONE)

@@ -68,7 +68,7 @@ public abstract class BlockAggregatorService<T> // NOSONAR
                         //byte[] assetName = amount.getAssetName();
                         String assetName = amount.getAssetName();
                         String policyId = amount.getPolicyId();
-                        String assetNameAsHex = HexUtil.encodeHexString(LedgerSyncAssetUtil.assetNameToBytes(assetName), true);
+                        String assetNameAsHex = HexUtil.encodeHexString(amount.getAssetNameBytes(), true);
                         String fingerprint = AssetUtil.calculateFingerPrint(policyId, assetNameAsHex);
                         BigInteger quantity = amount.getQuantity();
                         aggregatedAddressBalance.addAssetBalance(txHash, fingerprint, quantity);
