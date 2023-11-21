@@ -30,9 +30,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil.assetNameToBytes;
 
 @ExtendWith(MockitoExtension.class)
 class MultiAssetServiceImplTest {
@@ -97,8 +96,8 @@ class MultiAssetServiceImplTest {
     Mockito.when(block.getBlockNo()).thenReturn(177242L);
     txMap.values().forEach(tx -> Mockito.when(tx.getBlock()).thenReturn(block));
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
-    Mockito.when(amount.getAssetName())
-        .thenReturn("SUMMITAWARDSDefi");
+    Mockito.when(amount.getAssetNameBytes())
+              .thenReturn("SUMMITAWARDSDefi".getBytes(StandardCharsets.UTF_8));
     Mockito.when(amount.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(aggregatedTx.getHash())
         .thenReturn("a86d5246c1e5ce7d66446d0a68355abe6622545d8ffe7dd832a062f6cde010bd");
@@ -146,14 +145,14 @@ class MultiAssetServiceImplTest {
     String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
     MultiAsset existingAsset = MultiAsset.builder()
-        .name(HexUtil.encodeHexString(assetNameToBytes(assetName)))
+        .name(HexUtil.encodeHexString(assetName.getBytes(StandardCharsets.UTF_8)))
         .fingerprint(assetFingerprint)
         .policy(policyId)
         .supply(BigInteger.ONE)
         .build();
 
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
-    Mockito.when(amount.getAssetName()).thenReturn(assetName);
+    Mockito.when(amount.getAssetNameBytes()).thenReturn(assetName.getBytes(StandardCharsets.UTF_8));
     Mockito.when(amount.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(aggregatedTx.getHash())
         .thenReturn("a86d5246c1e5ce7d66446d0a68355abe6622545d8ffe7dd832a062f6cde010bd");
@@ -217,6 +216,7 @@ class MultiAssetServiceImplTest {
 
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
     Mockito.when(amount.getAssetName()).thenReturn(assetName);
+    Mockito.when(amount.getAssetNameBytes()).thenReturn(assetName.getBytes(StandardCharsets.UTF_8));
     Mockito.when(amount.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(aggregatedTxOut.getAmounts()).thenReturn(List.of(amount));
 
