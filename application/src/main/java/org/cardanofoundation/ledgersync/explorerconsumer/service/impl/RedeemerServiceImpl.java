@@ -3,6 +3,7 @@ package org.cardanofoundation.ledgersync.explorerconsumer.service.impl;
 import com.bloxbean.cardano.client.plutus.spec.ExUnits;
 import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
 import com.bloxbean.cardano.yaci.core.model.Amount;
+import com.bloxbean.cardano.yaci.core.model.Datum;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import com.bloxbean.cardano.yaci.core.model.certs.CertificateType;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeDelegation;
@@ -18,7 +19,6 @@ import org.cardanofoundation.explorer.consumercommon.entity.RedeemerData.Redeeme
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
 import org.cardanofoundation.explorer.consumercommon.entity.TxOut;
 import org.cardanofoundation.explorer.consumercommon.enumeration.ScriptPurposeType;
-import org.cardanofoundation.ledgersync.common.common.Datum;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedTx;
@@ -28,7 +28,6 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.RedeemerData
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.RedeemerRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.TxOutRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.RedeemerService;
-import org.cardanofoundation.ledgersync.explorerconsumer.util.RedeemerWrapper;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -62,7 +61,7 @@ public class RedeemerServiceImpl implements RedeemerService {
 
         Set<String> redeemerDataHash = txsWithRedeemers.stream()
                 .flatMap(tx -> tx.getWitnesses().getRedeemers().stream())
-                .map(redeemer -> new RedeemerWrapper(redeemer).getDataHash())
+                .map(redeemer -> redeemer.getData().getHash())
                 .collect(Collectors.toSet());
         Map<String, RedeemerData> existingRedeemerDataMap = redeemerDataRepository
                 .findAllByHashIn(redeemerDataHash)
@@ -85,8 +84,7 @@ public class RedeemerServiceImpl implements RedeemerService {
             redeemers.forEach(redeemerObj -> {
                 Map<Pair<RedeemerTag, Integer>, Redeemer> redeemerInTxMap = redeemersMap
                         .computeIfAbsent(aggregatedTx.getHash(), unused -> new ConcurrentHashMap<>());
-                com.bloxbean.cardano.client.plutus.spec.Redeemer cclRedeemer = new RedeemerWrapper(redeemerObj).getRedeemer();
-                Datum plutusData = new RedeemerWrapper(redeemerObj).getDatum();
+                Datum plutusData = redeemerObj.getData();
                 RedeemerData redeemerData = Optional
                         .ofNullable(existingRedeemerDataMap.get(plutusData.getHash()))
                         .orElseGet(() -> {
@@ -107,8 +105,8 @@ public class RedeemerServiceImpl implements RedeemerService {
                 redeemerDataHashUsageCountMap.put(plutusData.getHash(), ++redeemerDataHashUsageCount);
 
                 // Get existing redeemer record. If it exists, update its data
-                int pointerIndex = cclRedeemer.getIndex().intValue();
-                RedeemerTag redeemerTag = cclRedeemer.getTag();
+                int pointerIndex = redeemerObj.getIndex();
+                RedeemerTag redeemerTag = redeemerObj.getTag();
                 Pair<RedeemerTag, Integer> redeemerPointer = Pair.of(redeemerTag, pointerIndex);
                 Redeemer redeemerEntity = redeemerInTxMap.get(redeemerPointer);
                 if (Objects.nonNull(redeemerEntity)) {
@@ -125,7 +123,7 @@ public class RedeemerServiceImpl implements RedeemerService {
                     return;
                 }
                 // Otherwise, create new redeemer record and commit
-                Redeemer redeemer = buildRedeemer(cclRedeemer, redeemerData, tx, aggregatedTx, newTxOutMap);
+                Redeemer redeemer = buildRedeemer(redeemerObj, redeemerData, tx, aggregatedTx, newTxOutMap);
                 redeemerInTxMap.put(redeemerPointer, redeemer);
                 redeemersToSave.add(redeemer);
             });
@@ -150,7 +148,7 @@ public class RedeemerServiceImpl implements RedeemerService {
      * @return newly created redeemer entity
      */
     private Redeemer buildRedeemer(
-            com.bloxbean.cardano.client.plutus.spec.Redeemer redeemerObj,
+            com.bloxbean.cardano.yaci.core.model.Redeemer redeemerObj,
             RedeemerData redeemerData, Tx tx, AggregatedTx aggregatedTx,
             Map<Pair<String, Short>, TxOut> newTxOutMap) {
         RedeemerBuilder<?, ?> redeemerBuilder = Redeemer.builder();
@@ -160,7 +158,7 @@ public class RedeemerServiceImpl implements RedeemerService {
         redeemerBuilder.unitMem(exUnits.getMem().longValue());
         redeemerBuilder.unitSteps(exUnits.getSteps().longValue());
         redeemerBuilder.purpose(ScriptPurposeType.fromValue(redeemerObj.getTag().name().toLowerCase()));
-        redeemerBuilder.index(redeemerObj.getIndex().intValue());
+        redeemerBuilder.index(redeemerObj.getIndex());
         redeemerBuilder.scriptHash(scriptHash);
         redeemerBuilder.redeemerData(redeemerData);
         redeemerBuilder.tx(tx);
@@ -179,9 +177,9 @@ public class RedeemerServiceImpl implements RedeemerService {
      */
     private String getRedeemerPointer(
             AggregatedTx aggregatedTx, Map<Pair<String, Short>, TxOut> newTxOutMap,
-            com.bloxbean.cardano.client.plutus.spec.Redeemer redeemerObj) {
+            com.bloxbean.cardano.yaci.core.model.Redeemer redeemerObj) {
         RedeemerTag tag = redeemerObj.getTag();
-        int pointerIndex = redeemerObj.getIndex().intValue();
+        int pointerIndex = redeemerObj.getIndex();
 
         return switch (tag) {
             case Spend -> {
