@@ -16,6 +16,7 @@ import org.cardanofoundation.ledgersync.explorerconsumer.repository.ParamProposa
 import org.cardanofoundation.ledgersync.explorerconsumer.service.CostModelService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.EpochParamService;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataService;
+import org.cardanofoundation.ledgersync.explorerconsumer.util.EpochParamUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -127,8 +128,12 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         List<ParamProposal> prevParamProposals = paramProposalRepository
                 .findParamProposalsByEpochNo(epochNo - 1);
-        prevParamProposals.forEach(
-                paramProposal -> epochParamMapper.updateByParamProposal(curEpochParam, paramProposal));
+
+        var paramProposalToUpdate = EpochParamUtil.getParamProposalToUpdate(prevParamProposals, genesisDataService.getDelegationKeyHashes(),
+                genesisDataService.getUpdateQuorum());
+        if (paramProposalToUpdate != null) {
+            epochParamMapper.updateByParamProposal(curEpochParam, paramProposalToUpdate);
+        }
 
         Block block = blockRepository.findFirstByEpochNo(epochNo)
                 .orElseThrow(
