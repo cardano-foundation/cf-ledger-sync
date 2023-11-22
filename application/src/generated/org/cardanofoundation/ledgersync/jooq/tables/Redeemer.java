@@ -139,7 +139,7 @@ public class Redeemer extends TableImpl<RedeemerRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.REDEEMER_REDEEMER_DATA_ID_IDX);
+        return Arrays.asList(Indexes.REDEEMER_REDEEMER_DATA_ID_IDX, Indexes.REDEEMER_SCRIPT_HASH_IDX);
     }
 
     @Override

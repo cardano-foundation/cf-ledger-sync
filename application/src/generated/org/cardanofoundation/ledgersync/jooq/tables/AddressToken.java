@@ -119,7 +119,7 @@ public class AddressToken extends TableImpl<AddressTokenRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.ADDRESS_TOKEN_IDENT_STAKE_TX_ID_BALANCE_IDX, Indexes.ADDRESS_TOKEN_IDENT_TX_ID_BALANCE_IDX, Indexes.IDX_ADDRESS_TOKEN_ADDRESS_ID, Indexes.IDX_ADDRESS_TOKEN_IDENT, Indexes.IDX_ADDRESS_TOKEN_TX_ID);
+        return Arrays.asList(Indexes.ADDRESS_TOKEN_IDENT_STAKE_TX_ID_BALANCE_IDX, Indexes.IDX_ADDRESS_TOKEN_ADDRESS_ID, Indexes.IDX_ADDRESS_TOKEN_IDENT, Indexes.IDX_ADDRESS_TOKEN_TX_ID);
     }
 
     @Override

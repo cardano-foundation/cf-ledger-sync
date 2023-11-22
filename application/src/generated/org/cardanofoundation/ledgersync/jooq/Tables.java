@@ -9,12 +9,9 @@ import org.cardanofoundation.ledgersync.jooq.tables.Address;
 import org.cardanofoundation.ledgersync.jooq.tables.AddressToken;
 import org.cardanofoundation.ledgersync.jooq.tables.AddressTokenBalance;
 import org.cardanofoundation.ledgersync.jooq.tables.AddressTxBalance;
-import org.cardanofoundation.ledgersync.jooq.tables.AggAddressToken;
-import org.cardanofoundation.ledgersync.jooq.tables.AggAddressTxBalance;
-import org.cardanofoundation.ledgersync.jooq.tables.AggPoolInfo;
-import org.cardanofoundation.ledgersync.jooq.tables.AssetMetadata;
 import org.cardanofoundation.ledgersync.jooq.tables.Block;
 import org.cardanofoundation.ledgersync.jooq.tables.CostModel;
+import org.cardanofoundation.ledgersync.jooq.tables.Cursor_;
 import org.cardanofoundation.ledgersync.jooq.tables.Datum;
 import org.cardanofoundation.ledgersync.jooq.tables.Delegation;
 import org.cardanofoundation.ledgersync.jooq.tables.DelistedPool;
@@ -22,6 +19,7 @@ import org.cardanofoundation.ledgersync.jooq.tables.Epoch;
 import org.cardanofoundation.ledgersync.jooq.tables.EpochParam;
 import org.cardanofoundation.ledgersync.jooq.tables.EpochStake;
 import org.cardanofoundation.ledgersync.jooq.tables.EpochSyncTime;
+import org.cardanofoundation.ledgersync.jooq.tables.Era;
 import org.cardanofoundation.ledgersync.jooq.tables.ExtraKeyWitness;
 import org.cardanofoundation.ledgersync.jooq.tables.FailedTxOut;
 import org.cardanofoundation.ledgersync.jooq.tables.MaTxMint;
@@ -35,14 +33,12 @@ import org.cardanofoundation.ledgersync.jooq.tables.PoolOfflineData;
 import org.cardanofoundation.ledgersync.jooq.tables.PoolOfflineFetchError;
 import org.cardanofoundation.ledgersync.jooq.tables.PoolOwner;
 import org.cardanofoundation.ledgersync.jooq.tables.PoolRelay;
-import org.cardanofoundation.ledgersync.jooq.tables.PoolReportHistory;
 import org.cardanofoundation.ledgersync.jooq.tables.PoolRetire;
 import org.cardanofoundation.ledgersync.jooq.tables.PoolUpdate;
 import org.cardanofoundation.ledgersync.jooq.tables.PotTransfer;
 import org.cardanofoundation.ledgersync.jooq.tables.Redeemer;
 import org.cardanofoundation.ledgersync.jooq.tables.RedeemerData;
 import org.cardanofoundation.ledgersync.jooq.tables.ReferenceTxIn;
-import org.cardanofoundation.ledgersync.jooq.tables.ReportHistory;
 import org.cardanofoundation.ledgersync.jooq.tables.Reserve;
 import org.cardanofoundation.ledgersync.jooq.tables.ReservedPoolTicker;
 import org.cardanofoundation.ledgersync.jooq.tables.Reward;
@@ -52,18 +48,16 @@ import org.cardanofoundation.ledgersync.jooq.tables.Script;
 import org.cardanofoundation.ledgersync.jooq.tables.SlotLeader;
 import org.cardanofoundation.ledgersync.jooq.tables.StakeAddress;
 import org.cardanofoundation.ledgersync.jooq.tables.StakeDeregistration;
-import org.cardanofoundation.ledgersync.jooq.tables.StakeKeyReportHistory;
 import org.cardanofoundation.ledgersync.jooq.tables.StakeRegistration;
-import org.cardanofoundation.ledgersync.jooq.tables.StakeTxBalance;
-import org.cardanofoundation.ledgersync.jooq.tables.TokenInfo;
-import org.cardanofoundation.ledgersync.jooq.tables.TokenInfoCheckpoint;
 import org.cardanofoundation.ledgersync.jooq.tables.Treasury;
 import org.cardanofoundation.ledgersync.jooq.tables.Tx;
+import org.cardanofoundation.ledgersync.jooq.tables.TxBootstrapWitnesses;
 import org.cardanofoundation.ledgersync.jooq.tables.TxChart;
 import org.cardanofoundation.ledgersync.jooq.tables.TxIn;
 import org.cardanofoundation.ledgersync.jooq.tables.TxMetadata;
 import org.cardanofoundation.ledgersync.jooq.tables.TxMetadataHash;
 import org.cardanofoundation.ledgersync.jooq.tables.TxOut;
+import org.cardanofoundation.ledgersync.jooq.tables.TxWitnesses;
 import org.cardanofoundation.ledgersync.jooq.tables.UnconsumeTxIn;
 import org.cardanofoundation.ledgersync.jooq.tables.Withdrawal;
 
@@ -100,26 +94,6 @@ public class Tables {
     public static final AddressTxBalance ADDRESS_TX_BALANCE = AddressTxBalance.ADDRESS_TX_BALANCE;
 
     /**
-     * The table <code>agg_address_token</code>.
-     */
-    public static final AggAddressToken AGG_ADDRESS_TOKEN = AggAddressToken.AGG_ADDRESS_TOKEN;
-
-    /**
-     * The table <code>agg_address_tx_balance</code>.
-     */
-    public static final AggAddressTxBalance AGG_ADDRESS_TX_BALANCE = AggAddressTxBalance.AGG_ADDRESS_TX_BALANCE;
-
-    /**
-     * The table <code>agg_pool_info</code>.
-     */
-    public static final AggPoolInfo AGG_POOL_INFO = AggPoolInfo.AGG_POOL_INFO;
-
-    /**
-     * The table <code>asset_metadata</code>.
-     */
-    public static final AssetMetadata ASSET_METADATA = AssetMetadata.ASSET_METADATA;
-
-    /**
      * The table <code>block</code>.
      */
     public static final Block BLOCK = Block.BLOCK;
@@ -128,6 +102,11 @@ public class Tables {
      * The table <code>cost_model</code>.
      */
     public static final CostModel COST_MODEL = CostModel.COST_MODEL;
+
+    /**
+     * The table <code>cursor_</code>.
+     */
+    public static final Cursor_ CURSOR_ = Cursor_.CURSOR_;
 
     /**
      * The table <code>datum</code>.
@@ -163,6 +142,11 @@ public class Tables {
      * The table <code>epoch_sync_time</code>.
      */
     public static final EpochSyncTime EPOCH_SYNC_TIME = EpochSyncTime.EPOCH_SYNC_TIME;
+
+    /**
+     * The table <code>era</code>.
+     */
+    public static final Era ERA = Era.ERA;
 
     /**
      * The table <code>extra_key_witness</code>.
@@ -230,11 +214,6 @@ public class Tables {
     public static final PoolRelay POOL_RELAY = PoolRelay.POOL_RELAY;
 
     /**
-     * The table <code>pool_report_history</code>.
-     */
-    public static final PoolReportHistory POOL_REPORT_HISTORY = PoolReportHistory.POOL_REPORT_HISTORY;
-
-    /**
      * The table <code>pool_retire</code>.
      */
     public static final PoolRetire POOL_RETIRE = PoolRetire.POOL_RETIRE;
@@ -263,11 +242,6 @@ public class Tables {
      * The table <code>reference_tx_in</code>.
      */
     public static final ReferenceTxIn REFERENCE_TX_IN = ReferenceTxIn.REFERENCE_TX_IN;
-
-    /**
-     * The table <code>report_history</code>.
-     */
-    public static final ReportHistory REPORT_HISTORY = ReportHistory.REPORT_HISTORY;
 
     /**
      * The table <code>reserve</code>.
@@ -315,29 +289,9 @@ public class Tables {
     public static final StakeDeregistration STAKE_DEREGISTRATION = StakeDeregistration.STAKE_DEREGISTRATION;
 
     /**
-     * The table <code>stake_key_report_history</code>.
-     */
-    public static final StakeKeyReportHistory STAKE_KEY_REPORT_HISTORY = StakeKeyReportHistory.STAKE_KEY_REPORT_HISTORY;
-
-    /**
      * The table <code>stake_registration</code>.
      */
     public static final StakeRegistration STAKE_REGISTRATION = StakeRegistration.STAKE_REGISTRATION;
-
-    /**
-     * The table <code>stake_tx_balance</code>.
-     */
-    public static final StakeTxBalance STAKE_TX_BALANCE = StakeTxBalance.STAKE_TX_BALANCE;
-
-    /**
-     * The table <code>token_info</code>.
-     */
-    public static final TokenInfo TOKEN_INFO = TokenInfo.TOKEN_INFO;
-
-    /**
-     * The table <code>token_info_checkpoint</code>.
-     */
-    public static final TokenInfoCheckpoint TOKEN_INFO_CHECKPOINT = TokenInfoCheckpoint.TOKEN_INFO_CHECKPOINT;
 
     /**
      * The table <code>treasury</code>.
@@ -348,6 +302,11 @@ public class Tables {
      * The table <code>tx</code>.
      */
     public static final Tx TX = Tx.TX;
+
+    /**
+     * The table <code>tx_bootstrap_witnesses</code>.
+     */
+    public static final TxBootstrapWitnesses TX_BOOTSTRAP_WITNESSES = TxBootstrapWitnesses.TX_BOOTSTRAP_WITNESSES;
 
     /**
      * The table <code>tx_chart</code>.
@@ -373,6 +332,11 @@ public class Tables {
      * The table <code>tx_out</code>.
      */
     public static final TxOut TX_OUT = TxOut.TX_OUT;
+
+    /**
+     * The table <code>tx_witnesses</code>.
+     */
+    public static final TxWitnesses TX_WITNESSES = TxWitnesses.TX_WITNESSES;
 
     /**
      * The table <code>unconsume_tx_in</code>.

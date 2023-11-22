@@ -160,4 +160,19 @@ public class ScriptDao extends AbstractSpringDAOImpl<ScriptRecord, org.cardanofo
     public List<org.cardanofoundation.ledgersync.jooq.tables.pojos.Script> fetchByTxId(Long... values) {
         return fetch(Script.SCRIPT.TX_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>verified BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<org.cardanofoundation.ledgersync.jooq.tables.pojos.Script> fetchRangeOfVerified(Boolean lowerInclusive, Boolean upperInclusive) {
+        return fetchRange(Script.SCRIPT.VERIFIED, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>verified IN (values)</code>
+     */
+    public List<org.cardanofoundation.ledgersync.jooq.tables.pojos.Script> fetchByVerified(Boolean... values) {
+        return fetch(Script.SCRIPT.VERIFIED, values);
+    }
 }

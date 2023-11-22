@@ -59,7 +59,7 @@ public class CostModel extends TableImpl<CostModelRecord> {
     /**
      * The column <code>cost_model.costs</code>.
      */
-    public final TableField<CostModelRecord, String> COSTS = createField(DSL.name("costs"), SQLDataType.VARCHAR(65535).nullable(false), this, "");
+    public final TableField<CostModelRecord, String> COSTS = createField(DSL.name("costs"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>cost_model.hash</code>.
