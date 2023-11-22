@@ -142,20 +142,9 @@ ALTER TABLE ONLY pool_metadata_ref
 
 
 --
--- Name: pool_offline_data unique_pool_offline_data; Type: CONSTRAINT;
+-- Name: pool_offline_data pool_offline_data_pool_id_unique; Type: CONSTRAINT;
 --
-
-ALTER TABLE ONLY pool_offline_data
-    ADD CONSTRAINT unique_pool_offline_data UNIQUE (pool_id, hash);
-
-
---
--- Name: pool_offline_fetch_error unique_pool_offline_fetch_error; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY pool_offline_fetch_error
-    ADD CONSTRAINT unique_pool_offline_fetch_error UNIQUE (pool_id, fetch_time, retry_count);
-
+ALTER TABLE pool_offline_data ADD CONSTRAINT pool_offline_data_pool_id_unique UNIQUE (pool_id);
 
 --
 -- Name: pool_owner unique_pool_owner; Type: CONSTRAINT;

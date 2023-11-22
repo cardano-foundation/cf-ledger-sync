@@ -22,7 +22,7 @@ CREATE SEQUENCE block_id_seq
 
 ALTER SEQUENCE block_id_seq OWNED BY block.id;
 --
--- Name: cost_model_id_seq; Type: SEQUENCE; 
+-- Name: cost_model_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE cost_model_id_seq
@@ -33,7 +33,7 @@ CREATE SEQUENCE cost_model_id_seq
 
 ALTER SEQUENCE cost_model_id_seq OWNED BY cost_model.id;
 --
--- Name: datum_id_seq; Type: SEQUENCE; 
+-- Name: datum_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE datum_id_seq
@@ -44,7 +44,7 @@ CREATE SEQUENCE datum_id_seq
 
 ALTER SEQUENCE datum_id_seq OWNED BY datum.id;
 --
--- Name: delegation_id_seq; Type: SEQUENCE; 
+-- Name: delegation_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE delegation_id_seq
@@ -63,7 +63,7 @@ CREATE SEQUENCE delisted_pool_id_seq
 
 ALTER SEQUENCE delisted_pool_id_seq OWNED BY delisted_pool.id;
 --
--- Name: epoch_id_seq; Type: SEQUENCE; 
+-- Name: epoch_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE epoch_id_seq
@@ -86,7 +86,7 @@ CREATE SEQUENCE epoch_param_id_seq
 
 ALTER SEQUENCE epoch_param_id_seq OWNED BY epoch_param.id;
 --
--- Name: epoch_stake_id_seq; Type: SEQUENCE; 
+-- Name: epoch_stake_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE epoch_stake_id_seq
@@ -97,7 +97,7 @@ CREATE SEQUENCE epoch_stake_id_seq
 
 ALTER SEQUENCE epoch_stake_id_seq OWNED BY epoch_stake.id;
 --
--- Name: epoch_sync_time_id_seq; Type: SEQUENCE; 
+-- Name: epoch_sync_time_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE epoch_sync_time_id_seq
@@ -108,7 +108,7 @@ CREATE SEQUENCE epoch_sync_time_id_seq
 
 ALTER SEQUENCE epoch_sync_time_id_seq OWNED BY epoch_sync_time.id;
 --
--- Name: extra_key_witness_id_seq; Type: SEQUENCE; 
+-- Name: extra_key_witness_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE extra_key_witness_id_seq
@@ -120,7 +120,7 @@ CREATE SEQUENCE extra_key_witness_id_seq
 ALTER SEQUENCE extra_key_witness_id_seq OWNED BY extra_key_witness.id;
 
 --
--- Name: failed_tx_out_id_seq; Type: SEQUENCE; 
+-- Name: failed_tx_out_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE failed_tx_out_id_seq
@@ -131,7 +131,7 @@ CREATE SEQUENCE failed_tx_out_id_seq
 
 ALTER SEQUENCE failed_tx_out_id_seq OWNED BY failed_tx_out.id;
 --
--- Name: ma_tx_mint_id_seq; Type: SEQUENCE; 
+-- Name: ma_tx_mint_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE ma_tx_mint_id_seq
@@ -142,7 +142,7 @@ CREATE SEQUENCE ma_tx_mint_id_seq
 
 ALTER SEQUENCE ma_tx_mint_id_seq OWNED BY ma_tx_mint.id;
 --
--- Name: ma_tx_out_id_seq; Type: SEQUENCE; 
+-- Name: ma_tx_out_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE ma_tx_out_id_seq
@@ -153,7 +153,7 @@ CREATE SEQUENCE ma_tx_out_id_seq
 
 ALTER SEQUENCE ma_tx_out_id_seq OWNED BY ma_tx_out.id;
 --
--- Name: meta_id_seq; Type: SEQUENCE; 
+-- Name: meta_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE meta_id_seq
@@ -164,7 +164,7 @@ CREATE SEQUENCE meta_id_seq
 
 ALTER SEQUENCE meta_id_seq OWNED BY meta.id;
 --
--- Name: multi_asset_id_seq; Type: SEQUENCE; 
+-- Name: multi_asset_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE multi_asset_id_seq
@@ -175,7 +175,7 @@ CREATE SEQUENCE multi_asset_id_seq
 
 ALTER SEQUENCE multi_asset_id_seq OWNED BY multi_asset.id;
 --
--- Name: param_proposal_id_seq; Type: SEQUENCE; 
+-- Name: param_proposal_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE param_proposal_id_seq
@@ -186,7 +186,7 @@ CREATE SEQUENCE param_proposal_id_seq
 
 ALTER SEQUENCE param_proposal_id_seq OWNED BY param_proposal.id;
 --
--- Name: pool_hash_id_seq; Type: SEQUENCE; 
+-- Name: pool_hash_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_hash_id_seq
@@ -197,7 +197,7 @@ CREATE SEQUENCE pool_hash_id_seq
 
 ALTER SEQUENCE pool_hash_id_seq OWNED BY pool_hash.id;
 --
--- Name: pool_metadata_ref_id_seq; Type: SEQUENCE; 
+-- Name: pool_metadata_ref_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_metadata_ref_id_seq
@@ -209,7 +209,7 @@ CREATE SEQUENCE pool_metadata_ref_id_seq
 ALTER SEQUENCE pool_metadata_ref_id_seq OWNED BY pool_metadata_ref.id;
 
 --
--- Name: pool_offline_data_id_seq; Type: SEQUENCE; 
+-- Name: pool_offline_data_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_offline_data_id_seq
@@ -220,7 +220,7 @@ CREATE SEQUENCE pool_offline_data_id_seq
 
 ALTER SEQUENCE pool_offline_data_id_seq OWNED BY pool_offline_data.id;
 --
--- Name: pool_offline_fetch_error_id_seq; Type: SEQUENCE; 
+-- Name: pool_offline_fetch_error_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_offline_fetch_error_id_seq
@@ -231,7 +231,7 @@ CREATE SEQUENCE pool_offline_fetch_error_id_seq
 
 ALTER SEQUENCE pool_offline_fetch_error_id_seq OWNED BY pool_offline_fetch_error.id;
 --
--- Name: pool_owner_id_seq; Type: SEQUENCE; 
+-- Name: pool_owner_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_owner_id_seq
@@ -242,7 +242,7 @@ CREATE SEQUENCE pool_owner_id_seq
 
 ALTER SEQUENCE pool_owner_id_seq OWNED BY pool_owner.id;
 --
--- Name: pool_relay_id_seq; Type: SEQUENCE; 
+-- Name: pool_relay_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_relay_id_seq
@@ -253,7 +253,7 @@ CREATE SEQUENCE pool_relay_id_seq
 
 ALTER SEQUENCE pool_relay_id_seq OWNED BY pool_relay.id;
 --
--- Name: pool_retire_id_seq; Type: SEQUENCE; 
+-- Name: pool_retire_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_retire_id_seq
@@ -265,7 +265,7 @@ CREATE SEQUENCE pool_retire_id_seq
 ALTER SEQUENCE pool_retire_id_seq OWNED BY pool_retire.id;
 
 --
--- Name: pool_update_id_seq; Type: SEQUENCE; 
+-- Name: pool_update_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pool_update_id_seq
@@ -276,7 +276,7 @@ CREATE SEQUENCE pool_update_id_seq
 
 ALTER SEQUENCE pool_update_id_seq OWNED BY pool_update.id;
 --
--- Name: pot_transfer_id_seq; Type: SEQUENCE; 
+-- Name: pot_transfer_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE pot_transfer_id_seq
@@ -298,7 +298,7 @@ CREATE SEQUENCE redeemer_id_seq
 
 ALTER SEQUENCE redeemer_id_seq OWNED BY redeemer.id;
 --
--- Name: redeemer_data_id_seq; Type: SEQUENCE; 
+-- Name: redeemer_data_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE redeemer_data_id_seq
@@ -309,7 +309,7 @@ CREATE SEQUENCE redeemer_data_id_seq
 
 ALTER SEQUENCE redeemer_data_id_seq OWNED BY redeemer_data.id;
 --
--- Name: reference_tx_in_id_seq; Type: SEQUENCE; 
+-- Name: reference_tx_in_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE reference_tx_in_id_seq
@@ -320,7 +320,7 @@ CREATE SEQUENCE reference_tx_in_id_seq
 
 ALTER SEQUENCE reference_tx_in_id_seq OWNED BY reference_tx_in.id;
 --
--- Name: reserve_id_seq; Type: SEQUENCE; 
+-- Name: reserve_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE reserve_id_seq
@@ -331,7 +331,7 @@ CREATE SEQUENCE reserve_id_seq
 
 ALTER SEQUENCE reserve_id_seq OWNED BY reserve.id;
 --
--- Name: reserved_pool_ticker_id_seq; Type: SEQUENCE; 
+-- Name: reserved_pool_ticker_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE reserved_pool_ticker_id_seq
@@ -341,9 +341,8 @@ CREATE SEQUENCE reserved_pool_ticker_id_seq
     NO MAXVALUE CACHE 1;
 
 ALTER SEQUENCE reserved_pool_ticker_id_seq OWNED BY reserved_pool_ticker.id;
-
 --
--- Name: reward_id_seq; Type: SEQUENCE; 
+-- Name: reward_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE reward_id_seq
@@ -367,7 +366,7 @@ CREATE SEQUENCE schema_version_id_seq
 ALTER SEQUENCE schema_version_id_seq OWNED BY schema_version.id;
 
 --
--- Name: script_id_seq; Type: SEQUENCE; 
+-- Name: script_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE script_id_seq
@@ -379,7 +378,7 @@ CREATE SEQUENCE script_id_seq
 ALTER SEQUENCE script_id_seq OWNED BY script.id;
 
 --
--- Name: slot_leader_id_seq; Type: SEQUENCE; 
+-- Name: slot_leader_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE slot_leader_id_seq
@@ -390,7 +389,7 @@ CREATE SEQUENCE slot_leader_id_seq
 
 ALTER SEQUENCE slot_leader_id_seq OWNED BY slot_leader.id;
 --
--- Name: stake_address_id_seq; Type: SEQUENCE; 
+-- Name: stake_address_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE stake_address_id_seq
@@ -401,7 +400,7 @@ CREATE SEQUENCE stake_address_id_seq
 
 ALTER SEQUENCE stake_address_id_seq OWNED BY stake_address.id;
 --
--- Name: stake_deregistration_id_seq; Type: SEQUENCE; 
+-- Name: stake_deregistration_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE stake_deregistration_id_seq
@@ -412,7 +411,7 @@ CREATE SEQUENCE stake_deregistration_id_seq
 
 ALTER SEQUENCE stake_deregistration_id_seq OWNED BY stake_deregistration.id;
 --
--- Name: stake_registration_id_seq; Type: SEQUENCE; 
+-- Name: stake_registration_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE stake_registration_id_seq
@@ -423,7 +422,7 @@ CREATE SEQUENCE stake_registration_id_seq
 
 ALTER SEQUENCE stake_registration_id_seq OWNED BY stake_registration.id;
 --
--- Name: treasury_id_seq; Type: SEQUENCE; 
+-- Name: treasury_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE treasury_id_seq
@@ -434,7 +433,7 @@ CREATE SEQUENCE treasury_id_seq
 
 ALTER SEQUENCE treasury_id_seq OWNED BY treasury.id;
 --
--- Name: tx_id_seq; Type: SEQUENCE; 
+-- Name: tx_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE tx_id_seq
@@ -445,7 +444,7 @@ CREATE SEQUENCE tx_id_seq
 
 ALTER SEQUENCE tx_id_seq OWNED BY tx.id;
 --
--- Name: tx_in_id_seq; Type: SEQUENCE; 
+-- Name: tx_in_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE tx_in_id_seq
@@ -456,7 +455,7 @@ CREATE SEQUENCE tx_in_id_seq
 
 ALTER SEQUENCE tx_in_id_seq OWNED BY tx_in.id;
 --
--- Name: tx_metadata_id_seq; Type: SEQUENCE; 
+-- Name: tx_metadata_id_seq; Type: SEQUENCE;
 --
 
 CREATE SEQUENCE tx_metadata_id_seq
@@ -545,18 +544,6 @@ CREATE SEQUENCE address_token_balance_id_seq
 ALTER SEQUENCE address_token_balance_id_seq OWNED BY address_token_balance.id;
 
 --
--- Name: asset_metadata_id_seq; Type: SEQUENCE;
---
-
-CREATE SEQUENCE asset_metadata_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE asset_metadata_id_seq OWNED BY asset_metadata.id;
-
---
 -- Name: rollback_history_id_seq; Type: SEQUENCE;
 --
 
@@ -569,50 +556,11 @@ CREATE SEQUENCE rollback_history_id_seq
 ALTER SEQUENCE rollback_history_id_seq OWNED BY rollback_history.id;
 
 --
--- Name: report_history_id_seq; Type: SEQUENCE;
---
-
-CREATE SEQUENCE report_history_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE report_history_id_seq OWNED BY report_history.id;
-
---
--- Name: stake_key_report_history_id_seq; Type: SEQUENCE;
---
-
-CREATE SEQUENCE stake_key_report_history_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE stake_key_report_history_id_seq OWNED BY stake_key_report_history.id;
-
---
--- Name: pool_report_history_id_seq; Type: SEQUENCE;
---
-CREATE SEQUENCE pool_report_history_id_seq
-    start with 1
-    increment by 1
-    no minvalue
-    no maxvalue
-    cache 1;
-
-alter sequence pool_report_history_id_seq owned by pool_report_history.id;
-
-
---
 -- Name: ada_pots id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY ada_pots
-    ALTER COLUMN id SET DEFAULT nextval('ada_pots_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('ada_pots_id_seq'::regclass);
 
 
 --
@@ -620,7 +568,7 @@ ALTER TABLE ONLY ada_pots
 --
 
 ALTER TABLE ONLY block
-    ALTER COLUMN id SET DEFAULT nextval('block_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('block_id_seq'::regclass);
 
 
 --
@@ -628,7 +576,7 @@ ALTER TABLE ONLY block
 --
 
 ALTER TABLE ONLY cost_model
-    ALTER COLUMN id SET DEFAULT nextval('cost_model_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('cost_model_id_seq'::regclass);
 
 
 --
@@ -636,7 +584,7 @@ ALTER TABLE ONLY cost_model
 --
 
 ALTER TABLE ONLY datum
-    ALTER COLUMN id SET DEFAULT nextval('datum_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('datum_id_seq'::regclass);
 
 
 --
@@ -644,7 +592,7 @@ ALTER TABLE ONLY datum
 --
 
 ALTER TABLE ONLY delegation
-    ALTER COLUMN id SET DEFAULT nextval('delegation_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('delegation_id_seq'::regclass);
 
 
 --
@@ -652,7 +600,7 @@ ALTER TABLE ONLY delegation
 --
 
 ALTER TABLE ONLY delisted_pool
-    ALTER COLUMN id SET DEFAULT nextval('delisted_pool_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('delisted_pool_id_seq'::regclass);
 
 
 --
@@ -660,7 +608,7 @@ ALTER TABLE ONLY delisted_pool
 --
 
 ALTER TABLE ONLY epoch
-    ALTER COLUMN id SET DEFAULT nextval('epoch_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('epoch_id_seq'::regclass);
 
 
 --
@@ -668,7 +616,7 @@ ALTER TABLE ONLY epoch
 --
 
 ALTER TABLE ONLY epoch_param
-    ALTER COLUMN id SET DEFAULT nextval('epoch_param_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('epoch_param_id_seq'::regclass);
 
 
 --
@@ -676,7 +624,7 @@ ALTER TABLE ONLY epoch_param
 --
 
 ALTER TABLE ONLY epoch_stake
-    ALTER COLUMN id SET DEFAULT nextval('epoch_stake_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('epoch_stake_id_seq'::regclass);
 
 
 --
@@ -684,7 +632,7 @@ ALTER TABLE ONLY epoch_stake
 --
 
 ALTER TABLE ONLY epoch_sync_time
-    ALTER COLUMN id SET DEFAULT nextval('epoch_sync_time_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('epoch_sync_time_id_seq'::regclass);
 
 
 --
@@ -692,7 +640,7 @@ ALTER TABLE ONLY epoch_sync_time
 --
 
 ALTER TABLE ONLY extra_key_witness
-    ALTER COLUMN id SET DEFAULT nextval('extra_key_witness_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('extra_key_witness_id_seq'::regclass);
 
 
 --
@@ -700,7 +648,7 @@ ALTER TABLE ONLY extra_key_witness
 --
 
 ALTER TABLE ONLY failed_tx_out
-    ALTER COLUMN id SET DEFAULT nextval('failed_tx_out_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('failed_tx_out_id_seq'::regclass);
 
 
 --
@@ -708,7 +656,7 @@ ALTER TABLE ONLY failed_tx_out
 --
 
 ALTER TABLE ONLY ma_tx_mint
-    ALTER COLUMN id SET DEFAULT nextval('ma_tx_mint_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('ma_tx_mint_id_seq'::regclass);
 
 
 --
@@ -716,7 +664,7 @@ ALTER TABLE ONLY ma_tx_mint
 --
 
 ALTER TABLE ONLY ma_tx_out
-    ALTER COLUMN id SET DEFAULT nextval('ma_tx_out_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('ma_tx_out_id_seq'::regclass);
 
 
 --
@@ -724,7 +672,7 @@ ALTER TABLE ONLY ma_tx_out
 --
 
 ALTER TABLE ONLY meta
-    ALTER COLUMN id SET DEFAULT nextval('meta_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('meta_id_seq'::regclass);
 
 
 --
@@ -732,7 +680,7 @@ ALTER TABLE ONLY meta
 --
 
 ALTER TABLE ONLY multi_asset
-    ALTER COLUMN id SET DEFAULT nextval('multi_asset_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('multi_asset_id_seq'::regclass);
 
 
 --
@@ -740,7 +688,7 @@ ALTER TABLE ONLY multi_asset
 --
 
 ALTER TABLE ONLY param_proposal
-    ALTER COLUMN id SET DEFAULT nextval('param_proposal_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('param_proposal_id_seq'::regclass);
 
 
 --
@@ -748,7 +696,7 @@ ALTER TABLE ONLY param_proposal
 --
 
 ALTER TABLE ONLY pool_hash
-    ALTER COLUMN id SET DEFAULT nextval('pool_hash_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_hash_id_seq'::regclass);
 
 
 --
@@ -756,7 +704,7 @@ ALTER TABLE ONLY pool_hash
 --
 
 ALTER TABLE ONLY pool_metadata_ref
-    ALTER COLUMN id SET DEFAULT nextval('pool_metadata_ref_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_metadata_ref_id_seq'::regclass);
 
 
 --
@@ -764,7 +712,7 @@ ALTER TABLE ONLY pool_metadata_ref
 --
 
 ALTER TABLE ONLY pool_offline_data
-    ALTER COLUMN id SET DEFAULT nextval('pool_offline_data_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_offline_data_id_seq'::regclass);
 
 
 --
@@ -772,7 +720,7 @@ ALTER TABLE ONLY pool_offline_data
 --
 
 ALTER TABLE ONLY pool_offline_fetch_error
-    ALTER COLUMN id SET DEFAULT nextval('pool_offline_fetch_error_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_offline_fetch_error_id_seq'::regclass);
 
 
 --
@@ -780,7 +728,7 @@ ALTER TABLE ONLY pool_offline_fetch_error
 --
 
 ALTER TABLE ONLY pool_owner
-    ALTER COLUMN id SET DEFAULT nextval('pool_owner_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_owner_id_seq'::regclass);
 
 
 --
@@ -788,7 +736,7 @@ ALTER TABLE ONLY pool_owner
 --
 
 ALTER TABLE ONLY pool_relay
-    ALTER COLUMN id SET DEFAULT nextval('pool_relay_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_relay_id_seq'::regclass);
 
 
 --
@@ -796,14 +744,14 @@ ALTER TABLE ONLY pool_relay
 --
 
 ALTER TABLE ONLY pool_retire
-    ALTER COLUMN id SET DEFAULT nextval('pool_retire_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_retire_id_seq'::regclass);
 
 --
 -- Name: pool_update id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY pool_update
-    ALTER COLUMN id SET DEFAULT nextval('pool_update_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pool_update_id_seq'::regclass);
 
 
 --
@@ -811,7 +759,7 @@ ALTER TABLE ONLY pool_update
 --
 
 ALTER TABLE ONLY pot_transfer
-    ALTER COLUMN id SET DEFAULT nextval('pot_transfer_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('pot_transfer_id_seq'::regclass);
 
 
 --
@@ -819,7 +767,7 @@ ALTER TABLE ONLY pot_transfer
 --
 
 ALTER TABLE ONLY redeemer
-    ALTER COLUMN id SET DEFAULT nextval('redeemer_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('redeemer_id_seq'::regclass);
 
 
 --
@@ -827,7 +775,7 @@ ALTER TABLE ONLY redeemer
 --
 
 ALTER TABLE ONLY redeemer_data
-    ALTER COLUMN id SET DEFAULT nextval('redeemer_data_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('redeemer_data_id_seq'::regclass);
 
 
 --
@@ -835,7 +783,7 @@ ALTER TABLE ONLY redeemer_data
 --
 
 ALTER TABLE ONLY reference_tx_in
-    ALTER COLUMN id SET DEFAULT nextval('reference_tx_in_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('reference_tx_in_id_seq'::regclass);
 
 
 --
@@ -843,7 +791,7 @@ ALTER TABLE ONLY reference_tx_in
 --
 
 ALTER TABLE ONLY reserve
-    ALTER COLUMN id SET DEFAULT nextval('reserve_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('reserve_id_seq'::regclass);
 
 
 --
@@ -851,7 +799,7 @@ ALTER TABLE ONLY reserve
 --
 
 ALTER TABLE ONLY reserved_pool_ticker
-    ALTER COLUMN id SET DEFAULT nextval('reserved_pool_ticker_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('reserved_pool_ticker_id_seq'::regclass);
 
 
 --
@@ -859,14 +807,14 @@ ALTER TABLE ONLY reserved_pool_ticker
 --
 
 ALTER TABLE ONLY reward
-    ALTER COLUMN id SET DEFAULT nextval('reward_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('reward_id_seq'::regclass);
 
 --
 -- Name: script id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY script
-    ALTER COLUMN id SET DEFAULT nextval('script_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('script_id_seq'::regclass);
 
 
 --
@@ -874,7 +822,7 @@ ALTER TABLE ONLY script
 --
 
 ALTER TABLE ONLY slot_leader
-    ALTER COLUMN id SET DEFAULT nextval('slot_leader_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('slot_leader_id_seq'::regclass);
 
 
 --
@@ -882,7 +830,7 @@ ALTER TABLE ONLY slot_leader
 --
 
 ALTER TABLE ONLY stake_address
-    ALTER COLUMN id SET DEFAULT nextval('stake_address_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('stake_address_id_seq'::regclass);
 
 
 --
@@ -890,7 +838,7 @@ ALTER TABLE ONLY stake_address
 --
 
 ALTER TABLE ONLY stake_deregistration
-    ALTER COLUMN id SET DEFAULT nextval('stake_deregistration_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('stake_deregistration_id_seq'::regclass);
 
 
 --
@@ -898,7 +846,7 @@ ALTER TABLE ONLY stake_deregistration
 --
 
 ALTER TABLE ONLY stake_registration
-    ALTER COLUMN id SET DEFAULT nextval('stake_registration_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('stake_registration_id_seq'::regclass);
 
 
 --
@@ -906,7 +854,7 @@ ALTER TABLE ONLY stake_registration
 --
 
 ALTER TABLE ONLY treasury
-    ALTER COLUMN id SET DEFAULT nextval('treasury_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('treasury_id_seq'::regclass);
 
 
 --
@@ -914,7 +862,7 @@ ALTER TABLE ONLY treasury
 --
 
 ALTER TABLE ONLY tx
-    ALTER COLUMN id SET DEFAULT nextval('tx_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('tx_id_seq'::regclass);
 
 
 --
@@ -922,7 +870,7 @@ ALTER TABLE ONLY tx
 --
 
 ALTER TABLE ONLY tx_in
-    ALTER COLUMN id SET DEFAULT nextval('tx_in_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('tx_in_id_seq'::regclass);
 
 
 --
@@ -930,7 +878,7 @@ ALTER TABLE ONLY tx_in
 --
 
 ALTER TABLE ONLY tx_metadata
-    ALTER COLUMN id SET DEFAULT nextval('tx_metadata_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('tx_metadata_id_seq'::regclass);
 
 
 --
@@ -938,7 +886,7 @@ ALTER TABLE ONLY tx_metadata
 --
 
 ALTER TABLE ONLY tx_out
-    ALTER COLUMN id SET DEFAULT nextval('tx_out_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('tx_out_id_seq'::regclass);
 
 
 --
@@ -946,7 +894,7 @@ ALTER TABLE ONLY tx_out
 --
 
 ALTER TABLE ONLY unconsume_tx_in
-    ALTER COLUMN id SET DEFAULT nextval('unconsume_tx_in_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('unconsume_tx_in_id_seq'::regclass);
 
 
 --
@@ -954,70 +902,42 @@ ALTER TABLE ONLY unconsume_tx_in
 --
 
 ALTER TABLE ONLY withdrawal
-    ALTER COLUMN id SET DEFAULT nextval('withdrawal_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('withdrawal_id_seq'::regclass);
 
 --
 -- Name: address id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY address
-    ALTER COLUMN id SET DEFAULT nextval('address_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('address_id_seq'::regclass);
 
 --
 -- Name: address_token id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY address_token
-    ALTER COLUMN id SET DEFAULT nextval('address_token_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('address_token_id_seq'::regclass);
 
 --
 -- Name: address_tx_balance id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY address_tx_balance
-    ALTER COLUMN id SET DEFAULT nextval('address_tx_balance_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('address_tx_balance_id_seq'::regclass);
 
 --
 -- Name: address_token_balance id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY address_token_balance
-    ALTER COLUMN id SET DEFAULT nextval('address_token_balance_id_seq'::regclass);
-
---
--- Name: asset_metadata id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY asset_metadata
-    ALTER COLUMN id SET DEFAULT nextval('asset_metadata_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('address_token_balance_id_seq'::regclass);
 
 --
 -- Name: rollback_history id; Type: DEFAULT;
 --
 
 ALTER TABLE ONLY rollback_history
-    ALTER COLUMN id SET DEFAULT nextval('rollback_history_id_seq'::regclass);
-
---
--- Name: report_history id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY report_history
-    ALTER COLUMN id SET DEFAULT nextval('report_history_id_seq'::regclass);
-
---
--- Name: rollback_history id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY stake_key_report_history
-    ALTER COLUMN id SET DEFAULT nextval('stake_key_report_history_id_seq'::regclass);
-
---
--- Name: rollback_history id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY pool_report_history
-    ALTER COLUMN id SET DEFAULT nextval('pool_report_history_id_seq'::regclass);
+ALTER COLUMN id SET DEFAULT nextval('rollback_history_id_seq'::regclass);
 
 --
 -- Name: ada_pots ada_pots_pkey; Type: CONSTRAINT;
@@ -1403,12 +1323,6 @@ ALTER TABLE ONLY address_token
 ALTER TABLE ONLY address_token_balance
     ADD CONSTRAINT address_token_balance_pkey PRIMARY KEY (id);
 
---
--- Name: asset_metadata asset_metadata_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY asset_metadata
-    ADD CONSTRAINT asset_metadata_pkey PRIMARY KEY (id);
 
 --
 -- Name: rollback_history rollback_history_pkey; Type: CONSTRAINT;
@@ -1416,3 +1330,30 @@ ALTER TABLE ONLY asset_metadata
 
 ALTER TABLE ONLY rollback_history
     ADD CONSTRAINT rollback_history_pkey PRIMARY KEY (id);
+
+
+CREATE SEQUENCE IF NOT EXISTS tx_witnesses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE tx_witnesses_id_seq OWNED BY tx_witnesses.id;
+
+ALTER TABLE ONLY tx_witnesses
+ALTER COLUMN id SET DEFAULT nextval('tx_witnesses_id_seq'::regclass);
+
+
+CREATE SEQUENCE IF NOT EXISTS tx_bootstrap_witnesses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE tx_bootstrap_witnesses_id_seq OWNED BY tx_bootstrap_witnesses.id;
+
+
+ALTER TABLE ONLY tx_bootstrap_witnesses
+ALTER COLUMN id SET DEFAULT nextval('tx_bootstrap_witnesses_id_seq'::regclass);

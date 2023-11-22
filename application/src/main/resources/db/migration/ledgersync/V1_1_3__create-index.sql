@@ -90,37 +90,23 @@ CREATE INDEX IF NOT EXISTS idx_address_token_balance_address_id ON address_token
 CREATE INDEX IF NOT EXISTS idx_address_token_balance_ident ON address_token_balance (ident);
 CREATE INDEX IF NOT EXISTS idx_address_token_balance_address_id_ident ON address_token_balance (address_id, ident);
 CREATE INDEX IF NOT EXISTS idx_address_token_balance_ident_address_id ON address_token_balance (ident, address_id);
+CREATE INDEX IF NOT EXISTS idx_address_token_balance_stake_address_id ON address_token_balance (stake_address_id);
 
 CREATE INDEX IF NOT EXISTS idx_address_tx_balance_time ON address_tx_balance USING btree ("time");
 CREATE INDEX IF NOT EXISTS idx_address_tx_balance_tx_id ON address_tx_balance USING btree (tx_id);
+CREATE INDEX IF NOT EXISTS idx_address_tx_balance_stake_address_id ON address_tx_balance (stake_address_id);
 
-
+CREATE INDEX IF NOT EXISTS idx_multi_asset_name_view ON multi_asset (name_view);
 CREATE UNIQUE INDEX IF NOT EXISTS multi_asset_fingerprint_uindex ON multi_asset (fingerprint);
+
 CREATE UNIQUE INDEX IF NOT EXISTS datum_hash_uindex ON datum (hash);
 CREATE UNIQUE INDEX IF NOT EXISTS pool_hash_hash_raw_index ON pool_hash (hash_raw);
 CREATE UNIQUE INDEX IF NOT EXISTS script_hash_uindex ON script (hash);
-CREATE UNIQUE INDEX IF NOT EXISTS asset_metadata_ux ON asset_metadata (ident);
 
 CREATE INDEX IF NOT EXISTS idx_tx_chart_minute ON tx_chart ("minute");
 CREATE INDEX IF NOT EXISTS idx_tx_chart_hour ON tx_chart ("hour");
 CREATE INDEX IF NOT EXISTS idx_tx_chart_day ON tx_chart ("day");
 CREATE INDEX IF NOT EXISTS idx_tx_chart_month ON tx_chart ("month");
-
-CREATE INDEX IF NOT EXISTS report_history_username_idx ON report_history (username);
-
-CREATE INDEX IF NOT EXISTS report_history_status_idx ON report_history (status);
-
-CREATE INDEX IF NOT EXISTS stake_key_report_history_stake_key_idx ON stake_key_report_history (stake_key);
-
-CREATE INDEX IF NOT EXISTS stake_key_report_history_report_id_idx ON stake_key_report_history (report_id);
-
-CREATE INDEX IF NOT EXISTS stake_key_report_history_stake_key_report_id_idx ON stake_key_report_history (stake_key, report_id);
-
-CREATE INDEX IF NOT EXISTS pool_report_history_pool_id_idx ON pool_report_history (pool_id);
-
-CREATE INDEX IF NOT EXISTS pool_report_history_report_id_idx on pool_report_history (report_id);
-
-CREATE INDEX IF NOT EXISTS pool_report_history_pool_id_report_id_idx on pool_report_history (pool_id, report_id);
 
 -- Reward index
 CREATE INDEX IF NOT EXISTS reward_earned_epoch_idx ON reward (earned_epoch);
@@ -152,3 +138,44 @@ CREATE INDEX IF NOT EXISTS address_tx_balance_address_id_time_balance_index
 CREATE INDEX IF NOT EXISTS address_address_has_script_idx
     ON address USING btree (address_has_script);
 
+-- CREATE COMPOSITE INDEX FOR address_token_balance
+CREATE INDEX IF NOT EXISTS address_token_balance_ident_stake_address_id_balance_idx
+    ON address_token_balance (ident, stake_address_id, balance);
+
+-- CREATE COMPOSITE INDEX FOR address_tx_balance
+CREATE INDEX IF NOT EXISTS address_tx_balance_stake_address_id_tx_id_balance_idx
+    ON address_tx_balance (stake_address_id, tx_id, balance);
+
+CREATE INDEX IF NOT EXISTS tx_metadata_hash_idx
+    ON tx_metadata_hash (hash);
+
+CREATE INDEX IF NOT EXISTS tx__tx_metadata_hash_idx
+    ON tx (tx_metadata_hash_id);
+
+CREATE INDEX IF NOT EXISTS stake_address_balance_idx ON stake_address USING btree (balance);
+
+
+CREATE INDEX IF NOT EXISTS address_balance_idx ON address USING btree (balance);
+CREATE INDEX IF NOT EXISTS address_tx_count_idx ON address USING btree (tx_count);
+CREATE UNIQUE INDEX IF NOT EXISTS address_tx_balance_tx_id_idx ON address_tx_balance USING btree (tx_id, address_id);
+CREATE INDEX IF NOT EXISTS multi_asset_supply_idx ON multi_asset (supply);
+CREATE INDEX IF NOT EXISTS multi_asset_time_idx ON multi_asset ("time");
+
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA pg_catalog;
+CREATE INDEX IF NOT EXISTS name_view_gin_lower ON multi_asset USING gin (lower(name_view) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS pool_name_gin_lower ON pool_offline_data USING gin (lower(pool_name) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS tx_count_idx ON block USING btree (tx_count);
+
+CREATE INDEX IF NOT EXISTS tx_fee_idx ON tx USING btree (fee);
+CREATE INDEX IF NOT EXISTS tx_out_sum_idx ON tx USING btree (out_sum);
+
+CREATE INDEX IF NOT EXISTS idx_unconsume_tx_in_redeemer_id ON unconsume_tx_in(redeemer_id);
+
+CREATE INDEX IF NOT EXISTS idx_name_view_length ON multi_asset (LENGTH(name_view));
+CREATE INDEX IF NOT EXISTS idx_pool_name_length ON pool_offline_data (LENGTH(pool_name));
+
+CREATE INDEX IF NOT EXISTS tx_witnesses_tx_id_idx ON tx_witnesses (tx_id);
+CREATE INDEX IF NOT EXISTS tx_bootstrap_witnesses_tx_id_idx ON tx_bootstrap_witnesses (tx_id);
+
+CREATE INDEX IF NOT EXISTS redeemer_script_hash_idx ON redeemer (script_hash);
