@@ -1,7 +1,5 @@
 package org.cardanofoundation.explorer.consumercommon.entity;
 
-import org.cardanofoundation.explorer.consumercommon.validation.Hash28Type;
-import java.util.Objects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -11,7 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.cardanofoundation.explorer.consumercommon.validation.Hash28Type;
 import org.hibernate.Hibernate;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "reserved_pool_ticker", uniqueConstraints = {
