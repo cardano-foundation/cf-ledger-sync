@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 
 import static com.bloxbean.cardano.yaci.core.util.Constants.LOVELACE;
 import static org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant.BATCH_QUERY_SIZE;
-import static org.cardanofoundation.ledgersync.explorerconsumer.util.LedgerSyncAssetUtil.assetNameToBytes;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -68,7 +67,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
         // Get all asset fingerprints
         Set<String> fingerprints = txWithMintAssetsList.stream()
                 .flatMap(aggregatedTx -> aggregatedTx.getMint().stream())
-                .map(amount -> LedgerSyncAssetUtil.getFingerPrint(assetNameToBytes(amount.getAssetName()), amount.getPolicyId()))
+                .map(amount -> LedgerSyncAssetUtil.getFingerPrint(amount.getAssetNameBytes(), amount.getPolicyId()))
                 .collect(Collectors.toSet());
 
         /*
@@ -91,11 +90,11 @@ public class MultiAssetServiceImpl implements MultiAssetService {
 
             mintAssets.forEach(amount -> {
                 //B
-                String assetName = HexUtil.encodeHexString(assetNameToBytes(amount.getAssetName()));
+                String assetName = HexUtil.encodeHexString(amount.getAssetNameBytes());
 
                 // Get asset entity from minted existing asset map. If not exists, create a new one
                 var ma = getMultiAssetByPolicyAndNameFromList(tx, mintAssetsExists, amount.getPolicyId(),
-                        assetNameToBytes(amount.getAssetName()), Objects.isNull(assetName) ? EMPTY_STRING : assetName);
+                        amount.getAssetNameBytes(), Objects.isNull(assetName) ? EMPTY_STRING : assetName);
                 var supply = ma.getSupply();
                 var quantity = amount.getQuantity();
                 ma.setSupply(supply.add(quantity));
@@ -177,7 +176,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
                 .filter(amount -> !LOVELACE.equals(amount.getAssetName()))
                 .forEach(amount -> {
                     String fingerprint = LedgerSyncAssetUtil
-                            .getFingerPrint(assetNameToBytes(amount.getAssetName()), amount.getPolicyId());
+                            .getFingerPrint(amount.getAssetNameBytes(), amount.getPolicyId());
                     MaTxOut maTxOut = MaTxOut.builder()
                             .txOut(txOut)
                             .quantity(amount.getQuantity())
