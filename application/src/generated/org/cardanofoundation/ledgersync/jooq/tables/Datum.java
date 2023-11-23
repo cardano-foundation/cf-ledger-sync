@@ -71,7 +71,7 @@ public class Datum extends TableImpl<DatumRecord> {
     /**
      * The column <code>datum.value</code>.
      */
-    public final TableField<DatumRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.VARCHAR(65535), this, "");
+    public final TableField<DatumRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>datum.tx_id</code>.

@@ -124,7 +124,7 @@ public class PoolOfflineFetchError extends TableImpl<PoolOfflineFetchErrorRecord
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.IDX_POOL_OFFLINE_FETCH_ERROR_PMR_ID, Indexes.POOL_OFFLINE_FETCH_ERROR_POOL_ID_IDX, Indexes.POOL_OFFLINE_FETCH_ERROR_POOL_ID_PMR_ID_IDX);
+        return Arrays.asList(Indexes.IDX_POOL_OFFLINE_FETCH_ERROR_PMR_ID);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class TxMetadata extends TableImpl<TxMetadataRecord> {
     /**
      * The column <code>tx_metadata.json</code>.
      */
-    public final TableField<TxMetadataRecord, String> JSON = createField(DSL.name("json"), SQLDataType.VARCHAR(65535), this, "");
+    public final TableField<TxMetadataRecord, String> JSON = createField(DSL.name("json"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>tx_metadata.key</code>.

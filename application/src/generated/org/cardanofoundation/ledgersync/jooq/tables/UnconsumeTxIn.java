@@ -9,16 +9,18 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.cardanofoundation.ledgersync.jooq.DefaultSchema;
+import org.cardanofoundation.ledgersync.jooq.Indexes;
 import org.cardanofoundation.ledgersync.jooq.Keys;
 import org.cardanofoundation.ledgersync.jooq.tables.records.UnconsumeTxInRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function5;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -71,6 +73,11 @@ public class UnconsumeTxIn extends TableImpl<UnconsumeTxInRecord> {
      */
     public final TableField<UnconsumeTxInRecord, Long> TX_OUT_ID = createField(DSL.name("tx_out_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
+    /**
+     * The column <code>unconsume_tx_in.redeemer_id</code>.
+     */
+    public final TableField<UnconsumeTxInRecord, Long> REDEEMER_ID = createField(DSL.name("redeemer_id"), SQLDataType.BIGINT, this, "");
+
     private UnconsumeTxIn(Name alias, Table<UnconsumeTxInRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -107,6 +114,11 @@ public class UnconsumeTxIn extends TableImpl<UnconsumeTxInRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.IDX_UNCONSUME_TX_IN_REDEEMER_ID);
     }
 
     @Override
@@ -164,18 +176,18 @@ public class UnconsumeTxIn extends TableImpl<UnconsumeTxInRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Short, Long, Long> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Short, Long, Long, Long> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Long, ? super Short, ? super Long, ? super Long, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super Long, ? super Short, ? super Long, ? super Long, ? super Long, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -183,7 +195,7 @@ public class UnconsumeTxIn extends TableImpl<UnconsumeTxInRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Long, ? super Short, ? super Long, ? super Long, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Long, ? super Short, ? super Long, ? super Long, ? super Long, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

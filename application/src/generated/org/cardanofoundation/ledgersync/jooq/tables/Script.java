@@ -14,13 +14,13 @@ import org.cardanofoundation.ledgersync.jooq.Keys;
 import org.cardanofoundation.ledgersync.jooq.tables.records.ScriptRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
+import org.jooq.Function8;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -71,7 +71,7 @@ public class Script extends TableImpl<ScriptRecord> {
     /**
      * The column <code>script.json</code>.
      */
-    public final TableField<ScriptRecord, String> JSON = createField(DSL.name("json"), SQLDataType.VARCHAR(65535), this, "");
+    public final TableField<ScriptRecord, String> JSON = createField(DSL.name("json"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>script.serialised_size</code>.
@@ -87,6 +87,11 @@ public class Script extends TableImpl<ScriptRecord> {
      * The column <code>script.tx_id</code>.
      */
     public final TableField<ScriptRecord, Long> TX_ID = createField(DSL.name("tx_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>script.verified</code>.
+     */
+    public final TableField<ScriptRecord, Boolean> VERIFIED = createField(DSL.name("verified"), SQLDataType.BOOLEAN.defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "");
 
     private Script(Name alias, Table<ScriptRecord> aliased) {
         this(alias, aliased, null);
@@ -181,18 +186,18 @@ public class Script extends TableImpl<ScriptRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, byte[], String, String, Integer, String, Long> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, byte[], String, String, Integer, String, Long, Boolean> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function7<? super Long, ? super byte[], ? super String, ? super String, ? super Integer, ? super String, ? super Long, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super Long, ? super byte[], ? super String, ? super String, ? super Integer, ? super String, ? super Long, ? super Boolean, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -200,7 +205,7 @@ public class Script extends TableImpl<ScriptRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Long, ? super byte[], ? super String, ? super String, ? super Integer, ? super String, ? super Long, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Long, ? super byte[], ? super String, ? super String, ? super Integer, ? super String, ? super Long, ? super Boolean, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

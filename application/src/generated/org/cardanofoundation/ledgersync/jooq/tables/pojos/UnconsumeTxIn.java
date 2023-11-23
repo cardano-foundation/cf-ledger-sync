@@ -19,6 +19,7 @@ public class UnconsumeTxIn implements Serializable {
     private Short txOutIndex;
     private Long txInId;
     private Long txOutId;
+    private Long redeemerId;
 
     public UnconsumeTxIn() {}
 
@@ -27,18 +28,21 @@ public class UnconsumeTxIn implements Serializable {
         this.txOutIndex = value.txOutIndex;
         this.txInId = value.txInId;
         this.txOutId = value.txOutId;
+        this.redeemerId = value.redeemerId;
     }
 
     public UnconsumeTxIn(
         Long id,
         Short txOutIndex,
         Long txInId,
-        Long txOutId
+        Long txOutId,
+        Long redeemerId
     ) {
         this.id = id;
         this.txOutIndex = txOutIndex;
         this.txInId = txInId;
         this.txOutId = txOutId;
+        this.redeemerId = redeemerId;
     }
 
     /**
@@ -97,6 +101,20 @@ public class UnconsumeTxIn implements Serializable {
         this.txOutId = txOutId;
     }
 
+    /**
+     * Getter for <code>unconsume_tx_in.redeemer_id</code>.
+     */
+    public Long getRedeemerId() {
+        return this.redeemerId;
+    }
+
+    /**
+     * Setter for <code>unconsume_tx_in.redeemer_id</code>.
+     */
+    public void setRedeemerId(Long redeemerId) {
+        this.redeemerId = redeemerId;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -130,6 +148,12 @@ public class UnconsumeTxIn implements Serializable {
         }
         else if (!this.txOutId.equals(other.txOutId))
             return false;
+        if (this.redeemerId == null) {
+            if (other.redeemerId != null)
+                return false;
+        }
+        else if (!this.redeemerId.equals(other.redeemerId))
+            return false;
         return true;
     }
 
@@ -141,6 +165,7 @@ public class UnconsumeTxIn implements Serializable {
         result = prime * result + ((this.txOutIndex == null) ? 0 : this.txOutIndex.hashCode());
         result = prime * result + ((this.txInId == null) ? 0 : this.txInId.hashCode());
         result = prime * result + ((this.txOutId == null) ? 0 : this.txOutId.hashCode());
+        result = prime * result + ((this.redeemerId == null) ? 0 : this.redeemerId.hashCode());
         return result;
     }
 
@@ -152,6 +177,7 @@ public class UnconsumeTxIn implements Serializable {
         sb.append(", ").append(txOutIndex);
         sb.append(", ").append(txInId);
         sb.append(", ").append(txOutId);
+        sb.append(", ").append(redeemerId);
 
         sb.append(")");
         return sb.toString();
