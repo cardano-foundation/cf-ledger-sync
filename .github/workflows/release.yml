@@ -1,8 +1,12 @@
 name: Publish package to the Maven Central Repository
+#on:
+#  push:
+#    tags:
+#      - 'v*'
+
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+
 jobs:
   publish:
     runs-on: ubuntu-latest
