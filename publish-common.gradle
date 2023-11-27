@@ -27,8 +27,8 @@ if (!name.equalsIgnoreCase("components")) {
                     }
                     developers {
                         developer {
-//                            id = ''
-//                            name = ''
+                            id = 'satran004'
+                            name = 'Satya'
                         }
                     }
                     scm {
@@ -45,8 +45,10 @@ if (!name.equalsIgnoreCase("components")) {
             String ossrhPassword = System.getenv('MAVEN_PASSWORD')
 
             maven {
-                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+//                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+//                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/"
+                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
                     username ossrhUsername
