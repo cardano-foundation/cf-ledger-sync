@@ -1,11 +1,11 @@
 name: Publish package to the Maven Central Repository
-#on:
-#  push:
-#    tags:
-#      - 'v*'
-
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+#on:
+#  workflow_dispatch:
 
 jobs:
   publish:
