@@ -257,6 +257,36 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
                     blockDataService.saveFirstAppearedTxHashForStakeAddress(stakeAddressHex, txHash);
                 });
                 break;
+            case REG_CERT:
+                RegCert regCert = (RegCert) certificate;
+                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
+                        .getRewardAddressString(regCert.getStakeCredential(), network), txHash);
+                break;
+            case UNREG_CERT:
+                UnregCert unregCert = (UnregCert) certificate;
+                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
+                        .getRewardAddressString(unregCert.getStakeCredential(), network), txHash);
+                break;
+            case STAKE_REG_DELEG_CERT:
+                StakeRegDelegCert stakeRegDelegCert = (StakeRegDelegCert) certificate;
+                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
+                        .getRewardAddressString(stakeRegDelegCert.getStakeCredential(), network), txHash);
+                break;
+            case STAKE_VOTE_DELEG_CERT:
+                StakeVoteDelegCert stakeVoteDelegCert = (StakeVoteDelegCert) certificate;
+                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
+                        .getRewardAddressString(stakeVoteDelegCert.getStakeCredential(), network), txHash);
+                break;
+            case VOTE_REG_DELEG_CERT:
+                VoteRegDelegCert voteRegDelegCert = (VoteRegDelegCert) certificate;
+                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
+                        .getRewardAddressString(voteRegDelegCert.getStakeCredential(), network), txHash);
+                break;
+            case STAKE_VOTE_REG_DELEG_CERT:
+                StakeVoteRegDelegCert stakeVoteRegDelegCert = (StakeVoteRegDelegCert) certificate;
+                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
+                        .getRewardAddressString(stakeVoteRegDelegCert.getStakeCredential(), network), txHash);
+                break;
             default:
                 break;
         }

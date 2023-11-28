@@ -1,7 +1,8 @@
 package org.cardanofoundation.ledgersync.explorerconsumer.factory;
 
-import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
+import com.bloxbean.cardano.yaci.core.model.certs.*;
 import jakarta.annotation.PostConstruct;
+import org.cardanofoundation.explorer.consumercommon.entity.Delegation;
 import org.cardanofoundation.explorer.consumercommon.entity.Redeemer;
 import org.cardanofoundation.explorer.consumercommon.entity.StakeAddress;
 import org.cardanofoundation.explorer.consumercommon.entity.Tx;
@@ -9,6 +10,7 @@ import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlo
 import org.cardanofoundation.ledgersync.explorerconsumer.service.CertificateSyncService;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -38,13 +40,12 @@ public class CertificateSyncServiceFactory extends
     public void handle(AggregatedBlock aggregatedBlock,
                        Certificate certificate, int certificateIdx, Tx tx, Redeemer redeemer,
                        Map<String, StakeAddress> stakeAddressMap) {
-        //TODO: This will happen for new certificates types introduced in Conway era
         if (serviceMap.get(certificate.getClass()) == null) {
             return;
-        } else {
-            serviceMap.get(certificate.getClass()).handle(
-                    aggregatedBlock, certificate, certificateIdx, tx,
-                    redeemer, stakeAddressMap);
         }
+        serviceMap.get(certificate.getClass()).handle(
+                aggregatedBlock, certificate, certificateIdx, tx,
+                redeemer, stakeAddressMap);
     }
 }
+
