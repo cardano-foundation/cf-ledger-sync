@@ -115,4 +115,19 @@ public class UnconsumeTxInDao extends AbstractSpringDAOImpl<UnconsumeTxInRecord,
     public List<org.cardanofoundation.ledgersync.jooq.tables.pojos.UnconsumeTxIn> fetchByTxOutId(Long... values) {
         return fetch(UnconsumeTxIn.UNCONSUME_TX_IN.TX_OUT_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>redeemer_id BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<org.cardanofoundation.ledgersync.jooq.tables.pojos.UnconsumeTxIn> fetchRangeOfRedeemerId(Long lowerInclusive, Long upperInclusive) {
+        return fetchRange(UnconsumeTxIn.UNCONSUME_TX_IN.REDEEMER_ID, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>redeemer_id IN (values)</code>
+     */
+    public List<org.cardanofoundation.ledgersync.jooq.tables.pojos.UnconsumeTxIn> fetchByRedeemerId(Long... values) {
+        return fetch(UnconsumeTxIn.UNCONSUME_TX_IN.REDEEMER_ID, values);
+    }
 }

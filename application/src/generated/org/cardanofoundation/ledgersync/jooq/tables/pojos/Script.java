@@ -23,6 +23,7 @@ public class Script implements Serializable {
     private Integer serialisedSize;
     private String type;
     private Long txId;
+    private Boolean verified;
 
     public Script() {}
 
@@ -34,6 +35,7 @@ public class Script implements Serializable {
         this.serialisedSize = value.serialisedSize;
         this.type = value.type;
         this.txId = value.txId;
+        this.verified = value.verified;
     }
 
     public Script(
@@ -43,7 +45,8 @@ public class Script implements Serializable {
         String json,
         Integer serialisedSize,
         String type,
-        Long txId
+        Long txId,
+        Boolean verified
     ) {
         this.id = id;
         this.bytes = bytes;
@@ -52,6 +55,7 @@ public class Script implements Serializable {
         this.serialisedSize = serialisedSize;
         this.type = type;
         this.txId = txId;
+        this.verified = verified;
     }
 
     /**
@@ -152,6 +156,20 @@ public class Script implements Serializable {
         this.txId = txId;
     }
 
+    /**
+     * Getter for <code>script.verified</code>.
+     */
+    public Boolean getVerified() {
+        return this.verified;
+    }
+
+    /**
+     * Setter for <code>script.verified</code>.
+     */
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -203,6 +221,12 @@ public class Script implements Serializable {
         }
         else if (!this.txId.equals(other.txId))
             return false;
+        if (this.verified == null) {
+            if (other.verified != null)
+                return false;
+        }
+        else if (!this.verified.equals(other.verified))
+            return false;
         return true;
     }
 
@@ -217,6 +241,7 @@ public class Script implements Serializable {
         result = prime * result + ((this.serialisedSize == null) ? 0 : this.serialisedSize.hashCode());
         result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
         result = prime * result + ((this.txId == null) ? 0 : this.txId.hashCode());
+        result = prime * result + ((this.verified == null) ? 0 : this.verified.hashCode());
         return result;
     }
 
@@ -231,6 +256,7 @@ public class Script implements Serializable {
         sb.append(", ").append(serialisedSize);
         sb.append(", ").append(type);
         sb.append(", ").append(txId);
+        sb.append(", ").append(verified);
 
         sb.append(")");
         return sb.toString();

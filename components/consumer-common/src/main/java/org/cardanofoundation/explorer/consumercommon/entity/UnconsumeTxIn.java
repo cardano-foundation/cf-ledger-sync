@@ -48,6 +48,11 @@ public class UnconsumeTxIn extends BaseEntity {
   @TxIndex
   private Short txOutIndex;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "redeemer_id",
+          foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+  @EqualsAndHashCode.Exclude
+  private Redeemer redeemer;
 
   @Override
   public boolean equals(Object o) {

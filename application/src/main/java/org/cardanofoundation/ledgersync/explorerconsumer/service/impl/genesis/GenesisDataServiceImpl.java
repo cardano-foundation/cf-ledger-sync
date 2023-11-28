@@ -12,10 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.explorer.consumercommon.entity.*;
 import org.cardanofoundation.explorer.consumercommon.enumeration.TokenType;
 import org.cardanofoundation.ledgersync.common.common.Era;
-import org.cardanofoundation.ledgersync.common.common.constant.Constant;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.*;
-import org.cardanofoundation.ledgersync.explorerconsumer.constant.ConsumerConstant;
 import org.cardanofoundation.ledgersync.explorerconsumer.converter.AvvmAddressConverter;
 import org.cardanofoundation.ledgersync.explorerconsumer.converter.CostModelConverter;
 import org.cardanofoundation.ledgersync.explorerconsumer.dto.GenesisData;
@@ -29,7 +27,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -88,6 +85,9 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     public static final String EX_UNITS_STEPS = "exUnitsSteps";
     public static final String MAX_VALUE_SIZE = "maxValueSize";
     public static final String EPOCH_LENGTH = "epochLength";
+    public static final String UPDATE_QUORUM = "updateQuorum";
+
+    public static final String DELEGATION_KEYS = "genDelegs";
 
     @Value("${genesis.byron}")
     String genesisByron;
@@ -104,6 +104,9 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     GenesisData genesisData;
     Integer shelleyEpochLength;
     Long byronKnownTime;
+    Integer updateQuorum;
+    Set<String> delegationKeyHashes;
+
     final ObjectMapper objectMapper;
     final BlockRepository blockRepository;
     final SlotLeaderRepository slotLeaderRepository;
@@ -219,6 +222,16 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     @Override
     public Integer getShelleyEpochLength() {
         return shelleyEpochLength;
+    }
+
+    @Override
+    public Integer getUpdateQuorum() {
+        return updateQuorum;
+    }
+
+    @Override
+    public Set<String> getDelegationKeyHashes() {
+        return delegationKeyHashes;
     }
 
     /**
@@ -394,7 +407,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     });
 
             shelleyEpochLength = Integer.parseInt(genesisShelleyJsonMap.get(EPOCH_LENGTH).toString());
-
+            updateQuorum = Integer.parseInt(genesisShelleyJsonMap.get(UPDATE_QUORUM).toString());
+            delegationKeyHashes = ((Map<String, Object>) genesisShelleyJsonMap.get(DELEGATION_KEYS)).keySet();
             var protocolParams = (Map<String, Object>) genesisShelleyJsonMap.get(PROTOCOL_PARAMS);
             var extraEntropy = (Map<String, Object>) protocolParams.get(EXTRA_ENTROPY);
             var protocolVersion = (Map<String, Object>) protocolParams.get(PROTOCOL_VERSION);

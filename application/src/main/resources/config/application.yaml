@@ -48,9 +48,9 @@ spring:
     sql-migration-separator: __
     sql-migration-suffixes: .sql
     locations:
-      - classpath:db/migration/consumer
+      - classpath:db/migration/ledgersync
       - classpath:db/store/{vendor}
-    validate-on-migrate: ${FLYWAY_VALIDATE:true}
+    validate-on-migrate: ${FLYWAY_VALIDATE:false}
     default-schema: ${spring.jpa.properties.hibernate.default_schema}
     schemas: ${spring.jpa.properties.hibernate.default_schema}
     create-schemas: ${ALLOW_CREATE_SCHEMA:true}
@@ -66,7 +66,7 @@ logging:
     org.cardanofoundation: ${LOG:TRACE}
 
 blocks:
-  batch-size: ${BLOCKS_BATCH_SIZE:1000}
+  batch-size: ${BLOCKS_BATCH_SIZE:100}
   commitThreshold: ${COMMIT_THRESHOLD:3000}
 
 genesis:

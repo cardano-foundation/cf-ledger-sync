@@ -51,7 +51,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
     private List<ParamProposal> handleParamProposal(AggregatedTx aggregatedTx, Tx tx) {
         int epochNo = (int) aggregatedTx.getUpdate().getEpoch();
 
-        Set<ParamProposal> paramProposals = aggregatedTx
+        List<ParamProposal> paramProposals = aggregatedTx
                 .getUpdate()
                 .getProtocolParamUpdates()
                 .entrySet()
@@ -140,7 +140,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                             .maxCollateralInputs(maxCollateralInputs)
                             .registeredTx(tx)
                             .build();
-                }).collect(Collectors.toSet());
+                }).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(paramProposals)) {
             return Collections.emptyList();

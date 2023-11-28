@@ -16,10 +16,12 @@ import org.cardanofoundation.ledgersync.explorerconsumer.service.GenesisDataServ
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -178,8 +180,25 @@ class EpochParamServiceImplTest {
     Optional<Epoch> optionalEpoch = Optional.of(epoch);
     Optional<Epoch> optionalEpoch2 = Optional.of(epoch2);
 
-    ParamProposal paramProposal = Mockito.mock(ParamProposal.class);
-    List<ParamProposal> prevParamProposals = List.of(paramProposal);
+    Mockito.when(genesisDataService.getUpdateQuorum()).thenReturn(4);
+    Mockito.when(genesisDataService.getDelegationKeyHashes()).thenReturn(Set.of(
+            "637f2e950b0fd8f8e3e811c5fbeb19e411e7a2bf37272b84b29c1a0b",
+            "8a4b77c4f534f8b8cc6f269e5ebb7ba77fa63a476e50e05e66d7051c",
+            "b00470cd193d67aac47c373602fccd4195aad3002c169b5570de1126",
+            "b260ffdb6eba541fcf18601923457307647dce807851b9d19da133ab"
+    ));
+
+    ParamProposal paramProposal1 = Mockito.mock(ParamProposal.class);
+    ParamProposal paramProposal2 = Mockito.mock(ParamProposal.class);
+    ParamProposal paramProposal3 = Mockito.mock(ParamProposal.class);
+    ParamProposal paramProposal4 = Mockito.mock(ParamProposal.class);
+
+    Mockito.when(paramProposal1.getKey()).thenReturn("637f2e950b0fd8f8e3e811c5fbeb19e411e7a2bf37272b84b29c1a0b");
+    Mockito.when(paramProposal2.getKey()).thenReturn("8a4b77c4f534f8b8cc6f269e5ebb7ba77fa63a476e50e05e66d7051c");
+    Mockito.when(paramProposal3.getKey()).thenReturn("b00470cd193d67aac47c373602fccd4195aad3002c169b5570de1126");
+    Mockito.when(paramProposal4.getKey()).thenReturn("b260ffdb6eba541fcf18601923457307647dce807851b9d19da133ab");
+
+    List<ParamProposal> prevParamProposals = List.of(paramProposal1, paramProposal2, paramProposal3, paramProposal4);
     Mockito.when(paramProposalRepository.findParamProposalsByEpochNo(4))
         .thenReturn(prevParamProposals);
     Block cachedBlock = Mockito.mock(Block.class);

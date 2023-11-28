@@ -27,3 +27,4 @@ Thank you for contributing your changes by opening a pull requests! To get somet
 - Quality of changes is ensured - through new or updated automated tests
 - Change is related to an issue (feature request or bug report) - ideally discussed beforehand
 - Well-scoped - we prefer multiple PRs, rather than a big one
+- The **develop** branch contains the latest code, and all development should be based on this branch. Therefore, please ensure that the base branch for your pull request is set to '**develop**'.
