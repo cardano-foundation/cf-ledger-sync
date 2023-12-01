@@ -28,6 +28,7 @@ public final class Constant {
   public static boolean isTestnet(int networkMagic) {
     return networkMagic == TESTNET
         || networkMagic == PREPROD_TESTNET
-        || networkMagic == PREVIEW_TESTNET;
+        || networkMagic == PREVIEW_TESTNET
+        || networkMagic == SANCHONET;
   }
 }
