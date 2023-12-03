@@ -40,6 +40,9 @@ public class CertificateSyncServiceFactory extends
     public void handle(AggregatedBlock aggregatedBlock,
                        Certificate certificate, int certificateIdx, Tx tx, Redeemer redeemer,
                        Map<String, StakeAddress> stakeAddressMap) {
+        if (serviceMap.get(certificate.getClass()) == null) {
+            return;
+        }
         serviceMap.get(certificate.getClass()).handle(
                 aggregatedBlock, certificate, certificateIdx, tx,
                 redeemer, stakeAddressMap);
