@@ -39,7 +39,7 @@
     <!-- 2.1 level by DEBUG Log, time scroll output  -->
     <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- The path and document name of the log document being logged -->
-        <file>${log.path}/web_debug.log</file>
+        <file>${log.path}/ledger-sync_debug.log</file>
         <!--Log Document Output Format-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -48,7 +48,7 @@
         <!-- Logger rolling strategy, by date, by size -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- Archive -->
-            <fileNamePattern>${log.path}/web-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/ledger-sync-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
@@ -67,7 +67,7 @@
     <!-- 2.2 level by INFO Log, time scroll output  -->
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- The path and document name of the log document being logged -->
-        <file>${log.path}/web_info.log</file>
+        <file>${log.path}/ledger-sync_info.log</file>
         <!--Log Document Output Format-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -76,7 +76,7 @@
         <!-- Logger rolling strategy, by date, by size -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- Daily log archiving path and format -->
-            <fileNamePattern>${log.path}/web-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/ledger-sync-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
@@ -95,7 +95,7 @@
     <!-- 2.3 level by WARN Log, time scroll output  -->
     <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- The path and document name of the log document being logged -->
-        <file>${log.path}/web_warn.log</file>
+        <file>${log.path}/ledger-sync_warn.log</file>
         <!--Log Document Output Format-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -103,7 +103,7 @@
         </encoder>
         <!-- Logger rolling strategy, by date, by size -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/web-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/ledger-sync-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
@@ -122,7 +122,7 @@
     <!-- 2.4 level by ERROR Log, time scroll output  -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- The path and document name of the log document being logged -->
-        <file>${log.path}/web_error.log</file>
+        <file>${log.path}/ledger-sync_error.log</file>
         <!--Log Document Output Format-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -130,7 +130,7 @@
         </encoder>
         <!-- Logger rolling strategy, by date, by size -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/web-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/ledger-sync-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
