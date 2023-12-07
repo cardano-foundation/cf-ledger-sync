@@ -23,7 +23,8 @@ public class PoolOfflineDataScheduler {
     final PoolOfflineDataProperties poolOfflineDataProperties;
 
     @Transactional
-    @Scheduled(fixedDelayString = "#{poolOfflineDataProperties.getFixedDelay() * 1000}")
+    @Scheduled(initialDelayString = "#{poolOfflineDataProperties.getInitialDelay()}",
+            fixedDelayString = "#{poolOfflineDataProperties.getFixedDelay() * 1000}")
     public void fetchPoolOffline() {
         log.info("-----------Start job fetch pool offline data-----------");
         final var startTime = System.currentTimeMillis();
