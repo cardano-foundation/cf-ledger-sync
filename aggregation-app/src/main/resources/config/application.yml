@@ -1,0 +1,89 @@
+server:
+  port: 8082
+
+spring:
+  # Datasource specific configs
+  datasource:
+    # Hikari specific configs
+    hikari:
+      pool-name: explorer-consumer-pool
+      minimum-idle: 10 #minimum number of idle connections maintained by HikariCP in a connection pool
+      maximum-pool-size: ${MAXIMUM_POOL_SIZE:48} #maximum pool size
+      idle-timeout: 300000 #maximum idle time for connection
+      max-lifetime: 900000 #maximum lifetime in milliseconds of a connection in the pool after it is closed.
+      connection-timeout: 50000 #maximum number of milliseconds that a client will wait for a connection
+      auto-commit: true #default auto-commit behavior.
+      connection-init-sql: SELECT 1
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+  # JPA specific configs
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.batch_size: 1000
+        default_schema: ${SCHEMA:cexplorer}
+        show_sql: false
+        format_sql: true
+        order_inserts: true
+        order_updates: true
+        hbm2ddl:
+          auto: none
+  ## Flyway config
+  flyway:
+    enabled: true
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    group: true
+    sql-migration-prefix: V
+    sql-migration-separator: __
+    sql-migration-suffixes: .sql
+    locations:
+      - classpath:db/account
+      - classpath:db/store/{vendor}
+    validate-on-migrate: ${FLYWAY_VALIDATE:false}
+    default-schema: ${spring.jpa.properties.hibernate.default_schema}
+    schemas: ${spring.jpa.properties.hibernate.default_schema}
+    create-schemas: ${ALLOW_CREATE_SCHEMA:true}
+    out-of-order: true
+  codec:
+    max-in-memory-size: 10MB
+#      props: |
+#        max.poll.records: 10
+#        fetch.min.bytes: 123456
+#    prefix: "explorer-consumer-local"
+logging:
+  level:
+    org.cardanofoundation: ${LOG:TRACE}
+
+blocks:
+  batch-size: ${BLOCKS_BATCH_SIZE:100}
+  commitThreshold: ${COMMIT_THRESHOLD:3000}
+
+genesis:
+  byron: ${BYRON_GENESIS_URL:classpath:networks/${NETWORK}/byron-genesis.json}
+  shelley: ${SHELLEY_GENESIS_URL:classpath:networks/${NETWORK}/shelley-genesis.json}
+  alonzo: ${ALONZO_GENESIS_URL:classpath:networks/${NETWORK}/alonzo-genesis.json}
+  conway: ${CONWAY_GENESIS_URL:classpath:networks/${NETWORK}/conway-genesis.json}
+  config: ${GENESIS_CONFIG_URL:classpath:networks/${NETWORK}/config.json}
+store:
+  cardano:
+    byron-genesis-file: classpath:networks/${NETWORK}/byron-genesis.json
+    shelley-genesis-file: classpath:networks/${NETWORK}/shelley-genesis.json
+  event-publisher-id: 2
+ledger-sync:
+  aggregate:
+    account:
+      enabled: true
