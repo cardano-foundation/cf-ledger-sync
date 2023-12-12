@@ -111,7 +111,6 @@ public class PoolOfflineDataStoringServiceImpl implements PoolOfflineDataStoring
         long startTime = System.currentTimeMillis();
 
         log.info("Start saving fail pool offline data");
-        List<PoolOfflineFetchError> poolOfflineFetchErrorsNeedSave = new ArrayList<>();
 
         List<Long> poolIds = failedPools.stream().map(PoolData::getPoolId).toList();
         List<Long> poolMetadataRefIds = failedPools.stream().map(PoolData::getMetadataRefId).toList();
@@ -130,7 +129,8 @@ public class PoolOfflineDataStoringServiceImpl implements PoolOfflineDataStoring
                 .stream()
                 .collect(Collectors.toMap(PoolMetadataRef::getId, Function.identity()));
 
-        poolDataMap.entrySet().parallelStream().forEach(poolDataEntry -> {
+        List<PoolOfflineFetchError> poolOfflineFetchErrorsNeedSave =
+                poolDataMap.entrySet().parallelStream().map(poolDataEntry -> {
             Long poolId = poolDataEntry.getKey();
             PoolData poolData = poolDataEntry.getValue();
             PoolHash poolHash = poolHashMap.get(poolId);
@@ -153,8 +153,9 @@ public class PoolOfflineDataStoringServiceImpl implements PoolOfflineDataStoring
                         .fetchTime(Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)))
                         .build();
             }
-            poolOfflineFetchErrorsNeedSave.add(poolOfflineFetchError);
-        });
+
+            return poolOfflineFetchError;
+        }).collect(Collectors.toList());
 
         poolOfflineFetchErrorRepository.saveAll(poolOfflineFetchErrorsNeedSave);
         log.info("Saved success fail pool offline data, count: {}, time taken: {} ms",
