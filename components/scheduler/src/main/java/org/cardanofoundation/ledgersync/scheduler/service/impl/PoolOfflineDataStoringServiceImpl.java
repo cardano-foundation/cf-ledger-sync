@@ -61,7 +61,6 @@ public class PoolOfflineDataStoringServiceImpl implements PoolOfflineDataStoring
     public void saveSuccessPoolOfflineData(List<PoolData> successPools) {
         long startTime = System.currentTimeMillis();
         log.info("Start saving success pool offline data");
-        List<PoolOfflineData> poolOfflineDataNeedSave = new ArrayList<>();
 
         List<Long> poolIds = successPools.stream().map(PoolData::getPoolId).toList();
         List<Long> poolMetadataRefIds = successPools.stream().map(PoolData::getMetadataRefId).toList();
@@ -84,7 +83,7 @@ public class PoolOfflineDataStoringServiceImpl implements PoolOfflineDataStoring
                 .stream()
                 .collect(Collectors.toMap(PoolOfflineData::getPoolId, Function.identity()));
 
-        poolDataMap.entrySet().parallelStream().forEach(poolDataEntry -> {
+        List<PoolOfflineData> poolOfflineDataNeedSave = poolDataMap.entrySet().parallelStream().map(poolDataEntry -> {
             Long poolId = poolDataEntry.getKey();
             PoolData poolData = poolDataEntry.getValue();
             PoolHash poolHash = poolHashMap.get(poolId);
@@ -96,9 +95,10 @@ public class PoolOfflineDataStoringServiceImpl implements PoolOfflineDataStoring
                 if (poolOfflineDataSourceMap.containsKey(poolId)) {
                     poolOfflineData.setId(poolOfflineDataSourceMap.get(poolId).getId());
                 }
-                poolOfflineDataNeedSave.add(poolOfflineData);
             }
-        });
+
+            return poolOfflineData;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
         poolOfflineDataRepository.saveAll(poolOfflineDataNeedSave);
         log.info("Saved success pool offline data, count: {}, time taken: {} ms",
