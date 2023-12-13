@@ -16,6 +16,7 @@ public class SchedulerProperties {
     @Setter
     public static final class PoolOfflineData {
         private long fixedDelay = 172800L;
+        private long initialDelay = 20000L;
     }
 
     @Getter

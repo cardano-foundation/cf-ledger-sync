@@ -49,7 +49,7 @@ public class SchedulerConfiguration {
     PoolOfflineDataProperties poolOfflineDataProperties() {
         PoolOfflineDataProperties poolOfflineDataProperties = new PoolOfflineDataProperties();
         poolOfflineDataProperties.setFixedDelay(properties.getPoolOfflineData().getFixedDelay());
-
+        poolOfflineDataProperties.setInitialDelay(properties.getPoolOfflineData().getInitialDelay());
         return poolOfflineDataProperties;
     }
 
