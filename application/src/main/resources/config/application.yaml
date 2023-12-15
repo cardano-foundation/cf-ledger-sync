@@ -63,7 +63,7 @@ spring:
 #    prefix: "explorer-consumer-local"
 logging:
   level:
-    org.cardanofoundation: ${LOG:TRACE}
+    org.cardanofoundation: ${LOG:INFO}
 
 blocks:
   batch-size: ${BLOCKS_BATCH_SIZE:100}
@@ -79,3 +79,10 @@ store:
   cardano:
     byron-genesis-file: classpath:networks/${NETWORK}/byron-genesis.json
     shelley-genesis-file: classpath:networks/${NETWORK}/shelley-genesis.json
+    keep-alive-interval: ${STORE_CARDANO_KEEP_ALIVE_INTERVAL:10000}
+ledger-sync:
+  scheduler:
+    pool-offline-data:
+      fixed-delay: ${POOL_OFFLINE_DATA_FIXED_DELAY:172800}
+      initial-delay: ${POOL_OFFLINE_DATA_INIT_DELAY:20000}
+    enabled: ${SCHEDULER_ENABLED:true}
