@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.explorerconsumer.aggregate.AggregatedBlock;
+import org.cardanofoundation.ledgersync.explorerconsumer.configuration.BlockEventHandling;
 import org.cardanofoundation.ledgersync.explorerconsumer.repository.BlockRepository;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.*;
 import org.cardanofoundation.ledgersync.explorerconsumer.service.impl.block.BlockAggregatorServiceImpl;
@@ -34,14 +35,14 @@ public class BlockEventListener {
 
     private final BlockRepository blockRepository;
     private final MetricCollectorService metricCollectorService;
+    private final BlockSyncingManager blockSyncingManager;
+
     private final AtomicInteger blockCount = new AtomicInteger(0);
 
     @Value("${blocks.batch-size}")
     private Integer batchSize;
     @Value("${blocks.commitThreshold}")
     private Long commitThreshold;
-
-    private final AtomicLong lastMessageReceivedTime = new AtomicLong(System.currentTimeMillis());
     private AtomicLong blockHeight;
     private long lastLog;
 
@@ -54,17 +55,22 @@ public class BlockEventListener {
 
     @EventListener
     @Transactional
+    @BlockEventHandling
     public void handleBlockEvent(BlockEvent blockEvent) {
-        if (checkIfBlockExists(blockEvent.getMetadata())) return;
-
+        if (checkIfBlockExists(blockEvent.getMetadata())) {
+            return;
+        }
         AggregatedBlock aggregatedBlock = blockAggregatorService.aggregateBlock(blockEvent);
         handleAggregateBlock(blockEvent.getMetadata(), aggregatedBlock);
     }
 
     @EventListener
     @Transactional
+    @BlockEventHandling
     public void handleByronBlockEvent(ByronMainBlockEvent byronMainBlockEvent) {
-        if (checkIfBlockExists(byronMainBlockEvent.getMetadata())) return;
+        if (checkIfBlockExists(byronMainBlockEvent.getMetadata())) {
+            return;
+        }
 
         AggregatedBlock aggregatedBlock = byronMainAggregatorService.aggregateBlock(byronMainBlockEvent);
         handleAggregateBlock(byronMainBlockEvent.getMetadata(), aggregatedBlock);
@@ -72,8 +78,11 @@ public class BlockEventListener {
 
     @EventListener
     @Transactional
+    @BlockEventHandling
     public void handleByronEbBlock(ByronEbBlockEvent byronEbBlockEvent) {
-        if (checkIfBlockExists(byronEbBlockEvent.getMetadata())) return;
+        if (checkIfBlockExists(byronEbBlockEvent.getMetadata())) {
+            return;
+        }
 
         AggregatedBlock aggregatedBlock = byronEbbAggregatorService.aggregateBlock(byronEbBlockEvent);
         handleAggregateBlock(byronEbBlockEvent.getMetadata(), aggregatedBlock);
@@ -81,7 +90,9 @@ public class BlockEventListener {
 
     @EventListener
     @Transactional
+    @BlockEventHandling
     public void handleGenesisBlock(GenesisBlockEvent genesisBlockEvent) {
+        blockSyncingManager.setLastEventReceivedTime(System.currentTimeMillis());
         log.info("BlockEventListener.handleGenesisBlock");
         String genesisHash = genesisBlockEvent.getBlockHash();
         if (genesisHash != null && genesisHash.startsWith("Genesis")) {
@@ -94,7 +105,10 @@ public class BlockEventListener {
 
     @EventListener
     @Transactional
+    @BlockEventHandling
     public void handleRollback(RollbackEvent rollbackEvent) {
+        blockSyncingManager.setLastEventReceivedTime(System.currentTimeMillis());
+
         Long rollbackBlockNo = blockRepository.findBySlotNo(rollbackEvent.getRollbackTo().getSlot())
                 .map(block -> block.getBlockNo())
                 .orElse(0L);
@@ -114,7 +128,7 @@ public class BlockEventListener {
     private boolean checkIfBlockExists(EventMetadata metadata) {
         var optional = blockRepository.findBlockByHash(metadata.getBlockHash());
         if (optional.isPresent()) {
-            log.info("Block already exists. Skipping block no {}, hash {}", metadata.getEpochSlot(),
+            log.info("Block already exists. Skipping block no {}, hash {}", metadata.getBlock(),
                     metadata.getBlockHash());
             return true;
         }
@@ -124,7 +138,12 @@ public class BlockEventListener {
     private void handleAggregateBlock(EventMetadata eventMetadata, AggregatedBlock aggregatedBlock) {
         try {
             long currentTime = System.currentTimeMillis();
-            long lastReceivedTimeElapsed = currentTime - lastMessageReceivedTime.getAndSet(currentTime);
+            long lastReceivedTimeElapsed = currentTime - blockSyncingManager.getLastEventReceivedTime();
+            blockSyncingManager.setLastEventReceivedTime(currentTime);
+
+            if (eventMetadata.isSyncMode()) {
+                blockSyncingManager.setIsSyncMode(true);
+            }
 
             if (currentTime - lastLog >= 500) {//reduce log
                 log.info("Block  number {}, slot_no {}, hash {}",
