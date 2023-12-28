@@ -68,6 +68,14 @@ logging:
 blocks:
   batch-size: ${BLOCKS_BATCH_SIZE:100}
   commitThreshold: ${COMMIT_THRESHOLD:3000}
+  resyncThreshold:
+    inSyncMode: ${RESYNC_THRESHOLD_SYNC_MODE:600000}
+    notInSyncMode: ${RESYNC_THRESHOLD_NOT_SYNC_MODE:150000}
+  jobs:
+    check-sync:
+      enabled: ${CHECK_SYNC_ENABLED:true}
+      fixed-delay: ${CHECK_SYNC_FIXED_DELAY:60000}
+      init-delay: ${CHECK_SYNC_INIT_DELAY:30000}
 
 genesis:
   byron: ${BYRON_GENESIS_URL:classpath:networks/${NETWORK}/byron-genesis.json}
