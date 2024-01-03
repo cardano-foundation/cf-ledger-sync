@@ -1,7 +1,6 @@
 package org.cardanofoundation.ledgersync.aggregate.account.repository;
 
 import org.cardanofoundation.ledgersync.aggregate.account.model.Address;
-import org.cardanofoundation.ledgersync.aggregate.account.model.StakeAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,6 +25,6 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> findAllByAddressIn(Collection<String> addresses);
 
     @Query("SELECT DISTINCT(a.stakeAddress) FROM Address a WHERE a IN (:addresses)")
-    List<StakeAddress> findAllStakeAddressByAddressIn(
+    List<String> findAllStakeAddressByAddressIn(
             @Param("addresses") Collection<Address> addresses);
 }

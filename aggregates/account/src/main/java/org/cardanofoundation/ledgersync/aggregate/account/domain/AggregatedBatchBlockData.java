@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.aggregate.account.domain;
 
+import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -31,12 +32,15 @@ public class AggregatedBatchBlockData {
 
     Map<String, AggregatedBlock> aggregatedBlockMap;
 
+    Map<String, BlockAwareDomain> txBlockInfoMap;
+
     public AggregatedBatchBlockData() {
         aggregatedAddressBalanceMap = new ConcurrentHashMap<>();
         stakeAddressTxHashMap = new ConcurrentHashMap<>();
         notMintedAssetFingerprintTxHashSet = new LinkedHashSet<>();
         fingerprintFirstAppearedMap = new ConcurrentHashMap<>();
         aggregatedBlockMap = new LinkedHashMap<>();
+        txBlockInfoMap = new LinkedHashMap<>();
     }
 
     // This method must be called every batch saving
@@ -47,6 +51,7 @@ public class AggregatedBatchBlockData {
         fingerprintFirstAppearedMap.clear();
 
         aggregatedBlockMap.clear();
+        txBlockInfoMap.clear();
     }
 
 }

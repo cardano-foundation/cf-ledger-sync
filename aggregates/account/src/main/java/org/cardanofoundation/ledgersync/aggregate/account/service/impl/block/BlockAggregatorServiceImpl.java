@@ -1,6 +1,7 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service.impl.block;
 
 import com.bloxbean.cardano.yaci.core.model.*;
+import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import com.bloxbean.cardano.yaci.store.events.BlockEvent;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
 import lombok.AccessLevel;
@@ -87,8 +88,8 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
 
         //TODO: Initialize operational certificate
         var opCert = headerBody.getOperationalCert();
-        var actualOpCert = opCert != null? opCert.getHotVKey(): null;
-        Long opCertCounter = opCert != null? (long) opCert.getSequenceNumber(): null;
+        var actualOpCert = opCert != null ? opCert.getHotVKey() : null;
+        Long opCertCounter = opCert != null ? (long) opCert.getSequenceNumber() : null;
 
         List<AggregatedTx> txList = mapCddlTxToAggregatedTx(eventMetadata, blockCddl);
         return AggregatedBlock.builder()
@@ -140,6 +141,11 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
             AggregatedTx aggregatedTx = txToAggregatedTx(eventMetadata.getBlockHash(),
                     validContract, txIdx, transactionBody, witnesses);
             mapStakeAddressToTxHash(aggregatedTx, protocolMagic);
+            blockDataService.saveBlockInfoOfTx(BlockAwareDomain.builder()
+                            .blockNumber(eventMetadata.getBlock())
+                            .blockTime(eventMetadata.getBlockTime())
+                            .build(),
+                    aggregatedTx.getHash());
             aggregatedTx.setAuxiliaryDataHash(transactionBody.getAuxiliaryDataHash());
             return aggregatedTx;
         }).collect(Collectors.toList());

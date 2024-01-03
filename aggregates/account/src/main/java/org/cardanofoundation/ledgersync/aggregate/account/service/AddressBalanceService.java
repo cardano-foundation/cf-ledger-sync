@@ -1,9 +1,7 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service;
 
 
-import com.bloxbean.cardano.client.quicktx.Tx;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
-import org.cardanofoundation.ledgersync.aggregate.account.model.StakeAddress;
 
 import java.util.Collection;
 import java.util.Map;
@@ -22,12 +20,12 @@ public interface AddressBalanceService {
      */
     void handleAddressBalance(
             Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap,
-            Map<String, StakeAddress> stakeAddressMap);
+            Map<String, String> stakeAddressMap);
 
     /**
      * Rollback address balances stats
      *
      * @param txs txs being rolled back
      */
-    void rollbackAddressBalances(Collection<String> txs);
+    void rollbackAddressBalances(Long blockNo);
 }

@@ -9,12 +9,16 @@ import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBlock
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedTxIn;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedTxOut;
-import org.cardanofoundation.ledgersync.aggregate.account.model.StakeAddress;
-import org.cardanofoundation.ledgersync.aggregate.account.service.*;
+import org.cardanofoundation.ledgersync.aggregate.account.service.AddressBalanceService;
+import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
+import org.cardanofoundation.ledgersync.aggregate.account.service.TransactionService;
+import org.cardanofoundation.ledgersync.common.common.address.ShelleyAddress;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
@@ -28,8 +32,6 @@ public class TransactionServiceImpl implements TransactionService {
 //    TxRepository txRepository;
 //    ExtraKeyWitnessRepository extraKeyWitnessRepository;
 //
-    MultiAssetService multiAssetService;
-    StakeAddressService stakeAddressService;
     //    ParamProposalService paramProposalService;
     AddressBalanceService addressBalanceService;
     //    WithdrawalsService withdrawalsService;
@@ -73,7 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
         /*
          * For each aggregated tx, map it to a new tx entity, and check if the currently
          * processing aggregated tx's validity and push it to either a queue of success
-             * txs or failed txs
+         * txs or failed txs
          */
 //        var txMap = aggregatedTxList.stream().map(aggregatedTx -> {
 //            Tx tx = new Tx();
@@ -148,11 +150,18 @@ public class TransactionServiceImpl implements TransactionService {
 
         // MUST SET FIRST
         // multi asset mint
-        multiAssetService.handleMultiAssetMint(successTxs);
+//        multiAssetService.handleMultiAssetMint(successTxs);
 
         // Handle stake address and its first appeared tx
-        Map<String, StakeAddress> stakeAddressMap = stakeAddressService
-                .handleStakeAddressesFromTxs(blockDataService.getStakeAddressTxHashMap());
+//        Map<String, StakeAddress> stakeAddressMap = stakeAddressService
+//                .handleStakeAddressesFromTxs(blockDataService.getStakeAddressTxHashMap());
+
+        Map<String, String> stakeAddressMap = new ConcurrentHashMap<>();
+        blockDataService.getStakeAddressTxHashMap().forEach((stakeAddressHex, txHash) -> {
+            byte[] addressBytes = HexUtil.decodeHexString(stakeAddressHex);
+            ShelleyAddress shelleyAddress = new ShelleyAddress(addressBytes);
+            stakeAddressMap.put(stakeAddressHex, shelleyAddress.getAddress());
+        });
 
         // tx out
 //        EUTXOWrapper wrappedTxOut =

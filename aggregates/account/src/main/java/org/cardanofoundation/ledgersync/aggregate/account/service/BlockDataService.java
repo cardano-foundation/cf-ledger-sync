@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service;
 
+import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBlock;
 import org.springframework.data.util.Pair;
@@ -101,6 +102,10 @@ public interface BlockDataService {
      * @param txHash      asset fingerprint's associated tx hash
      */
     void saveAssetFingerprintNotMintedAtTx(String fingerprint, String txHash);
+
+    void saveBlockInfoOfTx(BlockAwareDomain block, String txHash);
+
+    BlockAwareDomain getBlockInfoOfTx(String txHash);
 
     int getBlockSize();
 

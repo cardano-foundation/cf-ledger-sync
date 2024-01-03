@@ -12,7 +12,7 @@ dependencies {
 
     implementation(libs.yaci.store.starter)
 
-    api project(':aggregates:account')
+    implementation project(':aggregates:account')
     runtimeOnly 'org.postgresql:postgresql'
 
     compileOnly(libs.lombok)

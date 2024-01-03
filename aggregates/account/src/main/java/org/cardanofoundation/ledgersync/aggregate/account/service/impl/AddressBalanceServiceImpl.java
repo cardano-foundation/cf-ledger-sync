@@ -1,25 +1,32 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service.impl;
 
-import com.bloxbean.cardano.client.quicktx.Tx;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
-import org.cardanofoundation.ledgersync.aggregate.account.model.*;
+import org.cardanofoundation.ledgersync.aggregate.account.model.Address;
+import org.cardanofoundation.ledgersync.aggregate.account.model.AddressToken;
+import org.cardanofoundation.ledgersync.aggregate.account.model.AddressTokenBalance;
+import org.cardanofoundation.ledgersync.aggregate.account.model.AddressTxBalance;
 import org.cardanofoundation.ledgersync.aggregate.account.projection.AddressTxBalanceProjection;
-import org.cardanofoundation.ledgersync.aggregate.account.repository.*;
+import org.cardanofoundation.ledgersync.aggregate.account.repository.AddressRepository;
+import org.cardanofoundation.ledgersync.aggregate.account.repository.AddressTokenBalanceRepository;
+import org.cardanofoundation.ledgersync.aggregate.account.repository.AddressTokenRepository;
+import org.cardanofoundation.ledgersync.aggregate.account.repository.AddressTxBalanceRepository;
 import org.cardanofoundation.ledgersync.aggregate.account.repository.custom.CustomAddressTokenBalanceRepository;
 import org.cardanofoundation.ledgersync.aggregate.account.service.AddressBalanceService;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
-import org.cardanofoundation.ledgersync.aggregate.account.service.MultiAssetService;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -39,20 +46,17 @@ import static org.cardanofoundation.ledgersync.aggregate.account.constant.Consta
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AddressBalanceServiceImpl implements AddressBalanceService {
 
-    MultiAssetRepository multiAssetRepository;
     AddressRepository addressRepository;
     AddressTokenRepository addressTokenRepository;
     AddressTxBalanceRepository addressTxBalanceRepository;
     AddressTokenBalanceRepository addressTokenBalanceRepository;
     CustomAddressTokenBalanceRepository customAddressTokenBalanceRepository;
-    StakeAddressRepository stakeAddressRepository;
-    MultiAssetService multiAssetService;
     BlockDataService blockDataService;
 
     @Override
     public void handleAddressBalance(
             Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap,
-            Map<String, StakeAddress> stakeAddressMap) {
+            Map<String, String> stakeAddressMap) {
         if (CollectionUtils.isEmpty(aggregatedAddressBalanceMap)) {
             return;
         }
@@ -66,14 +70,12 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
          * record and set its balance/tx count
          */
         aggregatedAddressBalanceMap.forEach((address, aggregatedAddressBalance) -> {
-            String rawStakeAddress = aggregatedAddressBalance.getAddress().getStakeAddress();
-            StakeAddress stakeAddress = StringUtils.hasText(rawStakeAddress) ?
-                    stakeAddressMap.get(rawStakeAddress) : null;
+            String hexStakeAddress = aggregatedAddressBalance.getAddress().getStakeAddress();
+            String stakeAddress = StringUtils.hasText(hexStakeAddress) ?
+                    stakeAddressMap.get(hexStakeAddress) : null;
             Address addressEntity = addressMap.get(address);
             if (Objects.isNull(addressEntity)) {
-                addressEntity = stakeAddress != null ?
-                        buildNewAddressEntity(aggregatedAddressBalance, stakeAddress.getView())
-                        : buildNewAddressEntity(aggregatedAddressBalance, null);
+                addressEntity = buildNewAddressEntity(aggregatedAddressBalance, stakeAddress);
                 addressMap.put(address, addressEntity);
             }
 
@@ -85,7 +87,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
 
                 // If the address record has stake address, save it in stake address map
                 if (Objects.nonNull(stakeAddressView)) {
-                    stakeAddressMap.put(rawStakeAddress, StakeAddress.builder().view(stakeAddressView).build());
+                    stakeAddressMap.put(hexStakeAddress, stakeAddressView);
                 }
             }
             var txCount = (long) aggregatedAddressBalance.getTxCount();
@@ -97,13 +99,13 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
 
             // Add balance to current address's stake key (if the address has stake key, which the
             // addresses from Byron era don't have)
-            if (Objects.nonNull(stakeAddress)) {
-                BigInteger currentStakeAddressBalance = stakeAddress.getBalance();
-                stakeAddress.setBalance(currentStakeAddressBalance.add(balance));
-            }
+//            if (Objects.nonNull(stakeAddress)) {
+//                BigInteger currentStakeAddressBalance = stakeAddress.getBalance();
+//                stakeAddress.setBalance(currentStakeAddressBalance.add(balance));
+//            }
         });
 
-        stakeAddressRepository.saveAll(stakeAddressMap.values());
+//        stakeAddressRepository.saveAll(stakeAddressMap.values());
         addressRepository.saveAll(addressMap.values());
 
         // Handle addresses' token balances
@@ -130,11 +132,11 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     }
 
     @Override
-    public void rollbackAddressBalances(Collection<String> txs) {
-        if (CollectionUtils.isEmpty(txs)) {
-            log.info("No txs were found, skipping address balance rollback");
-            return;
-        }
+    public void rollbackAddressBalances(Long blockNo) {
+//        if (CollectionUtils.isEmpty(txs)) {
+//            log.info("No txs were found, skipping address balance rollback");
+//            return;
+//        }
 
         /*
          * Find all balance records associated to txs. This list will be used
@@ -160,9 +162,9 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .collect(Collectors.toMap(Address::getAddress, Function.identity()));
 
         // Find all stake address records based on address
-        var stakeAddressMap = addressRepository.findAllStakeAddressByAddressIn(addressMap.values())
-                .stream()
-                .collect(Collectors.toMap(StakeAddress::getView, Function.identity()));
+//        var stakeAddressMap = addressRepository.findAllStakeAddressByAddressIn(addressMap.values())
+//                .stream()
+//                .collect(Collectors.toMap(StakeAddress::getView, Function.identity()));
 
         // Find all address token balance records
         var addressTokenBalanceMap = customAddressTokenBalanceRepository
@@ -176,21 +178,20 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 ));
 
         // Rollback address native balances
-        rollbackAddressNativeBalances(addressTxBalances, addressMap, stakeAddressMap);
+        rollbackAddressNativeBalances(addressTxBalances, addressMap);
 
         // Rollback address token balances
         rollbackAddressTokenBalances(addressTokens, addressTokenBalanceMap);
 
         addressRepository.saveAll(addressMap.values());
         addressTokenBalanceRepository.saveAll(addressTokenBalanceMap.values());
-        stakeAddressRepository.saveAll(stakeAddressMap.values());
+//        stakeAddressRepository.saveAll(stakeAddressMap.values());
         log.info("Address balances rollback finished");
     }
 
     private void rollbackAddressNativeBalances(
             List<AddressTxBalanceProjection> addressTxBalances,
-            Map<String, Address> addressMap,
-            Map<String, StakeAddress> stakeAddressMap) {
+            Map<String, Address> addressMap) {
         AtomicInteger rolledBackStakeAddressesCount = new AtomicInteger(0);
         AtomicInteger rolledBackAddressesCount = new AtomicInteger(0);
 
@@ -210,13 +211,13 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
 
             // Rollback stake key balance (if the address has stake key, which the addresses from Byron
             // era don't have)
-            String stakeAddressView = address.getStakeAddress();
-            if (Objects.nonNull(stakeAddressView)) {
-                StakeAddress stakeAddress = stakeAddressMap.get(stakeAddressView);
-                BigInteger currentStakeAddressBalance = stakeAddress.getBalance();
-                stakeAddress.setBalance(currentStakeAddressBalance.subtract(balance));
-                rolledBackStakeAddressesCount.incrementAndGet();
-            }
+//            String stakeAddressView = address.getStakeAddress();
+//            if (Objects.nonNull(stakeAddressView)) {
+//                StakeAddress stakeAddress = stakeAddressMap.get(stakeAddressView);
+//                BigInteger currentStakeAddressBalance = stakeAddress.getBalance();
+//                stakeAddress.setBalance(currentStakeAddressBalance.subtract(balance));
+//                rolledBackStakeAddressesCount.incrementAndGet();
+//            }
 
             Set<String> txHashes = addressTxHashesMap.computeIfAbsent(addressStr, s -> new HashSet<>());
             String txHash = addressTxBalance.getTxHash();
@@ -249,7 +250,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     }
 
     private void handleAddressTxBalance(Map<String, Address> addressMap,
-                                        Map<String, StakeAddress> stakeAddressMap,
+                                        Map<String, String> stakeAddressMap,
                                         Collection<AggregatedAddressBalance> addressBalances) {
         List<AddressTxBalance> addressTxBalances = addressBalances.stream()
                 .flatMap(addressBalance -> {
@@ -258,7 +259,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                     var stakeAddress = StringUtils.hasText(stakeKeyHash) ?
                             stakeAddressMap.get(stakeKeyHash) : null;
                     var txNativeBalance = addressBalance.getTxNativeBalance();
-                    return buildAddressTxBalances(address, stakeAddress == null ? null : stakeAddress.getView(), txNativeBalance);
+                    return buildAddressTxBalances(address, stakeAddress, txNativeBalance);
                 })
                 .toList();
 
@@ -291,17 +292,20 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     private AddressTxBalance buildAddressTxBalance(Address address,
                                                    String stakeAddress,
                                                    BigInteger balance, String txHash) {
+        var blockInfo = blockDataService.getBlockInfoOfTx(txHash);
+
         return AddressTxBalance.builder()
                 .address(address)
                 .stakeAddress(stakeAddress)
                 .balance(balance)
-//                .time(block.getTime())
+                .time(Timestamp.valueOf(LocalDateTime.ofEpochSecond(
+                        blockInfo.getBlockTime(), 0, ZoneOffset.ofHours(0))))
                 .txHash(txHash)
                 .build();
     }
 
     private void handleAddressToken(Map<String, Address> addressMap,
-                                    Map<String, StakeAddress> stakeAddressMap,
+                                    Map<String, String> stakeAddressMap,
                                     Collection<AggregatedAddressBalance> aggregatedAddressBalances) {
         // Get all asset fingerprints from all aggregated address balance objects
         Set<String> fingerprints = getMaFingerprintsFromAddressBalance(aggregatedAddressBalances);
@@ -314,7 +318,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 getAddressFingerprintPairsFromAddressBalance(aggregatedAddressBalances);
 
         // Find all existing multi assets by fingerprints
-        Map<String, MultiAsset> multiAssetMap = findMultiAssetsByFingerprintIn(fingerprints);
+//        Map<String, MultiAsset> multiAssetMap = findMultiAssetsByFingerprintIn(fingerprints);
 
         // Find all existing address token (multi asset) balance records, with key is a pair
         // of associated address and multi asset entity id
@@ -337,21 +341,21 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
          */
         List<AddressToken> addressTokens = new ArrayList<>();
         processAssetBalances(addressMap, aggregatedAddressBalances,
-                multiAssetMap, addressTokenBalanceMap, newAddressTokenBalanceMap,
+                addressTokenBalanceMap, newAddressTokenBalanceMap,
                 fingerprintTxHashesMap, stakeAddressMap, addressTokens);
 
         // Re-calculate amount of tx that an asset is associated with
-        fingerprintTxHashesMap.forEach((fingerprint, txHashes) -> {
-            MultiAsset multiAsset = multiAssetMap.get(fingerprint);
-
-            // If it's null, it's not minted
-            if (Objects.nonNull(multiAsset)) {
-                multiAsset.setTxCount(multiAsset.getTxCount() + txHashes.size());
-            }
-        });
+//        fingerprintTxHashesMap.forEach((fingerprint, txHashes) -> {
+//            MultiAsset multiAsset = multiAssetMap.get(fingerprint);
+//
+//            // If it's null, it's not minted
+//            if (Objects.nonNull(multiAsset)) {
+//                multiAsset.setTxCount(multiAsset.getTxCount() + txHashes.size());
+//            }
+//        });
 
         addressTokenRepository.saveAll(addressTokens);
-        multiAssetRepository.saveAll(multiAssetMap.values());
+//        multiAssetRepository.saveAll(multiAssetMap.values());
         addressTokenBalanceRepository.saveAll(addressTokenBalanceMap.values());
         addressTokenBalanceRepository.saveAll(newAddressTokenBalanceMap.values());
     }
@@ -377,19 +381,18 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         return addressTokenBalanceMap;
     }
 
-    private Map<String, MultiAsset> findMultiAssetsByFingerprintIn(Set<String> fingerprints) {
-        return multiAssetService.findMultiAssetsByFingerprintIn(fingerprints)
-                .stream()
-                .collect(Collectors.toMap(MultiAsset::getFingerprint, Function.identity()));
-    }
+//    private Map<String, MultiAsset> findMultiAssetsByFingerprintIn(Set<String> fingerprints) {
+//        return multiAssetService.findMultiAssetsByFingerprintIn(fingerprints)
+//                .stream()
+//                .collect(Collectors.toMap(MultiAsset::getFingerprint, Function.identity()));
+//    }
 
     private void processAssetBalances(Map<String, Address> addressMap,
                                       Collection<AggregatedAddressBalance> aggregatedAddressBalances,
-                                      Map<String, MultiAsset> multiAssetMap,
                                       Map<Pair<Long, String>, AddressTokenBalance> addressTokenBalanceMap,
                                       Map<Pair<String, String>, AddressTokenBalance> newAddressTokenBalanceMap,
                                       Map<String, Set<String>> fingerprintTxHashesMap,
-                                      Map<String, StakeAddress> stakeAddressMap,
+                                      Map<String, String> stakeAddressMap,
                                       List<AddressToken> addressTokens) {
         aggregatedAddressBalances.forEach(addressBalance -> {
             Address address = addressMap.get(addressBalance.getAddress().getAddress());
@@ -403,10 +406,9 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 String txHash = txHashFingerprintPair.getFirst();
                 String fingerprint = txHashFingerprintPair.getSecond();
                 BigInteger balance = maBalance.get();
-                MultiAsset multiAsset = multiAssetMap.get(fingerprint);
-                StakeAddress stakeAddress = StringUtils.hasText(stakeKeyHash) ?
+//                MultiAsset multiAsset = multiAssetMap.get(fingerprint);
+                String stakeAddress = StringUtils.hasText(stakeKeyHash) ?
                         stakeAddressMap.get(stakeKeyHash) : null;
-
                 /*
                  * If there is no associated asset entity, it means that the asset has not
                  * been minted before and no balance is subtracted/added
@@ -418,27 +420,27 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                     return;
                 }
 
-                if (Objects.isNull(multiAsset)) {
-                    throw new IllegalStateException(
-                            String.format("Asset with fingerprint %s is null!", fingerprint)
-                    );
-                }
+//                if (Objects.isNull(multiAsset)) {
+//                    throw new IllegalStateException(
+//                            String.format("Asset with fingerprint %s is null!", fingerprint)
+//                    );
+//                }
 
                 Set<String> txHashes = fingerprintTxHashesMap
                         .computeIfAbsent(fingerprint, s -> new HashSet<>());
                 txHashes.add(txHash);
 
                 AddressToken addressToken =
-                        buildAddressToken(address, balance, multiAsset.getNameView(),
-                                multiAsset.getPolicy(),
-                                multiAsset.getFingerprint(),
+                        buildAddressToken(address, balance, null,
+                                null,
+                                fingerprint,
                                 txHash);
 
                 addressTokens.add(addressToken);
                 updateAddressTokenBalance(
                         addressTokenBalanceMap, newAddressTokenBalanceMap,
-                        address, stakeAddress, multiAsset, balance);
-                updateTokenTotalVolume(multiAsset, balance);
+                        address, stakeAddress, fingerprint, balance);
+//                updateTokenTotalVolume(multiAsset, balance);
             });
         });
     }
@@ -446,21 +448,23 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     private void updateAddressTokenBalance(
             Map<Pair<Long, String>, AddressTokenBalance> addressTokenBalanceMap,
             Map<Pair<String, String>, AddressTokenBalance> newAddressTokenBalanceMap,
-            Address address, StakeAddress stakeAddress, MultiAsset multiAsset, BigInteger balance) {
+            Address address, String stakeAddress, String fingerprint, BigInteger balance) {
         Long addressId = address.getId();
-        String fingerprint = multiAsset.getFingerprint();
+//        String fingerprint = multiAsset.getFingerprint();
         AddressTokenBalance addressTokenBalance;
 
         if (Objects.nonNull(addressId) && Objects.nonNull(fingerprint)) {
             Pair<Long, String> addressFingerprintIdPair = Pair.of(addressId, fingerprint);
             addressTokenBalance = addressTokenBalanceMap.computeIfAbsent(addressFingerprintIdPair,
-                    unused -> buildAddressTokenBalance(address, multiAsset.getNameView(), multiAsset.getPolicy(),
+                    unused -> buildAddressTokenBalance(address, null, null,
+                            fingerprint,
                             stakeAddress));
         } else {
             String addressString = address.getAddress();
             Pair<String, String> addressFingerprintPair = Pair.of(addressString, fingerprint);
             addressTokenBalance = newAddressTokenBalanceMap.computeIfAbsent(addressFingerprintPair,
-                    unused -> buildAddressTokenBalance(address, multiAsset.getNameView(), multiAsset.getPolicy(),
+                    unused -> buildAddressTokenBalance(address, null, null,
+                            fingerprint,
                             stakeAddress));
         }
 
@@ -469,13 +473,13 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         addressTokenBalance.setBalance(finalBalance);
     }
 
-    private void updateTokenTotalVolume(MultiAsset multiAsset, BigInteger balance) {
-        BigInteger currentTotalVolume = multiAsset.getTotalVolume();
-        if (balance.compareTo(BigInteger.ZERO) > 0) {
-            BigInteger totalVolume = currentTotalVolume.add(balance);
-            multiAsset.setTotalVolume(totalVolume);
-        }
-    }
+//    private void updateTokenTotalVolume(MultiAsset multiAsset, BigInteger balance) {
+//        BigInteger currentTotalVolume = multiAsset.getTotalVolume();
+//        if (balance.compareTo(BigInteger.ZERO) > 0) {
+//            BigInteger totalVolume = currentTotalVolume.add(balance);
+//            multiAsset.setTotalVolume(totalVolume);
+//        }
+//    }
 
     private Set<String> getMaFingerprintsFromAddressBalance(
             Collection<AggregatedAddressBalance> aggregatedAddressBalances) {
@@ -508,14 +512,16 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     private AddressTokenBalance buildAddressTokenBalance(Address address,
                                                          String assetName,
                                                          String policy,
-                                                         StakeAddress stakeAddress) {
+                                                         String fingerprint,
+                                                         String stakeAddress) {
 
         return AddressTokenBalance.builder()
                 .address(address)
                 .assetName(assetName)
                 .policy(policy)
+                .fingerprint(fingerprint)
                 .balance(BigInteger.ZERO)
-                .stakeAddress(stakeAddress != null ? stakeAddress.getView() : null)
+                .stakeAddress(stakeAddress)
                 .build();
     }
 
@@ -534,6 +540,8 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                                            String policy,
                                            String fingerprint,
                                            String txHash) {
+        var blockInfo = blockDataService.getBlockInfoOfTx(txHash);
+
         return AddressToken.builder()
                 .address(address)
                 .balance(balance)
@@ -541,6 +549,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .assetName(assetName)
                 .policy(policy)
                 .fingerprint(fingerprint)
+                .blockNumber(blockInfo.getBlockNumber())
                 .build();
     }
 

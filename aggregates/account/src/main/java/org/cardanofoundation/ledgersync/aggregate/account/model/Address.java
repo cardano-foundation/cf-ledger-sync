@@ -25,9 +25,6 @@ import java.util.Objects;
 @SuperBuilder(toBuilder = true)
 public class Address extends BaseEntity {
 
-    @Column(name = "slot")
-    private Long slot;
-
     @Column(name = "address", nullable = false, length = 65535)
     private String address;
 
@@ -54,9 +51,6 @@ public class Address extends BaseEntity {
 
     @Column(name = "block")
     private Long blockNumber;
-
-    @Column(name = "block_time")
-    private Long blockTime;
 
     @UpdateTimestamp
     @Column(name = "update_datetime")

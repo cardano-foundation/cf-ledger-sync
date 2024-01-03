@@ -24,10 +24,7 @@ CREATE TABLE IF NOT EXISTS address_token_balance
     asset_name       varchar(64),
     policy           character varying(56),
     stake_address    character varying(65535),
-    block_hash       varchar(64),
     block            bigint,
-    block_time       bigint,
-    epoch            integer,
     update_datetime  timestamp
     );
 
@@ -41,10 +38,7 @@ CREATE TABLE IF NOT EXISTS address_token
     policy     character varying(56),
     tx_hash    character varying(64)      NOT NULL,
     address_id bigint      NULL,
-    block_hash       varchar(64),
     block            bigint,
-    block_time       bigint,
-    epoch            integer,
     update_datetime  timestamp
     );
 
@@ -59,42 +53,8 @@ CREATE TABLE IF NOT EXISTS address
     stake_address      character varying(65535),
     verified_contract  boolean,
     payment_cred       varchar(56),
-    block_hash       varchar(64),
     block            bigint,
-    block_time       bigint,
-    epoch            integer,
     update_datetime  timestamp
-    );
-
---
--- Name: multi_asset; Type: TABLE;
---
-
-CREATE TABLE IF NOT EXISTS multi_asset
-(
-    id           bigint                 NOT NULL,
-    fingerprint  character varying(255) NOT NULL,
---     name         bytea                  NOT NULL,
-    policy       character varying(56)  NOT NULL,
-    supply       numeric(23, 0),
-    tx_count     bigint,
-    "time"       timestamp without time zone,
-    total_volume numeric(40),
-    name_view    varchar(64)
-    );
-
---
--- Name: stake_address; Type: TABLE;
---
-
-CREATE TABLE IF NOT EXISTS stake_address
-(
-    id               bigint                   NOT NULL,
-    hash_raw         character varying(255)   NOT NULL,
-    script_hash      character varying(56),
-    view             character varying(65535) NOT NULL,
-    balance          numeric(39),
-    available_reward numeric(39)
     );
 
 CREATE SEQUENCE address_id_seq
@@ -128,23 +88,6 @@ CREATE SEQUENCE address_tx_balance_id_seq
     NO MAXVALUE CACHE 1;
 
 ALTER SEQUENCE address_tx_balance_id_seq OWNED BY address_tx_balance.id;
-
-CREATE SEQUENCE multi_asset_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE multi_asset_id_seq OWNED BY multi_asset.id;
-
-
-CREATE SEQUENCE stake_address_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE stake_address_id_seq OWNED BY stake_address.id;
 
 CREATE INDEX IF NOT EXISTS idx_address_address ON address USING hash (address);
 

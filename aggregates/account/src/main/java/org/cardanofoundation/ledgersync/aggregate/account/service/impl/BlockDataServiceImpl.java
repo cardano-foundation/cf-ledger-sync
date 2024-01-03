@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service.impl;
 
+import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -102,6 +103,16 @@ public class BlockDataServiceImpl implements BlockDataService {
     public void saveAssetFingerprintNotMintedAtTx(String fingerprint, String txHash) {
         Pair<String, String> pair = Pair.of(txHash, fingerprint);
         aggregatedBatchBlockData.getNotMintedAssetFingerprintTxHashSet().add(pair);
+    }
+
+    @Override
+    public void saveBlockInfoOfTx(BlockAwareDomain block, String txHash) {
+        aggregatedBatchBlockData.getTxBlockInfoMap().putIfAbsent(txHash, block);
+    }
+
+    @Override
+    public BlockAwareDomain getBlockInfoOfTx(String txHash) {
+        return aggregatedBatchBlockData.getTxBlockInfoMap().get(txHash);
     }
 
     public int getBlockSize() {

@@ -16,4 +16,6 @@ public interface AddressTokenRepository extends JpaRepository<AddressToken, Long
 
     @Modifying
     void deleteAllByTxHashIn(Collection<String> txs);
+
+    void deleteAllByBlockNumberGreaterThan(Long blockNo);
 }

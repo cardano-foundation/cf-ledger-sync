@@ -20,9 +20,6 @@ import java.util.Objects;
 @SuperBuilder(toBuilder = true)
 public class AddressTxBalance extends BaseEntity {
 
-    @Column(name = "slot")
-    private Long slot;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address_id", nullable = false,
             foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
@@ -44,9 +41,6 @@ public class AddressTxBalance extends BaseEntity {
 
     @Column(name = "block")
     private Long blockNumber;
-
-    @Column(name = "block_time")
-    private Long blockTime;
 
     @Column(name = "time")
     private Timestamp time;
