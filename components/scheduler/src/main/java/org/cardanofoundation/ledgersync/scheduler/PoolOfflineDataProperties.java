@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class PoolOfflineDataProperties {
     private long fixedDelay;
+    private long initialDelay;
 }

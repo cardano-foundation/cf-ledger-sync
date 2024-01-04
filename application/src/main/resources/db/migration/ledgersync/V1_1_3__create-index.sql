@@ -179,3 +179,7 @@ CREATE INDEX IF NOT EXISTS tx_witnesses_tx_id_idx ON tx_witnesses (tx_id);
 CREATE INDEX IF NOT EXISTS tx_bootstrap_witnesses_tx_id_idx ON tx_bootstrap_witnesses (tx_id);
 
 CREATE INDEX IF NOT EXISTS redeemer_script_hash_idx ON redeemer (script_hash);
+
+CREATE INDEX IF NOT EXISTS address_payment_cred_idx ON address (payment_cred);
+CREATE INDEX IF NOT EXISTS redeemer_script_hash_tx_id_idx ON redeemer (script_hash, tx_id);
+CREATE INDEX IF NOT EXISTS stake_address_script_hash_idx ON stake_address (script_hash);

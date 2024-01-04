@@ -548,6 +548,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
             AggregatedAddressBalance aggregatedAddressBalance, StakeAddress stakeAddress) {
         var address = aggregatedAddressBalance.getAddress().getAddress();
         var addressHasScript = aggregatedAddressBalance.isAddressHasScript();
+        var paymentCred = aggregatedAddressBalance.getAddress().getPaymentCred();
 
         return Address.builder()
                 .address(address)
@@ -555,6 +556,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .balance(BigInteger.ZERO)
                 .addressHasScript(addressHasScript)
                 .stakeAddress(stakeAddress)
+                .paymentCred(paymentCred)
                 .build();
     }
 }

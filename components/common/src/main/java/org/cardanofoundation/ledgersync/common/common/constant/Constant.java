@@ -26,8 +26,6 @@ public final class Constant {
   public static final int SLOT_LEADER_LENGTH = 28;
 
   public static boolean isTestnet(int networkMagic) {
-    return networkMagic == TESTNET
-        || networkMagic == PREPROD_TESTNET
-        || networkMagic == PREVIEW_TESTNET;
+    return networkMagic != MAINNET;
   }
 }

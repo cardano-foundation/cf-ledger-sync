@@ -704,7 +704,8 @@ CREATE TABLE IF NOT EXISTS address
     balance            numeric(39)    NOT NULL,
     tx_count           bigint,
     stake_address_id   bigint,
-    verified_contract  boolean
+    verified_contract  boolean,
+    payment_cred       varchar(56)
     );
 
 --

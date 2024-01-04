@@ -1,5 +1,6 @@
 package org.cardanofoundation.explorer.consumercommon.entity;
 
+import org.cardanofoundation.explorer.consumercommon.validation.Hash28Type;
 import org.cardanofoundation.explorer.consumercommon.validation.Word128Type;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -52,6 +53,10 @@ public class Address extends BaseEntity {
 
   @Column(name = "verified_contract")
   private Boolean verifiedContract;
+
+  @Column(name = "payment_cred", length = 56)
+  @Hash28Type
+  private String paymentCred;
 
   @Override
   public boolean equals(Object o) {
