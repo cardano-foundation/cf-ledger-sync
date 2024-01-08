@@ -7,5 +7,5 @@ public interface RollbackService {
      *
      * @param blockNo block number to start rolling back
      */
-    void rollBackFrom(long blockNo);
+    void rollBackFrom(long slot);
 }

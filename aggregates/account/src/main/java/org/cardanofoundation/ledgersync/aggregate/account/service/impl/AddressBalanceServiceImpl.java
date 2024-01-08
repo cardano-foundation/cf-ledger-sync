@@ -142,7 +142,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
          * Find all balance records associated to txs. This list will be used
          * to subtract an address's total balance record
          */
-        var addressTxBalances = addressTxBalanceRepository.findAllByTxIn(txs);
+        var addressTxBalances = addressTxBalanceRepository.findAllByBlockNumberGreaterThan(blockNo);
         var addressSet = addressTxBalances.stream()
                 .map(AddressTxBalanceProjection::getAddress)
                 .collect(Collectors.toSet());
@@ -151,7 +151,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
          * Find all address token balance records associated to txs. This list will be used
          * to subtract an address's total token balance record
          */
-        var addressTokens = addressTokenRepository.findAllByTxHashIn(txs);
+        var addressTokens = addressTokenRepository.findAllByBlockNumberGreaterThan(blockNo);
         var addressMultiAssetIdPairs = addressTokens.stream()
                 .map(addressToken -> Pair.of(addressToken.getAddressId(), addressToken.getFingerprint()))
                 .collect(Collectors.toSet());
@@ -298,8 +298,10 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .address(address)
                 .stakeAddress(stakeAddress)
                 .balance(balance)
-                .time(Timestamp.valueOf(LocalDateTime.ofEpochSecond(
+                .blockTime(Timestamp.valueOf(LocalDateTime.ofEpochSecond(
                         blockInfo.getBlockTime(), 0, ZoneOffset.ofHours(0))))
+                .slot(blockInfo.getSlot())
+                .blockNumber(blockInfo.getBlockNumber())
                 .txHash(txHash)
                 .build();
     }
@@ -550,6 +552,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .policy(policy)
                 .fingerprint(fingerprint)
                 .blockNumber(blockInfo.getBlockNumber())
+                .slot(blockInfo.getSlot())
                 .build();
     }
 

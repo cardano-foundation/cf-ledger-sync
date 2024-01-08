@@ -23,16 +23,16 @@ public class RollbackServiceImpl implements RollbackService {
 
     @Override
     @Transactional
-    public void rollBackFrom(long blockNo) {
+    public void rollBackFrom(long slot) {
         log.info("---------------------------------------------------------------------");
-        log.warn("Roll back from block no {}", blockNo);
-        startRollback(blockNo);
+        log.warn("Roll back from slot {}", slot);
+        startRollback(slot);
         log.info("---------------------------------------------------------------------");
     }
 
-    private void startRollback(long blockNo) {
-        addressBalanceService.rollbackAddressBalances(blockNo);
-        addressTokenRepository.deleteAllByBlockNumberGreaterThan(blockNo);
-        addressTxBalanceRepository.deleteAllByBlockNumberGreaterThan(blockNo);
+    private void startRollback(long slot) {
+        addressBalanceService.rollbackAddressBalances(slot);
+        addressTokenRepository.deleteAllBySlotGreaterThan(slot);
+        addressTxBalanceRepository.deleteAllBySlotGreaterThan(slot);
     }
 }

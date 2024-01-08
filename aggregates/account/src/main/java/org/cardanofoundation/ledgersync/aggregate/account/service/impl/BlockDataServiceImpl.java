@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBatchBlockData;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBlock;
+import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -106,12 +107,12 @@ public class BlockDataServiceImpl implements BlockDataService {
     }
 
     @Override
-    public void saveBlockInfoOfTx(BlockAwareDomain block, String txHash) {
+    public void saveBlockInfoOfTx(BlockInfo block, String txHash) {
         aggregatedBatchBlockData.getTxBlockInfoMap().putIfAbsent(txHash, block);
     }
 
     @Override
-    public BlockAwareDomain getBlockInfoOfTx(String txHash) {
+    public BlockInfo getBlockInfoOfTx(String txHash) {
         return aggregatedBatchBlockData.getTxBlockInfoMap().get(txHash);
     }
 

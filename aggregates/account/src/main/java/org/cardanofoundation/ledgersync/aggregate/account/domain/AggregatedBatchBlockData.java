@@ -1,9 +1,9 @@
 package org.cardanofoundation.ledgersync.aggregate.account.domain;
 
-import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class AggregatedBatchBlockData {
 
     Map<String, AggregatedBlock> aggregatedBlockMap;
 
-    Map<String, BlockAwareDomain> txBlockInfoMap;
+    Map<String, BlockInfo> txBlockInfoMap;
 
     public AggregatedBatchBlockData() {
         aggregatedAddressBalanceMap = new ConcurrentHashMap<>();

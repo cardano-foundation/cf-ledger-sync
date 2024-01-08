@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.*;
+import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockAggregatorService;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
 import org.cardanofoundation.ledgersync.common.common.Era;
@@ -141,9 +142,10 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
             AggregatedTx aggregatedTx = txToAggregatedTx(eventMetadata.getBlockHash(),
                     validContract, txIdx, transactionBody, witnesses);
             mapStakeAddressToTxHash(aggregatedTx, protocolMagic);
-            blockDataService.saveBlockInfoOfTx(BlockAwareDomain.builder()
+            blockDataService.saveBlockInfoOfTx(BlockInfo.builder()
                             .blockNumber(eventMetadata.getBlock())
                             .blockTime(eventMetadata.getBlockTime())
+                            .slot(eventMetadata.getSlot())
                             .build(),
                     aggregatedTx.getHash());
             aggregatedTx.setAuxiliaryDataHash(transactionBody.getAuxiliaryDataHash());

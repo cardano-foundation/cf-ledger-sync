@@ -105,9 +105,9 @@ public class AccountBalanceProcessor {
 //            return;
 //        }
 //
-//        blockSyncService.startBlockSyncing();
-//        rollbackService.rollBackFrom(rollbackBlockNo);
-//        blockCount.set(0);
+        blockSyncService.startBlockSyncing();
+        rollbackService.rollBackFrom(rollbackEvent.getRollbackTo().getSlot());
+        blockCount.set(0);
     }
 
     private boolean checkIfBlockExists(EventMetadata metadata) {

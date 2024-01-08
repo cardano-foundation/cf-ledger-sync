@@ -24,11 +24,11 @@ public interface AddressTxBalanceRepository extends JpaRepository<AddressTxBalan
     @Query("SELECT atb.address.address as address, "
             + "atb.balance as balance, "
             + "atb.txHash as txHash "
-            + "FROM AddressTxBalance atb WHERE atb.txHash in (:txs)")
-    List<AddressTxBalanceProjection> findAllByBlockNumberGreaterThan(@Param("txs") Collection<String> txs);
+            + "FROM AddressTxBalance atb WHERE atb.blockNumber > (:blockNo)")
+    List<AddressTxBalanceProjection> findAllByBlockNumberGreaterThan(@Param("blockNo") Long blockNo);
 
     @Modifying
     void deleteAllByTxHashIn(Collection<String> txs);
 
-    void deleteAllByBlockNumberGreaterThan(Long blockNo);
+    void deleteAllBySlotGreaterThan(Long slot);
 }

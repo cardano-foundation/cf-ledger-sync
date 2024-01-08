@@ -6,9 +6,11 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +28,9 @@ public class AddressTxBalance extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private Address address;
 
+    @Column(name = "slot")
+    private Long slot;
+
     @Column(name = "address_id", updatable = false, insertable = false)
     private Long addressId;
 
@@ -42,8 +47,12 @@ public class AddressTxBalance extends BaseEntity {
     @Column(name = "block")
     private Long blockNumber;
 
-    @Column(name = "time")
-    private Timestamp time;
+    @Column(name = "block_time")
+    private Timestamp blockTime;
+
+    @UpdateTimestamp
+    @Column(name = "update_datetime")
+    private LocalDateTime updateDateTime;
 
     @Override
     public boolean equals(Object o) {

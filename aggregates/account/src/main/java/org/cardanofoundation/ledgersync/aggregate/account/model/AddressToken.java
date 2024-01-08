@@ -27,6 +27,9 @@ public class AddressToken extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private Address address;
 
+    @Column(name = "slot")
+    private Long slot;
+
     @Column(name = "policy")
     private String policy;
 

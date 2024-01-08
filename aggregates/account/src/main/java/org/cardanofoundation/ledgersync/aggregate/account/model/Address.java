@@ -49,9 +49,6 @@ public class Address extends BaseEntity {
 //    @Hash28Type
     private String paymentCred;
 
-    @Column(name = "block")
-    private Long blockNumber;
-
     @UpdateTimestamp
     @Column(name = "update_datetime")
     private LocalDateTime updateDateTime;

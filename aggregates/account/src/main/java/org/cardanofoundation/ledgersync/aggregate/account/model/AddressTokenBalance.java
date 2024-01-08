@@ -46,9 +46,6 @@ public class AddressTokenBalance extends BaseEntity {
     @Digits(integer = 39, fraction = 0)
     private BigInteger balance;
 
-    @Column(name = "block")
-    private Long blockNumber;
-
     @UpdateTimestamp
     @Column(name = "update_datetime")
     private LocalDateTime updateDateTime;

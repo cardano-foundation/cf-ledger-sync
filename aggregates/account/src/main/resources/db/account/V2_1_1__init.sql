@@ -3,28 +3,23 @@ CREATE TABLE IF NOT EXISTS address_tx_balance
     id               bigint                 NOT NULL PRIMARY KEY,
     slot             bigint,
     balance          numeric(39)            NOT NULL,
-    time             timestamp,
     tx_hash          character varying(64)  NOT NULL,
     address_id       bigint      NULL,
     stake_address    character varying(65535),
-    block_hash       varchar(64),
     block            bigint,
-    block_time       bigint,
-    epoch            integer,
+    block_time       timestamp,
     update_datetime  timestamp
     );
 
 CREATE TABLE IF NOT EXISTS address_token_balance
 (
     id               bigint      NOT NULL PRIMARY KEY,
-    slot             bigint,
     address_id       bigint      NULL,
     balance          numeric(39) NOT NULL,
     fingerprint      character varying(255),
     asset_name       varchar(64),
     policy           character varying(56),
     stake_address    character varying(65535),
-    block            bigint,
     update_datetime  timestamp
     );
 
@@ -53,7 +48,6 @@ CREATE TABLE IF NOT EXISTS address
     stake_address      character varying(65535),
     verified_contract  boolean,
     payment_cred       varchar(56),
-    block            bigint,
     update_datetime  timestamp
     );
 
@@ -101,7 +95,7 @@ CREATE INDEX IF NOT EXISTS idx_address_token_balance_asset_policy ON address_tok
 CREATE INDEX IF NOT EXISTS idx_address_token_balance_address_id_asset_policy ON address_token_balance (address_id, asset_name, policy);
 CREATE INDEX IF NOT EXISTS idx_address_token_balance_stake_address ON address_token_balance (stake_address);
 
-CREATE INDEX IF NOT EXISTS idx_address_tx_balance_time ON address_tx_balance USING btree ("time");
+CREATE INDEX IF NOT EXISTS idx_address_tx_balance_time ON address_tx_balance USING btree ("block_time");
 CREATE INDEX IF NOT EXISTS idx_address_tx_balance_tx_hash ON address_tx_balance USING btree (tx_hash);
 CREATE INDEX IF NOT EXISTS idx_address_tx_balance_stake_address ON address_tx_balance (stake_address);
 

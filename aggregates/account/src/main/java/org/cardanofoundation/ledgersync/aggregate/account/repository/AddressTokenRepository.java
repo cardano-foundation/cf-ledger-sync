@@ -12,10 +12,9 @@ import java.util.List;
 @Repository
 public interface AddressTokenRepository extends JpaRepository<AddressToken, Long> {
 
-    List<AddressToken> findAllByTxHashIn(Collection<String> txs);
-
+    List<AddressToken> findAllByBlockNumberGreaterThan(Long blockNo);
     @Modifying
     void deleteAllByTxHashIn(Collection<String> txs);
 
-    void deleteAllByBlockNumberGreaterThan(Long blockNo);
+    void deleteAllBySlotGreaterThan(Long slot);
 }
