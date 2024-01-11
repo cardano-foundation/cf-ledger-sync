@@ -1,9 +1,9 @@
 package org.cardanofoundation.explorer.consumercommon.entity;
 
-import com.vladmihalcea.hibernate.type.array.IntArrayType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.cardanofoundation.explorer.consumercommon.customtype.CustomIntegerArrayType;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
@@ -31,7 +31,7 @@ public class TxWitness extends BaseEntity {
   private String signature;
 
   @Column(name = "index_arr", columnDefinition = "int[]")
-  @Type(value = IntArrayType.class)
+  @Type(value = CustomIntegerArrayType.class)
   private Integer[] indexArr;
 
   @Column(name = "index_arr_size")
