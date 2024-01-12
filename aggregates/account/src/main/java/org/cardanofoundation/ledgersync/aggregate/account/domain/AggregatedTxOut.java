@@ -1,11 +1,5 @@
 package org.cardanofoundation.ledgersync.aggregate.account.domain;
 
-//import org.cardanofoundation.ledgersync.common.common.Amount;
-//import org.cardanofoundation.ledgersync.common.common.Datum;
-//import org.cardanofoundation.ledgersync.common.common.TransactionOutput;
-//import org.cardanofoundation.ledgersync.common.common.byron.ByronTxOut;
-//import org.cardanofoundation.ledgersync.common.common.constant.Constant;
-
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.bloxbean.cardano.yaci.core.model.Datum;
 import com.bloxbean.cardano.yaci.core.model.TransactionOutput;

@@ -52,14 +52,11 @@ public class ByronMainAggregatorServiceImpl extends BlockAggregatorService<Byron
 
     private AggregatedBlock mapBlockCddlToAggregatedBlock(EventMetadata metadata, ByronMainBlock blockCddl) {
         var blockHash = metadata.getBlockHash();
-        var slotId = blockCddl.getHeader().getConsensusData().getSlotId();
-        var epochNo = (int) metadata.getEpochNumber();
+        var epochNo = metadata.getEpochNumber();
         var slotNo = metadata.getSlot();
         var epochSlotNo = metadata.getEpochSlot();
         var blockNo = metadata.getBlock();
         var prevHash = blockCddl.getHeader().getPrevBlock();
-//        var slotLeader = slotLeaderService.getSlotLeaderHashAndPrefix(blockCddl);
-        //var blockSize = blockCddl.getCborSize(); //TODO Get block size
         var blockSize = 0;
         var blockTime = Timestamp.valueOf(LocalDateTime.ofEpochSecond(
                 metadata.getBlockTime(), 0, ZoneOffset.ofHours(0)));

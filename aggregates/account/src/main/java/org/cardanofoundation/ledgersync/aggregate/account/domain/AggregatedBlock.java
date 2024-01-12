@@ -26,7 +26,6 @@ public class AggregatedBlock {
     Long slotNo;
     Long blockNo;
     String prevBlockHash;
-    AggregatedSlotLeader slotLeader;
     int blockSize;
     Timestamp blockTime;
     Long txCount;

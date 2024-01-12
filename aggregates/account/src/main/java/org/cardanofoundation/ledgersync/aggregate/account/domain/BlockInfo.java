@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.aggregate.account.model;
+package org.cardanofoundation.ledgersync.aggregate.account.domain;
 
 import lombok.Builder;
 import lombok.Data;

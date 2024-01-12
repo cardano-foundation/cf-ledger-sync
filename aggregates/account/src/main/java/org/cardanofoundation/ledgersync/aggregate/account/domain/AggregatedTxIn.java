@@ -7,9 +7,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Objects;
 
-//import org.cardanofoundation.ledgersync.common.common.TransactionInput;
-//import org.cardanofoundation.ledgersync.common.common.byron.ByronTxIn;
-
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

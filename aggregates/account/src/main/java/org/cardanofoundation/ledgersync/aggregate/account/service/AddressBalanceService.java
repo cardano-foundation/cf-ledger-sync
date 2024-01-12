@@ -3,7 +3,6 @@ package org.cardanofoundation.ledgersync.aggregate.account.service;
 
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
 
-import java.util.Collection;
 import java.util.Map;
 
 public interface AddressBalanceService {
@@ -15,8 +14,6 @@ public interface AddressBalanceService {
      *                                    value is its aggregated balance
      * @param stakeAddressMap             a map with key is raw stake address hex and value is the
      *                                    respective stake address entity
-     * @param txMap                       a map with key is tx hash and value is the respective tx
-     *                                    entity
      */
     void handleAddressBalance(
             Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap,
@@ -24,8 +21,6 @@ public interface AddressBalanceService {
 
     /**
      * Rollback address balances stats
-     *
-     * @param txs txs being rolled back
      */
     void rollbackAddressBalances(Long blockNo);
 }

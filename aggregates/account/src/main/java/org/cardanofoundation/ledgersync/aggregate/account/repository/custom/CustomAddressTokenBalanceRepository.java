@@ -9,8 +9,8 @@ import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.cardanofoundation.ledgersync.aggregate.account.model.Address;
-import org.cardanofoundation.ledgersync.aggregate.account.model.AddressTokenBalance;
+import org.cardanofoundation.ledgersync.aggregate.account.repository.model.Address;
+import org.cardanofoundation.ledgersync.aggregate.account.repository.model.AddressTokenBalance;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,8 +34,6 @@ public class CustomAddressTokenBalanceRepository {
         Root<AddressTokenBalance> addressTokenBalanceRoot = query.from(AddressTokenBalance.class);
         Join<AddressTokenBalance, Address> addressJoin =
                 addressTokenBalanceRoot.join("address");
-//    Join<AddressTokenBalance, MultiAsset> multiAssetJoin =
-//        addressTokenBalanceRoot.join(AddressTokenBalance_.multiAsset);
         Predicate[] predicates = addressFingerprintPairs.stream()
                 .map(addressFingerprintPair ->
                         buildAddressTokenBalancePredicate(
@@ -54,8 +52,6 @@ public class CustomAddressTokenBalanceRepository {
         Root<AddressTokenBalance> addressTokenBalanceRoot = query.from(AddressTokenBalance.class);
         Join<AddressTokenBalance, Address> addressJoin =
                 addressTokenBalanceRoot.join("address");
-//        Join<AddressTokenBalance, MultiAsset> multiAssetJoin =
-//                addressTokenBalanceRoot.join(AddressTokenBalance_.multiAsset);
 
         Predicate[] predicates = addressMultiAssetPairs.stream()
                 .map(addressMultiAssetPair ->

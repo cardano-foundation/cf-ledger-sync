@@ -3,7 +3,6 @@ package org.cardanofoundation.ledgersync.aggregate.account.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 

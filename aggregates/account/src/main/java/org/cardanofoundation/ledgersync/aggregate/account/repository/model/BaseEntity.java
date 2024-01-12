@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.aggregate.account.model;
+package org.cardanofoundation.ledgersync.aggregate.account.repository.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,18 +35,6 @@ public class BaseEntity implements Serializable {
           @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1")
       })
   protected Long id;
-
- /*  @Column(name = "created_at")
-  @CreatedDate
-  protected Timestamp createdAt;
-
-  @Column(name = "updated_at")
-  @LastModifiedDate
-  protected Timestamp updatedAt;*/
-
-  //  @Column(name = "is_deleted")
-  //  @ColumnDefault("false")
-  //  protected Boolean isDeleted = false;
 
   @Override
   public boolean equals(Object o) {

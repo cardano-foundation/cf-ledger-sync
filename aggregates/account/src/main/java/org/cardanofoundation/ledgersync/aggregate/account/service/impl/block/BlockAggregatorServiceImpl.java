@@ -1,14 +1,13 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service.impl.block;
 
 import com.bloxbean.cardano.yaci.core.model.*;
-import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import com.bloxbean.cardano.yaci.store.events.BlockEvent;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.*;
-import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
+import org.cardanofoundation.ledgersync.aggregate.account.domain.BlockInfo;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockAggregatorService;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
 import org.cardanofoundation.ledgersync.common.common.Era;
@@ -191,106 +190,8 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
             aggregatedTx.getWithdrawals().keySet().forEach(rewardAccountHex ->
                     blockDataService.saveFirstAppearedTxHashForStakeAddress(rewardAccountHex, txHash));
         }
-
-        // From certificates
-//        aggregatedTx.getCertificates().forEach(certificate ->
-//                mapCertificateStakeAddressToTxHash(network, txHash, certificate));
     }
 
-//    /**
-//     * This method marks the stake address(s) inside a certificate's first appearance tx hash
-//     *
-//     * @param network     network magic of this tx
-//     * @param txHash      tx hash of currently processing tx
-//     * @param certificate certificate in process
-//     */
-//    private void mapCertificateStakeAddressToTxHash(
-//            int network, String txHash, Certificate certificate) {
-//        CertificateType certType = certificate.getType();
-//        switch (certType) {
-//            case MOVE_INSTATENEOUS_REWARDS_CERT:
-//                MoveInstataneous moveInstataneous = (MoveInstataneous) certificate;
-//                if (Objects.nonNull(moveInstataneous.getAccountingPotCoin())) {
-//                    break;
-//                }
-//
-//                moveInstataneous.getStakeCredentialCoinMap()
-//                        .keySet().stream()
-//                        .map(credential -> AddressUtil.getRewardAddressString(credential, network))
-//                        .forEach(rewardAddress -> blockDataService
-//                                .saveFirstAppearedTxHashForStakeAddress(rewardAddress, txHash));
-//                break;
-//            case STAKE_REGISTRATION:
-//                StakeRegistration stakeRegistration = (StakeRegistration) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(stakeRegistration.getStakeCredential(), network), txHash);
-//                break;
-//            case STAKE_DEREGISTRATION:
-//                StakeDeregistration stakeDeregistration = (StakeDeregistration) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(stakeDeregistration.getStakeCredential(), network), txHash);
-//                break;
-//            case STAKE_DELEGATION:
-//                StakeDelegation stakeDelegation = (StakeDelegation) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(stakeDelegation.getStakeCredential(), network), txHash);
-//                break;
-//            case POOL_REGISTRATION:
-//                PoolRegistration poolRegistration = (PoolRegistration) certificate;
-//
-//                // Reward account
-//                // Workaround for bug https://github.com/input-output-hk/cardano-db-sync/issues/546
-//                String rewardAccountHex = poolRegistration.getPoolParams().getRewardAccount();
-//                byte[] rewardAccountBytes = HexUtil.decodeHexString(rewardAccountHex);
-//                int networkId = Constant.isTestnet(network) ? 0 : 1;
-//                byte header = rewardAccountBytes[0];
-//                if (((header & 0xff) & networkId) == 0) {
-//                    rewardAccountBytes[0] = (byte) ((header & ~1) | networkId);
-//                }
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(
-//                        HexUtil.encodeHexString(rewardAccountBytes), txHash);
-//
-//                // Pool owners
-//                poolRegistration.getPoolParams().getPoolOwners().forEach(poolOwnerHash -> {
-//                    String stakeAddressHex = AddressUtil.getRewardAddressString(
-//                            new StakeCredential(StakeCredType.ADDR_KEYHASH, poolOwnerHash), network);
-//                    blockDataService.saveFirstAppearedTxHashForStakeAddress(stakeAddressHex, txHash);
-//                });
-//                break;
-//            case REG_CERT:
-//                RegCert regCert = (RegCert) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(regCert.getStakeCredential(), network), txHash);
-//                break;
-//            case UNREG_CERT:
-//                UnregCert unregCert = (UnregCert) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(unregCert.getStakeCredential(), network), txHash);
-//                break;
-//            case STAKE_REG_DELEG_CERT:
-//                StakeRegDelegCert stakeRegDelegCert = (StakeRegDelegCert) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(stakeRegDelegCert.getStakeCredential(), network), txHash);
-//                break;
-//            case STAKE_VOTE_DELEG_CERT:
-//                StakeVoteDelegCert stakeVoteDelegCert = (StakeVoteDelegCert) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(stakeVoteDelegCert.getStakeCredential(), network), txHash);
-//                break;
-//            case VOTE_REG_DELEG_CERT:
-//                VoteRegDelegCert voteRegDelegCert = (VoteRegDelegCert) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(voteRegDelegCert.getStakeCredential(), network), txHash);
-//                break;
-//            case STAKE_VOTE_REG_DELEG_CERT:
-//                StakeVoteRegDelegCert stakeVoteRegDelegCert = (StakeVoteRegDelegCert) certificate;
-//                blockDataService.saveFirstAppearedTxHashForStakeAddress(AddressUtil
-//                        .getRewardAddressString(stakeVoteRegDelegCert.getStakeCredential(), network), txHash);
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 
     /**
      * This method transforms a single CDDL tx data to aggregated tx object
@@ -389,6 +290,5 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
         }
 
         return aggregatedTxOuts;
-//        return txOutputs.stream().map(AggregatedTxOut::from).collect(Collectors.toList());
     }
 }

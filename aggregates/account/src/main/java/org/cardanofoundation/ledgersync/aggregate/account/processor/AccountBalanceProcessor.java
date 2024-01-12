@@ -89,7 +89,8 @@ public class AccountBalanceProcessor {
             //Yaci store returns genesis hash as "Genesis" when it is not able to find it. It happens for preview/sanchonet network
             genesisHash = null;
         }
-//        genesisDataService.setupData(genesisHash);
+        //Todo: handle genesis event
+
     }
 
     @EventListener
@@ -110,15 +111,15 @@ public class AccountBalanceProcessor {
         blockCount.set(0);
     }
 
-    private boolean checkIfBlockExists(EventMetadata metadata) {
+//    private boolean checkIfBlockExists(EventMetadata metadata) {
 //        var optional = blockRepository.findBlockByHash(metadata.getBlockHash());
 //        if (optional.isPresent()) {
 //            log.info("Block already exists. Skipping block no {}, hash {}", metadata.getEpochSlot(),
 //                    metadata.getBlockHash());
 //            return true;
 //        }
-        return false;
-    }
+//        return false;
+//    }
 
     private void handleAggregateBlock(EventMetadata eventMetadata, AggregatedBlock aggregatedBlock) {
         try {

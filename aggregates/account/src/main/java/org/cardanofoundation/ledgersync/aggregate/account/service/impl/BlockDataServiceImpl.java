@@ -1,6 +1,5 @@
 package org.cardanofoundation.ledgersync.aggregate.account.service.impl;
 
-import com.bloxbean.cardano.yaci.store.common.domain.BlockAwareDomain;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBatchBlockData;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBlock;
-import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
+import org.cardanofoundation.ledgersync.aggregate.account.domain.BlockInfo;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -47,24 +46,6 @@ public class BlockDataServiceImpl implements BlockDataService {
     }
 
     @Override
-    public Pair<Long, Long> getFingerprintFirstAppearedBlockNoAndTxIdx(String fingerprint) {
-        return aggregatedBatchBlockData.getFingerprintFirstAppearedMap().get(fingerprint);
-    }
-
-    @Override
-    public void setFingerprintFirstAppearedBlockNoAndTxIdx(
-            String fingerprint, Long blockNo, Long txIdx) {
-        Pair<Long, Long> firstAppearedBlockNoAndTxIdx = Pair.of(blockNo, txIdx);
-        aggregatedBatchBlockData.getFingerprintFirstAppearedMap()
-                .putIfAbsent(fingerprint, firstAppearedBlockNoAndTxIdx);
-    }
-
-    @Override
-    public AggregatedBlock getAggregatedBlock(String blockHash) {
-        return aggregatedBatchBlockData.getAggregatedBlockMap().get(blockHash);
-    }
-
-    @Override
     public void saveAggregatedBlock(AggregatedBlock aggregatedBlock) {
         aggregatedBatchBlockData.getAggregatedBlockMap()
                 .put(aggregatedBlock.getHash(), aggregatedBlock);
@@ -98,12 +79,6 @@ public class BlockDataServiceImpl implements BlockDataService {
     public boolean isAssetFingerprintNotMintedInTx(String fingerprint, String txHash) {
         Pair<String, String> pair = Pair.of(txHash, fingerprint);
         return aggregatedBatchBlockData.getNotMintedAssetFingerprintTxHashSet().contains(pair);
-    }
-
-    @Override
-    public void saveAssetFingerprintNotMintedAtTx(String fingerprint, String txHash) {
-        Pair<String, String> pair = Pair.of(txHash, fingerprint);
-        aggregatedBatchBlockData.getNotMintedAssetFingerprintTxHashSet().add(pair);
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.cardanofoundation.ledgersync.aggregate.account.service;
 
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBlock;
-import org.cardanofoundation.ledgersync.aggregate.account.model.BlockInfo;
+import org.cardanofoundation.ledgersync.aggregate.account.domain.BlockInfo;
 import org.springframework.data.util.Pair;
 
 import java.util.Collection;
@@ -43,31 +43,6 @@ public interface BlockDataService {
     Map<String, AggregatedAddressBalance> getAggregatedAddressBalanceMap();
 
     /**
-     * Get an asset fingerprint's first appeared block no and tx idx
-     *
-     * @param fingerprint target asset fingerprint
-     * @return a pair of first appeared block no and that block's tx idx
-     */
-    Pair<Long, Long> getFingerprintFirstAppearedBlockNoAndTxIdx(String fingerprint);
-
-    /**
-     * Set an asset fingerprint's first appeared block no and tx idx
-     *
-     * @param fingerprint target asset fingerprint
-     * @param blockNo     asset's first appeared block no
-     * @param txIdx       asset's first appeared tx idx within specified block no
-     */
-    void setFingerprintFirstAppearedBlockNoAndTxIdx(String fingerprint, Long blockNo, Long txIdx);
-
-    /**
-     * Get aggregated block object by its block hash
-     *
-     * @param blockHash block hash
-     * @return aggregated block object
-     */
-    AggregatedBlock getAggregatedBlock(String blockHash);
-
-    /**
      * Save aggregated block object
      *
      * @param aggregatedBlock aggregated block object
@@ -94,14 +69,6 @@ public interface BlockDataService {
      * @return true if asset is not minted at tx, false otherwise
      */
     boolean isAssetFingerprintNotMintedInTx(String fingerprint, String txHash);
-
-    /**
-     * Save asset's not minted state at a tx
-     *
-     * @param fingerprint asset's fingerprint to save
-     * @param txHash      asset fingerprint's associated tx hash
-     */
-    void saveAssetFingerprintNotMintedAtTx(String fingerprint, String txHash);
 
     void saveBlockInfoOfTx(BlockInfo block, String txHash);
 
