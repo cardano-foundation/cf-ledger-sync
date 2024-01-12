@@ -24,15 +24,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: NETWORK
-              value: "preprod"
+              value: {{ .Values.network | default "preprod" }}
             - name: DB_DIALECT
-              value: "org.hibernate.dialect.PostgreSQLDialect"
+              value: {{ .Values.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
             - name: STORE_CARDANO_HOST
-              value: "preprod-node.world.dev.cardano.org"
+              value: {{ .Values.storeCardanoHost | default "preprod-node.world.dev.cardano.org" }}
             - name: STORE_CARDANO_PORT
-              value: "30000"
-            - name: STORE_CARDANO_PROTOCOL-MAGIC
-              value: "1"
+              value: {{ .Values.storeCardanoPort | default "30000" | quote }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
             
             ## Postgres
             - name: POSTGRES_HOST
