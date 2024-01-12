@@ -1,0 +1,5 @@
+dbSchema: preview
+network: preview
+storeCardanoHost: preview-node.play.dev.cardano.org
+storeCardanoPort: 3001
+storeCardanoProtocolMagic: 2
