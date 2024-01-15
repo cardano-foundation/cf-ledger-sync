@@ -2,4 +2,4 @@ dbSchema: mainnet
 network: mainnet
 storeCardanoHost: backbone.cardano-mainnet.iohk.io
 storeCardanoPort: 3001
-storeCardanoProtocolMagic: 764824073
+storeCardanoProtocolMagic: "764824073"
