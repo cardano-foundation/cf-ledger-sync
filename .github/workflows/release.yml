@@ -26,7 +26,7 @@ jobs:
       - name: Publish package
         run: |
           ./gradlew publish \
-            "-Psigning.keyId=${{ secrets.MAVEN_CENTRAL_GPG_KEY_ID }}" \
+            "-Psigning.keyId=AF79A015" \
             "-Psigning.password=${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}" \
             "-Psigning.secretKeyRingFile=${HOME}/.gradle/secring.gpg" \
             --warn --stacktrace
