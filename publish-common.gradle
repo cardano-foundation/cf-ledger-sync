@@ -18,7 +18,7 @@ if (!name.equalsIgnoreCase("components")) {
                 artifactId 'ledger-sync-' + project.name
 
                 pom {
-                    url = 'https://github.com/cardanofoundation/cf-ledger-sync'
+                    url = 'https://github.com/cardano-foundation/cf-ledger-sync'
                     licenses {
                         license {
                             name = 'Apache License 2.0'
@@ -32,9 +32,9 @@ if (!name.equalsIgnoreCase("components")) {
                         }
                     }
                     scm {
-                        connection = 'scm:git:git://github.com/cardanofoundation/cf-ledger-sync'
-                        developerConnection = 'scm:git:ssh://git@github.com/cardanofoundation/cf-ledger-sync'
-                        url = 'https://github.com/cardanofoundation/cf-ledger-sync'
+                        connection = 'scm:git:git://github.com/cardano-foundation/cf-ledger-sync.git'
+                        developerConnection = 'scm:git:git://github.com/cardano-foundation/cf-ledger-sync'
+                        url = 'https://github.com/cardano-foundation/cf-ledger-sync'
                     }
                 }
             }
@@ -47,8 +47,8 @@ if (!name.equalsIgnoreCase("components")) {
             maven {
 //                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
 //                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/"
-                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
                     username ossrhUsername
