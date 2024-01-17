@@ -63,6 +63,7 @@ ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 if (isReleaseVersion && !project.hasProperty("skipSigning")) {
     signing {
+        useGpgCmd()
         sign publishing.publications
     }
 }
