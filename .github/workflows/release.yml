@@ -27,6 +27,7 @@ jobs:
           mkdir -p ~/.gradle/
           echo "${{secrets.MAVEN_CENTRAL_GPG_KEY_BASE64}}" > ~/.gradle/secring.gpg.b64
           base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+          gpg --import ~/.gradle/secring.gpg
       - name: Publish package
         run: |
           ./gradlew publish \
