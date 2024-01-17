@@ -18,6 +18,10 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew clean build
+      - name: GPG checks
+        run: |
+          which gpg
+          gpg --version
       - name: Decode GPG Key
         run: |
           mkdir -p ~/.gradle/
