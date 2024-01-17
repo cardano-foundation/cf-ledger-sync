@@ -37,4 +37,4 @@ jobs:
             --warn --stacktrace
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_OSSRH_TOKEN }}
