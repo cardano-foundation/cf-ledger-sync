@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.explorerconsumer;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = "org.cardanofoundation.*")
 @EntityScan("org.cardanofoundation.*")
 @EnableJpaRepositories("org.cardanofoundation.*")
-public class ExplorerConsumerApplication {
+public class LedgerSyncApplication {
 
     static {
         System.setProperty("org.jooq.no-logo", "true");
@@ -25,7 +26,13 @@ public class ExplorerConsumerApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(ExplorerConsumerApplication.class, args);
+        SpringApplication.run(LedgerSyncApplication.class, args);
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        long maxMemory = Runtime.getRuntime().maxMemory();
+        log.info("<< Max JVM heap memory: {} MB", maxMemory / (1024 * 1024) + " >>");
     }
 
 }
