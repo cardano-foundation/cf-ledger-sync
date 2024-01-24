@@ -1,0 +1,17 @@
+FROM quay.io/curl/curl:latest
+
+ARG PUEUE_VERSION=3.3.3
+ARG PUEUE_ARCH=x86_64
+ENV PUEUE_VERSION ${PUEUE_VERSION}
+ENV PUEUE_ARCH ${PUEUE_ARCH}
+ENV XDG_RUNTIME_DIR /pueue-runtime
+ENV XDG_DATA_HOME /pueue-data
+
+RUN mkdir -p ~/.local/bin && \
+    for bin in pueue pueued; do \
+    curl -sLo ~/.local/bin/${bin} \
+      https://github.com/Nukesor/pueue/releases/download/v${PUEUE_VERSION}/${bin}-linux-${PUEUE_ARCH} && \
+      chmod +x ~/.local/bin/${bin}; \
+    done
+
+ENTRYPOINT ["/home/curl_user/.local/bin/pueued"]

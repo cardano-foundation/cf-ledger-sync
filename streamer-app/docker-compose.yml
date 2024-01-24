@@ -1,0 +1,102 @@
+version: "3.9"
+services:
+  cf-ledger-sync-streamer:
+    #image: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-streamer:162724a
+    image: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-streamer:3cceb3d
+    container_name: ledger-sync-streamer
+    environment:
+      - STORE_CARDANO_HOST=preprod-node.world.dev.cardano.org
+      - STORE_CARDANO_PORT=30000
+      - STORE_CARDANO_PROTOCOL-MAGIC=1
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:/data/cursordb
+      - SCHEMA=STREAMER
+      - STORE_REMOTE_PUBLISHER_ENABLED=true
+      - scs_binder=kafka
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - STORE_REMOTE_PUBLISHER-EVENTS=genesisBlockEvent,transactionEvent,auxDataEvent,mintBurnEvent,scriptEvent
+#      - STORE_CARDANO_SYNC-START-SLOT=29883443
+#      - STORE_CARDANO_SYNC-START-BLOCKHASH=e78c93b9eb2bd312c49f464cf2aa0564405f3ab1408f525c6f3ada5b1c43992b
+    volumes:
+      - "db-volume:/data"
+    ports:
+      - 8080:8080
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: on-failure
+
+  zookeeper:
+    restart: always
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper-volume:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    restart: always
+    image: docker.io/bitnami/kafka:3.3
+    ports:
+      - "9093:9093"
+    volumes:
+      - "kafka-volume:/bitnami"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_MESSAGE_MAX_BYTES=200000000
+    depends_on:
+      - zookeeper
+
+  kcat:
+    image: rcmorano/kcat-pueue
+    build:
+      context: .
+      dockerfile: Dockerfile.kcat-pueue
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PUEUE_PARALLEL_JOBS=1
+    entrypoint: ["sh"]
+    command: ["-c", "while [ ! -e /root/.config/pueue/pueue.yml ]; do sleep 0.1; done; pueue parallel $$PUEUE_PARALLEL_JOBS; bash -x /src/kcat-consume-batches.sh"]
+    volumes:
+      - $PWD:/src
+      - pueue-config:/root/.config/pueue
+      - pueue-runtime:/pueue-runtime
+      - pueue-data:/pueue-data
+
+  pueued:
+    image: rcmorano/pueue
+    build:
+      context: .
+      dockerfile: Dockerfile.pueue
+    user: root
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - $PWD:/src
+      - pueue-config:/root/.config/pueue
+      - pueue-runtime:/pueue-runtime
+      - pueue-data:/pueue-data
+
+  fluree:
+    image: fluree/server
+    ports:
+      - "0.0.0.0:58090:8090"
+    volumes:
+      - fluree-data:/opt/fluree-server/data
+
+volumes:
+  fluree-data:
+  pueue-config:
+  pueue-data:
+  pueue-runtime:
+  db-volume:
+  kafka-volume:
+  zookeeper-volume:

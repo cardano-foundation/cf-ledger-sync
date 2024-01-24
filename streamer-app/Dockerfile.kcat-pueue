@@ -1,0 +1,8 @@
+FROM edenhill/kcat:1.7.0
+
+RUN apk add curl bash jq
+
+ENV XDG_RUNTIME_DIR /pueue-runtime
+ENV XDG_DATA_HOME /pueue-data
+
+COPY --from=rcmorano/pueue /home/curl_user/.local/bin/pueue /usr/local/bin/pueue
