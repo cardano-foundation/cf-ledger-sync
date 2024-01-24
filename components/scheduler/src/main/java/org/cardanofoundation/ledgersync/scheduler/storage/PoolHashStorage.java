@@ -1,6 +1,6 @@
 package org.cardanofoundation.ledgersync.scheduler.storage;
 
-import org.cardanofoundation.explorer.consumercommon.entity.PoolHash;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolHash;
 import org.cardanofoundation.ledgersync.scheduler.projection.PoolHashUrlProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
