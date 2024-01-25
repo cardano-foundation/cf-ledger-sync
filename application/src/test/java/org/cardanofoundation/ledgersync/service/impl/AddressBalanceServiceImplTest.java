@@ -681,14 +681,11 @@ class AddressBalanceServiceImplTest {
         .thenReturn(new ArrayList<>(addressMap.values()));
     Mockito.when(addressRepository.findAllStakeAddressByAddressIn(Mockito.anyCollection()))
         .thenReturn(new ArrayList<>(stakeAddressMap.values()));
-    Mockito.when(customAddressTokenBalanceRepository
-            .findAllByAddressMultiAssetIdPairIn(Mockito.anyCollection()))
-        .thenReturn(Collections.emptyList());
 
     Assertions.assertDoesNotThrow(() -> victim.rollbackAddressBalances(txMap.values()));
 
     Mockito.verify(addressRepository, Mockito.times(1)).saveAll(addressesCaptor.capture());
-    Mockito.verify(addressTokenBalanceRepository, Mockito.times(1)).saveAll(addressTokenBalancesCaptor.capture());
+    Mockito.verify(addressTokenBalanceRepository, Mockito.never()).saveAll(Mockito.anyCollection());
     Mockito.verify(stakeAddressRepository, Mockito.times(1)).saveAll(stakeAddressesCaptor.capture());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(4))
         .subtractAccountTxCountAtEpoch(Mockito.anyInt(), Mockito.anyString(), Mockito.anyInt());
@@ -699,9 +696,6 @@ class AddressBalanceServiceImplTest {
       Assertions.assertEquals(BigInteger.ZERO, address.getBalance());
       Assertions.assertEquals(0L, address.getTxCount());
     });
-
-    Collection<AddressTokenBalance> addressTokenBalances = addressTokenBalancesCaptor.getValue();
-    Assertions.assertTrue(CollectionUtils.isEmpty(addressTokenBalances));
 
     Collection<StakeAddress> stakeAddresses = stakeAddressesCaptor.getValue();
     stakeAddresses.forEach(stakeAddress ->
