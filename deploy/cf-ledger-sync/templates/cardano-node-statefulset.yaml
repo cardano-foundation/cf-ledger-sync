@@ -21,7 +21,7 @@ spec:
           image: "{{ .image.repository }}:{{ .image.tag }}"
           env:
             - name: RESTORE_SNAPSHOT
-              vaule: {{ .mithrilRestore | default "true" | quote }}
+              value: "{{ .mithrilRestore | default true }}"
             - name: NETWORK
               value: {{ .network | default "preprod" | quote }}
           ports:
