@@ -150,9 +150,27 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
          * to subtract an address's total token balance record
          */
         var addressTokens = addressTokenRepository.findAllByTxIn(txs);
-        var addressMultiAssetIdPairs = addressTokens.stream()
-                .map(addressToken -> Pair.of(addressToken.getAddressId(), addressToken.getMultiAssetId()))
-                .collect(Collectors.toSet());
+
+        if (!addressTokens.isEmpty()) {
+            var addressMultiAssetIdPairs = addressTokens.stream()
+                    .map(addressToken -> Pair.of(addressToken.getAddressId(), addressToken.getMultiAssetId()))
+                    .collect(Collectors.toSet());
+
+            // Find all address token balance records
+            var addressTokenBalanceMap = customAddressTokenBalanceRepository
+                    .findAllByAddressMultiAssetIdPairIn(addressMultiAssetIdPairs)
+                    .stream()
+                    .collect(Collectors.toMap(
+                            addressTokenBalance ->
+                                    Pair.of(addressTokenBalance.getAddressId(),
+                                            addressTokenBalance.getMultiAssetId()),
+                            Function.identity()
+                    ));
+
+            // Rollback address token balances
+            rollbackAddressTokenBalances(addressTokens, addressTokenBalanceMap);
+            addressTokenBalanceRepository.saveAll(addressTokenBalanceMap.values());
+        }
 
         // Find all address records
         var addressMap = addressRepository.findAllByAddressIn(addressSet)
@@ -164,25 +182,10 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                 .stream()
                 .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
 
-        // Find all address token balance records
-        var addressTokenBalanceMap = customAddressTokenBalanceRepository
-                .findAllByAddressMultiAssetIdPairIn(addressMultiAssetIdPairs)
-                .stream()
-                .collect(Collectors.toMap(
-                        addressTokenBalance ->
-                                Pair.of(addressTokenBalance.getAddressId(),
-                                        addressTokenBalance.getMultiAssetId()),
-                        Function.identity()
-                ));
-
         // Rollback address native balances
         rollbackAddressNativeBalances(addressTxBalances, addressMap, stakeAddressMap);
 
-        // Rollback address token balances
-        rollbackAddressTokenBalances(addressTokens, addressTokenBalanceMap);
-
         addressRepository.saveAll(addressMap.values());
-        addressTokenBalanceRepository.saveAll(addressTokenBalanceMap.values());
         stakeAddressRepository.saveAll(stakeAddressMap.values());
         log.info("Address balances rollback finished");
     }

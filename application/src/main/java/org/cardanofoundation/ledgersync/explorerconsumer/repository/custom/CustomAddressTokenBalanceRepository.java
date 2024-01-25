@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.cardanofoundation.ledgersync.jooq.Tables.*;
@@ -29,6 +30,10 @@ public class CustomAddressTokenBalanceRepository {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public List<AddressTokenBalance> findAllByAddressFingerprintPairIn(Collection<Pair<String, String>> addressFingerprintPairs) {
+
+        if (addressFingerprintPairs.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         Condition condition = null;
         for (Pair<String, String> addressFingerprintPair : addressFingerprintPairs) {
@@ -50,6 +55,10 @@ public class CustomAddressTokenBalanceRepository {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public List<AddressTokenBalance> findAllByAddressMultiAssetIdPairIn(Collection<Pair<Long, Long>> addressMultiAssetIdPairs) {
+        if (addressMultiAssetIdPairs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         Condition condition = null;
         for (Pair<Long, Long> addressMultiAssetIdPair : addressMultiAssetIdPairs) {
             Long addressId = addressMultiAssetIdPair.getFirst();
