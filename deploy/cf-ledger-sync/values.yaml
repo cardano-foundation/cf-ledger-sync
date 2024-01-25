@@ -1,5 +1,6 @@
 replicaCount: 1
 
+useLocalCardanoNode: false
 localCardanoNode:
   enabled: false
   image:

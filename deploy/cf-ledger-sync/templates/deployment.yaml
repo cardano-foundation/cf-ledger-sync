@@ -27,7 +27,7 @@ spec:
               value: {{ .Values.network | default "preprod" }}
             - name: DB_DIALECT
               value: {{ .Values.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
-            {{ if .Values.localCardanoNode.enabled }}
+            {{ if .Values.useLocalCardanoNode }}
             - name: STORE_CARDANO_HOST
               value: "cardano-node"
             - name: STORE_CARDANO_PORT
