@@ -1,5 +1,8 @@
 replicaCount: 1
 
+localCardanoNode:
+  enabled: false
+
 image:
   repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync
   tag: "d5f1455"

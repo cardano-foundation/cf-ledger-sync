@@ -1,0 +1,55 @@
+{{ with .Values.localCardanoNode }}
+{{ if .enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: cardano-node
+  name: cardano-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cardano-node
+  template:
+    metadata:
+      labels:
+        app: cardano-node
+    spec:
+      containers:
+        - name: cardano-node
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          env:
+            - name: RESTORE_SNAPSHOT
+              vaule: {{ .mithrilRestore | default "true" | quote }}
+            - name: NETWORK
+              value: {{ .network | default "preprod" | quote }}
+          ports:
+            - containerPort: 3001
+              hostPort: 3001
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /data
+              name: cardano-node-db
+            - mountPath: /ipc
+              name: cardano-node-ipc
+      restartPolicy: Always
+      volumes:
+        - name: cardano-node-db
+          persistentVolumeClaim:
+            claimName: cardano-node-db
+        - name: cardano-node-ipc
+          emptyDir:
+            sizeLimit: 1Mi
+
+  volumeClaimTemplates:
+    - metadata:
+        name: cardano-node-db
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ .volumeSize | default "10Gi" }}
+{{ end }}
+{{ end }}
