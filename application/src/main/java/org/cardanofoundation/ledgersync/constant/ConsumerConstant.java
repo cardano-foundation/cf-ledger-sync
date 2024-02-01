@@ -23,7 +23,10 @@ public final class ConsumerConstant {
     public static final String ADDR_PREFIX = "addr";
     public static final String BYTE_NULL = "\u0000";
     public static final String UNDERSCORE = "_";
-
+    public static final String DATA_IS_NOT_SYNCING = "Data is not being synchronized";
+    public static final String SYNCING_HAS_FINISHED = "The data synchronization to a specific slot has finished";
+    public static final String READY_TO_SERVE = "Ready to serve";
+    public static final String SYNCING_BUT_NOT_READY = "Data is being synchronized, but it isn't ready to serve yet";
     private static final List<Integer> networkNotStartWithByron = List.of(Constant.PREVIEW_TESTNET, Constant.SANCHONET);
 
     public static List<Integer> getNetworkNotStartWithByron() {

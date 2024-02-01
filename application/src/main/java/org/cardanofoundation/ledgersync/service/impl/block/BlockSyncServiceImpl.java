@@ -5,11 +5,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.consumercommon.entity.SlotLeader;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.repository.BlockRepository;
 import org.cardanofoundation.ledgersync.repository.TxRepository;
 import org.cardanofoundation.ledgersync.service.*;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.getNetworkNotStartWithByron;
@@ -38,7 +40,7 @@ public class BlockSyncServiceImpl implements BlockSyncService {
     TxChartService txChartService;
     MetricCollectorService metricCollectorService;
     AggregatedDataCachingService aggregatedDataCachingService;
-
+    HealthCheckCachingService healthCheckCachingService;
 
     @Override
     @Transactional
@@ -72,7 +74,9 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         allAggregatedBlocks.forEach(aggregatedBlock -> handleBlock(aggregatedBlock, blockMap));
         blockRepository.saveAll(blockMap.values());
         aggregatedDataCachingService.addBlockCount(allAggregatedBlocks.size());
-
+        healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestBlockTime(lastBlock.getBlockTime().toLocalDateTime());
+        healthCheckCachingService.saveLatestBlockSlot(lastBlock.getSlotNo() != null ? lastBlock.getSlotNo() : -1);
         // Prepare and handle transaction contents
         Tx latestSavedTx = txRepository.findFirstByOrderByIdDesc();
         transactionService.prepareAndHandleTxs(blockMap, allAggregatedBlocks);

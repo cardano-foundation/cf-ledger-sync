@@ -86,3 +86,20 @@ ledger-sync:
       fixed-delay: ${POOL_OFFLINE_DATA_FIXED_DELAY:172800}
       initial-delay: ${POOL_OFFLINE_DATA_INIT_DELAY:20000}
     enabled: ${SCHEDULER_ENABLED:true}
+  healthcheck:
+    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:240}
+    inserted-time-threshold: ${INSERTED_TIME_THRESHOLD_IN_SECOND:1200}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "health,prometheus,health-status"
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    health-status:
+      enabled: true
