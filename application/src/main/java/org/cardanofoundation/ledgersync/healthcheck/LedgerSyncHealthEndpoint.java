@@ -20,14 +20,13 @@ public class LedgerSyncHealthEndpoint {
     @ReadOperation
     @Bean
     public ResponseEntity<HealthStatus> checkHealthStatus() {
-        var syncStatus = healthStatusService.getHealthStatus();
+        var healthStatus = healthStatusService.getHealthStatus();
 
-        if (Boolean.FALSE.equals(syncStatus.getIsSyncing())
-                && Boolean.FALSE.equals(syncStatus.getHasReachedToStopSlot())) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(syncStatus);
+        if (Boolean.FALSE.equals(healthStatus.getIsHealthy())) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(healthStatus);
         }
 
-        return ResponseEntity.ok().body(syncStatus);
+        return ResponseEntity.ok().body(healthStatus);
     }
 }

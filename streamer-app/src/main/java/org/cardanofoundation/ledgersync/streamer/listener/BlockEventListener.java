@@ -20,35 +20,35 @@ public class BlockEventListener {
     @EventListener
     @Transactional
     public void handleRollback(RollbackEvent rollbackEvent) {
-        healthCheckCachingService.saveLatestPublishTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestEventTime(LocalDateTime.now(ZoneOffset.UTC));
         healthCheckCachingService.saveLatestSlotNo(rollbackEvent.getRollbackTo().getSlot());
     }
 
     @EventListener
     @Transactional
     public void handleBlockHeader(BlockHeaderEvent blockHeaderEvent) {
-        healthCheckCachingService.saveLatestPublishTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestEventTime(LocalDateTime.now(ZoneOffset.UTC));
         healthCheckCachingService.saveLatestSlotNo(blockHeaderEvent.getBlockHeader().getHeaderBody().getSlot());
     }
 
     @EventListener
     @Transactional
     public void handleGenesisBlock(GenesisBlockEvent genesisBlockEvent) {
-        healthCheckCachingService.saveLatestPublishTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestEventTime(LocalDateTime.now(ZoneOffset.UTC));
         healthCheckCachingService.saveLatestSlotNo(genesisBlockEvent.getSlot());
     }
 
     @EventListener
     @Transactional
     public void handleByronBlockEvent(ByronMainBlockEvent byronMainBlockEvent) {
-        healthCheckCachingService.saveLatestPublishTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestEventTime(LocalDateTime.now(ZoneOffset.UTC));
         healthCheckCachingService.saveLatestSlotNo(byronMainBlockEvent.getMetadata().getSlot());
     }
 
     @EventListener
     @Transactional
     public void handleByronEbBlock(ByronEbBlockEvent byronEbBlockEvent) {
-        healthCheckCachingService.saveLatestPublishTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestEventTime(LocalDateTime.now(ZoneOffset.UTC));
         healthCheckCachingService.saveLatestSlotNo(byronEbBlockEvent.getMetadata().getSlot());
     }
 }

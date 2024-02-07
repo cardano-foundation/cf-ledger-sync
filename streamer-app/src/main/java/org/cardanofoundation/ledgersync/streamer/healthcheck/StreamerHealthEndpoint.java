@@ -19,7 +19,7 @@ public class StreamerHealthEndpoint {
     public ResponseEntity<HealthStatus> checkHealthStatus() {
         var healthStatus = healthStatusService.getHealthStatus();
 
-        if (Boolean.TRUE.equals(healthStatus.isCrawling) || Boolean.TRUE.equals(healthStatus.hasReachedToStopSlot)) {
+        if (Boolean.TRUE.equals(healthStatus.isHealthy)) {
             return ResponseEntity.ok().body(healthStatus);
         }
 

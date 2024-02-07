@@ -89,6 +89,7 @@ ledger-sync:
   healthcheck:
     block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:240}
     inserted-time-threshold: ${INSERTED_TIME_THRESHOLD_IN_SECOND:1200}
+    keepalive-time-threshold: ${KEEPALIVE_TIME_THRESHOLD_IN_SECOND:1200}
 
 management:
   endpoints:

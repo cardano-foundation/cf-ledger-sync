@@ -1,16 +1,24 @@
 package org.cardanofoundation.ledgersync.streamer.service.impl;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.ledgersync.streamer.service.HealthCheckCachingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Service
 @RequiredArgsConstructor
 public class HealthCheckCachingServiceImpl implements HealthCheckCachingService {
     private Long latestSlotNo;
-    private LocalDateTime latestPublishTime = LocalDateTime.now();
+    private LocalDateTime latestEventTime;
+
+    @PostConstruct
+    void init() {
+        latestSlotNo = -10L;
+        latestEventTime = LocalDateTime.now(ZoneOffset.UTC);
+    }
 
     @Override
     public void saveLatestSlotNo(Long slotNo) {
@@ -23,12 +31,12 @@ public class HealthCheckCachingServiceImpl implements HealthCheckCachingService 
     }
 
     @Override
-    public void saveLatestPublishTime(LocalDateTime publishTime) {
-        latestPublishTime = publishTime;
+    public void saveLatestEventTime(LocalDateTime eventTime) {
+        latestEventTime = eventTime;
     }
 
     @Override
-    public LocalDateTime getLatestPublishTime() {
-        return latestPublishTime;
+    public LocalDateTime getLatestEventTime() {
+        return latestEventTime;
     }
 }

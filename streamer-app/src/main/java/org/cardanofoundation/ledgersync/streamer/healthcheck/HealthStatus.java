@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class HealthStatus {
-    Boolean isCrawling;
-    Boolean hasReachedToStopSlot;
+    Boolean isHealthy;
+    Boolean hasStopSlot;
     String message;
 }

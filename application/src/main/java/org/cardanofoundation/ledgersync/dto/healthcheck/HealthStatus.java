@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class HealthStatus {
-    Boolean isSyncing;
+    Boolean isHealthy;
     String message;
     LocalDateTime latestBlockInsertTime;
-    Boolean hasReachedToStopSlot;
+    Boolean hasStopSlot;
 }

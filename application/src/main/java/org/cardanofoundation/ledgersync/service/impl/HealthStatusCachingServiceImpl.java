@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
+import jakarta.annotation.PostConstruct;
 import org.cardanofoundation.ledgersync.service.HealthCheckCachingService;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +10,14 @@ import java.time.ZoneOffset;
 @Service
 public class HealthStatusCachingServiceImpl implements HealthCheckCachingService {
     private LocalDateTime latestBlockTime;
-    private LocalDateTime latestBlockInsertTime = LocalDateTime.now(ZoneOffset.UTC);
+    private LocalDateTime latestBlockInsertTime;
     private Long latestBlockSlot;
+
+    @PostConstruct
+    void init() {
+        latestBlockInsertTime = LocalDateTime.now(ZoneOffset.UTC);
+        latestBlockSlot = -10L; // dummy value
+    }
 
     @Override
     public void saveLatestBlockTime(LocalDateTime blockTime) {

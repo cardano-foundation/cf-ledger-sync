@@ -14,7 +14,7 @@ public interface HealthCheckCachingService {
     /**
      * Cache the time when the most recent data was published
      */
-    void saveLatestPublishTime(LocalDateTime insertTime);
+    void saveLatestEventTime(LocalDateTime insertTime);
 
-    LocalDateTime getLatestPublishTime();
+    LocalDateTime getLatestEventTime();
 }

@@ -26,7 +26,8 @@ spring:
 
 streamer:
   healthcheck:
-    published-time-threshold: ${PUBLISHED_TIME_THRESHOLD_IN_SECOND:120}
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:120}
+    keepalive-time-threshold: ${KEEPALIVE_TIME_THRESHOLD_IN_SECOND:120}
 
 management:
   endpoints:
