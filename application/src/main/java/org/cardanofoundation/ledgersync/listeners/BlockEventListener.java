@@ -182,6 +182,7 @@ public class BlockEventListener {
             int currentBlockCount = blockCount.incrementAndGet();
             if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold || eventMetadata.isSyncMode()) {
                 blockSyncService.startBlockSyncing();
+                healthCheckCachingService.saveIsSyncMode(eventMetadata.isSyncMode());
                 blockCount.set(0);
             }
 

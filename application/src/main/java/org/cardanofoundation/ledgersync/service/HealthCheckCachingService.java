@@ -32,5 +32,15 @@ public interface HealthCheckCachingService {
      * Get latest slot no
      */
     Long getLatestBlockSlot();
+
+    /**
+     * Cache the value indicates whether the yaci is crawling with sync mode or not (use Chain-Sync protocol)
+     */
+    void saveIsSyncMode(Boolean isSyncMode);
+
+    /**
+     * Get the value indicates whether the yaci is crawling with sync mode or not (use Chain-Sync protocol)
+     */
+    Boolean getIsSyncMode();
 }
 

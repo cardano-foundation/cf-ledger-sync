@@ -88,7 +88,8 @@ ledger-sync:
     enabled: ${SCHEDULER_ENABLED:true}
   healthcheck:
     block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:240}
-    inserted-time-threshold: ${INSERTED_TIME_THRESHOLD_IN_SECOND:1200}
+    non-batching-inserted-time-threshold: ${NON_BATCHING_INSERTED_TIME_THRESHOLD_IN_SECOND:240}
+    batching-inserted-time-threshold: ${BATCHING_INSERTED_TIME_THRESHOLD_IN_SECOND:900}
     keepalive-time-threshold: ${KEEPALIVE_TIME_THRESHOLD_IN_SECOND:1200}
 
 management:

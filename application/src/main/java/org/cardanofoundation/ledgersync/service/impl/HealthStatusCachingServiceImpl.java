@@ -12,11 +12,13 @@ public class HealthStatusCachingServiceImpl implements HealthCheckCachingService
     private LocalDateTime latestBlockTime;
     private LocalDateTime latestBlockInsertTime;
     private Long latestBlockSlot;
+    private Boolean isSyncMode;
 
     @PostConstruct
     void init() {
         latestBlockInsertTime = LocalDateTime.now(ZoneOffset.UTC);
         latestBlockSlot = -10L; // dummy value
+        isSyncMode = Boolean.FALSE;
     }
 
     @Override
@@ -47,5 +49,15 @@ public class HealthStatusCachingServiceImpl implements HealthCheckCachingService
     @Override
     public Long getLatestBlockSlot() {
         return latestBlockSlot;
+    }
+
+    @Override
+    public void saveIsSyncMode(Boolean value) {
+        isSyncMode = value;
+    }
+
+    @Override
+    public Boolean getIsSyncMode() {
+        return isSyncMode;
     }
 }

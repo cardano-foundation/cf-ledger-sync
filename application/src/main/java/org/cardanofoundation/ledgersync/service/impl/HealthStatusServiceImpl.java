@@ -31,17 +31,25 @@ public class HealthStatusServiceImpl implements HealthStatusService {
     @Value("${ledger-sync.healthcheck.block-time-threshold}")
     private Long blockTimeThresholdInSecond;
 
-    @Value("${ledger-sync.healthcheck.inserted-time-threshold}")
-    private Long insertedTimeThresholdInSecond;
+    @Value("${ledger-sync.healthcheck.non-batch-inserted-time-threshold}")
+    private Long nonBatchingInsertedTimeThresholdInSecond;
+
+    @Value("${ledger-sync.healthcheck.batch-inserted-time-threshold}")
+    private Long batchingInsertedTimeThresholdInSecond;
 
     @Value("${ledger-sync.healthcheck.keepalive-time-threshold}")
     private Long keepAliveResponseTimeThresholdInSecond;
+
+    @Value("${blocks.batch-size}")
+    private Integer batchSize;
 
     @Override
     public HealthStatus getHealthStatus() {
         final LocalDateTime latestBlockInsertTime = healthCheckCachingService.getLatestBlockInsertTime();
         final LocalDateTime latestBlockTime = healthCheckCachingService.getLatestBlockTime();
         final long stopSlot = storeProperties.getSyncStopSlot();
+        final Long insertedTimeThresholdInSecond = batchSize == 1 || healthCheckCachingService.getIsSyncMode().equals(Boolean.TRUE) ?
+                nonBatchingInsertedTimeThresholdInSecond : batchingInsertedTimeThresholdInSecond;
 
         boolean isHealthy = true;
         String message = SYNCING_BUT_NOT_READY;
@@ -90,6 +98,8 @@ public class HealthStatusServiceImpl implements HealthStatusService {
         final LocalDateTime latestBlockInsertTime = healthCheckCachingService.getLatestBlockInsertTime();
         final Long latestSlotNo = healthCheckCachingService.getLatestBlockSlot();
         final LocalDateTime latestBlockTime = healthCheckCachingService.getLatestBlockTime();
+        final Long insertedTimeThresholdInSecond = batchSize == 1 || healthCheckCachingService.getIsSyncMode().equals(Boolean.TRUE) ?
+                nonBatchingInsertedTimeThresholdInSecond : batchingInsertedTimeThresholdInSecond;
 
         boolean isHealthy = true;
         String message = SYNCING_BUT_NOT_READY;
