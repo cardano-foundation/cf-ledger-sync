@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 public class HealthStatus {
     Boolean isHealthy;
-    String message;
+    String messageCode;
+    String messageDesc;
     LocalDateTime latestBlockInsertTime;
     Boolean hasStopSlot;
 }

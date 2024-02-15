@@ -5,6 +5,7 @@ import com.bloxbean.cardano.yaci.store.core.service.CursorService;
 import com.bloxbean.cardano.yaci.store.core.service.HealthService;
 import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.ledgersync.dto.healthcheck.HealthStatus;
+import org.cardanofoundation.ledgersync.dto.healthcheck.Message;
 import org.cardanofoundation.ledgersync.service.HealthCheckCachingService;
 import org.cardanofoundation.ledgersync.service.HealthStatusService;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +17,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
-import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,7 @@ public class HealthStatusServiceImpl implements HealthStatusService {
                 nonBatchingInsertedTimeThresholdInSecond : batchingInsertedTimeThresholdInSecond;
 
         boolean isHealthy = true;
-        String message = SYNCING_BUT_NOT_READY;
+        Message message = Message.SYNCING_BUT_NOT_READY;
 
         if (stopSlot > 0) {
             return getHealthStatusWhenStopSlotIsSet(stopSlot);
@@ -61,13 +60,15 @@ public class HealthStatusServiceImpl implements HealthStatusService {
         if (Objects.isNull(latestBlockTime)) { // this latestBlockTime is only != null after a block is successfully inserted into the database
             if (isOutOfThreshold(insertedTimeThresholdInSecond, latestBlockInsertTime)) {
                 if (isConnectionToNodeHealthy()) {
-                    message = CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
+                    message = Message.CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
                 } else {
-                    message = DATA_IS_NOT_SYNCING;
+                    message = Message.IS_NOT_SYNCING;
                 }
+
                 return HealthStatus.builder()
                         .isHealthy(false)
-                        .message(message)
+                        .messageDesc(message.getDesc())
+                        .messageCode(message.getCode())
                         .latestBlockInsertTime(latestBlockInsertTime)
                         .hasStopSlot(true)
                         .build();
@@ -75,20 +76,21 @@ public class HealthStatusServiceImpl implements HealthStatusService {
         } else {
             if (!isConnectionToNodeHealthy()) {
                 isHealthy = false;
-                message = DATA_IS_NOT_SYNCING;
+                message = Message.IS_NOT_SYNCING;
             } else if (isOutOfThreshold(insertedTimeThresholdInSecond, latestBlockInsertTime)) {
                 isHealthy = false;
-                message = CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
+                message = Message.CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
             }
         }
 
         if (isHealthy && latestBlockTime != null && !isOutOfThreshold(blockTimeThresholdInSecond, latestBlockTime)) {
-            message = READY_TO_SERVE;
+            message = Message.READY_TO_SERVE;
         }
 
         return HealthStatus.builder()
                 .isHealthy(isHealthy)
-                .message(message)
+                .messageCode(message.getCode())
+                .messageDesc(message.getDesc())
                 .latestBlockInsertTime(latestBlockInsertTime)
                 .hasStopSlot(false)
                 .build();
@@ -102,39 +104,40 @@ public class HealthStatusServiceImpl implements HealthStatusService {
                 nonBatchingInsertedTimeThresholdInSecond : batchingInsertedTimeThresholdInSecond;
 
         boolean isHealthy = true;
-        String message = SYNCING_BUT_NOT_READY;
+        Message message = Message.SYNCING_BUT_NOT_READY;
 
         if (Objects.isNull(latestBlockTime)) {
             var recentCursor = cursorService.getCursor();
             if (recentCursor.isPresent() && recentCursor.get().getSlot() >= stopSlot) {
-                message = SYNCING_HAS_FINISHED;
+                message = Message.SYNCING_HAS_FINISHED;
             }
 
             if (isOutOfThreshold(insertedTimeThresholdInSecond, latestBlockInsertTime)) {
                 isHealthy = false;
                 if (!isConnectionToNodeHealthy()) {
-                    message = DATA_IS_NOT_SYNCING;
+                    message = Message.IS_NOT_SYNCING;
                 } else {
-                    message = CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
+                    message = Message.CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
                 }
             }
         } else {
             if (!isConnectionToNodeHealthy()) {
                 isHealthy = false;
-                message = DATA_IS_NOT_SYNCING;
+                message = Message.IS_NOT_SYNCING;
             } else if (isOutOfThreshold(insertedTimeThresholdInSecond, latestBlockInsertTime)) {
                 isHealthy = false;
-                message = CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
+                message = Message.CONNECTION_HEALTHY_BUT_BLOCK_CONSUMING_NOT_HEALTHY;
             }
         }
 
         if (isHealthy && latestSlotNo >= stopSlot) {
-            message = SYNCING_HAS_FINISHED;
+            message = Message.SYNCING_HAS_FINISHED;
         }
 
         return HealthStatus.builder()
                 .isHealthy(isHealthy)
-                .message(message)
+                .messageCode(message.getCode())
+                .messageDesc(message.getDesc())
                 .latestBlockInsertTime(latestBlockInsertTime)
                 .hasStopSlot(true)
                 .build();
