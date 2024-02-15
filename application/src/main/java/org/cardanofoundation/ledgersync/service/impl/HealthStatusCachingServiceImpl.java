@@ -6,19 +6,21 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class HealthStatusCachingServiceImpl implements HealthCheckCachingService {
     private LocalDateTime latestBlockTime;
     private LocalDateTime latestBlockInsertTime;
-    private Long latestBlockSlot;
-    private Boolean isSyncMode;
+    private final AtomicLong latestBlockSlot = new AtomicLong();
+    private final AtomicBoolean isSyncMode = new AtomicBoolean();
 
     @PostConstruct
     void init() {
         latestBlockInsertTime = LocalDateTime.now(ZoneOffset.UTC);
-        latestBlockSlot = -10L; // dummy value
-        isSyncMode = Boolean.FALSE;
+        latestBlockSlot.set(-10L); // dummy value
+        isSyncMode.set(Boolean.FALSE);
     }
 
     @Override
@@ -43,21 +45,21 @@ public class HealthStatusCachingServiceImpl implements HealthCheckCachingService
 
     @Override
     public void saveLatestBlockSlot(Long slot) {
-        latestBlockSlot = slot;
+        latestBlockSlot.set(slot);
     }
 
     @Override
     public Long getLatestBlockSlot() {
-        return latestBlockSlot;
+        return latestBlockSlot.get();
     }
 
     @Override
     public void saveIsSyncMode(Boolean value) {
-        isSyncMode = value;
+        isSyncMode.set(value);
     }
 
     @Override
     public Boolean getIsSyncMode() {
-        return isSyncMode;
+        return isSyncMode.get();
     }
 }
