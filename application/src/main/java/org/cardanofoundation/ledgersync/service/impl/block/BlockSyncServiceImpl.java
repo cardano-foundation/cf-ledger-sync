@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
 
 import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.getNetworkNotStartWithByron;
@@ -40,7 +38,6 @@ public class BlockSyncServiceImpl implements BlockSyncService {
     TxChartService txChartService;
     MetricCollectorService metricCollectorService;
     AggregatedDataCachingService aggregatedDataCachingService;
-    HealthCheckCachingService healthCheckCachingService;
 
     @Override
     @Transactional
@@ -74,9 +71,6 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         allAggregatedBlocks.forEach(aggregatedBlock -> handleBlock(aggregatedBlock, blockMap));
         blockRepository.saveAll(blockMap.values());
         aggregatedDataCachingService.addBlockCount(allAggregatedBlocks.size());
-        healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
-        healthCheckCachingService.saveLatestBlockTime(lastBlock.getBlockTime().toLocalDateTime());
-        healthCheckCachingService.saveLatestBlockSlot(lastBlock.getSlotNo() != null ? lastBlock.getSlotNo() : -1);
         // Prepare and handle transaction contents
         Tx latestSavedTx = txRepository.findFirstByOrderByIdDesc();
         transactionService.prepareAndHandleTxs(blockMap, allAggregatedBlocks);

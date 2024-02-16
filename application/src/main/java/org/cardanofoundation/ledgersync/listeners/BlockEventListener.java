@@ -182,7 +182,13 @@ public class BlockEventListener {
             int currentBlockCount = blockCount.incrementAndGet();
             if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold || eventMetadata.isSyncMode()) {
                 blockSyncService.startBlockSyncing();
+
+                healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
+                healthCheckCachingService.saveLatestBlockTime(LocalDateTime.ofEpochSecond(
+                        eventMetadata.getBlockTime(), 0, ZoneOffset.ofHours(0)));
                 healthCheckCachingService.saveIsSyncMode(eventMetadata.isSyncMode());
+                healthCheckCachingService.saveLatestBlockSlot(eventMetadata.getSlot());
+
                 blockCount.set(0);
             }
 

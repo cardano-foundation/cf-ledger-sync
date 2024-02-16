@@ -1,7 +1,5 @@
 package org.cardanofoundation.ledgersync.service;
 
-import com.bloxbean.cardano.yaci.core.model.BlockHeader;
-
 import java.time.LocalDateTime;
 
 public interface HealthCheckCachingService {
