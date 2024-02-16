@@ -4,6 +4,7 @@ import com.bloxbean.cardano.yaci.store.common.config.StoreProperties;
 import com.bloxbean.cardano.yaci.store.core.service.HealthService;
 import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.ledgersync.streamer.healthcheck.HealthStatus;
+import org.cardanofoundation.ledgersync.streamer.healthcheck.Message;
 import org.cardanofoundation.ledgersync.streamer.service.HealthCheckCachingService;
 import org.cardanofoundation.ledgersync.streamer.service.HealthStatusService;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-
-import static org.cardanofoundation.ledgersync.streamer.constant.StreamerConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,25 +35,26 @@ public class HealthStatusServiceImpl implements HealthStatusService {
         final Long latestSlotNo = healthCheckCachingService.getLatestSlotNo();
         boolean hasStopSlot = storeProperties.getSyncStopSlot() != 0;
         boolean isHealthy = true;
-        String message = DATA_IS_CRAWLING;
+        Message message = Message.IS_CRAWLING;
 
         if (isOutOfThreshold(publishedTimeThreshold, latestEventTime)) {
             isHealthy = false;
             if (isConnectionToNodeHealthy()) {
-                message = CONNECTION_HEALTHY_BUT_DATA_CRAWLING_NOT_HEALTHY;
+                message = Message.CONNECTION_HEALTHY_BUT_DATA_CRAWLING_NOT_HEALTHY;
             } else {
-                message = DATA_IS_NOT_CRAWLING;
+                message = Message.IS_NOT_CRAWLING;
             }
         }
 
         if (isHealthy && latestSlotNo != null && hasStopSlot && latestSlotNo >= storeProperties.getSyncStopSlot()){
-            message = STOP_SLOT_HAS_REACHED;
+            message = Message.STOP_SLOT_HAS_REACHED;
         }
 
         return HealthStatus.builder()
                 .isHealthy(isHealthy)
                 .hasStopSlot(hasStopSlot)
-                .message(message)
+                .messageCode(message.getCode())
+                .messageDesc(message.getDesc())
                 .build();
     }
 

@@ -10,5 +10,6 @@ import lombok.Setter;
 public class HealthStatus {
     Boolean isHealthy;
     Boolean hasStopSlot;
-    String message;
+    String messageCode;
+    String messageDesc;
 }
