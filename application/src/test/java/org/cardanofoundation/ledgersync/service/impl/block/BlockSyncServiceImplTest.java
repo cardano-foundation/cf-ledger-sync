@@ -56,9 +56,6 @@ class BlockSyncServiceImplTest {
   @Mock
   AggregatedDataCachingService aggregatedDataCachingService;
 
-  @Mock
-  HealthCheckCachingService healthCheckCachingService;
-
   @Test
   @DisplayName("Should skip block syncing on empty block batch")
   void shouldSkipBlockSyncWithNoBlocksTest() {
@@ -67,7 +64,7 @@ class BlockSyncServiceImplTest {
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
         blockRepository, txRepository, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService, txChartService,
-        metricCollectorService, aggregatedDataCachingService, healthCheckCachingService
+        metricCollectorService, aggregatedDataCachingService
     );
     victim.startBlockSyncing();
     Mockito.verifyNoInteractions(blockRepository);
@@ -99,7 +96,7 @@ class BlockSyncServiceImplTest {
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
         blockRepository, txRepository, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService, txChartService,
-        metricCollectorService, aggregatedDataCachingService, healthCheckCachingService
+        metricCollectorService, aggregatedDataCachingService
     );
     Assertions.assertThrows(IllegalStateException.class, victim::startBlockSyncing);
 
@@ -115,7 +112,6 @@ class BlockSyncServiceImplTest {
     Mockito.verifyNoInteractions(epochParamService);
     Mockito.verifyNoInteractions(txChartService);
     Mockito.verifyNoInteractions(aggregatedDataCachingService);
-    Mockito.verifyNoInteractions(healthCheckCachingService);
   }
 
   @Test
@@ -139,7 +135,7 @@ class BlockSyncServiceImplTest {
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
         blockRepository, txRepository, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService, txChartService,
-        metricCollectorService, aggregatedDataCachingService, healthCheckCachingService
+        metricCollectorService, aggregatedDataCachingService
     );
     victim.startBlockSyncing();
 
@@ -163,9 +159,6 @@ class BlockSyncServiceImplTest {
     Mockito.verifyNoMoreInteractions(epochParamService);
     Mockito.verify(txChartService, Mockito.times(1)).handleTxChart(Mockito.any());
     Mockito.verifyNoMoreInteractions(txChartService);
-    Mockito.verify(healthCheckCachingService, Mockito.times(1)).saveLatestBlockTime(Mockito.any());
-    Mockito.verify(healthCheckCachingService, Mockito.times(1)).saveLatestBlockSlot(Mockito.any());
-    Mockito.verify(healthCheckCachingService, Mockito.times(1)).saveLatestBlockInsertTime(Mockito.any());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .addBlockCount(anyInt());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
@@ -200,7 +193,7 @@ class BlockSyncServiceImplTest {
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
         blockRepository, txRepository, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService, txChartService,
-        metricCollectorService, aggregatedDataCachingService, healthCheckCachingService
+        metricCollectorService, aggregatedDataCachingService
     );
     victim.startBlockSyncing();
 
@@ -230,9 +223,6 @@ class BlockSyncServiceImplTest {
         .addBlockCount(anyInt());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .saveLatestTxs();
-    Mockito.verify(healthCheckCachingService, Mockito.times(1)).saveLatestBlockTime(Mockito.any());
-    Mockito.verify(healthCheckCachingService, Mockito.times(1)).saveLatestBlockSlot(Mockito.any());
-    Mockito.verify(healthCheckCachingService, Mockito.times(1)).saveLatestBlockInsertTime(Mockito.any());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1)).commit();
     Mockito.verifyNoMoreInteractions(aggregatedDataCachingService);
   }
