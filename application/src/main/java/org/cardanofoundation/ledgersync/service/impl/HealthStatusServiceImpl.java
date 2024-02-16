@@ -30,10 +30,10 @@ public class HealthStatusServiceImpl implements HealthStatusService {
     @Value("${ledger-sync.healthcheck.block-time-threshold}")
     private Long blockTimeThresholdInSecond;
 
-    @Value("${ledger-sync.healthcheck.non-batch-inserted-time-threshold}")
+    @Value("${ledger-sync.healthcheck.non-batching-inserted-time-threshold}")
     private Long nonBatchingInsertedTimeThresholdInSecond;
 
-    @Value("${ledger-sync.healthcheck.batch-inserted-time-threshold}")
+    @Value("${ledger-sync.healthcheck.batching-inserted-time-threshold}")
     private Long batchingInsertedTimeThresholdInSecond;
 
     @Value("${ledger-sync.healthcheck.keepalive-time-threshold}")
