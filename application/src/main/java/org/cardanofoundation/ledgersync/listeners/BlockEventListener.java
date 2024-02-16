@@ -15,6 +15,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -34,6 +38,7 @@ public class BlockEventListener {
 
     private final BlockRepository blockRepository;
     private final MetricCollectorService metricCollectorService;
+    private final HealthCheckCachingService healthCheckCachingService;
     private final AtomicInteger blockCount = new AtomicInteger(0);
 
     @Value("${blocks.batch-size}")
@@ -90,14 +95,21 @@ public class BlockEventListener {
         }
 
         genesisDataService.setupData(genesisHash);
+        healthCheckCachingService.saveLatestBlockSlot(genesisBlockEvent.getSlot());
+        healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestBlockTime(
+                LocalDateTime.ofInstant(Instant.ofEpochSecond(genesisBlockEvent.getBlockTime()), ZoneId.of("UTC")));
     }
 
     @EventListener
     @Transactional
     public void handleRollback(RollbackEvent rollbackEvent) {
-        Long rollbackBlockNo = blockRepository.findBySlotNo(rollbackEvent.getRollbackTo().getSlot())
-                .map(block -> block.getBlockNo())
-                .orElse(0L);
+        long rollbackBlockNo = 0;
+        var rollBackBlock = blockRepository.findBySlotNo(rollbackEvent.getRollbackTo().getSlot());
+
+        if (rollBackBlock.isPresent()) {
+            rollbackBlockNo = rollBackBlock.get().getBlockNo();
+        }
 
         if (rollbackBlockNo == 0) {
             log.warn("Rollback block no {}, hash {} not found", rollbackEvent.getRollbackTo().getSlot(),
@@ -109,6 +121,10 @@ public class BlockEventListener {
         rollbackService.rollBackFrom(rollbackBlockNo);
         metricCollectorService.collectRollbackMetric();
         blockCount.set(0);
+
+        healthCheckCachingService.saveLatestBlockSlot(rollbackEvent.getRollbackTo().getSlot());
+        healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
+        healthCheckCachingService.saveLatestBlockTime(rollBackBlock.get().getTime().toLocalDateTime());
     }
 
     private boolean checkIfBlockExists(EventMetadata metadata) {
@@ -166,6 +182,13 @@ public class BlockEventListener {
             int currentBlockCount = blockCount.incrementAndGet();
             if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold || eventMetadata.isSyncMode()) {
                 blockSyncService.startBlockSyncing();
+
+                healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
+                healthCheckCachingService.saveLatestBlockTime(LocalDateTime.ofEpochSecond(
+                        eventMetadata.getBlockTime(), 0, ZoneOffset.ofHours(0)));
+                healthCheckCachingService.saveIsSyncMode(eventMetadata.isSyncMode());
+                healthCheckCachingService.saveLatestBlockSlot(eventMetadata.getSlot());
+
                 blockCount.set(0);
             }
 

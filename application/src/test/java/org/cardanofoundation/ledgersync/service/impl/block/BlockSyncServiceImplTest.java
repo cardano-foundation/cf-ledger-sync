@@ -16,6 +16,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.util.Pair;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -121,6 +123,8 @@ class BlockSyncServiceImplTest {
     Mockito.when(aggregatedBlock.getPrevBlockHash())
         .thenReturn("d4b8de7a11d929a323373cbab6c1a9bdc931beffff11db111cf9d57356ee1937");
     Mockito.when(aggregatedBlock.getBlockNo()).thenReturn(1L);
+    Mockito.when(aggregatedBlock.getBlockTime()).thenReturn(Timestamp.valueOf(LocalDateTime.of(2019, 7, 25, 2, 4, 16)));
+    Mockito.when(aggregatedBlock.getSlotNo()).thenReturn(10000L);
     Mockito.when(blockDataService.getBlockSize()).thenReturn(1);
     Mockito.when(blockDataService.getFirstAndLastBlock())
         .thenReturn(Pair.of(aggregatedBlock, aggregatedBlock));
@@ -174,6 +178,8 @@ class BlockSyncServiceImplTest {
         .thenReturn("45899e8002b27df291e09188bfe3aeb5397ac03546a7d0ead93aa2500860f1af");
     Mockito.when(aggregatedBlock.getBlockNo()).thenReturn(47l);
     Mockito.when(aggregatedBlock.getSlotLeader()).thenReturn(slotLeader);
+    Mockito.when(aggregatedBlock.getBlockTime()).thenReturn(Timestamp.valueOf(LocalDateTime.of(2019, 7, 25, 2, 4, 16)));
+    Mockito.when(aggregatedBlock.getSlotNo()).thenReturn(10000L);
     Mockito.when(slotLeader.getHashRaw())
         .thenReturn("aae9293510344ddd636364c2673e34e03e79e3eefa8dbaa70e326f7d");
     Mockito.when(slotLeader.getPrefix()).thenReturn(ConsumerConstant.SHELLEY_SLOT_LEADER_PREFIX);

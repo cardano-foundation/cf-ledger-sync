@@ -5,11 +5,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.consumercommon.entity.SlotLeader;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.repository.BlockRepository;
 import org.cardanofoundation.ledgersync.repository.TxRepository;
 import org.cardanofoundation.ledgersync.service.*;
@@ -38,7 +38,6 @@ public class BlockSyncServiceImpl implements BlockSyncService {
     TxChartService txChartService;
     MetricCollectorService metricCollectorService;
     AggregatedDataCachingService aggregatedDataCachingService;
-
 
     @Override
     @Transactional
@@ -72,7 +71,6 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         allAggregatedBlocks.forEach(aggregatedBlock -> handleBlock(aggregatedBlock, blockMap));
         blockRepository.saveAll(blockMap.values());
         aggregatedDataCachingService.addBlockCount(allAggregatedBlocks.size());
-
         // Prepare and handle transaction contents
         Tx latestSavedTx = txRepository.findFirstByOrderByIdDesc();
         transactionService.prepareAndHandleTxs(blockMap, allAggregatedBlocks);
