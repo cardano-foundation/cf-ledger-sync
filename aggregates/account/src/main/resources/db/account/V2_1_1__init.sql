@@ -40,7 +40,6 @@ CREATE TABLE IF NOT EXISTS address_token
 CREATE TABLE IF NOT EXISTS address
 (
     id                 bigint         NOT NULL PRIMARY KEY,
-    slot               bigint,
     address            varchar(65535) NOT NULL,
     address_has_script boolean        NOT NULL,
     balance            numeric(39)    NOT NULL,

@@ -46,7 +46,6 @@ public class AddressToken extends BaseEntity {
     private Long addressId;
 
     @Column(name = "balance", nullable = false, precision = 39)
-//    @Word128Type
     @Digits(integer = 39, fraction = 0)
     private BigInteger balance;
 

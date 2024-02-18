@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.account.domain.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockDataService;
 import org.cardanofoundation.ledgersync.aggregate.account.service.BlockSyncService;
+import org.cardanofoundation.ledgersync.aggregate.account.service.GenesisBalanceDataService;
 import org.cardanofoundation.ledgersync.aggregate.account.service.RollbackService;
 import org.cardanofoundation.ledgersync.aggregate.account.service.impl.block.BlockAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.aggregate.account.service.impl.block.ByronEbbAggregatorServiceImpl;
@@ -27,7 +28,7 @@ public class AccountBalanceProcessor {
     private final ByronEbbAggregatorServiceImpl byronEbbAggregatorService;
     private final ByronMainAggregatorServiceImpl byronMainAggregatorService;
 
-//    private final GenesisDataService genesisDataService;
+    private final GenesisBalanceDataService genesisBalanceDataService;
 
     private final BlockSyncService blockSyncService;
     private final BlockDataService blockDataService;
@@ -84,13 +85,8 @@ public class AccountBalanceProcessor {
     @Transactional
     public void handleGenesisBlock(GenesisBlockEvent genesisBlockEvent) {
         log.info("BlockEventListener.handleGenesisBlock");
-        String genesisHash = genesisBlockEvent.getBlockHash();
-        if (genesisHash != null && genesisHash.startsWith("Genesis")) {
-            //Yaci store returns genesis hash as "Genesis" when it is not able to find it. It happens for preview/sanchonet network
-            genesisHash = null;
-        }
         //Todo: handle genesis event
-
+        genesisBalanceDataService.handleGenesisBalance(genesisBlockEvent);
     }
 
     @EventListener

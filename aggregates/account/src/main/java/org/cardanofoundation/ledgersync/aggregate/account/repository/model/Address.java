@@ -32,7 +32,6 @@ public class Address extends BaseEntity {
     private Long txCount;
 
     @Column(name = "balance", nullable = false, precision = 39)
-//    @Word128Type
     @Digits(integer = 39, fraction = 0)
     private BigInteger balance;
 
@@ -46,7 +45,6 @@ public class Address extends BaseEntity {
     private Boolean verifiedContract;
 
     @Column(name = "payment_cred", length = 56)
-//    @Hash28Type
     private String paymentCred;
 
     @UpdateTimestamp
