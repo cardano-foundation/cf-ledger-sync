@@ -50,12 +50,12 @@ public class AddressTokenBalance extends BaseEntity {
   @Column(name = "ident", updatable = false, insertable = false)
   private Long multiAssetId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "stake_address_id",
-      foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
-  private StakeAddress stakeAddress;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "stake_address_id",
+//      foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+//  private StakeAddress stakeAddress;
 
-  @Column(name = "stake_address_id", updatable = false, insertable = false)
+  @Column(name = "stake_address_id")
   private Long stakeAddressId;
 
   @Column(name = "balance", nullable = false, precision = 39)

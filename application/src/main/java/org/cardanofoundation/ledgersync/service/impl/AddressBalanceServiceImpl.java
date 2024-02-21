@@ -461,13 +461,13 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         if (Objects.nonNull(addressId) && Objects.nonNull(multiAssetId)) {
             Pair<Long, Long> addressFingerprintIdPair = Pair.of(addressId, multiAssetId);
             addressTokenBalance = addressTokenBalanceMap.computeIfAbsent(addressFingerprintIdPair,
-                    unused -> buildAddressTokenBalance(address, multiAsset, stakeAddress));
+                    unused -> buildAddressTokenBalance(address, multiAsset, stakeAddress != null ? stakeAddress.getId(): null));
         } else {
             String addressString = address.getAddress();
             String fingerprint = multiAsset.getFingerprint();
             Pair<String, String> addressFingerprintPair = Pair.of(addressString, fingerprint);
             addressTokenBalance = newAddressTokenBalanceMap.computeIfAbsent(addressFingerprintPair,
-                    unused -> buildAddressTokenBalance(address, multiAsset, stakeAddress));
+                    unused -> buildAddressTokenBalance(address, multiAsset, stakeAddress != null ? stakeAddress.getId(): null));
         }
 
         BigInteger currentBalance = addressTokenBalance.getBalance();
@@ -508,17 +508,17 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
      *
      * @param address      address string (Base58 or Bech32 form)
      * @param multiAsset   associated asset entity
-     * @param stakeAddress address's associated stake address entity
+     * @param stakeAddressId id of address's associated stake address entity
      * @return new address token balance entity
      */
     private AddressTokenBalance buildAddressTokenBalance(Address address,
                                                          MultiAsset multiAsset,
-                                                         StakeAddress stakeAddress) {
+                                                         Long stakeAddressId) {
         return AddressTokenBalance.builder()
                 .address(address)
                 .multiAsset(multiAsset)
                 .balance(BigInteger.ZERO)
-                .stakeAddress(stakeAddress)
+                .stakeAddressId(stakeAddressId)
                 .build();
     }
 
