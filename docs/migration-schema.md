@@ -1,0 +1,179 @@
+# Research LedgerSync and YaciStore
+
+## I.List table use in ledger sync but not in yaci store
+
+| Table                    | Note              |
+| ------------------------ | ----------------- |
+| ada_pots                 | related to reward |
+| address                  |                   |
+| address_token            |                   |
+| address_token_balance    |                   |
+| address_tx_balance       |                   |
+| agg_address_token        |                   |
+| agg_address_tx_balance   |                   |
+| asset_metadata           |                   |
+| delisted_pool            |                   |
+| epoch_stake              | related to reward |
+| epoch_sync_time          |                   |
+| extra_key_witness        |                   |
+| failed_tx_out            |                   |
+| ma_tx_mint               |                   |
+| ma_tx_out                |                   |
+| meta                     |                   |
+| multi_asset              |                   |
+| param_proposal           |                   |
+| pool_hash                |                   |
+| pool_meta_ref            |                   |
+| pool_offline_data        |                   |
+| pool_offline_fetch_error |                   |
+| pool_owner               |                   |
+| pool_replay              |                   |
+| pool_retire              |                   |
+| pool_update              |                   |
+| pot_transfer             |                   |
+| redeemer                 |                   |
+| redeemer_data            |                   |
+| reference_tx_in          |                   |
+| reserve                  |                   |
+| reserved_pool_ticker     |                   |
+| reward                   | related to reward |
+| rollback_history         |                   |
+| slot_leader              |                   |
+| stake_address            |                   |
+| stake_deregistration     |                   |
+| treasury                 |                   |
+| unconsume_tx_in          |                   |
+| withdrawal               |                   |
+
+## II.List table use in ledger sync maybe in yaci store
+
+1. Analyze cost_model table (Can replaced with cost_model in yaci_store DB)
+    - Compare columns with yaci store: 
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        | costs          | costs         |
+        | hash           | hash          |
+    - References tables: `param_proposal`, `epoch_param`
+    - Query use in explorer:
+        |          | Table related | Note |
+        | -------- | ------------- | ---- |
+        | findAll  |               |      |
+        | findById |               |      | 
+    💡 Solution: Change `findById` to `findByHash`, and relation by hash rather `id`
+        
+2. Analyze datum table (Need to find a column to replace the column `values`)
+    - Compare columns with yaci store:  
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        | bytes          | datum         |
+        | hash           | hash          |
+        | values         | N/A           |
+    - References tables: 
+    - Query use in explorer:
+        |     | Table related | Note |
+        | --- | ------------- | ---- |
+3. Analyze delegation table(Need to find a column to replace the column `redeemer_id`)
+    - Compare columns with yaci store: 
+        | Ledger_Sync DB  | Yaci_Store DB |
+        | --------------- | ------------- |
+        | active_epoch_no | epoch         |
+        | cert_index      | cert_index    |
+        | slot_no         | slot          |
+        | addr_id         | address       |
+        | pool_hash_id    | pool_id       |
+        | tx_id           | tx_hash       |
+        | redeemer_id     | N/A           |
+    - References tables: 
+    - Query use in explorer:
+        |     | Table related | Note |
+        | --- | ------------- | ---- |
+4. Analyze epoch table (Can replaced with cost_model in yaci_store DB)
+    - Compare columns with yaci store: 
+        | Ledger_Sync DB      | Yaci_Store DB     |
+        | ------------------- | ----------------- |
+        | blk_count           | block_count       |
+        | end_time            | end_time          |
+        | fees                | total_fees        |
+        | max_slot            | max_slot          |
+        | no                  | number            |
+        | out_sum             | total_output      |
+        | start_time          | start_time        |
+        | tx_count            | transaction_count |
+        | era                 | N/A               |
+        | rewards_distributed | N/A               |
+    - References tables: 
+    - Query use in explorer:
+        |     | Table related | Note |
+        | --- | ------------- | ---- |
+5.  Analyze epoch_param table (Doing…)
+    - Compare columns with yaci store: 
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        |                |               |
+    - References tables: 
+    - Query use in explorer:
+        |                                   | Table related | Note |
+        | --------------------------------- | ------------- | ---- |
+        | findEpochParamByEpochNo(:epochNo) |               |      |
+        | findEpochParamInTime              |               |      |
+6. Analyze script table (Todo…)
+    - Compare columns with yaci store:
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        |                |               |
+    - References tables: 
+    - Query use in explorer:
+        |                            | Table related | Note |
+        | -------------------------- | ------------- | ---- |
+        | findByHash(:hash)          |               |      |
+        | findAllByHashIn(:hashList) |               |      |
+7. Analyze stake_registration table (Can replaced with stake_registration in yaci_store DB)
+    - Compare columns with yaci store: 
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        | cert_index     | cert_index    |
+        | epoch_no       | epoch         |
+        | address_id     | address       |
+        | tx_id          | tx_hash       |
+    - References tables: 
+    - Query use in explorer:
+        |                                   | Table related | Note |
+        | --------------------------------- | ------------- | ---- |
+        | findMaxTxIdByStake(:stakeAddress) |               |      |
+8. Analyze stake_deregistration table (Can replaced with stake_registration in yaci_store DB, if find column that replaced for redeemer_id )
+    - Compare columns with yaci store:
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        | cert_index     | cert_index    |
+        | epoch_no       | epoch         |
+        | address_id     | address       |
+        | tx_id          | tx_hash       |
+        | redeemer_id    | N/A           |
+    - References tables: 
+    - Query use in explorer:
+        |                                   | Table related | Note |
+        | --------------------------------- | ------------- | ---- |
+        | findMaxTxIdByStake(:stakeAddress) |               |      |
+9. Analyze tx_metadata table (Can replaced with transaction_metadata in yaci_store DB)
+    - Compare columns with yaci store:
+        | Ledger_Sync DB | Yaci_Store DB |
+        | -------------- | ------------- |
+        | bytes          | cbor          |
+        | json           | body          |
+        | key            | lablel        |
+        | tx_id          | tx_hash       |
+    - References tables: 
+    - Query use in explorer:
+10. Analyze tx_bootstrap_witnesses table (Can replaced with transaction_witness in yaci_store DB)
+    - Compare columns with yaci store:
+        | Ledger_Sync DB | Yaci_Store DB   |
+        | -------------- | --------------- |
+        | tx_id          | tx_hash         |
+        | public_key     | pub_key         |
+        | signature      | signature       |
+        | chain_code     | additional_data |
+        | attributes     | additional_data |
+    - References tables: 
+    - Query use in explorer:
+        |     | Table related | Note |
+        | --- | ------------- | ---- |
