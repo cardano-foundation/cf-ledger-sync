@@ -55,9 +55,6 @@ public class AddressTokenBalance extends BaseEntity {
       foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
   private StakeAddress stakeAddress;
 
-  @Column(name = "stake_address_id", updatable = false, insertable = false)
-  private Long stakeAddressId;
-
   @Column(name = "balance", nullable = false, precision = 39)
   @Word128Type
   @Digits(integer = 39, fraction = 0)

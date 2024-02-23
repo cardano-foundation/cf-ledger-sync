@@ -9,7 +9,6 @@ import org.cardanofoundation.ledgersync.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.projection.AddressTxBalanceProjection;
 import org.cardanofoundation.ledgersync.repository.*;
-import org.cardanofoundation.ledgersync.repository.custom.CustomAddressTokenBalanceRepository;
 import org.cardanofoundation.ledgersync.service.AddressBalanceService;
 import org.cardanofoundation.ledgersync.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.service.BlockDataService;
@@ -43,7 +42,6 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
     AddressTokenRepository addressTokenRepository;
     AddressTxBalanceRepository addressTxBalanceRepository;
     AddressTokenBalanceRepository addressTokenBalanceRepository;
-    CustomAddressTokenBalanceRepository customAddressTokenBalanceRepository;
     StakeAddressRepository stakeAddressRepository;
 
     MultiAssetService multiAssetService;
@@ -157,7 +155,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
                     .collect(Collectors.toSet());
 
             // Find all address token balance records
-            var addressTokenBalanceMap = customAddressTokenBalanceRepository
+            var addressTokenBalanceMap = addressTokenBalanceRepository
                     .findAllByAddressMultiAssetIdPairIn(addressMultiAssetIdPairs)
                     .stream()
                     .collect(Collectors.toMap(
@@ -336,7 +334,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         Map<Pair<String, String>, AddressTokenBalance> newAddressTokenBalanceMap = new HashMap<>();
 
         /*
-         * Create a map of ass-et fingerprint with its associated tx hashes
+         * Create a map of asset fingerprint with its associated tx hashes
          * It helps keeping track of how many txs an asset associates with
          */
         Map<String, Set<String>> fingerprintTxHashesMap = new HashMap<>();
@@ -375,7 +373,7 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         var queryBatches = Lists.partition(
                 new ArrayList<>(addressFingerprintPairs), ADDRESS_TOKEN_BALANCE_BATCH_QUERY_SIZE);
 
-        queryBatches.parallelStream().forEach(batch -> customAddressTokenBalanceRepository
+        queryBatches.parallelStream().forEach(batch -> addressTokenBalanceRepository
                 .findAllByAddressFingerprintPairIn(batch)
                 .parallelStream()
                 .forEach(addressTokenBalance -> {
