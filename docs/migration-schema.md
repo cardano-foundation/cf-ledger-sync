@@ -139,7 +139,7 @@
 
     💡Note: The `values` column is not currently in use.
 
-3. Analyze delegation table(Need to find a column to replace the column `redeemer_id`)
+3. Analyze delegation table(Can replaced with delegation table in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB  | Yaci_Store DB |
         | --------------- | ------------- |
@@ -165,7 +165,7 @@
 
     💡Note: The `redeemer_id` column is not currently in use.
 
-4. Analyze epoch table (Can replaced with cost_model in yaci_store DB)
+4. Analyze epoch table (Can replaced with epoch table in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB      | Yaci_Store DB     |
         | ------------------- | ----------------- |
@@ -181,8 +181,16 @@
         | rewards_distributed | N/A               |
     - References tables: 
     - Query use in explorer:
-        |     | Table related | Note |
-        | --- | ------------- | ---- |
+        |                         | Table related | Note |
+        | ----------------------- | ------------- | ---- |
+        | findFirstByNo           | - epoch       |      |
+        | findCurrentEpochNo      | - epoch       |      |
+        | findCurrentEpochSummary | - epoch       |      |
+        | findByCurrentEpochNo    | - epoch       |      |
+        | findEpochTime           | - epoch       |      |
+
+    💡Note: The `era` and `rewards_distributed` columns is not currently in use.
+
 5.  Analyze epoch_param table (Doing…)
     - Compare columns with yaci store: 
         | Ledger_Sync DB | Yaci_Store DB |
