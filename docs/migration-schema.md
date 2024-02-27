@@ -1,6 +1,63 @@
 # Research LedgerSync and YaciStore
 
-## I.List table use in ledger sync but not in yaci store
+## I.Needed LedgerSync tables using by explorer
+
+| Table                   | Note |
+| ----------------------- | ---- |
+| ada_pots                |      |
+| address                 |      |
+| address_token           |      |
+| address_token_balance   |      |
+| address_tx_balance      |      |
+| assert_metadata         |      |
+| block                   |      |
+| cost_model              |      |
+| datum                   |      |
+| delegation              |      |
+| epoch                   |      |
+| epoch_param             |      |
+| epoch_stake             |      |
+| epoch_stake_checkpoint  |      |
+| failed_tx_out           |      |
+| ma_tx_mint              |      |
+| ma_tx_out               |      |
+| multi_asset             |      |
+| param_proposal          |      |
+| pool_hash               |      |
+| pool_history            |      |
+| pool_history_checkpoint |      |
+| pool_info               |      |
+| pool_info_checkpoint    |      |
+| pool_metadata_ref       |      |
+| pool_offline_data       |      |
+| pool_owner              |      |
+| pool_relay              |      |
+| pool_retire             |      |
+| pool_update             |      |
+| redeemer                |      |
+| redeemer_data           |      |
+| reference_tx_in         |      |
+| reserve                 |      |
+| reward                  |      |
+| reward_checkpoint       |      |
+| script                  |      |
+| slot_leader             |      |
+| stake_address           |      |
+| stake_deregistration    |      |
+| stake_registration      |      |
+| stake_tx_balance        |      |
+| treasury                |      |
+| tx                      |      |
+| tx_bootstrap_witnesses  |      |
+| tx_chart                |      |
+| tx_metadata             |      |
+| tx_metadata_hash        |      |
+| tx_out                  |      |
+| tx_witnesses            |      |
+| unconsume_tx_in         |      |
+| withdrawal              |      |
+
+## II.List table use in ledger sync but not in yaci store
 
 | Table                    | Note              |
 | ------------------------ | ----------------- |
@@ -45,7 +102,7 @@
 | unconsume_tx_in          |                   |
 | withdrawal               |                   |
 
-## II.List table use in ledger sync maybe in yaci store
+## III.List table use in ledger sync maybe in yaci store
 
 1. Analyze cost_model table (Can replaced with cost_model in yaci_store DB)
     - Compare columns with yaci store: 
