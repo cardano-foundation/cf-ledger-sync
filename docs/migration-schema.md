@@ -104,7 +104,7 @@
 
 ## III.List table use in ledger sync maybe in yaci store
 
-1. Analyze cost_model table (Can replaced with cost_model in yaci_store DB)
+1. Analyze cost_model table (Can replaced with cost_model table in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB | Yaci_Store DB |
         | -------------- | ------------- |
@@ -119,7 +119,7 @@
 
     💡Solution: Change `findById` to `findByHash`, and relation by hash rather `id`
         
-2. Analyze datum table (Need to find a column to replace the column `values`)
+2. Analyze datum table (Can replaced with datum table in yaci_store DB)
     - Compare columns with yaci store:  
         | Ledger_Sync DB | Yaci_Store DB |
         | -------------- | ------------- |
@@ -151,9 +151,20 @@
         | tx_id           | tx_hash       |
         | redeemer_id     | N/A           |
     - References tables: 
-    - Query use in explorer:
-        |     | Table related | Note |
-        | --- | ------------- | ---- |
+    - Query used in explorer:
+        |                                | Table related                                                                                            | Note |
+        | ------------------------------ | -------------------------------------------------------------------------------------------------------- | ---- |
+        | findDelegationByAddressAndTxIn | - `delegation`<br> - tx                                                                                    |      |
+        | findDelegationByAddress        | - `delegation`<br> - tx<br> - block<br> - stake_address<br> - pool_hash<br> - pool_offline_data            |      |
+        | findDelegationByAddress        | - `delegation`<br> - tx<br> - block<br> - pool_offline_data                                                |      |
+        | findDelegationByAddressAndTx   | - `delegation`<br> - tx<br> - block<br> - pool_hash<br> - pool_offline_data                                |      |
+        | findPoolDataByAddress          | - `delegation`<br> - pool_hash<br> - pool_offline_data<br> - stake_registration<br> - stake_deregistration |      |
+        | findPoolDataByAddressIn        | - `delegation`<br> - stake_address<br> - pool_hash<br> - pool_offline_data                                 |      |
+        | liveDelegatorsList             | - `delegation`<br> - pool_hash<br> - tx<br> - stake_deregistration                                         |      |
+        | findDelegationByTxIdIn         | - `delegation`<br> - stake_address<br> - pool_hash<br> - pool_offline_data                                 |      |
+
+    💡Note: The `redeemer_id` column is not currently in use.
+
 4. Analyze epoch table (Can replaced with cost_model in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB      | Yaci_Store DB     |
