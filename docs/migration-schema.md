@@ -111,12 +111,13 @@
         | costs          | costs         |
         | hash           | hash          |
     - References tables: `param_proposal`, `epoch_param`
-    - Query use in explorer:
+    - Query used in explorer:
         |          | Table related | Note |
         | -------- | ------------- | ---- |
         | findAll  |               |      |
-        | findById |               |      | 
-    💡 Solution: Change `findById` to `findByHash`, and relation by hash rather `id`
+        | findById |               |      |
+
+    💡Solution: Change `findById` to `findByHash`, and relation by hash rather `id`
         
 2. Analyze datum table (Need to find a column to replace the column `values`)
     - Compare columns with yaci store:  
@@ -126,9 +127,18 @@
         | hash           | hash          |
         | values         | N/A           |
     - References tables: 
-    - Query use in explorer:
-        |     | Table related | Note |
-        | --- | ------------- | ---- |
+    - Query used in explorer:
+        |                             | Table related                                                                                                                                                                                            | Note                             |
+        | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+        | getReferenceInputByTx       | - reference_tx_in<br> - tx_out<br> - tx<br> - script<br> - `datum`<br> - ma_tx_out<br> - multi_asset                                                                                                     | using datum.hash and datum.bytes |
+        | findContractByTx            | - redeemer<br> - tx<br> - redeemer_data<br> - tx_in<br> - tx_out<br> - `datum`<br> - script<br> - withdrawal<br> - delegation<br> - stake_deregistration<br> - stake_address<br> - tx                    | using datum.hash and datum.bytes |
+        | findContractByTxFail        | - redeemer<br> - tx<br> - redeemer_data<br> - tx<br> - unconsume_tx_in<br> - tx_out<br> - `datum`<br> - script<br> - withdrawal<br> - delegation<br> - stake_deregistration<br> - stake_address<br> - tx |                                  |
+        | getContractDatumOutByTx     | - tx_out<br> - `datum`                                                                                                                                                                                   | using datum.hash and datum.bytes |
+        | getContractDatumOutByTx     | - tx_out<br> - `datum`                                                                                                                                                                                   | using datum.hash and datum.bytes |
+        | getContractDatumOutByTxFail | - failed_tx_out<br> - `datum`                                                                                                                                                                            | using datum.hash and datum.bytes |
+
+    💡Note: The `values` column is not currently in use.
+
 3. Analyze delegation table(Need to find a column to replace the column `redeemer_id`)
     - Compare columns with yaci store: 
         | Ledger_Sync DB  | Yaci_Store DB |
