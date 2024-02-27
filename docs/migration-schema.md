@@ -191,17 +191,60 @@
 
     💡Note: The `era` and `rewards_distributed` columns is not currently in use.
 
-5.  Analyze epoch_param table (Doing…)
+5.  Analyze epoch_param table (Can replaced with epoch_param table in yaci_store DB if find `optimal_pool_count` column)
     - Compare columns with yaci store: 
-        | Ledger_Sync DB | Yaci_Store DB |
-        | -------------- | ------------- |
-        |                |               |
+        | Ledger_Sync DB        | Yaci_Store DB                 |
+        | --------------------- | ----------------------------- |
+        | epoch_no              | epoch                         |
+        | coins_per_utxo_size   | params.ada_per_utxo_byte      |
+        | collateral_percent    | params.collateral_percent     |
+        | decentralisation      | params.decentralisation_param |
+        | extra_entropy         | params.extra_entropy          |
+        | influence             | params.pool_pledge_influence  |
+        | key_deposit           | params.key_deposit            |
+        | max_bh_size           | params.max_block_header_size  |
+        | max_block_ex_mem      | params.max_block_ex_mem       |
+        | max_block_ex_steps    | params.max_block_ex_steps     |
+        | max_block_size        | params.max_block_size         |
+        | max_collateral_inputs | params.max_collateral_inputs  |
+        | max_epoch             | params.max_epoch              |
+        | max_tx_ex_mem         | params.max_tx_ex_mem          |
+        | max_tx_ex_steps       | params.max_tx_ex_steps        |
+        | max_tx_size           | params.max_tx_size            |
+        | max_val_size          | params.max_val_size           |
+        | min_fee_a             | params.min_fee_a              |
+        | min_fee_b             | params.min_fee_b              |
+        | min_pool_cost         | params.min_pool_cost          |
+        | min_utxo_value        | params.min_utxo               |
+        | monetary_expand_rate  | params.expansion_rate         |
+        | pool_deposit          | params.pool_deposit           |
+        | price_mem             | params.price_mem              |
+        | price_step            | params.price_step             |
+        | protocol_major        | params.protocol_major_ver     |
+        | protocol_minor        | params.protocol_minor_ver     |
+        | treasury_growth_rate  | params.treasury_growth_rate   |
+        | block_id              | block                         |
+        | cost_model_id         | cost_model_hash               |
+        | nonce                 | N/A                           |
+        | optimal_pool_count    | N/A                           |
     - References tables: 
-    - Query use in explorer:
-        |                                   | Table related | Note |
-        | --------------------------------- | ------------- | ---- |
-        | findEpochParamByEpochNo(:epochNo) |               |      |
-        | findEpochParamInTime              |               |      |
+    - Query used in explorer:
+        |                         | Query                        | Table related                                                                                                | Note                            |
+        | ----------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+        | PoolHashRepository      | getDataForPoolDetailNoReward | - `epoch_param`<br> - pool_hash<br> - pool_offline_data<br> - pool_update<br> - stake_address                | Using `optimalPoolCount` column |
+        |                         | getDataForPoolDetail         | - `epoch_param`<br> - pool_hash<br> - pool_offline_data<br> - pool_update<br> - stake_address<br> - ada_pots | Using `optimalPoolCount` column |
+        |                         | getPoolRegistrationByPool    | - `epoch_param`<br> - pool_update<br> - block<br> - stake_address                                            | Using `optimalPoolCount` column |
+        | EpochParamRepository    | findEpochParamByEpochNo      |                                                                                                              |                                 |
+        |                         | findEpochParamInTime         |                                                                                                              |                                 |
+        |                         | getOptimalPoolCountByEpochNo |                                                                                                              | Using `optimalPoolCount` column |
+        |                         | findKeyDepositByEpochNo      |                                                                                                              | Using `optimalPoolCount` column |
+        |                         | findByEpochNoIn              |                                                                                                              |                                 |
+        | ParamProposalRepository | findMaxEpochChange           | - `epoch_param`<br> - param_proposal                                                                         | Using `epochNo` column          |
+        |                         | findProtocolsChange          | - `epoch_param`<br> - param_proposal<br> - tx<br> - block<br> - epoch                                        |                                 |
+        | PoolUpdateRepository    | findPoolRegistrationByPool   | - `epoch_param`<br> - pool_update<br> - tx<br> - block                                                       |                                 |
+    💡 Note:<br>
+            - `nonce`is alway Null in Ledger Sync DB <br>
+            - Not found `optimal_pool_count` in yaci store DB
 6. Analyze script table (Todo…)
     - Compare columns with yaci store:
         | Ledger_Sync DB | Yaci_Store DB |
