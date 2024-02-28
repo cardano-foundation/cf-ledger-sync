@@ -273,7 +273,7 @@
     💡 Note:<br>
           - In the yaci store, data for the native script is currently missing.<br>
           - Data for the smart contract in the yaci store is less than what's in the ledger sync.
-7. Analyze stake_registration table (Can replaced with stake_registration in yaci_store DB)
+7. Analyze stake_registration table (Can replaced with stake_registration table in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB | Yaci_Store DB |
         | -------------- | ------------- |
@@ -282,7 +282,7 @@
         | address_id     | address       |
         | tx_id          | tx_hash       |
     - References tables: 
-    - Query use in explorer:
+    - Query used in explorer:
         |                             | Query                                 | Table related                                                                                              | Note |
         | --------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---- |
         | StakeRegistrationRepository | findMaxTxIdByStake                    | - `stake_registration`                                                                                     |      |
@@ -296,7 +296,7 @@
         |                             | findPoolDataByAddress                 | - `stake_registration`<br> - delegation<br> - pool_hash<br> - pool_offline_data<br> - stake_deregistration |      |
         | StakeAddressRepository      | findStakeAddressOrderByBalance        | - `stake_registration`<br> - delegation<br> - stake_address<br> - stake_deregistration                     |      |
 
-8. Analyze stake_deregistration table (Can replaced with stake_registration in yaci_store DB, if find column that replaced for redeemer_id )
+8. Analyze stake_deregistration table (Can replaced with stake_registration table in yaci_store DB)
     - Compare columns with yaci store:
         | Ledger_Sync DB | Yaci_Store DB |
         | -------------- | ------------- |
@@ -306,10 +306,24 @@
         | tx_id          | tx_hash       |
         | redeemer_id    | N/A           |
     - References tables: 
-    - Query use in explorer:
-        |                                   | Table related | Note |
-        | --------------------------------- | ------------- | ---- |
-        | findMaxTxIdByStake(:stakeAddress) |               |      |
+    - Query used in explorer:
+        |                        | Query                                    | Table related                                                                                              | Note                                |
+        | ---------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+        | StakeDeRegistration    | findMaxTxIdByStake                       | - `stake_deregistration`<br> - stake_address                                                               |                                     |
+        | Repository             | getStakeDeRegistrationsByAddress         | - `stake_deregistration`<br> - tx<br> - block<br> - stake_address                                          |                                     |
+        |                        | getStakeDeRegistrationsByAddressAndTxIn  | - `stake_deregistration`<br> - stake_address                                                               |                                     |
+        |                        | getStakeDeRegistrationsByAddress         | - `stake_deregistration`<br> - tx<br> - block<br> - stake_address                                          |                                     |
+        |                        | findByAddressAndTx                       | - `stake_deregistration`<br> - tx<br> - block<br> - stake_address                                          |                                     |
+        |                        | findByTx                                 | - `stake_deregistration`                                                                                   |                                     |
+        |                        | existsByAddr                             | - `stake_deregistration`                                                                                   |                                     |
+        | DelegationRepository   | findPoolDataByAddress                    | - `stake_deregistration`<br> - delegation<br> - pool_hash<br> - pool_offline_data<br> - stake_registration |                                     |
+        |                        | liveDelegatorsList                       | - `stake_deregistration`<br> - delegation<br> - pool_hash<br> - stake_address<br> - tx                     |                                     |
+        | StakeAddressRepository | findStakeAddressOrderByBalance           | - `stake_deregistration`<br> - delegation<br> - stake_registration                                         |                                     |
+        | RedeemerRepository     | findContractByTx                         |                                                                                                            | Not using state deregistration info |
+        |                        | findContractByTxFail                     |                                                                                                            | Not using state deregistration info |
+                  
+    💡Note: The `redeemer_id` column is not currently in use.
+
 9. Analyze tx_metadata table (Can replaced with transaction_metadata in yaci_store DB)
     - Compare columns with yaci store:
         | Ledger_Sync DB | Yaci_Store DB |
