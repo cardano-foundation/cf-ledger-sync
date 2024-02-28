@@ -283,9 +283,19 @@
         | tx_id          | tx_hash       |
     - References tables: 
     - Query use in explorer:
-        |                                   | Table related | Note |
-        | --------------------------------- | ------------- | ---- |
-        | findMaxTxIdByStake(:stakeAddress) |               |      |
+        |                             | Query                                 | Table related                                                                                              | Note |
+        | --------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---- |
+        | StakeRegistrationRepository | findMaxTxIdByStake                    | - `stake_registration`                                                                                     |      |
+        |                             | getStakeRegistrationsByAddress        | - `stake_registration`<br> - tx<br> - block<br> - stake_address                                            |      |
+        |                             | getStakeRegistrationsByAddressAndTxIn | - `stake_registration`<br> - stake_address                                                                 |      |
+        |                             | getStakeRegistrationsByAddress        | - `stake_registration`<br> - tx<br> - block<br> - stake_address                                            |      |
+        |                             | findByAddressAndTx                    | - `stake_registration`<br> - tx<br> - block<br> - stake_address                                            |      |
+        |                             | findByTx                              | - `stake_registration`                                                                                     |      |
+        |                             | existsByAddr                          | - `stake_registration`                                                                                     |      |
+        | DelegationRepository        | getDelegatorsByAddress                | - `stake_registration`<br> - stake_address<br> - tx<br> - block                                            |      |
+        |                             | findPoolDataByAddress                 | - `stake_registration`<br> - delegation<br> - pool_hash<br> - pool_offline_data<br> - stake_deregistration |      |
+        | StakeAddressRepository      | findStakeAddressOrderByBalance        | - `stake_registration`<br> - delegation<br> - stake_address<br> - stake_deregistration                     |      |
+
 8. Analyze stake_deregistration table (Can replaced with stake_registration in yaci_store DB, if find column that replaced for redeemer_id )
     - Compare columns with yaci store:
         | Ledger_Sync DB | Yaci_Store DB |
