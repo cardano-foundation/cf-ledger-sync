@@ -333,7 +333,13 @@
         | key            | lablel        |
         | tx_id          | tx_hash       |
     - References tables: 
-    - Query use in explorer:
+    - Query used in explorer:
+        |                      | Query                    | Table related                                    | Note |
+        | -------------------- | ------------------------ | ------------------------------------------------ | ---- |
+        | TxMetadataRepository | findAllByTxOrderByKeyAsc |                                                  |      |
+        |                      | findAllByTxHash          |                                                  |      |
+        | MaTxMintRepository   | getTxMetadataToken       | - tx_metadata<br> - ma_tx_mint<br> - multi_asset |      |
+
 10. Analyze tx_bootstrap_witnesses table (Can replaced with transaction_witness in yaci_store DB)
     - Compare columns with yaci store:
         | Ledger_Sync DB | Yaci_Store DB   |
