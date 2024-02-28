@@ -245,17 +245,34 @@
     💡 Note:<br>
             - `nonce`is alway Null in Ledger Sync DB <br>
             - Not found `optimal_pool_count` in yaci store DB
-6. Analyze script table (Todo…)
-    - Compare columns with yaci store:
-        | Ledger_Sync DB | Yaci_Store DB |
-        | -------------- | ------------- |
-        |                |               |
+6. Analyze script table (It can replace the script of the smart contract, but the script of the native script is missing)
+    - Compare columns with yaci store: 
+        | Ledger_Sync DB  | Yaci_Store DB   |
+        | --------------- | --------------- |
+        | bytes           | content.content |
+        | hash            | script_hash     |
+        | type            | script_type     |
+        | json            | N/A             |
+        | serialised_size | N/A             |
+        | tx_id           | N/A             |
+        | verified        | N/A             |
     - References tables: 
-    - Query use in explorer:
-        |                            | Table related | Note |
-        | -------------------------- | ------------- | ---- |
-        | findByHash(:hash)          |               |      |
-        | findAllByHashIn(:hashList) |               |      |
+    - Query used in explorer:
+        |                             |                            | Table related | Note |
+        | --------------------------- | -------------------------- | ------------- | ---- |
+        | SmartContractInfoRepository | findAllByFilterRequest     |               |      |
+        |                             | getTxCountByScriptHash     |               |      |
+        | NativeScriptInfoRepository  | findAll                    |               |      |
+        |                             | findByScriptHash           |               |      |
+        | ScriptRepository            | findByHash                 |               |      |
+        |                             | findAllByHashIn            |               |      |
+        | VerifiedScriptRepository    | existsVerifiedScriptByHash |               |      |
+        |                             | findByHash                 |               |      |
+        |                             | save                       |               |      |
+
+    💡 Note:<br>
+          - In the yaci store, data for the native script is currently missing.<br>
+          - Data for the smart contract in the yaci store is less than what's in the ledger sync.
 7. Analyze stake_registration table (Can replaced with stake_registration in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB | Yaci_Store DB |
