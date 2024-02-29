@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.cardanofoundation.ledgersync.repository.custom.CustomAddressTokenBalanceRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.*;
 import org.springframework.data.util.Pair;
 import org.springframework.util.CollectionUtils;
@@ -80,9 +80,6 @@ class AddressBalanceServiceImplTest {
   @Mock
   AggregatedDataCachingService aggregatedDataCachingService;
 
-  @Mock
-  CustomAddressTokenBalanceRepository customAddressTokenBalanceRepository;
-
   @Captor
   ArgumentCaptor<Collection<Address>> addressesCaptor;
 
@@ -101,8 +98,16 @@ class AddressBalanceServiceImplTest {
   @Captor
   ArgumentCaptor<Collection<MultiAsset>> multiAssetsCaptor;
 
-  @InjectMocks
   AddressBalanceServiceImpl victim;
+
+  @BeforeEach
+  void setUp() {
+    victim = new AddressBalanceServiceImpl(
+        multiAssetRepository, addressRepository, addressTokenRepository,
+        addressTxBalanceRepository, addressTokenBalanceRepository, stakeAddressRepository,
+        multiAssetService, blockDataService, aggregatedDataCachingService
+    );
+  }
 
   @Test
   @DisplayName("Should skip processing on no address balance records in batch")
@@ -272,7 +277,7 @@ class AddressBalanceServiceImplTest {
 
     Mockito.when(addressRepository.findAllByAddressIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
-    Mockito.when(customAddressTokenBalanceRepository
+    Mockito.when(addressTokenBalanceRepository
             .findAllByAddressFingerprintPairIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
     Mockito.when(multiAssetService.findMultiAssetsByFingerprintIn(Mockito.anySet()))
@@ -298,7 +303,7 @@ class AddressBalanceServiceImplTest {
     Mockito.verifyNoMoreInteractions(addressTokenRepository);
     Mockito.verify(multiAssetRepository, Mockito.times(1)).saveAll(multiAssetsCaptor.capture());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
-    Mockito.verify(customAddressTokenBalanceRepository, Mockito.times(1))
+    Mockito.verify(addressTokenBalanceRepository, Mockito.times(1))
         .findAllByAddressFingerprintPairIn(Mockito.anyCollection());
     Mockito.verify(addressTokenBalanceRepository, Mockito.times(2))
         .saveAll(addressTokenBalancesCaptor.capture());
@@ -416,7 +421,7 @@ class AddressBalanceServiceImplTest {
 
     Mockito.when(addressRepository.findAllByAddressIn(Mockito.anyCollection()))
         .thenReturn(new ArrayList<>(addressMap.values()));
-    Mockito.when(customAddressTokenBalanceRepository
+    Mockito.when(addressTokenBalanceRepository
             .findAllByAddressFingerprintPairIn(Mockito.anyCollection()))
         .thenReturn(givenAddressTokenBalances);
     Mockito.when(multiAssetService.findMultiAssetsByFingerprintIn(Mockito.anySet()))
@@ -442,7 +447,7 @@ class AddressBalanceServiceImplTest {
     Mockito.verifyNoMoreInteractions(addressTokenRepository);
     Mockito.verify(multiAssetRepository, Mockito.times(1)).saveAll(multiAssetsCaptor.capture());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
-    Mockito.verify(customAddressTokenBalanceRepository, Mockito.times(1))
+    Mockito.verify(addressTokenBalanceRepository, Mockito.times(1))
         .findAllByAddressFingerprintPairIn(Mockito.anyCollection());
     Mockito.verify(addressTokenBalanceRepository, Mockito.times(2))
         .saveAll(addressTokenBalancesCaptor.capture());
@@ -534,7 +539,7 @@ class AddressBalanceServiceImplTest {
 
     Mockito.when(addressRepository.findAllByAddressIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
-    Mockito.when(customAddressTokenBalanceRepository
+    Mockito.when(addressTokenBalanceRepository
             .findAllByAddressFingerprintPairIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
     Mockito.when(multiAssetService.findMultiAssetsByFingerprintIn(Mockito.anySet()))
@@ -560,7 +565,7 @@ class AddressBalanceServiceImplTest {
     Mockito.verifyNoMoreInteractions(addressTokenRepository);
     Mockito.verify(multiAssetRepository, Mockito.times(1)).saveAll(multiAssetsCaptor.capture());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
-    Mockito.verify(customAddressTokenBalanceRepository, Mockito.times(1))
+    Mockito.verify(addressTokenBalanceRepository, Mockito.times(1))
         .findAllByAddressFingerprintPairIn(Mockito.anyCollection());
     Mockito.verify(addressTokenBalanceRepository, Mockito.times(2))
         .saveAll(addressTokenBalancesCaptor.capture());
@@ -617,7 +622,7 @@ class AddressBalanceServiceImplTest {
 
     Mockito.when(addressRepository.findAllByAddressIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
-    Mockito.when(customAddressTokenBalanceRepository
+    Mockito.when(addressTokenBalanceRepository
             .findAllByAddressFingerprintPairIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
     Mockito.when(multiAssetService.findMultiAssetsByFingerprintIn(Mockito.anySet()))
@@ -685,7 +690,7 @@ class AddressBalanceServiceImplTest {
     Assertions.assertDoesNotThrow(() -> victim.rollbackAddressBalances(txMap.values()));
 
     Mockito.verify(addressRepository, Mockito.times(1)).saveAll(addressesCaptor.capture());
-    Mockito.verify(addressTokenBalanceRepository, Mockito.never()).saveAll(Mockito.anyCollection());
+    Mockito.verify(addressTokenBalanceRepository, Mockito.never()).saveAll(addressTokenBalancesCaptor.capture());
     Mockito.verify(stakeAddressRepository, Mockito.times(1)).saveAll(stakeAddressesCaptor.capture());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(4))
         .subtractAccountTxCountAtEpoch(Mockito.anyInt(), Mockito.anyString(), Mockito.anyInt());
@@ -746,7 +751,7 @@ class AddressBalanceServiceImplTest {
         .thenReturn(new ArrayList<>(addressMap.values()));
     Mockito.when(addressRepository.findAllStakeAddressByAddressIn(Mockito.anyCollection()))
         .thenReturn(new ArrayList<>(stakeAddressMap.values()));
-    Mockito.when(customAddressTokenBalanceRepository
+    Mockito.when(addressTokenBalanceRepository
             .findAllByAddressMultiAssetIdPairIn(Mockito.anyCollection()))
         .thenReturn(givenAddressTokenBalances);
 
