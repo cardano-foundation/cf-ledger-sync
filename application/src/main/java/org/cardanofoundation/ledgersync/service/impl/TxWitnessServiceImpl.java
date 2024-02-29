@@ -25,38 +25,44 @@ public class TxWitnessServiceImpl implements TxWitnessService {
 
     @Override
     public void handleTxWitness(Collection<AggregatedTx> aggregatedTxs, Map<String, Tx> txMap) {
-        List<TxWitness> txWitnesses = new ArrayList<>();
+        List<TxWitness> txWitnessesToSave = new ArrayList<>();
 
         aggregatedTxs.forEach(aggregatedTx -> {
+            List<TxWitness> txWitnesses = new ArrayList<>();
+
             var tx = txMap.get(aggregatedTx.getHash());
             processAggregatedTxWitnesses(aggregatedTx, tx, txWitnesses);
             processByronTxWitnesses(aggregatedTx, tx, txWitnesses);
-        });
 
-        Map<Pair<String, String>, TxWitness> txWitnessMap = new HashMap<>();
-        txWitnesses.forEach(txWitness -> txWitnessMap.put(Pair.of(txWitness.getKey(), txWitness.getSignature()), txWitness));
+            Map<Pair<String, String>, TxWitness> txWitnessMap = new HashMap<>();
+            txWitnesses.forEach(txWitness -> txWitnessMap.put(Pair.of(txWitness.getKey(), txWitness.getSignature()), txWitness));
 
-        Map<Pair<String, String>, List<Integer>> txWitnessIndexMap = new HashMap<>();
-        for (int i = 0; i < txWitnesses.size(); i++) {
-            TxWitness txWitness = txWitnesses.get(i);
-            Pair<String, String> txWitnessesPair = Pair.of(txWitness.getKey(), txWitness.getSignature());
+            Map<Pair<String, String>, List<Integer>> txWitnessIndexMap = new HashMap<>();
+            for (int i = 0; i < txWitnesses.size(); i++) {
+                TxWitness txWitness = txWitnesses.get(i);
+                Pair<String, String> txWitnessesPair = Pair.of(txWitness.getKey(), txWitness.getSignature());
 
-            if (txWitnessIndexMap.containsKey(txWitnessesPair)) {
-                List<Integer> indexList = txWitnessIndexMap.get(txWitnessesPair);
-                indexList.add(i);
-                txWitnessIndexMap.put(txWitnessesPair, indexList);
-            } else {
-                txWitnessIndexMap.put(txWitnessesPair, new ArrayList<>(List.of(i)));
+                if (txWitnessIndexMap.containsKey(txWitnessesPair)) {
+                    List<Integer> indexList = txWitnessIndexMap.get(txWitnessesPair);
+                    indexList.add(i);
+                    txWitnessIndexMap.put(txWitnessesPair, indexList);
+                } else {
+                    txWitnessIndexMap.put(txWitnessesPair, new ArrayList<>(List.of(i)));
+                }
             }
-        }
 
-        txWitnessIndexMap.forEach((key, value) -> {
-            TxWitness txWitness = txWitnessMap.get(Pair.of(key.getFirst(), key.getSecond()));
-            txWitness.setIndexArrSize(value.size());
-            txWitness.setIndexArr(value.toArray(Integer[]::new));
+            txWitnessIndexMap.forEach((key, value) -> {
+                TxWitness txWitness = txWitnessMap.get(Pair.of(key.getFirst(), key.getSecond()));
+                txWitness.setIndexArrSize(value.size());
+                txWitness.setIndexArr(value.toArray(Integer[]::new));
+            });
+
+            txWitnessesToSave.addAll(txWitnessMap.values());
         });
 
-        txWitnessRepository.saveAll(txWitnesses);
+        if (!txWitnessesToSave.isEmpty()) {
+            txWitnessRepository.saveAll(txWitnessesToSave);
+        }
     }
 
     private void processAggregatedTxWitnesses(AggregatedTx aggregatedTx, Tx tx, List<TxWitness> txWitnesses) {
