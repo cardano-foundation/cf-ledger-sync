@@ -1,4 +1,4 @@
-# Research LedgerSync and YaciStore
+# Research Explorer, LedgerSync and YaciStore
 
 ## I.Needed LedgerSync tables using by explorer
 
@@ -334,11 +334,11 @@
         | tx_id          | tx_hash       |
     - References tables: 
     - Query used in explorer:
-        |                      | Query                    | Table related                                    | Note |
-        | -------------------- | ------------------------ | ------------------------------------------------ | ---- |
-        | TxMetadataRepository | findAllByTxOrderByKeyAsc |                                                  |      |
-        |                      | findAllByTxHash          |                                                  |      |
-        | MaTxMintRepository   | getTxMetadataToken       | - tx_metadata<br> - ma_tx_mint<br> - multi_asset |      |
+        |                      | Query                    | Table related                                      | Note |
+        | -------------------- | ------------------------ | -------------------------------------------------- | ---- |
+        | TxMetadataRepository | findAllByTxOrderByKeyAsc |                                                    |      |
+        |                      | findAllByTxHash          |                                                    |      |
+        | MaTxMintRepository   | getTxMetadataToken       | - `tx_metadata`<br> - ma_tx_mint<br> - multi_asset |      |
 
 10. Analyze tx_bootstrap_witnesses table (Can replaced with transaction_witness in yaci_store DB)
     - Compare columns with yaci store:
@@ -350,6 +350,26 @@
         | chain_code     | additional_data |
         | attributes     | additional_data |
     - References tables: 
-    - Query use in explorer:
-        |     | Table related | Note |
-        | --- | ------------- | ---- |
+    - Query used in explorer:
+        | Query       | Table related | Note                          |
+        | ----------- | ------------- | ----------------------------- |
+        | findAllByTx |               | Only using `public_key` columns |
+
+    💡Note: Should create an index for the `type` column.
+
+11. Analyze tx_witnesses table (Can replaced with transaction_witness in yaci_store DB)
+    - Compare columns with yaci store:
+        | Ledger_Sync DB            | Yaci_Store DB |
+        | ------------------------- | ------------- |
+        | tx_id                     | tx_hash       |
+        | key                       | pub_key       |
+        | signature                 | signature     |
+        | index_arr, index_arr_size | idx           |
+        | type                      | type          |
+    - References tables: 
+    - Query used in explorer:
+        | Query       | Table related | Note                                       |
+        | ----------- | ------------- | ------------------------------------------ |
+        | findAllByTx |               | Only using `public_key` and `indexArr` columns |
+
+    💡Note: Should create an index for the `type` column.
