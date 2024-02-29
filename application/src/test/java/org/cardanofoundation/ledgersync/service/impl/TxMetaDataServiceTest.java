@@ -78,7 +78,7 @@ class TxMetaDataServiceTest {
     AuxData auxData = new AuxData(cbor,
         """
             {"1":{"cardano": "First Metadata from cardanocli-js"}}
-            """, null, null, null);
+            """, null, null, null, null);
 
     auxiliaryDataMap.put(1, auxData);
 

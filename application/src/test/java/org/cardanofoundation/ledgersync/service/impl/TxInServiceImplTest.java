@@ -1,6 +1,7 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
-import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
+
+import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx.TxBuilder;
 import org.cardanofoundation.ledgersync.common.common.Era;

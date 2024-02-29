@@ -1,9 +1,9 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
-import com.bloxbean.cardano.client.plutus.spec.ExUnits;
-import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.bloxbean.cardano.yaci.core.model.Datum;
+import com.bloxbean.cardano.yaci.core.model.ExUnits;
+import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import com.bloxbean.cardano.yaci.core.model.certs.CertificateType;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeDelegation;
