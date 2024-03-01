@@ -57,17 +57,13 @@
 | unconsume_tx_in         |      |
 | withdrawal              |      |
 
-## II.List table use in ledger sync but not in yaci store
+## II.List table used in ledger sync but not in yaci store
 
 | Table                    | Note              |
 | ------------------------ | ----------------- |
 | ada_pots                 | related to reward |
-| address                  |                   |
 | address_token            |                   |
-| address_token_balance    |                   |
 | address_tx_balance       |                   |
-| agg_address_token        |                   |
-| agg_address_tx_balance   |                   |
 | asset_metadata           |                   |
 | delisted_pool            |                   |
 | epoch_stake              | related to reward |
@@ -102,7 +98,7 @@
 | unconsume_tx_in          |                   |
 | withdrawal               |                   |
 
-## III.List table use in ledger sync maybe in yaci store
+## III.List of tables being used in LedgerSync that can potentially be replaced by Yaci Store tables
 
 1. Analyze cost_model table (Can replaced with cost_model table in yaci_store DB)
     - Compare columns with yaci store: 
@@ -117,7 +113,7 @@
         | findAll  |               |      |
         | findById |               |      |
 
-    💡Solution: Change `findById` to `findByHash`, and relation by hash rather `id`
+    💡Solution: Change `findById` to `findByHash`, and relation by `hash` rather `id`
         
 2. Analyze datum table (Can replaced with datum table in yaci_store DB)
     - Compare columns with yaci store:  
@@ -245,14 +241,14 @@
     💡 Note:<br>
             - `nonce`is alway Null in Ledger Sync DB <br>
             - Not found `optimal_pool_count` in yaci store DB
-6. Analyze script table (It can replace the script of the smart contract, but the script of the native script is missing)
+6. Analyze script table (Can replaced with script table in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB  | Yaci_Store DB   |
         | --------------- | --------------- |
         | bytes           | content.content |
         | hash            | script_hash     |
         | type            | script_type     |
-        | json            | N/A             |
+        | json            | content.content |
         | serialised_size | N/A             |
         | tx_id           | N/A             |
         | verified        | N/A             |
