@@ -3,7 +3,6 @@ package org.cardanofoundation.ledgersync.service.impl.block;
 import co.nstant.in.cbor.model.Array;
 import com.bloxbean.cardano.client.crypto.Bech32;
 import com.bloxbean.cardano.client.crypto.Blake2bUtil;
-import com.bloxbean.cardano.client.plutus.spec.ExUnits;
 import com.bloxbean.cardano.yaci.core.model.*;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeCredType;
@@ -630,7 +629,7 @@ class BlockAggregatorServiceImplTest {
     List<Datum> datumList = List.of(
         buildDatum("19077a", "{\\\"int\\\":1914}")
     );
-    var redeemer = Redeemer.deserialize((Array) CborSerializationUtil.deserialize(HexUtil.decodeHexString("840000d87b9f5820561940091ccf4859b053c522d7b82be8de0d39c0ce9221c4e18289e0192ec95dff821a00109f3e1a14616369")));
+    var redeemer = Redeemer.deserializePreConway((Array) CborSerializationUtil.deserialize(HexUtil.decodeHexString("840000d87b9f5820561940091ccf4859b053c522d7b82be8de0d39c0ce9221c4e18289e0192ec95dff821a00109f3e1a14616369")));
     List<Redeemer> redeemers = List.of(
         // fake for test
         redeemer

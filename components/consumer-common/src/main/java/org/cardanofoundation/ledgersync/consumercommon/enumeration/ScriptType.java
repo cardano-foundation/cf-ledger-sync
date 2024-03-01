@@ -14,7 +14,8 @@ public enum ScriptType {
   MULTISIG("multisig"),
   TIMELOCK("timelock"),
   PLUTUSV1("plutusv1"),
-  PLUTUSV2("plutusv2");
+  PLUTUSV2("plutusv2"),
+  PLUTUSV3("plutusv3");
 
   String value;
 

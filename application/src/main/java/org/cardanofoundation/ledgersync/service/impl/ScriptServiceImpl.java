@@ -6,7 +6,9 @@ import co.nstant.in.cbor.model.UnsignedInteger;
 import com.bloxbean.cardano.client.plutus.spec.PlutusScript;
 import com.bloxbean.cardano.client.plutus.spec.PlutusV1Script;
 import com.bloxbean.cardano.client.plutus.spec.PlutusV2Script;
+import com.bloxbean.cardano.yaci.core.model.PlutusScriptType;
 import com.bloxbean.cardano.yaci.core.model.Witnesses;
+import com.bloxbean.cardano.yaci.store.common.util.PlutusV3Script;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -104,16 +106,25 @@ public class ScriptServiceImpl implements ScriptService {
                 .collect(Collectors.toMap(Script::getHash,
                         Function.identity(), (a, b) -> a)));
 
+        mScripts.putAll(txWitnesses.getPlutusV3Scripts().stream()
+                .map(plutusScript -> plutusScriptFactory.handle(convertToPlutusScript(plutusScript), tx))
+                .collect(Collectors.toMap(Script::getHash,
+                        Function.identity(), (a, b) -> a)));
+
         return mScripts;
     }
 
     private PlutusScript convertToPlutusScript(com.bloxbean.cardano.yaci.core.model.PlutusScript plutusScript) {
-        if (plutusScript.getType().equals("1"))
+        if (plutusScript.getType() == PlutusScriptType.PlutusScriptV1)
             return PlutusV1Script.builder()
                     .cborHex(plutusScript.getContent())
                     .build();
-        else if (plutusScript.getType().equals("2"))
+        else if (plutusScript.getType() == PlutusScriptType.PlutusScriptV2)
             return PlutusV2Script.builder()
+                    .cborHex(plutusScript.getContent())
+                    .build();
+        else if (plutusScript.getType() == PlutusScriptType.PlutusScriptV3)
+            return PlutusV3Script.builder()
                     .cborHex(plutusScript.getContent())
                     .build();
         else
@@ -168,6 +179,10 @@ public class ScriptServiceImpl implements ScriptService {
                     PlutusV2Script plutusV2Script = PlutusV2Script.deserialize(
                             (ByteString) scriptArray.getDataItems().get(1));
                     return plutusV2Script.getPolicyId();
+                case 3:
+                    PlutusV3Script plutusV3Script = PlutusV3Script.deserialize(
+                            (ByteString) scriptArray.getDataItems().get(1));
+                    return plutusV3Script.getPolicyId();
                 default:
                     log.error("Invalid script type {}, hex {}", type, hexReferScript);
                     throw new HashScriptException("Script type invalid " + type);
@@ -236,6 +251,10 @@ public class ScriptServiceImpl implements ScriptService {
                     var plutusScriptV2 = PlutusV2Script.deserialize(
                             (ByteString) scriptArray.getDataItems().get(1));
                     return plutusScriptFactory.handle(plutusScriptV2, tx);
+                case 3:
+                    var plutusScriptV3 = PlutusV3Script.deserialize(
+                            (ByteString) scriptArray.getDataItems().get(1));
+                    return plutusScriptFactory.handle(plutusScriptV3, tx);
                 default:
                     log.error("Invalid script type {}, hex {}", type, hexReferScript);
                     throw new HashScriptException("Script type invalid " + type);

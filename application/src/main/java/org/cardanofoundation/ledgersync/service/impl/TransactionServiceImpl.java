@@ -1,6 +1,6 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
-import com.bloxbean.cardano.client.plutus.spec.RedeemerTag;
+import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
