@@ -55,7 +55,7 @@ Build docker image
 
 
 ```shell
-docker build -t cardanofoundation/ledger-sync:<version> .
+docker build  --target ledger-sync -t cardanofoundation/ledger-sync:<version> .
 ```
 
 ### Docker Run

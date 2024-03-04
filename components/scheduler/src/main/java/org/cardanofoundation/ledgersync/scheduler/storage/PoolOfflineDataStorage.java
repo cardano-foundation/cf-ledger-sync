@@ -1,6 +1,6 @@
 package org.cardanofoundation.ledgersync.scheduler.storage;
 
-import org.cardanofoundation.explorer.consumercommon.entity.PoolOfflineData;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolOfflineData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

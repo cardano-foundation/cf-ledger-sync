@@ -24,4 +24,21 @@ spring:
           producer-properties:
             max.request.size: 200000000
 
-      defaultBinder: ${scs_binder}
+streamer:
+  healthcheck:
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:120}
+    keepalive-time-threshold: ${KEEPALIVE_TIME_THRESHOLD_IN_SECOND:120}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "health,prometheus,health-status"
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    health-status:
+      enabled: true

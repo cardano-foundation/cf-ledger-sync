@@ -1,10 +1,10 @@
 package org.cardanofoundation.ledgersync.scheduler.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cardanofoundation.explorer.consumercommon.entity.PoolHash;
-import org.cardanofoundation.explorer.consumercommon.entity.PoolMetadataRef;
-import org.cardanofoundation.explorer.consumercommon.entity.PoolOfflineData;
-import org.cardanofoundation.explorer.consumercommon.entity.PoolOfflineFetchError;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolHash;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolMetadataRef;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolOfflineData;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolOfflineFetchError;
 import org.cardanofoundation.ledgersync.scheduler.dto.PoolData;
 import org.cardanofoundation.ledgersync.scheduler.storage.PoolHashStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.PoolMetadataStorage;
