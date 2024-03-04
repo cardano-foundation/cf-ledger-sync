@@ -1,6 +1,6 @@
 # Research Explorer, LedgerSync and YaciStore
 
-## I.Needed LedgerSync tables using by explorer
+## I. Needed LedgerSync tables using by explorer
 
 | Table                   | Note |
 | ----------------------- | ---- |
@@ -57,7 +57,7 @@
 | unconsume_tx_in         |      |
 | withdrawal              |      |
 
-## II.List table used in ledger sync but not in yaci store
+## II. List table used in ledger sync but not in yaci store
 
 | Table                    | Note              |
 | ------------------------ | ----------------- |
@@ -98,8 +98,24 @@
 | unconsume_tx_in          |                   |
 | withdrawal               |                   |
 
-## III.List of tables being used in LedgerSync that can potentially be replaced by Yaci Store tables
+## III. List of tables being used in LedgerSync that can potentially be replaced by Yaci Store tables
+### A. List candidate tables
 
+| No  | Ledger_Sync DB         | Yaci_Store DB        | Store       |
+| --- | ---------------------- | -------------------- | ----------- |
+| 1   | cost_model             | cost_model           | epoch       |
+| 5   | epoch_param            | epoch_param          | epoch       |
+| 2   | datum                  | datum                | script      |
+| 6   | script                 | script               | script      |
+| 3   | delegation             | delegation           | staking     |
+| 7   | stake_registration     | stake_registration   | staking     |
+| 8   | stake_deregistration   | stake_registration   | staking     |
+| 10  | tx_bootstrap_witnesses | transaction_witness  | transaction |
+| 11  | tx_witnesses           | transaction_witness  | transaction |
+| 4   | epoch                  | epoch                | epoch-aggr  |
+| 9   | tx_metadata            | transaction_metadata | metadata    |
+
+### B. Analyze Detail
 1. Analyze cost_model table (Can replaced with cost_model table in yaci_store DB)
     - Compare columns with yaci store: 
         | Ledger_Sync DB | Yaci_Store DB |
