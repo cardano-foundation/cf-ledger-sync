@@ -1,0 +1,25 @@
+dependencies {
+    implementation project(":components:common")
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation(libs.cardano.client.lib)
+    implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.utxo.starter)
+    implementation(libs.yaci.store.account.starter)
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Ledger Sync Account'
+                description = 'Ledger Sync Account Module'
+            }
+        }
+    }
+}

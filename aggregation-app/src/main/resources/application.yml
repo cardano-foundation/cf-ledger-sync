@@ -1,0 +1,33 @@
+spring:
+#  banner:
+#    location: classpath:/banner.txt
+  application:
+    name: Ledger Sync Aggregation App
+
+  flyway:
+    locations:
+      - classpath:db/store/{vendor}
+      - classpath:db/account
+    out-of-order: true
+
+apiPrefix: /api/v1
+
+logging:
+  file:
+    name: ./logs/yaci-store.log
+
+store:
+  event-publisher-id: 1000
+  account:
+    enabled: true
+    balance-aggregation-enabled: true
+    history-cleanup-enabled: false
+    api-enabled: true
+  executor:
+    enable-parallel-processing: true
+    block-processing-threads: 15
+    event-processing-threads: 30
+    blocks-batch-size: 100
+    blocks-partition-size: 10
+    use-virtual-thread-for-batch-processing: false
+    use-virtual-thread-for-event-processing: true
