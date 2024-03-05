@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -360,6 +361,34 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
 
         addressTokenRepository.saveAll(addressTokens);
         multiAssetRepository.saveAll(multiAssetMap.values());
+        Map<Long, MultiAsset> checkMultiAssetMap = multiAssetMap.values().stream().collect(
+                Collectors.toMap(BaseEntity::getId, Function.identity()));
+
+        var checkAddressTokenBalanceList = addressTokenBalanceMap.values().stream().filter(addressTokenBalance
+                        -> {
+                    MultiAsset ma = addressTokenBalance.getMultiAssetId() != null ? checkMultiAssetMap.get(addressTokenBalance.getMultiAssetId())
+                            : multiAssetMap.get(addressTokenBalance.getMultiAsset().getFingerprint());
+                    return addressTokenBalance.getBalance().compareTo(ma.getSupply()) > 0;
+                })
+                .collect(Collectors.toList());
+
+        if (addressTokenBalanceMap.values().stream().filter(addressTokenBalance
+                        -> {
+                    MultiAsset ma = addressTokenBalance.getMultiAssetId() != null ? checkMultiAssetMap.get(addressTokenBalance.getMultiAssetId())
+                            : multiAssetMap.get(addressTokenBalance.getMultiAsset().getFingerprint());
+                    return addressTokenBalance.getBalance().compareTo(ma.getSupply()) > 0;
+                })
+                .collect(Collectors.toList()).size() > 0) {
+            throw new IllegalStateException("handleAddressToken1");
+        }
+
+        if (newAddressTokenBalanceMap.values().stream().filter(addressTokenBalance
+                        -> addressTokenBalance.getBalance()
+                        .compareTo(multiAssetMap.get(addressTokenBalance.getMultiAsset().getFingerprint()).getSupply()) > 0)
+                .collect(Collectors.toList()).size() > 0) {
+            throw new IllegalStateException("handleAddressToken2");
+        }
+
         addressTokenBalanceRepository.saveAll(addressTokenBalanceMap.values());
         addressTokenBalanceRepository.saveAll(newAddressTokenBalanceMap.values());
     }
@@ -471,6 +500,11 @@ public class AddressBalanceServiceImpl implements AddressBalanceService {
         BigInteger currentBalance = addressTokenBalance.getBalance();
         BigInteger finalBalance = currentBalance.add(balance);
         addressTokenBalance.setBalance(finalBalance);
+
+//        if (finalBalance.compareTo(multiAsset.getSupply()) > 0) {
+////            throw new IllegalStateException();
+//            System.out.println();
+//        }
     }
 
     private void updateTokenTotalVolume(MultiAsset multiAsset, BigInteger balance) {
