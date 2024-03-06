@@ -21,12 +21,13 @@ create table address_tx_amount
 
 -- address_balance_view
 drop view if exists address_balance_view;
-create view address_balance_view AS
-select ab.*
-from address_balance ab
-         inner join (select address, MAX(slot) as max_slot
-                     from address_balance ab2
-                     group by address) max_ab on ab.address = max_ab.address and ab.slot = max_ab.max_slot;
+CREATE VIEW address_balance_view AS
+SELECT ab.*
+FROM address_balance ab
+         INNER JOIN (SELECT address, unit, MAX(slot) AS max_slot
+                     FROM address_balance ab2
+                     GROUP BY address, unit) max_ab
+                    ON ab.address = max_ab.address AND ab.unit = max_ab.unit AND ab.slot = max_ab.max_slot;
 
 -- stake_address_balance_view
 drop view if exists stake_address_balance_view;
