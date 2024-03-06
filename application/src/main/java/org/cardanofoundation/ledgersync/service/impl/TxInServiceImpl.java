@@ -208,8 +208,8 @@ public class TxInServiceImpl implements TxInService {
                         maTxOut -> maTxOut.getTxOut().getId(),
                         Collectors.toList()));
 
-        txInMap.entrySet().parallelStream().forEach(entry ->
-                entry.getValue().parallelStream().forEach(txIn -> {
+        txInMap.entrySet().forEach(entry ->
+                entry.getValue().forEach(txIn -> {
                     Pair<String, Short> txOutKey = Pair.of(txIn.getTxId(), (short) txIn.getIndex());
                     TxOut txOut = txOutMap.get(txOutKey);
                     if (Objects.isNull(txOut)) {
@@ -231,7 +231,7 @@ public class TxInServiceImpl implements TxInService {
 
                     // Subtract asset balances if there's any
                     if (!CollectionUtils.isEmpty(maTxOuts)) {
-                        maTxOuts.parallelStream().forEach(maTxOut -> addressBalance.subtractAssetBalance(
+                        maTxOuts.forEach(maTxOut -> addressBalance.subtractAssetBalance(
                                 txHash, maTxOut.getIdent().getFingerprint(), maTxOut.getQuantity())
                         );
                     }
