@@ -4,7 +4,6 @@ import com.bloxbean.cardano.yaci.store.client.utxo.UtxoClient;
 import com.bloxbean.cardano.yaci.store.common.domain.AddressUtxo;
 import com.bloxbean.cardano.yaci.store.common.domain.Amt;
 import com.bloxbean.cardano.yaci.store.common.domain.UtxoKey;
-import com.bloxbean.cardano.yaci.store.common.util.Tuple;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
 import com.bloxbean.cardano.yaci.store.events.RollbackEvent;
 import com.bloxbean.cardano.yaci.store.events.internal.ReadyForBalanceAggregationEvent;
@@ -26,12 +25,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.math.BigInteger;
 import java.util.*;
 
+import static org.cardanofoundation.ledgersync.account.util.AddressUtil.getAddress;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AddressTxAmountProcessor {
-    private static final int MAX_ADDR_SIZE = 500; //Required for Byron Addresses
-
     private final AddressTxAmountRepository addressTxAmountRepository;
     private final UtxoClient utxoClient;
 
@@ -140,6 +139,7 @@ public class AddressTxAmountProcessor {
 
         return (List<AddressTxAmountEntity>) addressTxAmountMap.entrySet()
                 .stream()
+                .filter(entry -> entry.getValue().compareTo(BigInteger.ZERO) != 0)
                 .map(entry -> {
                     var addressDetails = addressToAddressDetailsMap.get(entry.getKey().getFirst());
                     var assetDetails = unitToAssetDetailsMap.get(entry.getKey().getSecond());
@@ -164,18 +164,6 @@ public class AddressTxAmountProcessor {
                             .blockTime(metadata.getBlockTime())
                             .build();
                 }).toList();
-    }
-
-    //Return the address and full address if the address is too long
-    //Using Tuple as Pair doesn't allow null values
-    private Tuple<String, String> getAddress(String address) {
-        if (address != null && address.length() > MAX_ADDR_SIZE) {
-            String addr = address.substring(0, MAX_ADDR_SIZE);
-            String fullAddr = address;
-            return new Tuple<>(addr, fullAddr);
-        } else {
-            return new Tuple<>(address, null);
-        }
     }
 
     @EventListener
