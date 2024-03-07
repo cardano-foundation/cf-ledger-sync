@@ -66,14 +66,16 @@ public class AddressTxAmountProcessor {
             addressTxAmountList.addAll(txAddressTxAmountEntities);
         }
 
-        if (addressTxAmountList.size() > 200) {
-            addressTxAmountStorage.save(addressTxAmountList); //Save
-            return;
-        }
+        addressTxAmountStorage.save(addressTxAmountList);
 
-        if (addressTxAmountList.size() > 0) {
-            addressTxAmountListCache.addAll(addressTxAmountList);
-        }
+//        if (addressTxAmountList.size() > 200) {
+//            addressTxAmountStorage.save(addressTxAmountList); //Save
+//            return;
+//        }
+//
+//        if (addressTxAmountList.size() > 0) {
+//            addressTxAmountListCache.addAll(addressTxAmountList);
+//        }
     }
 
     private List<AddressTxAmount> processAddressAmountForTx(EventMetadata metadata, TxInputOutput txInputOutput,
