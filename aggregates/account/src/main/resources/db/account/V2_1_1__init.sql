@@ -19,6 +19,9 @@ create table address_tx_amount
     primary key (address, unit, tx_hash)
 );
 
+CREATE INDEX idx_address_tx_amount_slot
+    ON address_tx_amount(slot);
+
 -- address_balance_view
 drop view if exists address_balance_view;
 create view address_balance_view as
