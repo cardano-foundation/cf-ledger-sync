@@ -48,8 +48,8 @@ public class AddressTxAmountProcessor {
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-    @EventListener
-    @Transactional
+//    @EventListener
+//    @Transactional
     public void processAddressUtxoEvent(AddressUtxoEvent addressUtxoEvent) {
         //Ignore Genesis Txs as it's handled by GEnesisBlockAddressTxAmtProcessor
         if (addressUtxoEvent.getEventMetadata().getSlot() == -1)
