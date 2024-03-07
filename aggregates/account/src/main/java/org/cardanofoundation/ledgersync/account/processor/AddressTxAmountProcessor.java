@@ -66,7 +66,7 @@ public class AddressTxAmountProcessor {
             addressTxAmountList.addAll(txAddressTxAmountEntities);
         }
 
-        if (addressTxAmountList.size() > 500) {
+        if (addressTxAmountList.size() > 200) {
             addressTxAmountStorage.save(addressTxAmountList); //Save
             return;
         }
