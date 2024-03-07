@@ -37,7 +37,7 @@ public class AddressTxAmountProcessor {
     private List<Pair<EventMetadata, TxInputOutput>> txInputOutputListCache = Collections.synchronizedList(new ArrayList<>());
     private List<AddressTxAmount> addressTxAmountListCache = Collections.synchronizedList(new ArrayList<>());
 
-//    private List<AddressUtxoEvent> addressUtxoEvents = Collections.synchronizedList(new ArrayList<>());
+    private List<AddressUtxoEvent> addressUtxoEvents = Collections.synchronizedList(new ArrayList<>());
 
     private final PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
@@ -48,8 +48,12 @@ public class AddressTxAmountProcessor {
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-//    @EventListener
-//    @Transactional
+    @EventListener
+    @Transactional
+    public void handleEvent(AddressUtxoEvent addressUtxoEvent) {
+        addressUtxoEvents.add(addressUtxoEvent);
+    }
+
     public void processAddressUtxoEvent(AddressUtxoEvent addressUtxoEvent) {
         //Ignore Genesis Txs as it's handled by GEnesisBlockAddressTxAmtProcessor
         if (addressUtxoEvent.getEventMetadata().getSlot() == -1)
@@ -179,6 +183,9 @@ public class AddressTxAmountProcessor {
     @Transactional //We can also listen to CommitEvent here
     public void handleRemainingTxInputOuputs(ReadyForBalanceAggregationEvent readyForBalanceAggregationEvent) {
         try {
+            addressUtxoEvents.parallelStream().forEach(this::processAddressUtxoEvent);
+
+            /**
             List<AddressTxAmount> addressTxAmountList = new ArrayList<>();
             for (var pair : txInputOutputListCache) {
                 EventMetadata metadata = pair.getFirst();
@@ -194,6 +201,7 @@ public class AddressTxAmountProcessor {
             if (addressTxAmountList.size() > 0) {
                 addressTxAmountListCache.addAll(addressTxAmountList);
             }
+             **/
 
             long t1 = System.currentTimeMillis();
             if (addressTxAmountListCache.size() > 0) {
@@ -206,6 +214,7 @@ public class AddressTxAmountProcessor {
         } finally {
             txInputOutputListCache.clear();
             addressTxAmountListCache.clear();
+            addressUtxoEvents.clear();
         }
     }
 
