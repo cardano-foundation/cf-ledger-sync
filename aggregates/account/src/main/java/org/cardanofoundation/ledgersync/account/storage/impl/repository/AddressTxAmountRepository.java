@@ -1,7 +1,7 @@
-package org.cardanofoundation.ledgersync.account.repository;
+package org.cardanofoundation.ledgersync.account.storage.impl.repository;
 
-import org.cardanofoundation.ledgersync.account.model.AddressTxAmountEntity;
-import org.cardanofoundation.ledgersync.account.model.AddressTxAmountId;
+import org.cardanofoundation.ledgersync.account.storage.impl.model.AddressTxAmountEntity;
+import org.cardanofoundation.ledgersync.account.storage.impl.model.AddressTxAmountId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

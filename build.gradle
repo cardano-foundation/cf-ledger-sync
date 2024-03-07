@@ -37,7 +37,12 @@ subprojects {
     }
 
     dependencies {
+        implementation(libs.map.struct)
 
+        compileOnly(libs.lombok)
+        annotationProcessor(libs.lombok)
+        annotationProcessor(libs.lombok.mapstruct.binding)
+        annotationProcessor(libs.mapstruct.processor)
     }
 
     compileJava {

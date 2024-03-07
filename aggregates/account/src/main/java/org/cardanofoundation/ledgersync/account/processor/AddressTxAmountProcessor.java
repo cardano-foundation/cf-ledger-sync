@@ -12,8 +12,8 @@ import com.bloxbean.cardano.yaci.store.utxo.domain.TxInputOutput;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.account.model.AddressTxAmountEntity;
-import org.cardanofoundation.ledgersync.account.repository.AddressTxAmountRepository;
+import org.cardanofoundation.ledgersync.account.domain.AddressTxAmount;
+import org.cardanofoundation.ledgersync.account.storage.AddressTxAmountStorage;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
@@ -31,10 +31,11 @@ import static org.cardanofoundation.ledgersync.account.util.AddressUtil.getAddre
 @RequiredArgsConstructor
 @Slf4j
 public class AddressTxAmountProcessor {
-    private final AddressTxAmountRepository addressTxAmountRepository;
+    private final AddressTxAmountStorage addressTxAmountStorage;
     private final UtxoClient utxoClient;
 
     private List<Pair<EventMetadata, TxInputOutput>> txInputOutputListCache = Collections.synchronizedList(new ArrayList<>());
+    private List<AddressTxAmount> addressTxAmountListCache = Collections.synchronizedList(new ArrayList<>());
 
     private final PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
@@ -48,7 +49,7 @@ public class AddressTxAmountProcessor {
     @EventListener
     @Transactional
     public void processAddressUtxoEvent(AddressUtxoEvent addressUtxoEvent) {
-        //Ignore Genesis Txs for now -- TODO
+        //Ignore Genesis Txs as it's handled by GEnesisBlockAddressTxAmtProcessor
         if (addressUtxoEvent.getEventMetadata().getSlot() == -1)
             return;
 
@@ -56,22 +57,22 @@ public class AddressTxAmountProcessor {
         if (txInputOutputList == null || txInputOutputList.isEmpty())
             return;
 
-        List<AddressTxAmountEntity> addressTxAmountEntities = new ArrayList<>();
+        List<AddressTxAmount> addressTxAmountList = new ArrayList<>();
 
         for (var txInputOutput : txInputOutputList) {
             var txAddressTxAmountEntities = processAddressAmountForTx(addressUtxoEvent.getEventMetadata(), txInputOutput, false);
-            if (txAddressTxAmountEntities == null) continue;
+            if (txAddressTxAmountEntities == null || txAddressTxAmountEntities.isEmpty()) continue;
 
-            addressTxAmountEntities.addAll(txAddressTxAmountEntities);
+            addressTxAmountList.addAll(txAddressTxAmountEntities);
         }
 
-        if (addressTxAmountEntities.size() > 0) {
-            addressTxAmountRepository.saveAll(addressTxAmountEntities);
+        if (addressTxAmountList.size() > 0) {
+            addressTxAmountListCache.addAll(addressTxAmountList);
         }
     }
 
-    private List<AddressTxAmountEntity> processAddressAmountForTx(EventMetadata metadata, TxInputOutput txInputOutput,
-                                                                  boolean throwExceptionOnFailure) {
+    private List<AddressTxAmount> processAddressAmountForTx(EventMetadata metadata, TxInputOutput txInputOutput,
+                                                            boolean throwExceptionOnFailure) {
         var txHash = txInputOutput.getTxHash();
         var inputs = txInputOutput.getInputs();
         var outputs = txInputOutput.getOutputs();
@@ -93,14 +94,16 @@ public class AddressTxAmountProcessor {
                 throw new IllegalStateException("Unable to get inputs for all input keys for account balance calculation : " + inputUtxoKeys);
             else
                 txInputOutputListCache.add(Pair.of(metadata, txInputOutput));
+
+            return Collections.emptyList();
         }
 
-        var txAddressTxAmountEntities =
+        var txAddressTxAmount =
                 processTxAmount(txHash, metadata, inputAddressUtxos, outputs);
-        return txAddressTxAmountEntities;
+        return txAddressTxAmount;
     }
 
-    private List<AddressTxAmountEntity> processTxAmount(String txHash, EventMetadata metadata, List<AddressUtxo> inputs, List<AddressUtxo> outputs) {
+    private List<AddressTxAmount> processTxAmount(String txHash, EventMetadata metadata, List<AddressUtxo> inputs, List<AddressUtxo> outputs) {
         Map<Pair<String, String>, BigInteger> addressTxAmountMap = new HashMap<>();
         Map<String, AddressDetails> addressToAddressDetailsMap = new HashMap<>();
         Map<String, AssetDetails> unitToAssetDetailsMap = new HashMap<>();
@@ -137,7 +140,7 @@ public class AddressTxAmountProcessor {
             }
         }
 
-        return (List<AddressTxAmountEntity>) addressTxAmountMap.entrySet()
+        return (List<AddressTxAmount>) addressTxAmountMap.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().compareTo(BigInteger.ZERO) != 0)
                 .map(entry -> {
@@ -147,13 +150,12 @@ public class AddressTxAmountProcessor {
                     //address and full address if the address is too long
                     var addressTuple = getAddress(entry.getKey().getFirst());
 
-                    return AddressTxAmountEntity.builder()
+                    return AddressTxAmount.builder()
                             .address(addressTuple._1)
                             .unit(entry.getKey().getSecond())
                             .txHash(txHash)
                             .slot(metadata.getSlot())
                             .quantity(entry.getValue())
-                            .addrFull(addressTuple._2)
                             .stakeAddress(addressDetails.ownerStakeAddress)
                             .assetName(assetDetails.assetName)
                             .policy(assetDetails.policy)
@@ -170,7 +172,7 @@ public class AddressTxAmountProcessor {
     @Transactional //We can also listen to CommitEvent here
     public void handleRemainingTxInputOuputs(ReadyForBalanceAggregationEvent readyForBalanceAggregationEvent) {
         try {
-            List<AddressTxAmountEntity> addressTxAmountEntities = new ArrayList<>();
+            List<AddressTxAmount> addressTxAmountList = new ArrayList<>();
             for (var pair : txInputOutputListCache) {
                 EventMetadata metadata = pair.getFirst();
                 TxInputOutput txInputOutput = pair.getSecond();
@@ -178,22 +180,32 @@ public class AddressTxAmountProcessor {
                 var addrAmountEntitiesForTx = processAddressAmountForTx(metadata, txInputOutput, true);
 
                 if (addrAmountEntitiesForTx != null) {
-                    addressTxAmountEntities.addAll(addrAmountEntitiesForTx);
+                    addressTxAmountList.addAll(addrAmountEntitiesForTx);
                 }
             }
 
-            if (addressTxAmountEntities.size() > 0) {
-                addressTxAmountRepository.saveAll(addressTxAmountEntities);
+            if (addressTxAmountList.size() > 0) {
+                addressTxAmountListCache.addAll(addressTxAmountList);
             }
+
+            long t1 = System.currentTimeMillis();
+            if (addressTxAmountListCache.size() > 0) {
+                addressTxAmountStorage.save(addressTxAmountListCache);
+                log.info("Total {} address_tx_amounts records saved", addressTxAmountListCache.size());
+            }
+            long t2 = System.currentTimeMillis();
+            log.info("Time taken to save address_tx_amounts records : " + (t2 - t1) + " ms");
+
         } finally {
             txInputOutputListCache.clear();
+            addressTxAmountListCache.clear();
         }
     }
 
     @EventListener
     @Transactional
     public void handleRollback(RollbackEvent rollbackEvent) {
-        int addressTxAmountDeleted = addressTxAmountRepository.deleteAddressBalanceBySlotGreaterThan(rollbackEvent.getRollbackTo().getSlot());
+        int addressTxAmountDeleted = addressTxAmountStorage.deleteAddressBalanceBySlotGreaterThan(rollbackEvent.getRollbackTo().getSlot());
 
         log.info("Rollback -- {} address_tx_amounts records", addressTxAmountDeleted);
     }

@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.account.model;
+package org.cardanofoundation.ledgersync.account.storage.impl.model;
 
 import com.bloxbean.cardano.yaci.store.common.model.BlockAwareEntity;
 import jakarta.persistence.*;
@@ -27,6 +27,7 @@ public class AddressTxAmountEntity extends BlockAwareEntity {
     @Column(name = "unit")
     private String unit;
 
+    @Id
     @Column(name = "tx_hash")
     private String txHash;
 
@@ -57,5 +58,4 @@ public class AddressTxAmountEntity extends BlockAwareEntity {
 
     @Column(name = "epoch")
     private Integer epoch;
-
 }

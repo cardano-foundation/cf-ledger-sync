@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.account.model;
+package org.cardanofoundation.ledgersync.account.storage.impl.model;
 
 import jakarta.persistence.Column;
 import lombok.*;

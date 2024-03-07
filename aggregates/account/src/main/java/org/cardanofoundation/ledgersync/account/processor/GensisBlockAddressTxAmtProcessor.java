@@ -6,8 +6,8 @@ import com.bloxbean.cardano.yaci.core.util.HexUtil;
 import com.bloxbean.cardano.yaci.store.events.GenesisBlockEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.account.model.AddressTxAmountEntity;
-import org.cardanofoundation.ledgersync.account.repository.AddressTxAmountRepository;
+import org.cardanofoundation.ledgersync.account.domain.AddressTxAmount;
+import org.cardanofoundation.ledgersync.account.storage.AddressTxAmountStorage;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,7 @@ import static org.cardanofoundation.ledgersync.account.util.AddressUtil.getAddre
 @RequiredArgsConstructor
 @Slf4j
 public class GensisBlockAddressTxAmtProcessor {
-    private final AddressTxAmountRepository addressTxAmountRepository;
+    private final AddressTxAmountStorage addressTxAmountStorage;
 
     @EventListener
     @Transactional
@@ -34,7 +34,7 @@ public class GensisBlockAddressTxAmtProcessor {
             return;
         }
 
-        List<AddressTxAmountEntity> genesisAddressTxAmtList = new ArrayList<>();
+        List<AddressTxAmount> genesisAddressTxAmtList = new ArrayList<>();
         for (var genesisBalance : genesisBalances) {
             var receiverAddress = genesisBalance.getAddress();
             var txnHash = genesisBalance.getTxnHash();
@@ -62,13 +62,12 @@ public class GensisBlockAddressTxAmtProcessor {
                 }
             }
 
-            var addressTxAmountEntity = AddressTxAmountEntity.builder()
+            var addressTxAmount = AddressTxAmount.builder()
                     .address(addressTuple._1)
                     .unit(LOVELACE)
                     .txHash(txnHash)
                     .slot(genesisBlockEvent.getSlot())
                     .quantity(balance)
-                    .addrFull(addressTuple._2)
                     .stakeAddress(stakeAddress)
                     .assetName(LOVELACE)
                     .policy(null)
@@ -79,11 +78,11 @@ public class GensisBlockAddressTxAmtProcessor {
                     .blockTime(genesisBlockEvent.getBlockTime())
                     .build();
 
-            genesisAddressTxAmtList.add(addressTxAmountEntity);
+            genesisAddressTxAmtList.add(addressTxAmount);
         }
 
         if (genesisAddressTxAmtList.size() > 0) {
-            addressTxAmountRepository.saveAll(genesisAddressTxAmtList);
+            addressTxAmountStorage.save(genesisAddressTxAmtList);
         }
     }
 
