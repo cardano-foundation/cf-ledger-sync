@@ -62,6 +62,7 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
     private void doSave(List<AddressTxAmountEntity> addressTxAmountEntities) {
         LocalDateTime localDateTime = LocalDateTime.now();
 
+        /**
         var inserts = addressTxAmountEntities.stream()
                 .map(addressTxAmount -> {
                     return dsl.insertInto(ADDRESS_TX_AMOUNT)
@@ -95,9 +96,9 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
                             .set(ADDRESS_TX_AMOUNT.UPDATE_DATETIME, localDateTime);
                 }).toList();
         dsl.batch(inserts).execute();
+        **/
 
 
-        /**
             dsl.batched(c -> {
                 for (var addressTxAmount : addressTxAmountEntities) {
                     c.dsl().insertInto(ADDRESS_TX_AMOUNT)
@@ -132,7 +133,7 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
                             .execute();
                 }
             });
-         **/
+
     }
 
     @Override
