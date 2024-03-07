@@ -37,6 +37,8 @@ public class AddressTxAmountProcessor {
     private List<Pair<EventMetadata, TxInputOutput>> txInputOutputListCache = Collections.synchronizedList(new ArrayList<>());
     private List<AddressTxAmount> addressTxAmountListCache = Collections.synchronizedList(new ArrayList<>());
 
+//    private List<AddressUtxoEvent> addressUtxoEvents = Collections.synchronizedList(new ArrayList<>());
+
     private final PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
 
