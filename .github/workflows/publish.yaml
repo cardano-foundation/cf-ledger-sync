@@ -51,7 +51,7 @@ jobs:
           push: true
           target: ledger-sync
           tags: |
-            ${{ env.DOCKER_LATEST_IMAGE_TAG }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:latest
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
           build-args: |
@@ -67,7 +67,7 @@ jobs:
           push: true
           target: scheduler
           tags: |
-            ${{ env.DOCKER_LATEST_IMAGE_TAG }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:latest
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
           build-args: |
@@ -82,7 +82,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.DOCKER_LATEST_IMAGE_TAG }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:latest
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}
             ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
           target: streamer
