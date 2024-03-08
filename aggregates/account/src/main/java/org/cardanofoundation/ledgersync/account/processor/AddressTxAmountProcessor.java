@@ -37,6 +37,9 @@ public class AddressTxAmountProcessor {
     private List<Pair<EventMetadata, TxInputOutput>> txInputOutputListCache = Collections.synchronizedList(new ArrayList<>());
     private List<AddressTxAmount> addressTxAmountListCache = Collections.synchronizedList(new ArrayList<>());
 
+    private Map<Integer, List<AddressTxAmount>> addressTxAmountListCacheMap = new HashMap<>();
+    private int bucketSize = 10;
+
     private final PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
 
@@ -44,6 +47,39 @@ public class AddressTxAmountProcessor {
     void init() {
         transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+
+        initAddressTxAmtCache();
+    }
+
+    private void initAddressTxAmtCache() {
+        for (int i = 0; i < bucketSize; i++) {
+            addressTxAmountListCacheMap.put(i, Collections.synchronizedList(new ArrayList<>()));
+        }
+    }
+
+    private void save(long blockNo, List<AddressTxAmount> addressTxAmounts) {
+        int index = (int) (blockNo % bucketSize);
+        List<AddressTxAmount> addressTxAmountList = addressTxAmountListCacheMap.get(index);
+        addressTxAmountList.addAll(addressTxAmounts);
+
+        if (addressTxAmountList.size() > 1000) {
+            synchronized (addressTxAmountList) {
+                addressTxAmountStorage.save(addressTxAmountList);
+                if (log.isDebugEnabled())
+                    log.debug("-- Saved address_tx_amounts records : {}", addressTxAmountList.size());
+                addressTxAmountList.clear();
+            }
+        }
+    }
+
+    private void clearCache() {
+        for (int i = 0; i < bucketSize; i++) {
+            List<AddressTxAmount> addressTxAmountList = addressTxAmountListCacheMap.get(i);
+            if (addressTxAmountList.size() > 0) {
+                //addressTxAmountStorage.save(addressTxAmountList);
+                addressTxAmountList.clear();
+            }
+        }
     }
 
     @EventListener
@@ -66,13 +102,14 @@ public class AddressTxAmountProcessor {
             addressTxAmountList.addAll(txAddressTxAmountEntities);
         }
 
-        if (addressTxAmountList.size() > 100) {
-            addressTxAmountStorage.save(addressTxAmountList); //Save
-            return;
-        }
+//        if (addressTxAmountList.size() > 100) {
+//            addressTxAmountStorage.save(addressTxAmountList); //Save
+//            return;
+//        }
 
         if (addressTxAmountList.size() > 0) {
-            addressTxAmountListCache.addAll(addressTxAmountList);
+           //TODO -- addressTxAmountListCache.addAll(addressTxAmountList);
+            save(addressUtxoEvent.getEventMetadata().getBlock(), addressTxAmountList);
         }
     }
 
@@ -193,17 +230,25 @@ public class AddressTxAmountProcessor {
                 addressTxAmountListCache.addAll(addressTxAmountList);
             }
 
+            var remainingAddressAmtList = addressTxAmountListCacheMap.values().stream()
+                    .flatMap(List::stream)
+                    .toList();
+            if (remainingAddressAmtList.size() > 0) {
+                addressTxAmountListCache.addAll(remainingAddressAmtList);
+            }
+
             long t1 = System.currentTimeMillis();
             if (addressTxAmountListCache.size() > 0) {
                 addressTxAmountStorage.save(addressTxAmountListCache);
-                log.info("Total {} address_tx_amounts records saved", addressTxAmountListCache.size());
             }
+
             long t2 = System.currentTimeMillis();
-            log.info("Time taken to save address_tx_amounts records : " + (t2 - t1) + " ms");
+            log.info("Time taken to save address_tx_amounts records : {}, time: {} ms", addressTxAmountListCache.size(),  (t2 - t1));
 
         } finally {
             txInputOutputListCache.clear();
             addressTxAmountListCache.clear();
+            clearCache();
         }
     }
 
