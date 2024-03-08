@@ -1,6 +1,7 @@
 package org.cardanofoundation.ledgersync.account.storage.impl;
 
 import com.bloxbean.cardano.yaci.store.account.AccountStoreProperties;
+import com.bloxbean.cardano.yaci.store.common.executor.ParallelExecutor;
 import com.bloxbean.cardano.yaci.store.common.util.ListUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
     private final DSLContext dsl;
     private final AccountStoreProperties accountStoreProperties;
     private final PlatformTransactionManager transactionManager;
+    private final ParallelExecutor parallelExecutor;
 
     private final AggrMapper aggrMapper = AggrMapper.INSTANCE;
     private TransactionTemplate transactionTemplate;
@@ -51,7 +53,7 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
 
         if (accountStoreProperties.isParallelWrite()) {
 //            transactionTemplate.execute(status -> {
-                ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::doSave);
+                ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::doSave, parallelExecutor.getVirtualThreadExecutor());
 //                return null;
 //            });
         } else {
@@ -98,6 +100,7 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
         dsl.batch(inserts).execute();
     **/
 
+        transactionTemplate.execute(status -> {
             dsl.batched(c -> {
                 for (var addressTxAmount : addressTxAmountEntities) {
                     c.dsl().insertInto(ADDRESS_TX_AMOUNT)
@@ -132,6 +135,8 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
                             .execute();
                 }
             });
+            return null;
+        });
 
     }
 
