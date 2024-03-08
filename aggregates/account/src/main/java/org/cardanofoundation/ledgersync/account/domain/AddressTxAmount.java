@@ -23,11 +23,7 @@ public class AddressTxAmount extends BlockAwareDomain {
     private String txHash;
     private Long slot;
     private BigInteger quantity;
-    private String policy;
-    private String assetName;
-    private String paymentCredential;
     private String stakeAddress;
-    private String blockHash;
     private Integer epoch;
 }
 

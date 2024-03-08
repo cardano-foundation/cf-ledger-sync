@@ -4,13 +4,11 @@ import com.bloxbean.cardano.yaci.store.client.utxo.UtxoClient;
 import com.bloxbean.cardano.yaci.store.common.domain.AddressUtxo;
 import com.bloxbean.cardano.yaci.store.common.domain.Amt;
 import com.bloxbean.cardano.yaci.store.common.domain.UtxoKey;
-import com.bloxbean.cardano.yaci.store.common.executor.ParallelExecutor;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
 import com.bloxbean.cardano.yaci.store.events.RollbackEvent;
 import com.bloxbean.cardano.yaci.store.events.internal.ReadyForBalanceAggregationEvent;
 import com.bloxbean.cardano.yaci.store.utxo.domain.AddressUtxoEvent;
 import com.bloxbean.cardano.yaci.store.utxo.domain.TxInputOutput;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.account.domain.AddressTxAmount;
@@ -18,15 +16,10 @@ import org.cardanofoundation.ledgersync.account.storage.AddressTxAmountStorage;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static org.cardanofoundation.ledgersync.account.util.AddressUtil.getAddress;
 
@@ -34,21 +27,13 @@ import static org.cardanofoundation.ledgersync.account.util.AddressUtil.getAddre
 @RequiredArgsConstructor
 @Slf4j
 public class AddressTxAmountProcessor {
+    public static final int BLOCK_ADDRESS_TX_AMT_THRESHOLD = 100; //Threshold to save address_tx_amounts records for block
+
     private final AddressTxAmountStorage addressTxAmountStorage;
     private final UtxoClient utxoClient;
 
-    private List<Pair<EventMetadata, TxInputOutput>> txInputOutputListCache = Collections.synchronizedList(new ArrayList<>());
+    private List<Pair<EventMetadata, TxInputOutput>> pendingTxInputOutputListCache = Collections.synchronizedList(new ArrayList<>());
     private List<AddressTxAmount> addressTxAmountListCache = Collections.synchronizedList(new ArrayList<>());
-
-    private final PlatformTransactionManager transactionManager;
-    private final ParallelExecutor parallelExecutor;
-    private TransactionTemplate transactionTemplate;
-
-    @PostConstruct
-    void init() {
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-    }
 
     @EventListener
     @Transactional
@@ -70,12 +55,11 @@ public class AddressTxAmountProcessor {
             addressTxAmountList.addAll(txAddressTxAmountEntities);
         }
 
-        if (addressTxAmountList.size() > 100) {
+        if (addressTxAmountList.size() > BLOCK_ADDRESS_TX_AMT_THRESHOLD) {
+            if (log.isDebugEnabled())
+                log.debug("Saving address_tx_amounts records : {} -- {}", addressTxAmountList.size(), addressUtxoEvent.getEventMetadata().getBlock());
             addressTxAmountStorage.save(addressTxAmountList); //Save
-            return;
-        }
-
-        if (addressTxAmountList.size() > 0) {
+        } else if (addressTxAmountList.size() > 0) {
            addressTxAmountListCache.addAll(addressTxAmountList);
         }
     }
@@ -102,7 +86,7 @@ public class AddressTxAmountProcessor {
             if (throwExceptionOnFailure)
                 throw new IllegalStateException("Unable to get inputs for all input keys for account balance calculation : " + inputUtxoKeys);
             else
-                txInputOutputListCache.add(Pair.of(metadata, txInputOutput));
+                pendingTxInputOutputListCache.add(Pair.of(metadata, txInputOutput));
 
             return Collections.emptyList();
         }
@@ -166,12 +150,8 @@ public class AddressTxAmountProcessor {
                             .slot(metadata.getSlot())
                             .quantity(entry.getValue())
                             .stakeAddress(addressDetails.ownerStakeAddress)
-                            .assetName(assetDetails.assetName)
-                            .policy(assetDetails.policy)
-                            .paymentCredential(addressDetails.ownerPaymentCredential)
                             .epoch(metadata.getEpochNumber())
                             .blockNumber(metadata.getBlock())
-                            .blockHash(metadata.getBlockHash())
                             .blockTime(metadata.getBlockTime())
                             .build();
                 }).toList();
@@ -182,7 +162,7 @@ public class AddressTxAmountProcessor {
     public void handleRemainingTxInputOuputs(ReadyForBalanceAggregationEvent readyForBalanceAggregationEvent) {
         try {
             List<AddressTxAmount> addressTxAmountList = new ArrayList<>();
-            for (var pair : txInputOutputListCache) {
+            for (var pair : pendingTxInputOutputListCache) {
                 EventMetadata metadata = pair.getFirst();
                 TxInputOutput txInputOutput = pair.getSecond();
 
@@ -197,28 +177,16 @@ public class AddressTxAmountProcessor {
                 addressTxAmountListCache.addAll(addressTxAmountList);
             }
 
-            var future = CompletableFuture.supplyAsync(() -> {
-                long t1 = System.currentTimeMillis();
-                if (addressTxAmountListCache.size() > 0) {
-                    addressTxAmountStorage.save(addressTxAmountListCache);
-                }
-
-                long t2 = System.currentTimeMillis();
-                log.info("Time taken to save address_tx_amounts records : {}, time: {} ms", addressTxAmountListCache.size(),  (t2 - t1));
-
-                return null;
-            }, parallelExecutor.getVirtualThreadExecutor());
-
-            try {
-                future.get();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
+            long t1 = System.currentTimeMillis();
+            if (addressTxAmountListCache.size() > 0) {
+                addressTxAmountStorage.save(addressTxAmountListCache);
             }
 
+            long t2 = System.currentTimeMillis();
+            log.info("Time taken to save additional address_tx_amounts records : {}, time: {} ms", addressTxAmountListCache.size(),  (t2 - t1));
+
         } finally {
-            txInputOutputListCache.clear();
+            pendingTxInputOutputListCache.clear();
             addressTxAmountListCache.clear();
         }
     }

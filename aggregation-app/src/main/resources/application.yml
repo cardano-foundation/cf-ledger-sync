@@ -9,6 +9,16 @@ spring:
       - classpath:db/store/{vendor}
       - classpath:db/account
     out-of-order: true
+  datasource:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
 
 apiPrefix: /api/v1
 
@@ -19,10 +29,14 @@ logging:
 store:
   event-publisher-id: 1000
   auto-index-management: true
+  cardano:
+    keep-alive-interval: 3000
   account:
     enabled: true
     balance-aggregation-enabled: true
-    history-cleanup-enabled: false
+    history-cleanup-enabled: true
+    # 3 months
+    balance-cleanup-slot-count: 7889238
     api-enabled: true
     parallel-write: true
     per-thread-batch-size: 6000
@@ -34,4 +48,4 @@ store:
     blocks-batch-size: 100
     blocks-partition-size: 10
     use-virtual-thread-for-batch-processing: false
-    use-virtual-thread-for-event-processing: true
+    use-virtual-thread-for-event-processing: false

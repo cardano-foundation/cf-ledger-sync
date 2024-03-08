@@ -1,7 +1,6 @@
 package org.cardanofoundation.ledgersync.account.storage.impl;
 
 import com.bloxbean.cardano.yaci.store.account.AccountStoreProperties;
-import com.bloxbean.cardano.yaci.store.common.executor.ParallelExecutor;
 import com.bloxbean.cardano.yaci.store.common.util.ListUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +12,8 @@ import org.cardanofoundation.ledgersync.account.storage.impl.model.AddressTxAmou
 import org.cardanofoundation.ledgersync.account.storage.impl.repository.AddressTxAmountRepository;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.cardanofoundation.ledgersync.account.jooq.Tables.ADDRESS_TX_AMOUNT;
@@ -30,18 +25,12 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
     private final AddressTxAmountRepository addressTxAmountRepository;
     private final DSLContext dsl;
     private final AccountStoreProperties accountStoreProperties;
-    private final PlatformTransactionManager transactionManager;
-    private final ParallelExecutor parallelExecutor;
 
     private final AggrMapper aggrMapper = AggrMapper.INSTANCE;
-    private TransactionTemplate transactionTemplate;
 
     @PostConstruct
     public void postConstruct() {
         this.dsl.settings().setBatchSize(accountStoreProperties.getJooqWriteBatchSize());
-
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
     @Override
@@ -51,93 +40,63 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
                 .map(addressTxAmount1 -> aggrMapper.toAddressTxAmountEntity(addressTxAmount1))
                 .toList();
 
-        if (accountStoreProperties.isParallelWrite()) {
-//            transactionTemplate.execute(status -> {
-                ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::doSave);
-//                return null;
-//            });
+        if (accountStoreProperties.isParallelWrite()
+                && addressTxAmtEntities.size() > accountStoreProperties.getPerThreadBatchSize()) {
+            ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::saveBatch);
         } else {
-            doSave(addressTxAmtEntities);
+            saveBatch(addressTxAmtEntities);
         }
     }
 
-    private void doSave(List<AddressTxAmountEntity> addressTxAmountEntities) {
-        LocalDateTime localDateTime = LocalDateTime.now();
+    private void saveBatch(List<AddressTxAmountEntity> addressTxAmountEntities) {
+        var inserts = addressTxAmountEntities.stream()
+                .map(addressTxAmount -> dsl.insertInto(ADDRESS_TX_AMOUNT)
+                        .set(ADDRESS_TX_AMOUNT.ADDRESS, addressTxAmount.getAddress())
+                        .set(ADDRESS_TX_AMOUNT.UNIT, addressTxAmount.getUnit())
+                        .set(ADDRESS_TX_AMOUNT.TX_HASH, addressTxAmount.getTxHash())
+                        .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
+                        .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
+                        .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
+                        .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
+                        .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
+                        .onDuplicateKeyUpdate()
+                        .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
+                        .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
+                        .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
+                        .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
+                        .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())).toList();
+        dsl.batch(inserts).execute();
 
         /**
-        var inserts = addressTxAmountEntities.stream()
-                .map(addressTxAmount -> {
-                    return dsl.insertInto(ADDRESS_TX_AMOUNT)
-                            .set(ADDRESS_TX_AMOUNT.ADDRESS, addressTxAmount.getAddress())
-                            .set(ADDRESS_TX_AMOUNT.UNIT, addressTxAmount.getUnit())
-                            .set(ADDRESS_TX_AMOUNT.TX_HASH, addressTxAmount.getTxHash())
-                            .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
-                            .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
-                            .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
-                            .set(ADDRESS_TX_AMOUNT.POLICY, addressTxAmount.getPolicy())
-                            .set(ADDRESS_TX_AMOUNT.ASSET_NAME, addressTxAmount.getAssetName())
-                            .set(ADDRESS_TX_AMOUNT.PAYMENT_CREDENTIAL, addressTxAmount.getPaymentCredential())
-                            .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_HASH, addressTxAmount.getBlockHash())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
-                            .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
-                            .set(ADDRESS_TX_AMOUNT.UPDATE_DATETIME, localDateTime)
-                            .onDuplicateKeyUpdate()
-                            .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
-                            .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
-                            .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
-                            .set(ADDRESS_TX_AMOUNT.POLICY, addressTxAmount.getPolicy())
-                            .set(ADDRESS_TX_AMOUNT.ASSET_NAME, addressTxAmount.getAssetName())
-                            .set(ADDRESS_TX_AMOUNT.PAYMENT_CREDENTIAL, addressTxAmount.getPaymentCredential())
-                            .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_HASH, addressTxAmount.getBlockHash())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
-                            .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
-                            .set(ADDRESS_TX_AMOUNT.UPDATE_DATETIME, localDateTime);
-                }).toList();
-        dsl.batch(inserts).execute();
-    **/
-
-        transactionTemplate.execute(status -> {
-            dsl.batched(c -> {
-                for (var addressTxAmount : addressTxAmountEntities) {
-                    c.dsl().insertInto(ADDRESS_TX_AMOUNT)
-                            .set(ADDRESS_TX_AMOUNT.ADDRESS, addressTxAmount.getAddress())
-                            .set(ADDRESS_TX_AMOUNT.UNIT, addressTxAmount.getUnit())
-                            .set(ADDRESS_TX_AMOUNT.TX_HASH, addressTxAmount.getTxHash())
-                            .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
-                            .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
-                            .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
-                            .set(ADDRESS_TX_AMOUNT.POLICY, addressTxAmount.getPolicy())
-                            .set(ADDRESS_TX_AMOUNT.ASSET_NAME, addressTxAmount.getAssetName())
-                            .set(ADDRESS_TX_AMOUNT.PAYMENT_CREDENTIAL, addressTxAmount.getPaymentCredential())
-                            .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_HASH, addressTxAmount.getBlockHash())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
-                            .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
-                            .set(ADDRESS_TX_AMOUNT.UPDATE_DATETIME, localDateTime)
-                            .onDuplicateKeyUpdate()
-                            .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
-                            .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
-                            .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
-                            .set(ADDRESS_TX_AMOUNT.POLICY, addressTxAmount.getPolicy())
-                            .set(ADDRESS_TX_AMOUNT.ASSET_NAME, addressTxAmount.getAssetName())
-                            .set(ADDRESS_TX_AMOUNT.PAYMENT_CREDENTIAL, addressTxAmount.getPaymentCredential())
-                            .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_HASH, addressTxAmount.getBlockHash())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
-                            .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
-                            .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
-                            .set(ADDRESS_TX_AMOUNT.UPDATE_DATETIME, localDateTime)
-                            .execute();
-                }
-            });
-            return null;
+        dsl.batched(c -> {
+            for (var addressTxAmount : addressTxAmountEntities) {
+                c.dsl().insertInto(ADDRESS_TX_AMOUNT)
+                        .set(ADDRESS_TX_AMOUNT.ADDRESS, addressTxAmount.getAddress())
+                        .set(ADDRESS_TX_AMOUNT.UNIT, addressTxAmount.getUnit())
+                        .set(ADDRESS_TX_AMOUNT.TX_HASH, addressTxAmount.getTxHash())
+                        .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
+                        .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
+                        .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
+                        .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
+                        .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
+                        .onDuplicateKeyUpdate()
+                        .set(ADDRESS_TX_AMOUNT.SLOT, addressTxAmount.getSlot())
+                        .set(ADDRESS_TX_AMOUNT.QUANTITY, addressTxAmount.getQuantity())
+                        .set(ADDRESS_TX_AMOUNT.ADDR_FULL, addressTxAmount.getAddrFull())
+                        .set(ADDRESS_TX_AMOUNT.STAKE_ADDRESS, addressTxAmount.getStakeAddress())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK, addressTxAmount.getBlockNumber())
+                        .set(ADDRESS_TX_AMOUNT.BLOCK_TIME, addressTxAmount.getBlockTime())
+                        .set(ADDRESS_TX_AMOUNT.EPOCH, addressTxAmount.getEpoch())
+                        .execute();
+            }
         });
-
+        **/
     }
 
     @Override

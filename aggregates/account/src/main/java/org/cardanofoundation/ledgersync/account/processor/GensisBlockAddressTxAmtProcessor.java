@@ -69,12 +69,8 @@ public class GensisBlockAddressTxAmtProcessor {
                     .slot(genesisBlockEvent.getSlot())
                     .quantity(balance)
                     .stakeAddress(stakeAddress)
-                    .assetName(LOVELACE)
-                    .policy(null)
-                    .paymentCredential(ownerPaymentCredential)
                     .epoch(0)
                     .blockNumber(genesisBlockEvent.getBlock())
-                    .blockHash(genesisBlockEvent.getBlockHash())
                     .blockTime(genesisBlockEvent.getBlockTime())
                     .build();
 
