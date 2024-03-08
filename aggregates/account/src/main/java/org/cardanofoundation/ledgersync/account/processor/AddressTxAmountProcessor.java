@@ -4,6 +4,7 @@ import com.bloxbean.cardano.yaci.store.client.utxo.UtxoClient;
 import com.bloxbean.cardano.yaci.store.common.domain.AddressUtxo;
 import com.bloxbean.cardano.yaci.store.common.domain.Amt;
 import com.bloxbean.cardano.yaci.store.common.domain.UtxoKey;
+import com.bloxbean.cardano.yaci.store.common.executor.ParallelExecutor;
 import com.bloxbean.cardano.yaci.store.events.EventMetadata;
 import com.bloxbean.cardano.yaci.store.events.RollbackEvent;
 import com.bloxbean.cardano.yaci.store.events.internal.ReadyForBalanceAggregationEvent;
@@ -24,6 +25,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.cardanofoundation.ledgersync.account.util.AddressUtil.getAddress;
 
@@ -38,6 +41,7 @@ public class AddressTxAmountProcessor {
     private List<AddressTxAmount> addressTxAmountListCache = Collections.synchronizedList(new ArrayList<>());
 
     private final PlatformTransactionManager transactionManager;
+    private final ParallelExecutor parallelExecutor;
     private TransactionTemplate transactionTemplate;
 
     @PostConstruct
@@ -193,13 +197,25 @@ public class AddressTxAmountProcessor {
                 addressTxAmountListCache.addAll(addressTxAmountList);
             }
 
-            long t1 = System.currentTimeMillis();
-            if (addressTxAmountListCache.size() > 0) {
-                addressTxAmountStorage.save(addressTxAmountListCache);
-            }
+            var future = CompletableFuture.supplyAsync(() -> {
+                long t1 = System.currentTimeMillis();
+                if (addressTxAmountListCache.size() > 0) {
+                    addressTxAmountStorage.save(addressTxAmountListCache);
+                }
 
-            long t2 = System.currentTimeMillis();
-            log.info("Time taken to save address_tx_amounts records : {}, time: {} ms", addressTxAmountListCache.size(),  (t2 - t1));
+                long t2 = System.currentTimeMillis();
+                log.info("Time taken to save address_tx_amounts records : {}, time: {} ms", addressTxAmountListCache.size(),  (t2 - t1));
+
+                return null;
+            }, parallelExecutor.getVirtualThreadExecutor());
+
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
 
         } finally {
             txInputOutputListCache.clear();

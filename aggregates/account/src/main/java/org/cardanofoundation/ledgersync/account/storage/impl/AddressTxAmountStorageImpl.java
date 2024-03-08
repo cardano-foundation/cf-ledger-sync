@@ -53,7 +53,7 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
 
         if (accountStoreProperties.isParallelWrite()) {
 //            transactionTemplate.execute(status -> {
-                ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::doSave, parallelExecutor.getVirtualThreadExecutor());
+                ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::doSave);
 //                return null;
 //            });
         } else {
