@@ -9,11 +9,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.consumercommon.entity.*;
-import org.cardanofoundation.ledgersync.consumercommon.enumeration.TokenType;
+import org.cardanofoundation.ledgersync.aggregate.*;
 import org.cardanofoundation.ledgersync.common.common.Era;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
-import org.cardanofoundation.ledgersync.aggregate.*;
+import org.cardanofoundation.ledgersync.consumercommon.entity.*;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.TokenType;
 import org.cardanofoundation.ledgersync.converter.AvvmAddressConverter;
 import org.cardanofoundation.ledgersync.converter.CostModelConverter;
 import org.cardanofoundation.ledgersync.dto.GenesisData;
@@ -172,9 +172,6 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                             .amounts(Collections.emptyList())
                             .nativeAmount(txOut.getValue())
                             .build());
-
-                    blockAggregatorService.mapAggregatedTxOutsToAddressBalanceMap(aggregatedTxOuts,
-                            tx.getHash());
 
                     return AggregatedTx
                             .builder()

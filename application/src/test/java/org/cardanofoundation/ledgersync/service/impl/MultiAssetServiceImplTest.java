@@ -1,14 +1,12 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
 import com.bloxbean.cardano.yaci.core.model.Amount;
-import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTxOut;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.projection.MaTxMintProjection;
 import org.cardanofoundation.ledgersync.projection.MaTxOutProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTotalVolumeProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTxCountProjection;
 import org.cardanofoundation.ledgersync.repository.MaTxMintRepository;
 import org.cardanofoundation.ledgersync.repository.MultiAssetRepository;
 import org.cardanofoundation.ledgersync.repository.MultiAssetTxOutRepository;
@@ -391,8 +389,6 @@ class MultiAssetServiceImplTest {
     Mockito.verify(maTxMintRepository, Mockito.times(1))
         .findAllByTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(maTxMintRepository);
-    Mockito.verify(multiAssetRepository, Mockito.times(1))
-        .getMultiAssetTxCountByTxs(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
   }
 
@@ -402,10 +398,6 @@ class MultiAssetServiceImplTest {
   void shouldRollbackMultiAssetsSuccessfullyTest() {
     MaTxMintProjection maTxMintProjection = Mockito.mock(MaTxMintProjection.class);
     MaTxMintProjection maTxMintProjection2 = Mockito.mock(MaTxMintProjection.class);
-    MultiAssetTxCountProjection multiAssetTxCountProjection =
-        Mockito.mock(MultiAssetTxCountProjection.class);
-    MultiAssetTotalVolumeProjection multiAssetTotalVolumeProjection =
-        Mockito.mock(MultiAssetTotalVolumeProjection.class);
     MultiAsset givenMultiAsset = MultiAsset.builder()
         .id(1L)
         .txCount(10L)
@@ -417,18 +409,10 @@ class MultiAssetServiceImplTest {
     Mockito.when(maTxMintProjection.getIdentId()).thenReturn(1L);
     Mockito.when(maTxMintProjection2.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(maTxMintProjection2.getIdentId()).thenReturn(1L);
-    Mockito.when(multiAssetTxCountProjection.getTxCount()).thenReturn(3L);
-    Mockito.when(multiAssetTxCountProjection.getIdentId()).thenReturn(1L);
-    Mockito.when(multiAssetTotalVolumeProjection.getTotalVolume()).thenReturn(BigInteger.ONE);
-    Mockito.when(multiAssetTotalVolumeProjection.getIdentId()).thenReturn(1L);
     Mockito.when(maTxMintRepository.findAllByTxIn(Mockito.anyCollection()))
         .thenReturn(List.of(maTxMintProjection, maTxMintProjection2));
-    Mockito.when(multiAssetRepository.getMultiAssetTxCountByTxs(Mockito.anyCollection()))
-        .thenReturn(List.of(multiAssetTxCountProjection));
     Mockito.when(multiAssetRepository.findAllById(Mockito.anyCollection()))
         .thenReturn(List.of(givenMultiAsset));
-    Mockito.when(multiAssetRepository.getMultiAssetTotalVolumeByTxs(Mockito.anyCollection()))
-        .thenReturn(List.of(multiAssetTotalVolumeProjection));
 
     victim.rollbackMultiAssets(List.of(new Tx()));
 
@@ -436,11 +420,7 @@ class MultiAssetServiceImplTest {
         .findAllByTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(maTxMintRepository);
     Mockito.verify(multiAssetRepository, Mockito.times(1))
-        .getMultiAssetTxCountByTxs(Mockito.anyCollection());
-    Mockito.verify(multiAssetRepository, Mockito.times(1))
         .findAllById(Mockito.anyCollection());
-    Mockito.verify(multiAssetRepository, Mockito.times(1))
-        .getMultiAssetTotalVolumeByTxs(Mockito.anyCollection());
     Mockito.verify(multiAssetRepository, Mockito.times(1))
         .saveAll(multiAssetsCaptor.capture());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
@@ -448,7 +428,5 @@ class MultiAssetServiceImplTest {
     Collection<MultiAsset> multiAssets = multiAssetsCaptor.getValue();
     MultiAsset multiAsset = new ArrayList<>(multiAssets).get(0);
     Assertions.assertEquals(BigInteger.valueOf(8L), multiAsset.getSupply());
-    Assertions.assertEquals(7L, multiAsset.getTxCount());
-    Assertions.assertEquals(BigInteger.valueOf(9L), multiAsset.getTotalVolume());
   }
 }

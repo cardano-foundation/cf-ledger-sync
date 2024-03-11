@@ -5,17 +5,15 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.consumercommon.entity.*;
-import org.cardanofoundation.ledgersync.consumercommon.entity.TxIn.TxInBuilder;
-import org.cardanofoundation.ledgersync.common.common.Era;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTxIn;
+import org.cardanofoundation.ledgersync.common.common.Era;
+import org.cardanofoundation.ledgersync.consumercommon.entity.*;
+import org.cardanofoundation.ledgersync.consumercommon.entity.TxIn.TxInBuilder;
 import org.cardanofoundation.ledgersync.repository.TxInRepository;
 import org.cardanofoundation.ledgersync.repository.UnconsumeTxInRepository;
 import org.cardanofoundation.ledgersync.service.BlockDataService;
-import org.cardanofoundation.ledgersync.service.MultiAssetService;
 import org.cardanofoundation.ledgersync.service.TxInService;
 import org.cardanofoundation.ledgersync.service.TxOutService;
 import org.springframework.data.util.Pair;
@@ -37,8 +35,6 @@ public class TxInServiceImpl implements TxInService {
 
     BlockDataService blockDataService;
     TxOutService txOutService;
-    MultiAssetService multiAssetService;
-
     TxInRepository txInRepository;
     UnconsumeTxInRepository unconsumeTxInRepository;
 
@@ -90,8 +86,6 @@ public class TxInServiceImpl implements TxInService {
                 txInQueue.add(handleTxIn(tx, txIn, txOutMap, newTxOutMap, redeemer));
             });
         });
-
-        handleTxInBalances(txInMap, txOutMap, newTxOutMap, newMaTxOutMap, shouldFindAssets.get());
         txInRepository.saveAll(txInQueue);
     }
 
@@ -191,51 +185,6 @@ public class TxInServiceImpl implements TxInService {
         txInBuilder.txOutIndex(txOut.getIndex());
 
         return txInBuilder.build();
-    }
-
-    private void handleTxInBalances(Map<String, Set<AggregatedTxIn>> txInMap,
-                                    Map<Pair<String, Short>, TxOut> txOutMap,
-                                    Map<Pair<String, Short>, TxOut> newTxOutMap,
-                                    Map<Long, List<MaTxOut>> newMaTxOutMap,
-                                    boolean shouldFindAssets) {
-        // Byron does not have assets, hence this step is skipped
-        Map<Long, List<MaTxOut>> maTxOutMap = !shouldFindAssets
-                ? Collections.emptyMap()
-                : multiAssetService
-                .findAllByTxOutIn(txOutMap.values())
-                .parallelStream()
-                .collect(Collectors.groupingByConcurrent(
-                        maTxOut -> maTxOut.getTxOut().getId(),
-                        Collectors.toList()));
-
-        txInMap.entrySet().parallelStream().forEach(entry ->
-                entry.getValue().parallelStream().forEach(txIn -> {
-                    Pair<String, Short> txOutKey = Pair.of(txIn.getTxId(), (short) txIn.getIndex());
-                    TxOut txOut = txOutMap.get(txOutKey);
-                    if (Objects.isNull(txOut)) {
-                        txOut = newTxOutMap.get(txOutKey);
-                    }
-                    String txHash = entry.getKey();
-                    String address = txOut.getAddress();
-                    AggregatedAddressBalance addressBalance = blockDataService
-                            .getAggregatedAddressBalanceFromAddress(address);
-
-                    // Subtract native balance
-                    addressBalance.subtractNativeBalance(txHash, txOut.getValue());
-
-                    // Find associated multi asset output records
-                    List<MaTxOut> maTxOuts = maTxOutMap.get(txOut.getId());
-                    if (CollectionUtils.isEmpty(maTxOuts)) {
-                        maTxOuts = newMaTxOutMap.get(txOut.getId());
-                    }
-
-                    // Subtract asset balances if there's any
-                    if (!CollectionUtils.isEmpty(maTxOuts)) {
-                        maTxOuts.parallelStream().forEach(maTxOut -> addressBalance.subtractAssetBalance(
-                                txHash, maTxOut.getIdent().getFingerprint(), maTxOut.getQuantity())
-                        );
-                    }
-                }));
     }
 
     @Override

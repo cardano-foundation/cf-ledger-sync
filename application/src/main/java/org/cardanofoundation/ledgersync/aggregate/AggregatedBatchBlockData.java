@@ -17,9 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AggregatedBatchBlockData {
 
-    // Key is address (Bech32 or Base58 format)
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap;
-
     // Key is stake address hex, value is first appeared tx hash
     Map<String, String> stakeAddressTxHashMap;
 
@@ -32,7 +29,6 @@ public class AggregatedBatchBlockData {
     Map<String, AggregatedBlock> aggregatedBlockMap;
 
     public AggregatedBatchBlockData() {
-        aggregatedAddressBalanceMap = new ConcurrentHashMap<>();
         stakeAddressTxHashMap = new ConcurrentHashMap<>();
         notMintedAssetFingerprintTxHashSet = new LinkedHashSet<>();
         fingerprintFirstAppearedMap = new ConcurrentHashMap<>();
@@ -42,7 +38,6 @@ public class AggregatedBatchBlockData {
 
     // This method must be called every batch saving
     public void clear() {
-        aggregatedAddressBalanceMap.clear();
         stakeAddressTxHashMap.clear();
         notMintedAssetFingerprintTxHashSet.clear();
         fingerprintFirstAppearedMap.clear();
