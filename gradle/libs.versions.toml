@@ -1,8 +1,8 @@
 [libraries]
-yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.1.0-rc2-94c9d24-SNAPSHOT"
-yaci-store-utxo-starter="com.bloxbean.cardano:yaci-store-utxo-spring-boot-starter:0.1.0-rc2-94c9d24-SNAPSHOT"
-yaci-store-account-starter="com.bloxbean.cardano:yaci-store-account-spring-boot-starter:0.1.0-rc2-94c9d24-SNAPSHOT"
-yaci-store-remote-starter="com.bloxbean.cardano:yaci-store-remote-spring-boot-starter:0.1.0-rc2-94c9d24-SNAPSHOT"
+yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.1.0-rc2-d5f2998-SNAPSHOT"
+yaci-store-utxo-starter="com.bloxbean.cardano:yaci-store-utxo-spring-boot-starter:0.1.0-rc2-d5f2998-SNAPSHOT"
+yaci-store-account-starter="com.bloxbean.cardano:yaci-store-account-spring-boot-starter:0.1.0-rc2-d5f2998-SNAPSHOT"
+yaci-store-remote-starter="com.bloxbean.cardano:yaci-store-remote-spring-boot-starter:0.1.0-rc2-d5f2998-SNAPSHOT"
 
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.1"
 snakeyaml="org.yaml:snakeyaml:2.0"
