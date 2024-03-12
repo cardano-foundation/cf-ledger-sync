@@ -42,7 +42,6 @@ public class TransactionServiceImpl implements TransactionService {
     MultiAssetService multiAssetService;
     StakeAddressService stakeAddressService;
     ParamProposalService paramProposalService;
-    AddressBalanceService addressBalanceService;
     WithdrawalsService withdrawalsService;
     TxMetaDataService txMetaDataService;
     RedeemerService redeemerService;
@@ -226,10 +225,6 @@ public class TransactionServiceImpl implements TransactionService {
         // - Collateral return if tx success
         // - Tx out if tx failed
         txOutService.handleFailedTxOuts(successTxs, failedTxs, txMap, stakeAddressMap, datumMap);
-
-        // Handle address balances
-        addressBalanceService.handleAddressBalance(
-                blockDataService.getAggregatedAddressBalanceMap(), stakeAddressMap, txMap);
     }
 
     private Map<String, Set<AggregatedTxIn>> buildTxInsMap(Collection<AggregatedTx> txList) {

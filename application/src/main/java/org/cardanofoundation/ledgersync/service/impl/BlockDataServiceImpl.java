@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBatchBlockData;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.service.BlockDataService;
@@ -30,18 +29,6 @@ public class BlockDataServiceImpl implements BlockDataService {
     @Override
     public void saveFirstAppearedTxHashForStakeAddress(String stakeAddress, String txHash) {
         aggregatedBatchBlockData.getStakeAddressTxHashMap().putIfAbsent(stakeAddress, txHash);
-    }
-
-    @Override
-    public AggregatedAddressBalance getAggregatedAddressBalanceFromAddress(String address) {
-        return aggregatedBatchBlockData
-                .getAggregatedAddressBalanceMap()
-                .computeIfAbsent(address, AggregatedAddressBalance::from);
-    }
-
-    @Override
-    public Map<String, AggregatedAddressBalance> getAggregatedAddressBalanceMap() {
-        return aggregatedBatchBlockData.getAggregatedAddressBalanceMap();
     }
 
     @Override

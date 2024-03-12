@@ -5,7 +5,6 @@ import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx.TxBuilder;
 import org.cardanofoundation.ledgersync.common.common.Era;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx.AggregatedTxBuilder;
@@ -152,14 +151,6 @@ class TxInServiceImplTest {
     AggregatedTxIn aggregatedTxIn = givenTxIn(txInId, 0, null);
     TxOut txOutFromTxIn = givenTxOutFromTxIn(aggregatedTxIn);
     Tx tx = aggregatedTxToTx(aggregatedTx);
-    AggregatedAddressBalance addressBalance =
-        AggregatedAddressBalance.from(txOutFromTxIn.getAddress());
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap = new HashMap<>();
-    Map<String, BigInteger> expectedAddressBalance = Map.of(
-        "DdzFFzCqrhsf7cannGRC1UusPpWLYJV3ZvgnJbUcEhtetHWKyrwGqZqT7RpbgyS2GcoYS7M1LoW1QGCFuA3EWuqbJ2N8GK36bFKRdS6Y",
-        BigInteger.valueOf(-384902000000L)
-    );
-    aggregatedAddressBalanceMap.put(txOutFromTxIn.getAddress(), addressBalance);
     Map<String, Set<AggregatedTxIn>> txInMap =
         Map.of(aggregatedTx.getHash(), Set.of(aggregatedTxIn));
     Map<String, Tx> txMap = Map.of(tx.getHash(), tx);
@@ -167,15 +158,9 @@ class TxInServiceImplTest {
     Mockito.when(blockDataService.getAggregatedBlock(blockHash)).thenReturn(aggregatedBlock);
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(List.of(txOutFromTxIn));
-    Mockito.when(blockDataService
-            .getAggregatedAddressBalanceFromAddress(txOutFromTxIn.getAddress()))
-        .thenReturn(addressBalance);
 
     victim.handleTxIns(List.of(aggregatedTx), txInMap, txMap,
         newTxOutMap, newMaTxOutMap, redeemersMap);
-
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAggregatedAddressBalanceFromAddress(Mockito.anyString());
     Mockito.verify(blockDataService, Mockito.times(1))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);
@@ -194,12 +179,6 @@ class TxInServiceImplTest {
     TxIn txIn = txInQueue.remove();
     Assertions.assertEquals(txIn.getTxOut().getId(), txOutFromTxIn.getTx().getId());
     Assertions.assertEquals(txIn.getTxOutIndex(), txOutFromTxIn.getIndex());
-
-    AggregatedAddressBalance aggregatedAddressBalance =
-        aggregatedAddressBalanceMap.get(txOutFromTxIn.getAddress());
-    Assertions.assertEquals(
-        aggregatedAddressBalance.getTotalNativeBalance(),
-        expectedAddressBalance.get(txOutFromTxIn.getAddress()));
   }
 
   @Test
@@ -218,14 +197,7 @@ class TxInServiceImplTest {
     AggregatedTxIn aggregatedTxIn = givenTxIn(txInId, 0, null);
     TxOut txOutFromTxIn = givenTxOutFromTxIn(aggregatedTxIn);
     Tx tx = aggregatedTxToTx(aggregatedTx);
-    AggregatedAddressBalance addressBalance =
-        AggregatedAddressBalance.from(txOutFromTxIn.getAddress());
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap = new HashMap<>();
-    Map<String, BigInteger> expectedAddressBalance = Map.of(
-        "addr1qx6tzadessnknvgqpjjt390ly99ug6htxf4dw3yh29jqd00zz6d6dw64q4xxspqwx0sewrrw7s53muh5qrwqvuhpgc2qrn2sgr",
-        BigInteger.valueOf(-1481480L)
-    );
-    aggregatedAddressBalanceMap.put(txOutFromTxIn.getAddress(), addressBalance);
+
     Map<String, Set<AggregatedTxIn>> txInMap =
         Map.of(aggregatedTx.getHash(), Set.of(aggregatedTxIn));
     Map<String, Tx> txMap = Map.of(tx.getHash(), tx);
@@ -233,23 +205,16 @@ class TxInServiceImplTest {
     Mockito.when(blockDataService.getAggregatedBlock(blockHash)).thenReturn(aggregatedBlock);
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(List.of(txOutFromTxIn));
-    Mockito.when(blockDataService
-            .getAggregatedAddressBalanceFromAddress(txOutFromTxIn.getAddress()))
-        .thenReturn(addressBalance);
 
     victim.handleTxIns(List.of(aggregatedTx), txInMap, txMap,
         newTxOutMap, newMaTxOutMap, redeemersMap);
 
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAggregatedAddressBalanceFromAddress(Mockito.anyString());
     Mockito.verify(blockDataService, Mockito.times(1))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
         .getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txOutService);
-    Mockito.verify(multiAssetService, Mockito.times(1))
-        .findAllByTxOutIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetService);
     Mockito.verify(txInRepository, Mockito.times(1))
         .saveAll(txInQueueCaptor.capture());
@@ -262,12 +227,6 @@ class TxInServiceImplTest {
     TxIn txIn = txInQueue.remove();
     Assertions.assertEquals(txIn.getTxOut().getId(), txOutFromTxIn.getTx().getId());
     Assertions.assertEquals(txIn.getTxOutIndex(), txOutFromTxIn.getIndex());
-
-    AggregatedAddressBalance aggregatedAddressBalance =
-        aggregatedAddressBalanceMap.get(txOutFromTxIn.getAddress());
-    Assertions.assertEquals(
-        aggregatedAddressBalance.getTotalNativeBalance(),
-        expectedAddressBalance.get(txOutFromTxIn.getAddress()));
   }
 
   @Test
@@ -286,17 +245,7 @@ class TxInServiceImplTest {
     AggregatedTxIn aggregatedTxIn = givenTxIn(txInId, 0, null);
     TxOut txOutFromTxIn = givenTxOutFromTxIn(aggregatedTxIn);
     String assetFingerprint = "asset1yeavs0w2rd762k3s902hnwas3rzq9yqt8wv35a";
-    MaTxOut maTxOut = givenMaTxOut(1L, assetFingerprint, BigInteger.ONE);
     Tx tx = aggregatedTxToTx(aggregatedTx);
-    AggregatedAddressBalance addressBalance =
-        AggregatedAddressBalance.from(txOutFromTxIn.getAddress());
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap = new HashMap<>();
-    Map<String, BigInteger> expectedAddressBalance = Map.of(
-        "addr1qx6tzadessnknvgqpjjt390ly99ug6htxf4dw3yh29jqd00zz6d6dw64q4xxspqwx0sewrrw7s53muh5qrwqvuhpgc2qrn2sgr",
-        BigInteger.valueOf(-1481480L)
-    );
-    Map<String, BigInteger> expectedAssetBalance = Map.of(assetFingerprint, BigInteger.valueOf(-1));
-    aggregatedAddressBalanceMap.put(txOutFromTxIn.getAddress(), addressBalance);
     Map<String, Set<AggregatedTxIn>> txInMap =
         Map.of(aggregatedTx.getHash(), Set.of(aggregatedTxIn));
     Map<String, Tx> txMap = Map.of(tx.getHash(), tx);
@@ -304,25 +253,16 @@ class TxInServiceImplTest {
     Mockito.when(blockDataService.getAggregatedBlock(blockHash)).thenReturn(aggregatedBlock);
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(List.of(txOutFromTxIn));
-    Mockito.when(blockDataService
-            .getAggregatedAddressBalanceFromAddress(txOutFromTxIn.getAddress()))
-        .thenReturn(addressBalance);
-    Mockito.when(multiAssetService.findAllByTxOutIn(Mockito.anyCollection()))
-        .thenReturn(List.of(maTxOut));
 
     victim.handleTxIns(List.of(aggregatedTx), txInMap, txMap,
         newTxOutMap, newMaTxOutMap, redeemersMap);
 
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAggregatedAddressBalanceFromAddress(Mockito.anyString());
     Mockito.verify(blockDataService, Mockito.times(1))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
         .getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txOutService);
-    Mockito.verify(multiAssetService, Mockito.times(1))
-        .findAllByTxOutIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetService);
     Mockito.verify(txInRepository, Mockito.times(1))
         .saveAll(txInQueueCaptor.capture());
@@ -335,16 +275,6 @@ class TxInServiceImplTest {
     TxIn txIn = txInQueue.remove();
     Assertions.assertEquals(txIn.getTxOut().getId(), txOutFromTxIn.getTx().getId());
     Assertions.assertEquals(txIn.getTxOutIndex(), txOutFromTxIn.getIndex());
-
-    AggregatedAddressBalance aggregatedAddressBalance =
-        aggregatedAddressBalanceMap.get(txOutFromTxIn.getAddress());
-    Assertions.assertEquals(
-        expectedAddressBalance.get(txOutFromTxIn.getAddress()),
-        aggregatedAddressBalance.getTotalNativeBalance());
-    Assertions.assertEquals(
-        expectedAssetBalance.get(assetFingerprint),
-        aggregatedAddressBalance.getMaBalances().get(Pair.of(txHash, assetFingerprint)).get()
-    );
   }
 
   @Test
@@ -367,15 +297,6 @@ class TxInServiceImplTest {
     MaTxOut maTxOut = givenMaTxOut(1L, assetFingerprint, BigInteger.ONE);
     newMaTxOutMap.put(1L, List.of(maTxOut));
     Tx tx = aggregatedTxToTx(aggregatedTx);
-    AggregatedAddressBalance addressBalance =
-        AggregatedAddressBalance.from(txOutFromTxIn.getAddress());
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap = new HashMap<>();
-    Map<String, BigInteger> expectedAddressBalance = Map.of(
-        "addr1qx6tzadessnknvgqpjjt390ly99ug6htxf4dw3yh29jqd00zz6d6dw64q4xxspqwx0sewrrw7s53muh5qrwqvuhpgc2qrn2sgr",
-        BigInteger.valueOf(-1481480L)
-    );
-    Map<String, BigInteger> expectedAssetBalance = Map.of(assetFingerprint, BigInteger.valueOf(-1));
-    aggregatedAddressBalanceMap.put(txOutFromTxIn.getAddress(), addressBalance);
     Map<String, Set<AggregatedTxIn>> txInMap =
         Map.of(aggregatedTx.getHash(), Set.of(aggregatedTxIn));
     Map<String, Tx> txMap = Map.of(tx.getHash(), tx);
@@ -383,25 +304,16 @@ class TxInServiceImplTest {
     Mockito.when(blockDataService.getAggregatedBlock(blockHash)).thenReturn(aggregatedBlock);
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
-    Mockito.when(blockDataService
-            .getAggregatedAddressBalanceFromAddress(txOutFromTxIn.getAddress()))
-        .thenReturn(addressBalance);
-    Mockito.when(multiAssetService.findAllByTxOutIn(Mockito.anyCollection()))
-        .thenReturn(Collections.emptyList());
 
     victim.handleTxIns(List.of(aggregatedTx), txInMap, txMap,
         newTxOutMap, newMaTxOutMap, redeemersMap);
 
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAggregatedAddressBalanceFromAddress(Mockito.anyString());
     Mockito.verify(blockDataService, Mockito.times(1))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
         .getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txOutService);
-    Mockito.verify(multiAssetService, Mockito.times(1))
-        .findAllByTxOutIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetService);
     Mockito.verify(txInRepository, Mockito.times(1))
         .saveAll(txInQueueCaptor.capture());
@@ -414,16 +326,6 @@ class TxInServiceImplTest {
     TxIn txIn = txInQueue.remove();
     Assertions.assertEquals(txIn.getTxOut().getId(), txOutFromTxIn.getTx().getId());
     Assertions.assertEquals(txIn.getTxOutIndex(), txOutFromTxIn.getIndex());
-
-    AggregatedAddressBalance aggregatedAddressBalance =
-        aggregatedAddressBalanceMap.get(txOutFromTxIn.getAddress());
-    Assertions.assertEquals(
-        expectedAddressBalance.get(txOutFromTxIn.getAddress()),
-        aggregatedAddressBalance.getTotalNativeBalance());
-    Assertions.assertEquals(
-        expectedAssetBalance.get(assetFingerprint),
-        aggregatedAddressBalance.getMaBalances().get(Pair.of(txHash, assetFingerprint)).get()
-    );
   }
 
   @Test
@@ -450,15 +352,6 @@ class TxInServiceImplTest {
     MaTxOut maTxOut = givenMaTxOut(1L, assetFingerprint, BigInteger.ONE);
     newMaTxOutMap.put(1L, List.of(maTxOut));
     Tx tx = aggregatedTxToTx(aggregatedTx);
-    AggregatedAddressBalance addressBalance =
-        AggregatedAddressBalance.from(txOutFromTxIn.getAddress());
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap = new HashMap<>();
-    Map<String, BigInteger> expectedAddressBalance = Map.of(
-        "addr1qx6tzadessnknvgqpjjt390ly99ug6htxf4dw3yh29jqd00zz6d6dw64q4xxspqwx0sewrrw7s53muh5qrwqvuhpgc2qrn2sgr",
-        BigInteger.valueOf(-1481480L)
-    );
-    Map<String, BigInteger> expectedAssetBalance = Map.of(assetFingerprint, BigInteger.valueOf(-1));
-    aggregatedAddressBalanceMap.put(txOutFromTxIn.getAddress(), addressBalance);
     Map<String, Set<AggregatedTxIn>> txInMap =
         Map.of(aggregatedTx.getHash(), Set.of(aggregatedTxIn));
     Map<String, Tx> txMap = Map.of(tx.getHash(), tx);
@@ -466,25 +359,15 @@ class TxInServiceImplTest {
     Mockito.when(blockDataService.getAggregatedBlock(blockHash)).thenReturn(aggregatedBlock);
     Mockito.when(txOutService.getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
-    Mockito.when(blockDataService
-            .getAggregatedAddressBalanceFromAddress(txOutFromTxIn.getAddress()))
-        .thenReturn(addressBalance);
-    Mockito.when(multiAssetService.findAllByTxOutIn(Mockito.anyCollection()))
-        .thenReturn(Collections.emptyList());
 
     victim.handleTxIns(List.of(aggregatedTx), txInMap, txMap,
         newTxOutMap, newMaTxOutMap, redeemersMap);
-
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAggregatedAddressBalanceFromAddress(Mockito.anyString());
     Mockito.verify(blockDataService, Mockito.times(1))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);
     Mockito.verify(txOutService, Mockito.times(1))
         .getTxOutCanUseByAggregatedTxIns(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txOutService);
-    Mockito.verify(multiAssetService, Mockito.times(1))
-        .findAllByTxOutIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetService);
     Mockito.verify(txInRepository, Mockito.times(1))
         .saveAll(txInQueueCaptor.capture());
@@ -498,16 +381,6 @@ class TxInServiceImplTest {
     Assertions.assertEquals(txIn.getTxOut().getId(), txOutFromTxIn.getTx().getId());
     Assertions.assertEquals(txIn.getTxOutIndex(), txOutFromTxIn.getIndex());
     Assertions.assertNotNull(txIn.getRedeemer());
-
-    AggregatedAddressBalance aggregatedAddressBalance =
-        aggregatedAddressBalanceMap.get(txOutFromTxIn.getAddress());
-    Assertions.assertEquals(
-        expectedAddressBalance.get(txOutFromTxIn.getAddress()),
-        aggregatedAddressBalance.getTotalNativeBalance());
-    Assertions.assertEquals(
-        expectedAssetBalance.get(assetFingerprint),
-        aggregatedAddressBalance.getMaBalances().get(Pair.of(txHash, assetFingerprint)).get()
-    );
   }
 
   @Test

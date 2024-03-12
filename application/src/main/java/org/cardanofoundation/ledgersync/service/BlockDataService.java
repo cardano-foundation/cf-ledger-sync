@@ -1,6 +1,5 @@
 package org.cardanofoundation.ledgersync.service;
 
-import org.cardanofoundation.ledgersync.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.springframework.data.util.Pair;
 
@@ -23,23 +22,6 @@ public interface BlockDataService {
      * @param txHash       first appeared tx hash
      */
     void saveFirstAppearedTxHashForStakeAddress(String stakeAddress, String txHash);
-
-    /**
-     * Get aggregated address balance object from address string (Base58 or Bech32 form) If there
-     * isn't any, create a new one, push it to aggregated address balance map and return it
-     *
-     * @param address address string (Base58 or Bech32 form)
-     * @return aggregated address balance object
-     */
-    AggregatedAddressBalance getAggregatedAddressBalanceFromAddress(String address);
-
-    /**
-     * Get aggregated address balance map
-     *
-     * @return a map with key is address string (Base58 or Bech32 form) and value is associated
-     * aggregated address balance object
-     */
-    Map<String, AggregatedAddressBalance> getAggregatedAddressBalanceMap();
 
     /**
      * Get an asset fingerprint's first appeared block no and tx idx

@@ -13,14 +13,12 @@ public abstract class StakeAddress_ extends org.cardanofoundation.explorer.consu
 	public static volatile SingularAttribute<StakeAddress, String> view;
 	public static volatile SingularAttribute<StakeAddress, BigInteger> availableReward;
 	public static volatile ListAttribute<StakeAddress, Address> addresses;
-	public static volatile SingularAttribute<StakeAddress, BigInteger> balance;
 	public static volatile SingularAttribute<StakeAddress, String> scriptHash;
 	public static volatile SingularAttribute<StakeAddress, String> hashRaw;
 
 	public static final String VIEW = "view";
 	public static final String AVAILABLE_REWARD = "availableReward";
 	public static final String ADDRESSES = "addresses";
-	public static final String BALANCE = "balance";
 	public static final String SCRIPT_HASH = "scriptHash";
 	public static final String HASH_RAW = "hashRaw";
 
