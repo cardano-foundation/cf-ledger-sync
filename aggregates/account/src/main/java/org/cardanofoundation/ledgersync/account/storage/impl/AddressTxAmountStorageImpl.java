@@ -41,8 +41,10 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
                 .toList();
 
         if (accountStoreProperties.isParallelWrite()
-                && addressTxAmtEntities.size() > accountStoreProperties.getPerThreadBatchSize()) {
-            ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, accountStoreProperties.getPerThreadBatchSize(), this::saveBatch);
+                && addressTxAmtEntities.size() > accountStoreProperties.getWriteThreadDefaultBatchSize()) {
+            int partitionSize = getPartitionSize(addressTxAmtEntities.size());
+            log.info("\tPartition address_tx_amount size : {}", partitionSize);
+            ListUtil.partitionAndApplyInParallel(addressTxAmtEntities, partitionSize, this::saveBatch);
         } else {
             saveBatch(addressTxAmtEntities);
         }
@@ -102,5 +104,16 @@ public class AddressTxAmountStorageImpl implements AddressTxAmountStorage {
     @Override
     public int deleteAddressBalanceBySlotGreaterThan(Long slot) {
         return addressTxAmountRepository.deleteAddressBalanceBySlotGreaterThan(slot);
+    }
+
+    private int getPartitionSize(int totalSize) {
+        int partitionSize = totalSize;
+        if (totalSize > accountStoreProperties.getWriteThreadDefaultBatchSize()) {
+            partitionSize = totalSize / accountStoreProperties.getWriteThreadCount();
+            log.info("\tAddress Tx Amt Partition size : {}", partitionSize);
+        } else {
+            log.info("\tAddress Tx Amt Partition size : {}", partitionSize);
+        }
+        return partitionSize;
     }
 }
