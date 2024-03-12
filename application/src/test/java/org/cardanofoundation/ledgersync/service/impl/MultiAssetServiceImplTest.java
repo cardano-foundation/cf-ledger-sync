@@ -400,9 +400,7 @@ class MultiAssetServiceImplTest {
     MaTxMintProjection maTxMintProjection2 = Mockito.mock(MaTxMintProjection.class);
     MultiAsset givenMultiAsset = MultiAsset.builder()
         .id(1L)
-        .txCount(10L)
         .supply(BigInteger.TEN)
-        .totalVolume(BigInteger.TEN)
         .build();
 
     Mockito.when(maTxMintProjection.getQuantity()).thenReturn(BigInteger.ONE);
