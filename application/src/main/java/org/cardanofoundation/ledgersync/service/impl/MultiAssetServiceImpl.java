@@ -43,7 +43,6 @@ import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.BATCH_Q
 @Service
 public class MultiAssetServiceImpl implements MultiAssetService {
 
-    private static final long INITIAL_TX_COUNT = 0L;
     private static final String EMPTY_STRING = "";
 
     MaTxMintRepository maTxMintRepository;
@@ -157,8 +156,6 @@ public class MultiAssetServiceImpl implements MultiAssetService {
                     .nameView(nameView)
                     .fingerprint(fingerPrint)
                     .supply(BigInteger.ZERO)
-                    .totalVolume(BigInteger.ZERO)
-                    .txCount(INITIAL_TX_COUNT)
                     .time(tx.getBlock().getTime())
                     .build();
         }
