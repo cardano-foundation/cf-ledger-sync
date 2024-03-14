@@ -30,7 +30,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.batch_size: 1000
-        default_schema: ${SCHEMA:cexplorer}
         show_sql: false
         format_sql: true
         order_inserts: true
@@ -51,8 +50,6 @@ spring:
       - classpath:db/migration/ledgersync
       - classpath:db/store/{vendor}
     validate-on-migrate: ${FLYWAY_VALIDATE:false}
-    default-schema: ${spring.jpa.properties.hibernate.default_schema}
-    schemas: ${spring.jpa.properties.hibernate.default_schema}
     create-schemas: ${ALLOW_CREATE_SCHEMA:true}
     out-of-order: true
   codec:

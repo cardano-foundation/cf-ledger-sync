@@ -34,7 +34,6 @@ spring.datasource.username=user
 
 spring.datasource.password=
 
-SCHEMA=<schema>
 ```
 
 2. Run
