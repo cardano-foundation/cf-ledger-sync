@@ -2,15 +2,9 @@ spring:
   banner:
     location: classpath:/banner.txt
 
-  jpa:
-    properties:
-      hibernate:
-        default_schema: ${SCHEMA}
-
   flyway:
     locations: classpath:db/store/{vendor}
     out-of-order: true
-    schemas: ${SCHEMA}
 
   logging:
 
@@ -23,6 +17,7 @@ spring:
         binder:
           producer-properties:
             max.request.size: 200000000
+      default-binder: ${scs_binder}
 
 streamer:
   healthcheck:
