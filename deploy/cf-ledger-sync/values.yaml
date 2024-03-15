@@ -48,3 +48,13 @@ diagnosticMode:
 blocks:
   batchSize: "100"
   commitThreshold: "3000"
+
+dbSchema: public
+
+aggregation:
+  image:
+    repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-aggregation
+    tag: "7b05530"
+    pullPolicy: Always
+  dbSchema: public
+  resources: {}

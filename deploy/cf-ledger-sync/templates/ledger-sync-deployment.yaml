@@ -92,10 +92,8 @@ spec:
                 secretKeyRef:
                   name: postgres-secrets
                   key: POSTGRES_DB
-            - name: SCHEMA
-              value: {{ .Values.dbSchema | default "public" }}
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(SCHEMA)
+              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema={{ .Values.dbSchema | default "public" }}
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
