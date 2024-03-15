@@ -1,5 +1,8 @@
 dbSchema: mainnet
 network: mainnet
+localCardanoNode:
+  network: mainnet
+  volumeSize: 200Gi
 storeCardanoHost: backbone.cardano-mainnet.iohk.io
 storeCardanoPort: 3001
 storeCardanoProtocolMagic: "764824073"
