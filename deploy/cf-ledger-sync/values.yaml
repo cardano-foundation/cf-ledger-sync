@@ -8,7 +8,7 @@ localCardanoNode:
   enabled: false
   image:
     repository: ghcr.io/blinklabs-io/cardano-node
-    tag: 8.7.3-2
+    tag: 8.9.0-1-amd64
   mithrilRestore: "true"
   tolerations: null
   affinity: null
