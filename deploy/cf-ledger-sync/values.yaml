@@ -10,7 +10,7 @@ localCardanoNode:
 
 image:
   repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync
-  tag: "d5f1455"
+  tag: "7b05530"
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -38,3 +38,13 @@ monitoringEnabled: true
 
 diagnosticMode:
   enabled: false
+
+dbSchema: public
+
+aggregation:
+  image:
+    repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-aggregation
+    tag: "7b05530"
+    pullPolicy: Always
+  dbSchema: public
+  resources: {}
