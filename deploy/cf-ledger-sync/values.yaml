@@ -49,5 +49,5 @@ aggregation:
   dbSchema: public
   store:
     account:
-      history-cleanup-enabled: "true"
+      history_cleanup_enabled: "true"
   resources: {}
