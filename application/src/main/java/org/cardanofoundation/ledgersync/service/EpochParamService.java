@@ -11,6 +11,8 @@ public interface EpochParamService {
 
     void setDefBabbageEpochParam(EpochParam defBabbageEpochParam);
 
+    void setDefConwayEpochParam(EpochParam defConwayEpochParam);
+
     /**
      * Handle epoch params
      */

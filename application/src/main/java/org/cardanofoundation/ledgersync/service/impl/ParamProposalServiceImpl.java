@@ -106,6 +106,57 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                     var collateralPercent = protocolParamUpdate.getCollateralPercent();
                     var maxCollateralInputs = protocolParamUpdate.getMaxCollateralInputs();
 
+                    // conway era params
+                    var poolVotingThresholds = protocolParamUpdate.getPoolVotingThresholds();
+
+                    Double pvtMotionNoConfidence = null;
+                    Double pvtCommitteeNormal = null;
+                    Double pvtCommitteeNoConfidence = null;
+                    Double pvtHardForkInitiation = null;
+                    Double pvtPPSecurityGroup = null;
+
+                    if (poolVotingThresholds != null) {
+                        pvtMotionNoConfidence = toDouble(poolVotingThresholds.getPvtMotionNoConfidence());
+                        pvtCommitteeNormal = toDouble(poolVotingThresholds.getPvtCommitteeNormal());
+                        pvtCommitteeNoConfidence = toDouble(poolVotingThresholds.getPvtCommitteeNoConfidence());
+                        pvtHardForkInitiation = toDouble(poolVotingThresholds.getPvtHardForkInitiation());
+                        pvtPPSecurityGroup = toDouble(poolVotingThresholds.getPvtPPSecurityGroup());
+                    }
+
+                    var drepVotingThresholds = protocolParamUpdate.getDrepVotingThresholds();
+
+                    Double dvtMotionNoConfidence = null;
+                    Double dvtCommitteeNormal = null;
+                    Double dvtCommitteeNoConfidence = null;
+                    Double dvtUpdateToConstitution = null;
+                    Double dvtHardForkInitiation = null;
+                    Double dvtPPNetworkGroup = null;
+                    Double dvtPPEconomicGroup = null;
+                    Double dvtPPTechnicalGroup = null;
+                    Double dvtPPGovGroup = null;
+                    Double dvtTreasuryWithdrawal = null;
+
+                    if (drepVotingThresholds != null) {
+                        dvtMotionNoConfidence = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtCommitteeNormal = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtCommitteeNoConfidence = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtUpdateToConstitution = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtHardForkInitiation = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtPPNetworkGroup = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtPPEconomicGroup = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtPPTechnicalGroup = toDouble(drepVotingThresholds.getDvtPPTechnicalGroup());
+                        dvtPPGovGroup = toDouble(drepVotingThresholds.getDvtPPGovGroup());
+                        dvtTreasuryWithdrawal = toDouble(drepVotingThresholds.getDvtTreasuryWithdrawal());
+                    }
+
+                    var committeeMinSize = toBigInteger(protocolParamUpdate.getCommitteeMinSize());
+                    var committeeMaxTermLength = toBigInteger(protocolParamUpdate.getCommitteeMaxTermLength());
+                    var govActionLifetime = toBigInteger(protocolParamUpdate.getGovActionLifetime());
+                    var govActionDeposit = protocolParamUpdate.getGovActionDeposit();
+                    var drepDeposit = protocolParamUpdate.getDrepDeposit();
+                    var drepActivity = toBigInteger(protocolParamUpdate.getDrepActivity());
+                    var minFeeRefScriptCostPerByte = toBigInteger(protocolParamUpdate.getMinFeeRefScriptCostPerByte());
+
                     return ParamProposal.builder()
                             .key(entrySet.getKey())
                             .epochNo(epochNo)
@@ -139,6 +190,29 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                             .collateralPercent(collateralPercent)
                             .maxCollateralInputs(maxCollateralInputs)
                             .registeredTx(tx)
+                            // conway era params
+                            .pvtMotionNoConfidence(pvtMotionNoConfidence)
+                            .pvtCommitteeNormal(pvtCommitteeNormal)
+                            .pvtCommitteeNoConfidence(pvtCommitteeNoConfidence)
+                            .pvtHardForkInitiation(pvtHardForkInitiation)
+                            .pvtPPSecurityGroup(pvtPPSecurityGroup)
+                            .dvtMotionNoConfidence(dvtMotionNoConfidence)
+                            .dvtCommitteeNormal(dvtCommitteeNormal)
+                            .dvtCommitteeNoConfidence(dvtCommitteeNoConfidence)
+                            .dvtUpdateToConstitution(dvtUpdateToConstitution)
+                            .dvtHardForkInitiation(dvtHardForkInitiation)
+                            .dvtPPNetworkGroup(dvtPPNetworkGroup)
+                            .dvtPPEconomicGroup(dvtPPEconomicGroup)
+                            .dvtPPTechnicalGroup(dvtPPTechnicalGroup)
+                            .dvtPPGovGroup(dvtPPGovGroup)
+                            .dvtTreasuryWithdrawal(dvtTreasuryWithdrawal)
+                            .committeeMinSize(committeeMinSize)
+                            .committeeMaxTermLength(committeeMaxTermLength)
+                            .govActionLifetime(govActionLifetime)
+                            .govActionDeposit(govActionDeposit)
+                            .drepDeposit(drepDeposit)
+                            .drepActivity(drepActivity)
+                            .minFeeRefScriptCostPerByte(minFeeRefScriptCostPerByte)
                             .build();
                 }).collect(Collectors.toList());
 
