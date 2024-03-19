@@ -83,5 +83,7 @@ spec:
                 secretKeyRef:
                   name: postgres-secrets
                   key: POSTGRES_PASSWORD
+            - name: STORE_ACCOUNT_HISTORYCLEANUPENABLED
+              value: {{ .Values.aggregation.store.account.history-cleanup-enabled }}
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
