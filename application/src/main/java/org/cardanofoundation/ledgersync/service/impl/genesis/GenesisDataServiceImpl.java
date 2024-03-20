@@ -89,22 +89,22 @@ public class GenesisDataServiceImpl implements GenesisDataService {
 
     public static final String DELEGATION_KEYS = "genDelegs";
     private final static String POOL_VOTING_THRESHOLDS = "poolVotingThresholds";
-    private final static String COMMITTEE_NORMAL = "committeeNormal";
-    private final static String COMMITTEE_NO_CONFIDENCE = "committeeNoConfidence";
-    private final static String HARD_FORK_INITIATION = "hardForkInitiation";
-    private final static String MOTION_NO_CONFIDENCE = "motionNoConfidence";
-    private final static String PP_SECURITY_GROUP = "ppSecurityGroup";
+    private final static String PVT_COMMITTEE_NORMAL = "committeeNormal";
+    private final static String PVT_COMMITTEE_NO_CONFIDENCE = "committeeNoConfidence";
+    private final static String PVT_HARD_FORK_INITIATION = "hardForkInitiation";
+    private final static String PVT_MOTION_NO_CONFIDENCE = "motionNoConfidence";
+    private final static String PVT_PP_SECURITY_GROUP = "ppSecurityGroup";
     private final static String D_REP_VOTING_THRESHOLDS = "dRepVotingThresholds";
-    private final static String MOTION_NO_CONFIDENCE1 = "motionNoConfidence";
-    private final static String COMMITTEE_NORMAL1 = "committeeNormal";
-    private final static String COMMITTEE_NO_CONFIDENCE1 = "committeeNoConfidence";
-    private final static String UPDATE_TO_CONSTITUTION = "updateToConstitution";
-    private final static String HARD_FORK_INITIATION1 = "hardForkInitiation";
-    private final static String PP_NETWORK_GROUP = "ppNetworkGroup";
-    private final static String PP_ECONOMIC_GROUP = "ppEconomicGroup";
-    private final static String PP_TECHNICAL_GROUP = "ppTechnicalGroup";
-    private final static String PP_GOV_GROUP = "ppGovGroup";
-    private final static String TREASURY_WITHDRAWAL = "treasuryWithdrawal";
+    private final static String DVT_MOTION_NO_CONFIDENCE = "motionNoConfidence";
+    private final static String DVT_COMMITTEE_NORMAL = "committeeNormal";
+    private final static String DVT_COMMITTEE_NO_CONFIDENCE = "committeeNoConfidence";
+    private final static String DVT_UPDATE_TO_CONSTITUTION = "updateToConstitution";
+    private final static String DVT_HARD_FORK_INITIATION = "hardForkInitiation";
+    private final static String DVT_PP_NETWORK_GROUP = "ppNetworkGroup";
+    private final static String DVT_PP_ECONOMIC_GROUP = "ppEconomicGroup";
+    private final static String DVT_PP_TECHNICAL_GROUP = "ppTechnicalGroup";
+    private final static String DVT_PP_GOV_GROUP = "ppGovGroup";
+    private final static String DVT_TREASURY_WITHDRAWAL = "treasuryWithdrawal";
 
     private final static String COMMITTEE_MIN_SIZE = "committeeMinSize";
     private final static String COMMITTEE_MAX_TERM_LENGTH = "committeeMaxTermLength";
@@ -379,21 +379,21 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             final var dRepVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(D_REP_VOTING_THRESHOLDS);
 
             EpochParam genesisShelleyProtocols = EpochParam.builder()
-                    .pvtCommitteeNormal(convertObjectToBigDecimal(poolVotingThresholds.get(COMMITTEE_NORMAL)).doubleValue())
-                    .pvtCommitteeNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(COMMITTEE_NO_CONFIDENCE)).doubleValue())
-                    .pvtHardForkInitiation(convertObjectToBigDecimal(poolVotingThresholds.get(HARD_FORK_INITIATION)).doubleValue())
-                    .pvtMotionNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .pvtPPSecurityGroup(convertObjectToBigDecimal(poolVotingThresholds.get(PP_SECURITY_GROUP)).doubleValue())
-                    .dvtMotionNoConfidence(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE1)).doubleValue())
-                    .dvtCommitteeNormal(convertObjectToBigDecimal(dRepVotingThresholds.get(COMMITTEE_NORMAL1)).doubleValue())
-                    .dvtCommitteeNoConfidence(convertObjectToBigDecimal(dRepVotingThresholds.get(COMMITTEE_NO_CONFIDENCE1)).doubleValue())
-                    .dvtUpdateToConstitution(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .dvtHardForkInitiation(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .dvtPPNetworkGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .dvtPPEconomicGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .dvtPPTechnicalGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .dvtPPGovGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
-                    .dvtTreasuryWithdrawal(convertObjectToBigDecimal(dRepVotingThresholds.get(MOTION_NO_CONFIDENCE)).doubleValue())
+                    .pvtCommitteeNormal(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NORMAL)).doubleValue())
+                    .pvtCommitteeNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NO_CONFIDENCE)).doubleValue())
+                    .pvtHardForkInitiation(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_HARD_FORK_INITIATION)).doubleValue())
+                    .pvtMotionNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_MOTION_NO_CONFIDENCE)).doubleValue())
+                    .pvtPPSecurityGroup(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_PP_SECURITY_GROUP)).doubleValue())
+                    .dvtMotionNoConfidence(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_MOTION_NO_CONFIDENCE)).doubleValue())
+                    .dvtCommitteeNormal(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_COMMITTEE_NORMAL)).doubleValue())
+                    .dvtCommitteeNoConfidence(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_COMMITTEE_NO_CONFIDENCE)).doubleValue())
+                    .dvtUpdateToConstitution(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_UPDATE_TO_CONSTITUTION)).doubleValue())
+                    .dvtHardForkInitiation(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_HARD_FORK_INITIATION)).doubleValue())
+                    .dvtPPNetworkGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_NETWORK_GROUP)).doubleValue())
+                    .dvtPPEconomicGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_ECONOMIC_GROUP)).doubleValue())
+                    .dvtPPTechnicalGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_TECHNICAL_GROUP)).doubleValue())
+                    .dvtPPGovGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_GOV_GROUP)).doubleValue())
+                    .dvtTreasuryWithdrawal(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_TREASURY_WITHDRAWAL)).doubleValue())
                     .committeeMinSize(convertObjecToBigInteger(genesisConwayJsonMap.get(COMMITTEE_MIN_SIZE)))
                     .committeeMaxTermLength(convertObjecToBigInteger(genesisConwayJsonMap.get(COMMITTEE_MAX_TERM_LENGTH)))
                     .govActionLifetime(convertObjecToBigInteger(genesisConwayJsonMap.get(GOV_ACTION_LIFETIME)))

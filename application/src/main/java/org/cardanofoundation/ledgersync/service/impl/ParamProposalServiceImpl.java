@@ -138,12 +138,12 @@ public class ParamProposalServiceImpl implements ParamProposalService {
 
                     if (drepVotingThresholds != null) {
                         dvtMotionNoConfidence = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
-                        dvtCommitteeNormal = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
-                        dvtCommitteeNoConfidence = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
-                        dvtUpdateToConstitution = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
-                        dvtHardForkInitiation = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
-                        dvtPPNetworkGroup = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
-                        dvtPPEconomicGroup = toDouble(drepVotingThresholds.getDvtMotionNoConfidence());
+                        dvtCommitteeNormal = toDouble(drepVotingThresholds.getDvtCommitteeNormal());
+                        dvtCommitteeNoConfidence = toDouble(drepVotingThresholds.getDvtCommitteeNoConfidence());
+                        dvtUpdateToConstitution = toDouble(drepVotingThresholds.getDvtUpdateToConstitution());
+                        dvtHardForkInitiation = toDouble(drepVotingThresholds.getDvtHardForkInitiation());
+                        dvtPPNetworkGroup = toDouble(drepVotingThresholds.getDvtPPNetworkGroup());
+                        dvtPPEconomicGroup = toDouble(drepVotingThresholds.getDvtPPEconomicGroup());
                         dvtPPTechnicalGroup = toDouble(drepVotingThresholds.getDvtPPTechnicalGroup());
                         dvtPPGovGroup = toDouble(drepVotingThresholds.getDvtPPGovGroup());
                         dvtTreasuryWithdrawal = toDouble(drepVotingThresholds.getDvtTreasuryWithdrawal());
