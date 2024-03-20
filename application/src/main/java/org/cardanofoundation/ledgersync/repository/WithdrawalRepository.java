@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
-@Repository
+@Repository("LS_WithdrawalRepository")
 public interface WithdrawalRepository extends JpaRepository<Withdrawal, Long> {
 
     @Modifying

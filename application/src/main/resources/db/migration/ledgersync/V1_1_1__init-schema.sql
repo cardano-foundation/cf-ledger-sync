@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS datum
     );
 
 --
--- Name: delegation; Type: TABLE;
+-- Name: ls_delegation; Type: TABLE;
 --
 
-CREATE TABLE IF NOT EXISTS delegation
+CREATE TABLE IF NOT EXISTS ls_delegation
 (
     id              bigint  NOT NULL,
     active_epoch_no bigint  NOT NULL,
@@ -566,10 +566,10 @@ CREATE TABLE IF NOT EXISTS stake_address
     );
 
 --
--- Name: stake_deregistration; Type: TABLE;
+-- Name: ls_stake_deregistration; Type: TABLE;
 --
 
-CREATE TABLE IF NOT EXISTS stake_deregistration
+CREATE TABLE IF NOT EXISTS ls_stake_deregistration
 (
     id          bigint  NOT NULL,
     cert_index  integer NOT NULL,
@@ -580,10 +580,10 @@ CREATE TABLE IF NOT EXISTS stake_deregistration
 );
 
 --
--- Name: stake_registration; Type: TABLE;
+-- Name: ls_stake_registration; Type: TABLE;
 --
 
-CREATE TABLE IF NOT EXISTS stake_registration
+CREATE TABLE IF NOT EXISTS ls_stake_registration
 (
     id         bigint  NOT NULL,
     cert_index integer NOT NULL,
@@ -679,7 +679,7 @@ CREATE TABLE IF NOT EXISTS tx_out
 -- Name: withdrawal; Type: TABLE;
 --
 
-CREATE TABLE IF NOT EXISTS withdrawal
+CREATE TABLE IF NOT EXISTS ls_withdrawal
 (
     id          bigint         NOT NULL,
     amount      numeric(20, 0) NOT NULL,

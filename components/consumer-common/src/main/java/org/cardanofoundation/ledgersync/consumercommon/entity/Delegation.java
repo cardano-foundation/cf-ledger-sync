@@ -20,8 +20,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
 @Entity
-@Table(name = "delegation", uniqueConstraints = {
-    @UniqueConstraint(name = "unique_delegation",
+@Table(name = "ls_delegation", uniqueConstraints = {
+    @UniqueConstraint(name = "unique_ls_delegation",
         columnNames = {"tx_id", "cert_index"})
 })
 @Getter

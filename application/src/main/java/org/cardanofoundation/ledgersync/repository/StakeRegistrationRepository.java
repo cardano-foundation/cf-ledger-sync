@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
-@Repository
+@Repository("LS_StakeRegistrationRepository")
 public interface StakeRegistrationRepository extends JpaRepository<StakeRegistration, Long> {
 
     @Modifying

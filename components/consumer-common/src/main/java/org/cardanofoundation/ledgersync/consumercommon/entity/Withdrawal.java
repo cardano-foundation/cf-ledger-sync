@@ -1,15 +1,10 @@
 package org.cardanofoundation.ledgersync.consumercommon.entity;
 
+import jakarta.persistence.*;
 import org.cardanofoundation.ledgersync.consumercommon.validation.Lovelace;
 import java.math.BigInteger;
 import java.util.Objects;
-import jakarta.persistence.Column;
-import jakarta.persistence.ConstraintMode;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import jakarta.validation.constraints.Digits;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -19,6 +14,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
+@Table(name = "ls_withdrawal")
 @Entity
 @Getter
 @Setter

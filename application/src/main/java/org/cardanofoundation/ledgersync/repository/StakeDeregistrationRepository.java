@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
-@Repository
+@Repository("LS_StakeDeregistrationRepository")
 public interface StakeDeregistrationRepository extends JpaRepository<StakeDeregistration, Long> {
 
     @Modifying

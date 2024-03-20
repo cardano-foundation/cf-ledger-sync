@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
-@Repository
+@Repository("LS_DelegationRepository")
 public interface DelegationRepository extends JpaRepository<Delegation, Long> {
 
     @Modifying

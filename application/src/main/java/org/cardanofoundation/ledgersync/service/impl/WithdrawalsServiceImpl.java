@@ -13,6 +13,7 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.Withdrawal.Withdra
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.repository.WithdrawalRepository;
 import org.cardanofoundation.ledgersync.service.WithdrawalsService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +29,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class WithdrawalsServiceImpl implements WithdrawalsService {
 
+    @Qualifier("LS_WithdrawalRepository")
     WithdrawalRepository withdrawalRepository;
 
     @Override

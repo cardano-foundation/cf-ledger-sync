@@ -54,11 +54,11 @@ ALTER TABLE ONLY datum
 
 
 --
--- Name: delegation unique_delegation; Type: CONSTRAINT;
+-- Name: ls_delegation unique_ls_delegation; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY delegation
-    ADD CONSTRAINT unique_delegation UNIQUE (tx_id, cert_index);
+ALTER TABLE ONLY ls_delegation
+    ADD CONSTRAINT unique_ls_delegation UNIQUE (tx_id, cert_index);
 
 
 --
@@ -259,19 +259,19 @@ ALTER TABLE ONLY stake_address
 
 
 --
--- Name: stake_deregistration unique_stake_deregistration; Type: CONSTRAINT;
+-- Name: ls_stake_deregistration unique_ls_stake_deregistration; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY stake_deregistration
-    ADD CONSTRAINT unique_stake_deregistration UNIQUE (tx_id, cert_index);
+ALTER TABLE ONLY ls_stake_deregistration
+    ADD CONSTRAINT unique_ls_stake_deregistration UNIQUE (tx_id, cert_index);
 
 
 --
--- Name: stake_registration unique_stake_registration; Type: CONSTRAINT;
+-- Name: ls_stake_registration unique_ls_stake_registration; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY stake_registration
-    ADD CONSTRAINT unique_stake_registration UNIQUE (tx_id, cert_index);
+ALTER TABLE ONLY ls_stake_registration
+    ADD CONSTRAINT unique_ls_stake_registration UNIQUE (tx_id, cert_index);
 
 
 --

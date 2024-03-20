@@ -44,16 +44,16 @@ CREATE SEQUENCE datum_id_seq
 
 ALTER SEQUENCE datum_id_seq OWNED BY datum.id;
 --
--- Name: delegation_id_seq; Type: SEQUENCE;
+-- Name: ls_delegation_id_seq; Type: SEQUENCE;
 --
 
-CREATE SEQUENCE delegation_id_seq
+CREATE SEQUENCE ls_delegation_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE CACHE 1;
 
-ALTER SEQUENCE delegation_id_seq OWNED BY delegation.id;
+ALTER SEQUENCE ls_delegation_id_seq OWNED BY ls_delegation.id;
 
 CREATE SEQUENCE delisted_pool_id_seq
     START WITH 1
@@ -400,27 +400,27 @@ CREATE SEQUENCE stake_address_id_seq
 
 ALTER SEQUENCE stake_address_id_seq OWNED BY stake_address.id;
 --
--- Name: stake_deregistration_id_seq; Type: SEQUENCE;
+-- Name: ls_stake_deregistration_id_seq; Type: SEQUENCE;
 --
 
-CREATE SEQUENCE stake_deregistration_id_seq
+CREATE SEQUENCE ls_stake_deregistration_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE CACHE 1;
 
-ALTER SEQUENCE stake_deregistration_id_seq OWNED BY stake_deregistration.id;
+ALTER SEQUENCE ls_stake_deregistration_id_seq OWNED BY ls_stake_deregistration.id;
 --
--- Name: stake_registration_id_seq; Type: SEQUENCE;
+-- Name: ls_stake_registration_id_seq; Type: SEQUENCE;
 --
 
-CREATE SEQUENCE stake_registration_id_seq
+CREATE SEQUENCE ls_stake_registration_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE CACHE 1;
 
-ALTER SEQUENCE stake_registration_id_seq OWNED BY stake_registration.id;
+ALTER SEQUENCE ls_stake_registration_id_seq OWNED BY ls_stake_registration.id;
 --
 -- Name: treasury_id_seq; Type: SEQUENCE;
 --
@@ -488,16 +488,16 @@ CREATE SEQUENCE unconsume_tx_in_id_seq
 
 ALTER SEQUENCE unconsume_tx_in_id_seq OWNED BY unconsume_tx_in.id;
 --
--- Name: withdrawal_id_seq; Type: SEQUENCE;
+-- Name: ls_withdrawal_id_seq; Type: SEQUENCE;
 --
 
-CREATE SEQUENCE withdrawal_id_seq
+CREATE SEQUENCE ls_withdrawal_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE CACHE 1;
 
-ALTER SEQUENCE withdrawal_id_seq OWNED BY withdrawal.id;
+ALTER SEQUENCE ls_withdrawal_id_seq OWNED BY ls_withdrawal.id;
 
 --
 -- Name: address_id_seq; Type: SEQUENCE;
@@ -588,11 +588,11 @@ ALTER COLUMN id SET DEFAULT nextval('datum_id_seq'::regclass);
 
 
 --
--- Name: delegation id; Type: DEFAULT;
+-- Name: ls_delegation id; Type: DEFAULT;
 --
 
-ALTER TABLE ONLY delegation
-ALTER COLUMN id SET DEFAULT nextval('delegation_id_seq'::regclass);
+ALTER TABLE ONLY ls_delegation
+ALTER COLUMN id SET DEFAULT nextval('ls_delegation_id_seq'::regclass);
 
 
 --
@@ -834,19 +834,19 @@ ALTER COLUMN id SET DEFAULT nextval('stake_address_id_seq'::regclass);
 
 
 --
--- Name: stake_deregistration id; Type: DEFAULT;
+-- Name: ls_stake_deregistration id; Type: DEFAULT;
 --
 
-ALTER TABLE ONLY stake_deregistration
-ALTER COLUMN id SET DEFAULT nextval('stake_deregistration_id_seq'::regclass);
+ALTER TABLE ONLY ls_stake_deregistration
+ALTER COLUMN id SET DEFAULT nextval('ls_stake_deregistration_id_seq'::regclass);
 
 
 --
--- Name: stake_registration id; Type: DEFAULT;
+-- Name: ls_stake_registration id; Type: DEFAULT;
 --
 
-ALTER TABLE ONLY stake_registration
-ALTER COLUMN id SET DEFAULT nextval('stake_registration_id_seq'::regclass);
+ALTER TABLE ONLY ls_stake_registration
+ALTER COLUMN id SET DEFAULT nextval('ls_stake_registration_id_seq'::regclass);
 
 
 --
@@ -898,11 +898,11 @@ ALTER COLUMN id SET DEFAULT nextval('unconsume_tx_in_id_seq'::regclass);
 
 
 --
--- Name: withdrawal id; Type: DEFAULT;
+-- Name: ls_withdrawal id; Type: DEFAULT;
 --
 
-ALTER TABLE ONLY withdrawal
-ALTER COLUMN id SET DEFAULT nextval('withdrawal_id_seq'::regclass);
+ALTER TABLE ONLY ls_withdrawal
+ALTER COLUMN id SET DEFAULT nextval('ls_withdrawal_id_seq'::regclass);
 
 --
 -- Name: address id; Type: DEFAULT;
@@ -972,11 +972,11 @@ ALTER TABLE ONLY datum
 
 
 --
--- Name: delegation delegation_pkey; Type: CONSTRAINT;
+-- Name: ls_delegation ls_delegation_pkey; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY delegation
-    ADD CONSTRAINT delegation_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ls_delegation
+    ADD CONSTRAINT ls_delegation_pkey PRIMARY KEY (id);
 
 
 --
@@ -1227,19 +1227,19 @@ ALTER TABLE ONLY stake_address
 
 
 --
--- Name: stake_deregistration stake_deregistration_pkey; Type: CONSTRAINT;
+-- Name: ls_stake_deregistration ls_stake_deregistration_pkey; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY stake_deregistration
-    ADD CONSTRAINT stake_deregistration_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ls_stake_deregistration
+    ADD CONSTRAINT ls_stake_deregistration_pkey PRIMARY KEY (id);
 
 
 --
--- Name: stake_registration stake_registration_pkey; Type: CONSTRAINT;
+-- Name: ls_stake_registration ls_stake_registration_pkey; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY stake_registration
-    ADD CONSTRAINT stake_registration_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ls_stake_registration
+    ADD CONSTRAINT ls_stake_registration_pkey PRIMARY KEY (id);
 
 
 --
@@ -1281,11 +1281,11 @@ ALTER TABLE ONLY tx
     ADD CONSTRAINT tx_pkey PRIMARY KEY (id);
 
 --
--- Name: withdrawal withdrawal_pkey; Type: CONSTRAINT;
+-- Name: ls_withdrawal ls_withdrawal_pkey; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY withdrawal
-    ADD CONSTRAINT withdrawal_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ls_withdrawal
+    ADD CONSTRAINT ls_withdrawal_pkey PRIMARY KEY (id);
 
 --
 -- Name: unconsume_tx_in unconsume_tx_in_pkey; Type: CONSTRAINT;

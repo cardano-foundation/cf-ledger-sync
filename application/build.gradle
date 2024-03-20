@@ -19,6 +19,9 @@ dependencies {
     implementation project(':components:scheduler')
 
     implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.starter.metadata)
+    implementation(libs.yaci.store.starter.transaction)
+    implementation(libs.yaci.store.starter.staking)
 
     implementation(libs.cardano.client.lib)
 

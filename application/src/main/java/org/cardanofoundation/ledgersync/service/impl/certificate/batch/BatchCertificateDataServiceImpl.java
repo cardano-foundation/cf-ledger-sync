@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.repository.*;
 import org.cardanofoundation.ledgersync.service.BatchCertificateDataService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,8 +25,11 @@ public class BatchCertificateDataServiceImpl implements BatchCertificateDataServ
     PoolOwnerRepository poolOwnerRepository;
     PoolRelayRepository poolRelayRepository;
     PoolRetireRepository poolRetireRepository;
+    @Qualifier("LS_DelegationRepository")
     DelegationRepository delegationRepository;
+    @Qualifier("LS_StakeDeregistrationRepository")
     StakeDeregistrationRepository stakeDeregistrationRepository;
+    @Qualifier("LS_StakeRegistrationRepository")
     StakeRegistrationRepository stakeRegistrationRepository;
     TreasuryRepository treasuryRepository;
     ReserveRepository reserveRepository;
