@@ -43,7 +43,6 @@ class AddressTxAmountTests {
         Map<AddressTxAmountKey, AddressTxAmountComparison> addressTxAmountComparisonMapForLs = new AddressTxAmountComparisonMapperLS().buildMap(addressTxAmountList);
         Map<AddressTxAmountKey, AddressTxAmountComparison> addressTxAmountComparisonMapForKoios = new AddressTxAmountComparisonMapperKoios().buildMap(txInfoList);
 
-
         for (Map.Entry<AddressTxAmountKey, AddressTxAmountComparison> entry : addressTxAmountComparisonMapForLs.entrySet()) {
             AddressTxAmountKey addressTxAmountKey = entry.getKey();
             AddressTxAmountComparison addressTxAmountComparison = entry.getValue();
@@ -51,7 +50,6 @@ class AddressTxAmountTests {
             String logMessage = MessageFormat.format("comparison txHash={0}, address={1}", addressTxAmountKey.getTxHash(), addressTxAmountKey.getAddress());
             System.out.println(logMessage);
             assertEquals(koiosQuantity, addressTxAmountComparison.getQuantity());
-
         }
 
         assertEquals(addressTxAmountComparisonMapForKoios.size(), addressTxAmountComparisonMapForLs.size());
@@ -64,8 +62,6 @@ class AddressTxAmountTests {
         Map<AddressBalanceComparisonKey, AddressBalanceComparison> addressBalanceComparisonMapLS = addressTxAmountService.getMapAddressBalanceFromAddress(addresses);
         Map<AddressBalanceComparisonKey, AddressBalanceComparison> addressBalanceComparisonMapKoios = koiosService.getMapAddressBalanceFromAddress(addresses);
 
-        assertEquals(addressBalanceComparisonMapKoios.size(), addressBalanceComparisonMapLS.size());
-
         for (Map.Entry<AddressBalanceComparisonKey, AddressBalanceComparison> entry : addressBalanceComparisonMapLS.entrySet()) {
             AddressBalanceComparisonKey addressBalanceComparisonKey = entry.getKey();
             AddressBalanceComparison addressBalanceComparison = entry.getValue();
@@ -75,6 +71,8 @@ class AddressTxAmountTests {
             assertEquals(koiosBalance, addressBalanceComparison.getBalance());
 
         }
+
+        assertEquals(addressBalanceComparisonMapKoios.size(), addressBalanceComparisonMapLS.size());
 
     }
 
