@@ -3,7 +3,6 @@ package org.cardanofoundation.ledgersync.verifier.data.app.repository.ledgersync
 import org.cardanofoundation.ledgersync.verifier.data.app.entity.ledgersync.AddressTxAmount;
 import org.cardanofoundation.ledgersync.verifier.data.app.entity.ledgersync.AddressTxAmountId;
 import org.cardanofoundation.ledgersync.verifier.data.app.projection.AddressBalanceProjection;
-import org.cardanofoundation.ledgersync.verifier.data.app.projection.RangeProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
