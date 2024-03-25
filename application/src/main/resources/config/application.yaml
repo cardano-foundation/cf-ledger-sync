@@ -84,10 +84,10 @@ ledger-sync:
       initial-delay: ${POOL_OFFLINE_DATA_INIT_DELAY:20000}
     enabled: ${SCHEDULER_ENABLED:true}
   healthcheck:
-    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:240}
-    non-batching-inserted-time-threshold: ${NON_BATCHING_INSERTED_TIME_THRESHOLD_IN_SECOND:240}
-    batching-inserted-time-threshold: ${BATCHING_INSERTED_TIME_THRESHOLD_IN_SECOND:900}
-    keepalive-time-threshold: ${KEEPALIVE_TIME_THRESHOLD_IN_SECOND:1200}
+    enabled: ${HEALTH_CHECK_ENABLED:true}
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:900}
+    block-time-check-enabled: ${BLOCK_TIME_CHECK_ENABLED:true}
+    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:180}
 
 management:
   endpoints:
@@ -101,4 +101,4 @@ management:
     prometheus:
       enabled: true
     health-status:
-      enabled: true
+      enabled: ${HEALTH_CHECK_ENABLED:true}

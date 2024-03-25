@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
+import org.cardanofoundation.ledgersync.healthcheck.service.HealthCheckCachingService;
 import org.cardanofoundation.ledgersync.repository.BlockRepository;
 import org.cardanofoundation.ledgersync.service.*;
 import org.cardanofoundation.ledgersync.service.impl.block.BlockAggregatorServiceImpl;
@@ -38,7 +39,6 @@ public class BlockEventListener {
 
     private final BlockRepository blockRepository;
     private final MetricCollectorService metricCollectorService;
-    private final HealthCheckCachingService healthCheckCachingService;
     private final AtomicInteger blockCount = new AtomicInteger(0);
 
     @Value("${blocks.batch-size}")
@@ -95,10 +95,6 @@ public class BlockEventListener {
         }
 
         genesisDataService.setupData(genesisHash);
-        healthCheckCachingService.saveLatestBlockSlot(genesisBlockEvent.getSlot());
-        healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
-        healthCheckCachingService.saveLatestBlockTime(
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(genesisBlockEvent.getBlockTime()), ZoneId.of("UTC")));
     }
 
     @EventListener
@@ -121,10 +117,6 @@ public class BlockEventListener {
         rollbackService.rollBackFrom(rollbackBlockNo);
         metricCollectorService.collectRollbackMetric();
         blockCount.set(0);
-
-        healthCheckCachingService.saveLatestBlockSlot(rollbackEvent.getRollbackTo().getSlot());
-        healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
-        healthCheckCachingService.saveLatestBlockTime(rollBackBlock.get().getTime().toLocalDateTime());
     }
 
     private boolean checkIfBlockExists(EventMetadata metadata) {
@@ -182,13 +174,6 @@ public class BlockEventListener {
             int currentBlockCount = blockCount.incrementAndGet();
             if (currentBlockCount % batchSize == 0 || lastReceivedTimeElapsed >= commitThreshold || eventMetadata.isSyncMode()) {
                 blockSyncService.startBlockSyncing();
-
-                healthCheckCachingService.saveLatestBlockInsertTime(LocalDateTime.now(ZoneOffset.UTC));
-                healthCheckCachingService.saveLatestBlockTime(LocalDateTime.ofEpochSecond(
-                        eventMetadata.getBlockTime(), 0, ZoneOffset.ofHours(0)));
-                healthCheckCachingService.saveIsSyncMode(eventMetadata.isSyncMode());
-                healthCheckCachingService.saveLatestBlockSlot(eventMetadata.getSlot());
-
                 blockCount.set(0);
             }
 

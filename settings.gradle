@@ -10,6 +10,7 @@ rootProject.name = 'ledger-sync'
 include 'components:common'
 include 'components:consumer-common'
 include 'components:scheduler'
+include 'components:healthcheck'
 include 'aggregates:account'
 
 include 'application'

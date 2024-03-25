@@ -50,3 +50,24 @@ store:
     blocks-partition-size: 10
     use-virtual-thread-for-batch-processing: false
     use-virtual-thread-for-event-processing: true
+
+ledger-sync:
+  healthcheck:
+    enabled: ${HEALTH_CHECK_ENABLED:true}
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:600}
+    block-time-check-enabled: ${BLOCK_TIME_CHECK_ENABLED:true}
+    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:180}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "health,prometheus,health-status"
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    health-status:
+      enabled: ${HEALTH_CHECK_ENABLED:true}
