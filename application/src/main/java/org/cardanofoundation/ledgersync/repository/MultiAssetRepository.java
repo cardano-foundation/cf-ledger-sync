@@ -1,12 +1,7 @@
 package org.cardanofoundation.ledgersync.repository;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.MultiAsset;
-import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTotalVolumeProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTxCountProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,19 +19,4 @@ public interface MultiAssetRepository extends JpaRepository<MultiAsset, Long> {
      */
     @Transactional(readOnly = true)
     List<MultiAsset> findMultiAssetsByFingerprintIn(Collection<String> fingerprints);
-
-    @Query("SELECT at.multiAsset.id AS identId, "
-            + "COUNT(DISTINCT at.tx) as txCount "
-            + "FROM AddressToken at "
-            + "WHERE at.tx IN (:txs) "
-            + "GROUP BY at.multiAsset")
-    List<MultiAssetTxCountProjection> getMultiAssetTxCountByTxs(@Param("txs") Collection<Tx> txs);
-
-    @Query("SELECT at.multiAsset.id as identId,"
-            + "SUM(at.balance) as totalVolume "
-            + "FROM AddressToken at "
-            + "WHERE at.tx IN (:txs) AND at.balance > 0"
-            + "GROUP BY at.multiAsset")
-    List<MultiAssetTotalVolumeProjection> getMultiAssetTotalVolumeByTxs(
-            @Param("txs") Collection<Tx> txs);
 }

@@ -95,12 +95,6 @@ public class Tx extends BaseEntity {
   @Word31Type
   private Integer scriptSize;
 
-  @OneToMany(mappedBy = "tx")
-  private List<AddressTxBalance> addressTxBalances;
-
-  @OneToMany(mappedBy = "tx")
-  private List<AddressToken> addressTokens;
-
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "tx_metadata_hash_id",
       foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))

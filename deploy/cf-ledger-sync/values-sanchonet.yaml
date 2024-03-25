@@ -1,5 +1,7 @@
 dbSchema: sanchonet
 network: sanchonet
+localCardanoNode:
+  network: sanchonet
 storeCardanoHost: sanchonet-node.play.dev.cardano.org
 storeCardanoPort: 3001
 storeCardanoProtocolMagic: 4

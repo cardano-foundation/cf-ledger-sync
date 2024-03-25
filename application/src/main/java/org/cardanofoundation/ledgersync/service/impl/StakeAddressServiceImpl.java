@@ -84,7 +84,6 @@ public class StakeAddressServiceImpl implements StakeAddressService {
             stakeAddressBuilder.scriptHash(scriptHash);
         }
 
-        stakeAddressBuilder.balance(BigInteger.ZERO);
         stakeAddressBuilder.availableReward(BigInteger.ZERO);
 
         return stakeAddressBuilder.build();

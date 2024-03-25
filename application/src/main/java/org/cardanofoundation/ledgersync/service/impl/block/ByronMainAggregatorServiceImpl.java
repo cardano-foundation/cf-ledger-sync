@@ -129,13 +129,6 @@ public class ByronMainAggregatorServiceImpl extends BlockAggregatorService<Byron
         var outputs = byronTx.getOutputs();
         var aggregatedTxOuts = txOutsToAggregatedTxOuts(outputs);
 
-        /*
-         * Handle address balance from tx outputs or collateral return
-         * This is initial step of calculating balance. The same process will be
-         * done when tx ins are taken into account
-         */
-        mapAggregatedTxOutsToAddressBalanceMap(aggregatedTxOuts, txHash);
-
         var outSum = calculateByronOutSum(outputs);
 
         AggregatedTx aggregatedTx = AggregatedTx.builder()

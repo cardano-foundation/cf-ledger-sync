@@ -91,3 +91,20 @@ jobs:
             PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
             PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
             PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
+
+      - name: Build and Push aggregation docker image
+        uses: docker/build-push-action@v4
+        with:
+          file: ./Dockerfile
+          context: .
+          push: true
+          tags: |
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-aggregation:latest
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-aggregation:${{ env.ARTIFACT_VERSION }}
+            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-aggregation:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
+          target: aggregation
+          build-args: |
+            TARGET=aggregation
+            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
+            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
+            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}

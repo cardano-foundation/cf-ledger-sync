@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.data.util.Pair;
 
-import org.cardanofoundation.ledgersync.aggregate.AggregatedAddressBalance;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBatchBlockData;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.mockito.Mockito;
@@ -41,30 +40,6 @@ class BlockDataServiceImplTest {
 
     Map<String, String> stakeAddressTxHashMap = victim.getStakeAddressTxHashMap();
     Assertions.assertEquals(3, stakeAddressTxHashMap.size());
-  }
-
-  @Test
-  @DisplayName("Get aggregated address balance by address")
-  void getAggregatedAddressBalanceByAddressTest() {
-    String address = "addr_test1qzq3sw22fwwuzhrnsh3px8apy2krehm9l3j8gqc7emettx79dq6pms68sakpc70q0h37wcn92c9u5jaeu6he7dhypy3sh7s085";
-    AggregatedAddressBalance aggregatedAddressBalance =
-        victim.getAggregatedAddressBalanceFromAddress(address);
-
-    // Get again the second time. It should match with what we got from the first time
-    Assertions.assertEquals(aggregatedAddressBalance,
-        victim.getAggregatedAddressBalanceFromAddress(address));
-  }
-
-  @Test
-  @DisplayName("Get aggregated address balance map")
-  void getAggregatedAddressBalanceMapTest() {
-    String address = "addr_test1qzq3sw22fwwuzhrnsh3px8apy2krehm9l3j8gqc7emettx79dq6pms68sakpc70q0h37wcn92c9u5jaeu6he7dhypy3sh7s085";
-    String address2 = "addr_test1qp5c098dkvu4rqwqy8pelmzeu4l09ggd507ykgl65ce9rx4q6xc5lapen92ewdwxp3369xmfhm3smc55vzmg9ueru5jsex0mh4";
-    victim.getAggregatedAddressBalanceFromAddress(address);
-    victim.getAggregatedAddressBalanceFromAddress(address2);
-
-    Map<String, AggregatedAddressBalance> aggregatedAddressBalanceMap = victim.getAggregatedAddressBalanceMap();
-    Assertions.assertEquals(2, aggregatedAddressBalanceMap.size());
   }
 
   @Test

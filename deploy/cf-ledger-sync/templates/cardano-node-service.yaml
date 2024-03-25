@@ -1,0 +1,17 @@
+{{ with .Values.localCardanoNode }}
+{{ if .enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cardano-node
+  name: cardano-node
+spec:
+  ports:
+    - name: "3001"
+      port: 3001
+      targetPort: 3001
+  selector:
+    app: cardano-node
+{{ end }}
+{{ end }}

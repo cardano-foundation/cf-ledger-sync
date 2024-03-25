@@ -24,8 +24,6 @@ public class RollbackServiceImpl implements RollbackService {
 
     BlockRepository blockRepository;
     TxRepository txRepository;
-    AddressTokenRepository addressTokenRepository;
-    AddressTxBalanceRepository addressTxBalanceRepository;
     DatumRepository datumRepository;
     DelegationRepository delegationRepository;
     ExtraKeyWitnessRepository extraKeyWitnessRepository;
@@ -57,7 +55,6 @@ public class RollbackServiceImpl implements RollbackService {
     TxBootstrapWitnessRepository txBootstrapWitnessRepository;
     TxWitnessRepository txWitnessRepository;
     EpochService epochService;
-    AddressBalanceService addressBalanceService;
     MultiAssetService multiAssetService;
     TxChartService txChartService;
     AggregatedDataCachingService aggregatedDataCachingService;
@@ -128,14 +125,11 @@ public class RollbackServiceImpl implements RollbackService {
                 log.info("- Tx id: {}, hash: {}, block id: {}",
                         tx.getId(), tx.getHash(), tx.getBlockId()));
 
-        addressBalanceService.rollbackAddressBalances(txsForRollback);
         multiAssetService.rollbackMultiAssets(txsForRollback);
         txChartService.rollbackTxChart(txsForRollback);
         aggregatedDataCachingService.subtractTxCount(txsForRollback.size());
 
         log.info("Deleting records from tables related to txs/blocks being rolled back");
-        addressTokenRepository.deleteAllByTxIn(txsForRollback);
-        addressTxBalanceRepository.deleteAllByTxIn(txsForRollback);
         datumRepository.deleteAllByTxIn(txsForRollback);
         delegationRepository.deleteAllByTxIn(txsForRollback);
         extraKeyWitnessRepository.deleteAllByTxIn(txsForRollback);

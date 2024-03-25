@@ -27,12 +27,32 @@ spec:
               value: {{ .Values.network | default "preprod" }}
             - name: DB_DIALECT
               value: {{ .Values.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
+            {{ if .Values.useLocalCardanoNode }}
+            - name: STORE_CARDANO_HOST
+              value: "cardano-node"
+            - name: STORE_CARDANO_PORT
+              value: "3001"
+              {{ if eq .Values.localCardanoNode.network "preview" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "2"
+              {{- else if eq .Values.localCardanoNode.network "preprod" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "1"
+              {{- else if eq .Values.localCardanoNode.network "mainnet" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "764824073"
+              {{- else if eq .Values.localCardanoNode.network "sanchonet" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "4"
+              {{- end }}
+            {{- else }}
             - name: STORE_CARDANO_HOST
               value: {{ .Values.storeCardanoHost | default "preprod-node.world.dev.cardano.org" }}
             - name: STORE_CARDANO_PORT
               value: {{ .Values.storeCardanoPort | default "30000" | quote }}
             - name: STORE_CARDANO_PROTOCOL_MAGIC
               value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
+            {{- end }}
             
             ## Postgres
             - name: POSTGRES_HOST
