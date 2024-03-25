@@ -19,10 +19,12 @@ spring:
             max.request.size: 200000000
       default-binder: ${scs_binder}
 
-streamer:
+ledger-sync:
   healthcheck:
-    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:120}
-    keepalive-time-threshold: ${KEEPALIVE_TIME_THRESHOLD_IN_SECOND:120}
+    enabled: ${HEALTH_CHECK_ENABLED:true}
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:300}
+    block-time-check-enabled: ${BLOCK_TIME_CHECK_ENABLED:false}
+    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:180}
 
 management:
   endpoints:
@@ -36,4 +38,4 @@ management:
     prometheus:
       enabled: true
     health-status:
-      enabled: true
+      enabled: ${HEALTH_CHECK_ENABLED:true}

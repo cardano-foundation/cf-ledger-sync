@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.streamer.service;
+package org.cardanofoundation.ledgersync.healthcheck.service;
 
 import java.time.LocalDateTime;
 
@@ -17,4 +17,11 @@ public interface HealthCheckCachingService {
     void saveLatestEventTime(LocalDateTime insertTime);
 
     LocalDateTime getLatestEventTime();
+
+    void saveLatestBlockTime(LocalDateTime blockTime);
+
+    /**
+     * Cache the most recent block time
+     */
+    LocalDateTime getLatestBlockTime();
 }
