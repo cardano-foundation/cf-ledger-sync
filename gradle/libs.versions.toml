@@ -3,6 +3,7 @@ yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.1.0-rc
 yaci-store-utxo-starter="com.bloxbean.cardano:yaci-store-utxo-spring-boot-starter:0.1.0-rc2-5f1c04d-SNAPSHOT"
 yaci-store-account-starter="com.bloxbean.cardano:yaci-store-account-spring-boot-starter:0.1.0-rc2-5f1c04d-SNAPSHOT"
 yaci-store-remote-starter="com.bloxbean.cardano:yaci-store-remote-spring-boot-starter:0.1.0-rc2-5f1c04d-SNAPSHOT"
+yaci-store-governance-starter="com.bloxbean.cardano:yaci-store-governance-spring-boot-starter:0.1.0-rc2-5f1c04d-SNAPSHOT"
 yaci-store-events="com.bloxbean.cardano:yaci-store-events:0.1.0-rc2-5f1c04d-SNAPSHOT"
 
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.1"

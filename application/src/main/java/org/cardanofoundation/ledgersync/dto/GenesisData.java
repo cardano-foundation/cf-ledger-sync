@@ -24,5 +24,6 @@ public class GenesisData {
     EpochParam shelley;
     EpochParam alonzo;
     EpochParam babbage;
+    EpochParam conway;
     Timestamp startTime;
 }

@@ -20,6 +20,7 @@ dependencies {
     implementation project(':components:healthcheck')
 
     implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.governance.starter)
 
     implementation(libs.cardano.client.lib)
 

@@ -40,6 +40,7 @@ public class EpochParamServiceImpl implements EpochParamService {
     EpochParam defShelleyEpochParam;
     EpochParam defAlonzoEpochParam;
     EpochParam defBabbageEpochParam;
+    EpochParam defConwayEpochParam;
 
     public EpochParamServiceImpl(BlockRepository blockRepository, ParamProposalRepository paramProposalRepository,
                                  EpochParamRepository epochParamRepository, EpochRepository epochRepository,
@@ -68,6 +69,11 @@ public class EpochParamServiceImpl implements EpochParamService {
     @Override
     public void setDefBabbageEpochParam(EpochParam defBabbageEpochParam) {
         this.defBabbageEpochParam = defBabbageEpochParam;
+    }
+
+    @Override
+    public void setDefConwayEpochParam(EpochParam defConwayEpochParam) {
+        this.defConwayEpochParam = defConwayEpochParam;
     }
 
     @Override
@@ -124,6 +130,10 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         if (curEra == EraType.BABBAGE && prevEra == EraType.ALONZO) {
             epochParamMapper.updateByEpochParam(curEpochParam, defBabbageEpochParam);
+        }
+
+        if (curEra == EraType.CONWAY && prevEra == EraType.BABBAGE) {
+            epochParamMapper.updateByEpochParam(curEpochParam, defConwayEpochParam);
         }
 
         List<ParamProposal> prevParamProposals = paramProposalRepository

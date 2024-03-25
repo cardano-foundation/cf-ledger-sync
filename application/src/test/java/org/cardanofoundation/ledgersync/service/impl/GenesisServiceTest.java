@@ -79,13 +79,14 @@ class GenesisServiceTest {
         "https://book.world.dev.cardano.org/environments/mainnet/shelley-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisAlonzo",
         "https://book.world.dev.cardano.org/environments/mainnet/alonzo-genesis.json");
-    ReflectionTestUtils.setField(genesisDataService, "genesisAlonzo",
-        "https://book.world.dev.cardano.org/environments/mainnet/alonzo-genesis.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisConway",
+            "https://book.world.dev.cardano.org/environments/mainnet/conway-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisFetching", genesisWebClientFetching);
 
     genesisDataService.fetchShelleyGenesis(data);
     genesisDataService.fetchAlonzoGenesis(data);
     genesisDataService.setupBabbageGenesis(data);
+    genesisDataService.fetchConwayGenesis(data);
     genesisDataService.fetchTransactionAndTransactionOutput(data);
     genesisDataService.fetchBlockAndSlotLeader(data);
 
@@ -97,6 +98,7 @@ class GenesisServiceTest {
     Assertions.assertNotNull(data.getCostModel());
     Assertions.assertNotNull(data.getShelley());
     Assertions.assertNotNull(data.getAlonzo());
+    Assertions.assertNotNull(data.getConway());
 
     //check block
     Assertions.assertEquals("5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb",
@@ -206,6 +208,33 @@ class GenesisServiceTest {
         .build();
 
     Assertions.assertEquals(babbageGenesis.hashCode(), data.getBabbage().hashCode());
+
+    // conway protocol
+    EpochParam conwayGenesis = EpochParam.builder()
+            .pvtMotionNoConfidence(0.51)
+            .pvtCommitteeNormal(0.51)
+            .pvtCommitteeNoConfidence(0.51)
+            .pvtHardForkInitiation(0.51)
+            .pvtPPSecurityGroup(0.51)
+            .dvtMotionNoConfidence(0.51)
+            .dvtCommitteeNormal(0.51)
+            .dvtCommitteeNoConfidence(0.51)
+            .dvtUpdateToConstitution(0.51)
+            .dvtHardForkInitiation(0.51)
+            .dvtPPNetworkGroup(0.51)
+            .dvtPPEconomicGroup(0.51)
+            .dvtPPTechnicalGroup(0.51)
+            .dvtPPGovGroup(0.51)
+            .dvtTreasuryWithdrawal(0.51)
+            .committeeMinSize(BigInteger.valueOf(0))
+            .committeeMaxTermLength(BigInteger.valueOf(200))
+            .govActionLifetime(BigInteger.valueOf(10))
+            .govActionDeposit(BigInteger.valueOf(1000000000))
+            .drepDeposit(BigInteger.valueOf(2000000))
+            .drepActivity(BigInteger.valueOf(20))
+            .build();
+
+    Assertions.assertEquals(conwayGenesis.hashCode(), data.getConway().hashCode());
   }
 
   @Test
@@ -224,15 +253,16 @@ class GenesisServiceTest {
         "https://book.world.dev.cardano.org/environments/preprod/shelley-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisAlonzo",
         "https://book.world.dev.cardano.org/environments/preprod/alonzo-genesis.json");
-
+    ReflectionTestUtils.setField(genesisDataService, "genesisConway",
+            "https://book.world.dev.cardano.org/environments/mainnet/conway-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisFetching", genesisWebClientFetching);
 
     genesisDataService.fetchTransactionAndTransactionOutput(data);
     genesisDataService.fetchShelleyGenesis(data);
     genesisDataService.fetchAlonzoGenesis(data);
     genesisDataService.setupBabbageGenesis(data);
+    genesisDataService.fetchConwayGenesis(data);
     genesisDataService.fetchBlockAndSlotLeader(data);
-
     // check block
     Assertions.assertEquals(
         "d4b8de7a11d929a323373cbab6c1a9bdc931beffff11db111cf9d57356ee1937",
@@ -333,6 +363,33 @@ class GenesisServiceTest {
         .build();
 
     Assertions.assertEquals(babbageGenesis.hashCode(), data.getBabbage().hashCode());
+
+    // conway protocol
+    EpochParam conwayGenesis = EpochParam.builder()
+            .pvtMotionNoConfidence(0.51)
+            .pvtCommitteeNormal(0.51)
+            .pvtCommitteeNoConfidence(0.51)
+            .pvtHardForkInitiation(0.51)
+            .pvtPPSecurityGroup(0.51)
+            .dvtMotionNoConfidence(0.51)
+            .dvtCommitteeNormal(0.51)
+            .dvtCommitteeNoConfidence(0.51)
+            .dvtUpdateToConstitution(0.51)
+            .dvtHardForkInitiation(0.51)
+            .dvtPPNetworkGroup(0.51)
+            .dvtPPEconomicGroup(0.51)
+            .dvtPPTechnicalGroup(0.51)
+            .dvtPPGovGroup(0.51)
+            .dvtTreasuryWithdrawal(0.51)
+            .committeeMinSize(BigInteger.valueOf(0))
+            .committeeMaxTermLength(BigInteger.valueOf(200))
+            .govActionLifetime(BigInteger.valueOf(10))
+            .govActionDeposit(BigInteger.valueOf(1000000000))
+            .drepDeposit(BigInteger.valueOf(2000000))
+            .drepActivity(BigInteger.valueOf(20))
+            .build();
+
+    Assertions.assertEquals(conwayGenesis.hashCode(), data.getConway().hashCode());
   }
 
   @Test
@@ -350,13 +407,14 @@ class GenesisServiceTest {
         "classpath:networks/mainnet/shelley-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisAlonzo",
         "classpath:networks/mainnet/alonzo-genesis.json");
-    ReflectionTestUtils.setField(genesisDataService, "genesisAlonzo",
-        "classpath:networks/mainnet/alonzo-genesis.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisConway",
+        "classpath:networks/mainnet/conway-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisFetching", genesisLocalFetching);
 
     genesisDataService.fetchShelleyGenesis(data);
     genesisDataService.fetchAlonzoGenesis(data);
     genesisDataService.setupBabbageGenesis(data);
+    genesisDataService.fetchConwayGenesis(data);
     genesisDataService.fetchTransactionAndTransactionOutput(data);
     genesisDataService.fetchBlockAndSlotLeader(data);
 
@@ -477,6 +535,33 @@ class GenesisServiceTest {
         .build();
 
     Assertions.assertEquals(babbageGenesis.hashCode(), data.getBabbage().hashCode());
+
+    // conway protocol
+    EpochParam conwayGenesis = EpochParam.builder()
+            .pvtMotionNoConfidence(0.51)
+            .pvtCommitteeNormal(0.51)
+            .pvtCommitteeNoConfidence(0.51)
+            .pvtHardForkInitiation(0.51)
+            .pvtPPSecurityGroup(0.51)
+            .dvtMotionNoConfidence(0.51)
+            .dvtCommitteeNormal(0.51)
+            .dvtCommitteeNoConfidence(0.51)
+            .dvtUpdateToConstitution(0.51)
+            .dvtHardForkInitiation(0.51)
+            .dvtPPNetworkGroup(0.51)
+            .dvtPPEconomicGroup(0.51)
+            .dvtPPTechnicalGroup(0.51)
+            .dvtPPGovGroup(0.51)
+            .dvtTreasuryWithdrawal(0.51)
+            .committeeMinSize(BigInteger.valueOf(0))
+            .committeeMaxTermLength(BigInteger.valueOf(200))
+            .govActionLifetime(BigInteger.valueOf(10))
+            .govActionDeposit(BigInteger.valueOf(1000000000))
+            .drepDeposit(BigInteger.valueOf(2000000))
+            .drepActivity(BigInteger.valueOf(20))
+            .build();
+
+    Assertions.assertEquals(conwayGenesis.hashCode(), data.getConway().hashCode());
   }
 
   @Test
@@ -495,6 +580,8 @@ class GenesisServiceTest {
         "classpath:networks/preprod/shelley-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisAlonzo",
         "classpath:networks/preprod/alonzo-genesis.json");
+    ReflectionTestUtils.setField(genesisDataService, "genesisConway",
+            "classpath:networks/preprod/conway-genesis.json");
     ReflectionTestUtils.setField(genesisDataService, "genesisFetching", genesisLocalFetching);
 
     genesisDataService.fetchTransactionAndTransactionOutput(data);
