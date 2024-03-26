@@ -21,7 +21,7 @@ In many cases, this can help determine if the data is ready to be served. Defaul
 
 - `ledger-sync.healthcheck.blockTimeThreshold`: Specifies the time threshold (in seconds) for block time.
 If the latest block time is within this threshold and block time check is enabled,
-the health status will be marked as healthy, and the message will indicate that the data has reached or is near the ti
+the health status will be marked as healthy, and the message will indicate that the data has reached or is near the tip
 Default value is 180 seconds.
 
 - `ledger-sync.healthcheck.stopSlot`: Specifies the stop slot number.
