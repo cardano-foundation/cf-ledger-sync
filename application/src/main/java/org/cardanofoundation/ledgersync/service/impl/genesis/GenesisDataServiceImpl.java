@@ -88,6 +88,40 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     public static final String UPDATE_QUORUM = "updateQuorum";
 
     public static final String DELEGATION_KEYS = "genDelegs";
+    private final static String POOL_VOTING_THRESHOLDS = "poolVotingThresholds";
+    private final static String PVT_COMMITTEE_NORMAL = "committeeNormal";
+    private final static String PVT_COMMITTEE_NO_CONFIDENCE = "committeeNoConfidence";
+    private final static String PVT_HARD_FORK_INITIATION = "hardForkInitiation";
+    private final static String PVT_MOTION_NO_CONFIDENCE = "motionNoConfidence";
+    private final static String PVT_PP_SECURITY_GROUP = "ppSecurityGroup";
+    private final static String D_REP_VOTING_THRESHOLDS = "dRepVotingThresholds";
+    private final static String DVT_MOTION_NO_CONFIDENCE = "motionNoConfidence";
+    private final static String DVT_COMMITTEE_NORMAL = "committeeNormal";
+    private final static String DVT_COMMITTEE_NO_CONFIDENCE = "committeeNoConfidence";
+    private final static String DVT_UPDATE_TO_CONSTITUTION = "updateToConstitution";
+    private final static String DVT_HARD_FORK_INITIATION = "hardForkInitiation";
+    private final static String DVT_PP_NETWORK_GROUP = "ppNetworkGroup";
+    private final static String DVT_PP_ECONOMIC_GROUP = "ppEconomicGroup";
+    private final static String DVT_PP_TECHNICAL_GROUP = "ppTechnicalGroup";
+    private final static String DVT_PP_GOV_GROUP = "ppGovGroup";
+    private final static String DVT_TREASURY_WITHDRAWAL = "treasuryWithdrawal";
+
+    private final static String COMMITTEE_MIN_SIZE = "committeeMinSize";
+    private final static String COMMITTEE_MAX_TERM_LENGTH = "committeeMaxTermLength";
+    private final static String GOV_ACTION_LIFETIME = "govActionLifetime";
+    private final static String GOV_ACTION_DEPOSIT = "govActionDeposit";
+    private final static String D_REP_DEPOSIT = "dRepDeposit";
+    private final static String D_REP_ACTIVITY = "dRepActivity";
+
+    private final static String CONSTITUTION = "constitution";
+    private final static String ANCHOR = "anchor";
+    private final static String URL = "url";
+    private final static String DATA_HASH = "dataHash";
+
+    private final static String COMMITTEE = "committee";
+    private final static String MEMBERS = "members";
+    private final static String QUORUM = "quorum";
+
 
     @Value("${genesis.byron}")
     String genesisByron;
@@ -128,6 +162,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         fetchShelleyGenesis(genesisData);
         fetchAlonzoGenesis(genesisData);
         setupBabbageGenesis(genesisData);
+        fetchConwayGenesis(genesisData);
 
         log.info("setup shelley genesis");
         epochParamService.setDefShelleyEpochParam(genesisData.getShelley());
@@ -135,6 +170,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         epochParamService.setDefAlonzoEpochParam(genesisData.getAlonzo());
         log.info("setup babbage genesis");
         epochParamService.setDefBabbageEpochParam(genesisData.getBabbage());
+        log.info("setup conway genesis");
+        epochParamService.setDefConwayEpochParam(genesisData.getConway());
         log.info("setup genesis cost model");
         costModelService.setGenesisCostModel(genesisData.getCostModel());
     }
@@ -330,6 +367,49 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         genesisData.setBabbage(genesisShelleyProtocols);
     }
 
+    public void fetchConwayGenesis(GenesisData genesisData) {
+        log.info("Fetch block from url {}", genesisConway);
+        String genesisConwayJson = genesisFetching.getContent(genesisConway);
+
+        try {
+            Map<String, Object> genesisConwayJsonMap = objectMapper.readValue(genesisConwayJson,
+                    new TypeReference<>() {
+                    });
+            final var poolVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(POOL_VOTING_THRESHOLDS);
+            final var dRepVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(D_REP_VOTING_THRESHOLDS);
+
+            EpochParam genesisShelleyProtocols = EpochParam.builder()
+                    .pvtCommitteeNormal(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NORMAL)).doubleValue())
+                    .pvtCommitteeNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NO_CONFIDENCE)).doubleValue())
+                    .pvtHardForkInitiation(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_HARD_FORK_INITIATION)).doubleValue())
+                    .pvtMotionNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_MOTION_NO_CONFIDENCE)).doubleValue())
+                    .pvtPPSecurityGroup(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_PP_SECURITY_GROUP)).doubleValue())
+                    .dvtMotionNoConfidence(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_MOTION_NO_CONFIDENCE)).doubleValue())
+                    .dvtCommitteeNormal(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_COMMITTEE_NORMAL)).doubleValue())
+                    .dvtCommitteeNoConfidence(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_COMMITTEE_NO_CONFIDENCE)).doubleValue())
+                    .dvtUpdateToConstitution(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_UPDATE_TO_CONSTITUTION)).doubleValue())
+                    .dvtHardForkInitiation(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_HARD_FORK_INITIATION)).doubleValue())
+                    .dvtPPNetworkGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_NETWORK_GROUP)).doubleValue())
+                    .dvtPPEconomicGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_ECONOMIC_GROUP)).doubleValue())
+                    .dvtPPTechnicalGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_TECHNICAL_GROUP)).doubleValue())
+                    .dvtPPGovGroup(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_PP_GOV_GROUP)).doubleValue())
+                    .dvtTreasuryWithdrawal(convertObjectToBigDecimal(dRepVotingThresholds.get(DVT_TREASURY_WITHDRAWAL)).doubleValue())
+                    .committeeMinSize(convertObjecToBigInteger(genesisConwayJsonMap.get(COMMITTEE_MIN_SIZE)))
+                    .committeeMaxTermLength(convertObjecToBigInteger(genesisConwayJsonMap.get(COMMITTEE_MAX_TERM_LENGTH)))
+                    .govActionLifetime(convertObjecToBigInteger(genesisConwayJsonMap.get(GOV_ACTION_LIFETIME)))
+                    .govActionDeposit(convertObjecToBigInteger(genesisConwayJsonMap.get(GOV_ACTION_DEPOSIT)))
+                    .drepDeposit(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_DEPOSIT)))
+                    .drepActivity(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_ACTIVITY)))
+                    .build();
+
+            genesisData.setConway(genesisShelleyProtocols);
+        } catch (Exception e) {
+            log.error("Genesis data at {} can't parse from json to java object", genesisConway);
+            log.error("{} value \n {}", genesisAlonzo, genesisConwayJson);
+            log.error("{}", e.getMessage());
+            System.exit(0);
+        }
+    }
     /**
      * Fetching data from alonzo-genesis.json link extracting and mapping protocol parameters in
      * alonzo era
@@ -443,7 +523,6 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             System.exit(0);
         }
     }
-
     /**
      * Read genesis hash from config.json
      */
