@@ -34,12 +34,13 @@ store:
   account:
     enabled: true
     balance-aggregation-enabled: true
-    history-cleanup-enabled: true
+    history-cleanup-enabled: false
     # 3 months
     balance-cleanup-slot-count: 7889238
+    address-tx-amount-include-zero-amount: true
     api-enabled: true
     parallel-write: true
-    write-thread-default-batch-size: 6000
+    write-thread-default-batch-size: 1000
     jooq-write-batch-size: 3000
     write-thread-count: 5
   executor:
