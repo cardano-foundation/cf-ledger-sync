@@ -31,12 +31,6 @@ CREATE INDEX if not exists idx_address_balance_epoch
 CREATE INDEX if not exists idx_address_balance_unit
     ON address_balance (unit);
 
-CREATE INDEX if not exists idx_address_balance_policy
-    ON address_balance (policy);
-
-CREATE INDEX if not exists idx_address_balance_policy_asset
-    ON address_balance (policy, asset_name);
-
 -- stake address balance
 
 CREATE INDEX if not exists idx_stake_addr_balance_stake_addr
