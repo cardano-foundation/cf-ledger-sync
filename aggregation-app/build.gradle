@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.yaci.store.starter)
     implementation(libs.yaci.store.utxo.starter)
     implementation(libs.yaci.store.account.starter)
+    implementation(libs.yaci.store.admin.starter)
 
     implementation project(':components:healthcheck')
     implementation project(':aggregates:account')

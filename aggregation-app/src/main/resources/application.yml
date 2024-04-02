@@ -19,6 +19,9 @@ spring:
         jdbc:
           batch_size: 100
         order_inserts: true
+  batch:
+    job:
+      enabled: false
 
 apiPrefix: /api/v1
 
@@ -51,6 +54,8 @@ store:
     blocks-partition-size: 10
     use-virtual-thread-for-batch-processing: false
     use-virtual-thread-for-event-processing: true
+  admin:
+    api-enabled: true
 
 ledger-sync:
   healthcheck:
