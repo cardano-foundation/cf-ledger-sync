@@ -46,6 +46,7 @@ store:
     write-thread-default-batch-size: 1000
     jooq-write-batch-size: 3000
     write-thread-count: 5
+    address-cache-enabled: true
   executor:
     enable-parallel-processing: true
     block-processing-threads: 15
@@ -56,6 +57,7 @@ store:
     use-virtual-thread-for-event-processing: true
   admin:
     api-enabled: true
+  mvstore-enabled: true
 
 ledger-sync:
   healthcheck:
