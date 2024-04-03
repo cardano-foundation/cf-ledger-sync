@@ -59,9 +59,9 @@ spec:
             {{- end }}
 
             ## Batching
-            - name: BLOCKS_BATCHSIZE
+            - name: BLOCKS_BATCH_SIZE
               value: {{ .Values.blocks.batchSize | default "100" | quote }}
-            - name: BLOCKS_COMMITTHRESHOLD
+            - name: COMMIT_THRESHOLD
               value: {{ .Values.blocks.commitThreshold | default "3000" | quote }}
 
             ## Postgres
