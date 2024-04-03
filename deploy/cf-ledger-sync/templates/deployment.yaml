@@ -54,8 +54,16 @@ spec:
               value: {{ .Values.storeCardanoPort | default "30000" | quote }}
             - name: STORE_CARDANO_PROTOCOL_MAGIC
               value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
             {{- end }}
-            
+
+            ## Batching
+            - name: BLOCKS_BATCHSIZE
+              value: {{ .Values.blocks.batchSize | default "100" | quote }}
+            - name: BLOCKS_COMMITTHRESHOLD
+              value: {{ .Values.blocks.commitThreshold | default "3000" | quote }}
+
             ## Postgres
             - name: POSTGRES_HOST
               valueFrom:
