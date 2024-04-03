@@ -38,3 +38,8 @@ monitoringEnabled: true
 
 diagnosticMode:
   enabled: false
+
+# batching
+blocks:
+  batchSize: "100"
+  commitThreshold: "3000"
