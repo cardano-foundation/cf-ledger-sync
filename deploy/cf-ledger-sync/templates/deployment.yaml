@@ -6,7 +6,8 @@ metadata:
     {{- include "cf-ledger-sync.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  strategy: Recreate
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "cf-ledger-sync.selectorLabels" . | nindent 6 }}
