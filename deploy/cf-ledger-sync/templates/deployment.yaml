@@ -6,6 +6,7 @@ metadata:
     {{- include "cf-ledger-sync.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy: Recreate
   selector:
     matchLabels:
       {{- include "cf-ledger-sync.selectorLabels" . | nindent 6 }}
@@ -88,13 +89,24 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-#          livenessProbe:
-#            httpGet:
-#              path: /
-#              port: http
-#          readinessProbe:
-#            httpGet:
-#              path: /
-#              port: http
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /actuator/health-status
+              port: http
+              scheme: HTTP
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            initialDelaySeconds: 30
+            failureThreshold: 10
+            httpGet:
+              path: /actuator/health-status
+              port: http
+              scheme: HTTP
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
