@@ -1,5 +1,8 @@
 replicaCount: 1
 
+tolerations: null
+affinity: null
+
 useLocalCardanoNode: false
 localCardanoNode:
   enabled: false
@@ -7,6 +10,8 @@ localCardanoNode:
     repository: ghcr.io/blinklabs-io/cardano-node
     tag: 8.7.3-2
   mithrilRestore: "true"
+  tolerations: null
+  affinity: null
 
 image:
   repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync
