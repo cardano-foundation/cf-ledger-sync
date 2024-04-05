@@ -16,6 +16,9 @@ spec:
       labels:
         {{- include "cf-ledger-sync.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- else }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

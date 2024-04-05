@@ -16,6 +16,9 @@ spec:
       labels:
         app: cardano-node
     spec:
+      {{- if .Values.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- else }}
       containers:
         - name: cardano-node
           image: "{{ .image.repository }}:{{ .image.tag }}"
