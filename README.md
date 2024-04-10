@@ -34,7 +34,6 @@ spring.datasource.username=user
 
 spring.datasource.password=
 
-SCHEMA=<schema>
 ```
 
 2. Run
@@ -55,7 +54,7 @@ Build docker image
 
 
 ```shell
-docker build -t cardanofoundation/ledger-sync:<version> .
+docker build  --target ledger-sync -t cardanofoundation/ledger-sync:<version> .
 ```
 
 ### Docker Run

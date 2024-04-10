@@ -30,7 +30,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.batch_size: 1000
-        default_schema: ${SCHEMA:cexplorer}
         show_sql: false
         format_sql: true
         order_inserts: true
@@ -51,8 +50,6 @@ spring:
       - classpath:db/migration/ledgersync
       - classpath:db/store/{vendor}
     validate-on-migrate: ${FLYWAY_VALIDATE:false}
-    default-schema: ${spring.jpa.properties.hibernate.default_schema}
-    schemas: ${spring.jpa.properties.hibernate.default_schema}
     create-schemas: ${ALLOW_CREATE_SCHEMA:true}
     out-of-order: true
   codec:
@@ -86,3 +83,22 @@ ledger-sync:
       fixed-delay: ${POOL_OFFLINE_DATA_FIXED_DELAY:172800}
       initial-delay: ${POOL_OFFLINE_DATA_INIT_DELAY:20000}
     enabled: ${SCHEDULER_ENABLED:true}
+  healthcheck:
+    enabled: ${HEALTH_CHECK_ENABLED:true}
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:900}
+    block-time-check-enabled: ${BLOCK_TIME_CHECK_ENABLED:true}
+    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:180}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "health,prometheus,health-status"
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    health-status:
+      enabled: ${HEALTH_CHECK_ENABLED:true}

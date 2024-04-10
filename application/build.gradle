@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '3.1.4'
-    id 'nu.studer.jooq' version '8.2'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'nu.studer.jooq' version '8.2.3'
 }
 
 dependencies {
@@ -8,6 +8,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
@@ -16,8 +17,10 @@ dependencies {
     implementation project(':components:common')
     implementation project(':components:consumer-common')
     implementation project(':components:scheduler')
+    implementation project(':components:healthcheck')
 
     implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.governance.starter)
 
     implementation(libs.cardano.client.lib)
 
@@ -57,6 +60,7 @@ ext {
 }
 
 jooq {
+    version = '3.18.9'
     configurations {
         main {
             generateSchemaSourceOnCompilation = false

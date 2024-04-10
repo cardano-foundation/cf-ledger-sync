@@ -23,7 +23,6 @@ spring:
         elideSetAutoCommits: true
         maintainTimeStats: false
   # JPA specific configs
-  # JPA specific configs
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -31,7 +30,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc.batch_size: 1000
-        default_schema: ${SCHEMA:cexplorer}
         show_sql: false
         format_sql: true
         order_inserts: true

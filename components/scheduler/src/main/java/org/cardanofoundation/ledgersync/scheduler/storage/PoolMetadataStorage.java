@@ -1,7 +1,7 @@
 package org.cardanofoundation.ledgersync.scheduler.storage;
 
-import org.cardanofoundation.explorer.consumercommon.entity.PoolHash;
-import org.cardanofoundation.explorer.consumercommon.entity.PoolMetadataRef;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolHash;
+import org.cardanofoundation.ledgersync.consumercommon.entity.PoolMetadataRef;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

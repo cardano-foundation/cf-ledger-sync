@@ -4,7 +4,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation(libs.hibernate.jpamodelgen)
-    implementation(libs.hibernate.types.'60')
+    implementation(libs.hypersistence.utils.hibernate)
     implementation(libs.cardano.client.lib)
 
     compileOnly(libs.lombok)
