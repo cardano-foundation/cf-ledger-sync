@@ -9,9 +9,7 @@ import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.consumercommon.entity.SlotLeader;
-import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
 import org.cardanofoundation.ledgersync.repository.BlockRepository;
-import org.cardanofoundation.ledgersync.repository.TxRepository;
 import org.cardanofoundation.ledgersync.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,14 +26,12 @@ import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.getNetw
 public class BlockSyncServiceImpl implements BlockSyncService {
 
     BlockRepository blockRepository;
-    TxRepository txRepository;
 
     TransactionService transactionService;
     BlockDataService blockDataService;
     SlotLeaderService slotLeaderService;
     EpochService epochService;
     EpochParamService epochParamService;
-    TxChartService txChartService;
     MetricCollectorService metricCollectorService;
     AggregatedDataCachingService aggregatedDataCachingService;
 
@@ -72,7 +68,6 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         blockRepository.saveAll(blockMap.values());
         aggregatedDataCachingService.addBlockCount(allAggregatedBlocks.size());
         // Prepare and handle transaction contents
-        Tx latestSavedTx = txRepository.findFirstByOrderByIdDesc();
         transactionService.prepareAndHandleTxs(blockMap, allAggregatedBlocks);
 
         // Handle epoch data
@@ -83,9 +78,6 @@ public class BlockSyncServiceImpl implements BlockSyncService {
 
         // Cache latest txs
         aggregatedDataCachingService.saveLatestTxs();
-
-        // Handle tx charts
-        txChartService.handleTxChart(latestSavedTx);
 
         // Finally, commit and clear the aggregated data
         blockDataService.clearBatchBlockData();
