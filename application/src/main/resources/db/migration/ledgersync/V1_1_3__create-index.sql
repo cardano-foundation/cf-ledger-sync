@@ -69,8 +69,6 @@ CREATE INDEX IF NOT EXISTS idx_delegation_tx_id ON delegation USING btree (tx_id
 CREATE INDEX IF NOT EXISTS pool_owner_pool_update_id_idx ON pool_owner USING btree (pool_update_id);
 CREATE INDEX IF NOT EXISTS idx_pool_relay_update_id ON pool_relay USING btree (update_id);
 
-CREATE INDEX IF NOT EXISTS idx_address_stake_address_id ON address USING btree (stake_address_id);
-
 CREATE INDEX IF NOT EXISTS ma_tx_mint_ident_index ON ma_tx_mint (ident);
 CREATE INDEX IF NOT EXISTS extra_key_witness_hash_index ON extra_key_witness (hash);
 CREATE INDEX IF NOT EXISTS ma_tx_out_ident_index ON ma_tx_out (ident);
@@ -79,34 +77,12 @@ CREATE INDEX IF NOT EXISTS pool_offline_data_pool_id_index ON pool_offline_data 
 CREATE INDEX IF NOT EXISTS redeemer_data_hash_index ON redeemer_data (hash);
 CREATE INDEX IF NOT EXISTS slot_leader_hash_index ON slot_leader (hash);
 
-CREATE INDEX IF NOT EXISTS idx_address_address ON address USING hash (address);
-
-CREATE INDEX IF NOT EXISTS idx_address_token_tx_id ON address_token USING btree (tx_id);
-CREATE INDEX IF NOT EXISTS idx_address_token_ident ON address_token USING btree (ident);
-CREATE INDEX IF NOT EXISTS idx_address_token_address_id ON address_token (address_id);
-
-CREATE INDEX IF NOT EXISTS idx_address_tx_balance_address_id ON address_tx_balance (address_id);
-CREATE INDEX IF NOT EXISTS idx_address_token_balance_address_id ON address_token_balance (address_id);
-CREATE INDEX IF NOT EXISTS idx_address_token_balance_ident ON address_token_balance (ident);
-CREATE INDEX IF NOT EXISTS idx_address_token_balance_address_id_ident ON address_token_balance (address_id, ident);
-CREATE INDEX IF NOT EXISTS idx_address_token_balance_ident_address_id ON address_token_balance (ident, address_id);
-CREATE INDEX IF NOT EXISTS idx_address_token_balance_stake_address_id ON address_token_balance (stake_address_id);
-
-CREATE INDEX IF NOT EXISTS idx_address_tx_balance_time ON address_tx_balance USING btree ("time");
-CREATE INDEX IF NOT EXISTS idx_address_tx_balance_tx_id ON address_tx_balance USING btree (tx_id);
-CREATE INDEX IF NOT EXISTS idx_address_tx_balance_stake_address_id ON address_tx_balance (stake_address_id);
-
 CREATE INDEX IF NOT EXISTS idx_multi_asset_name_view ON multi_asset (name_view);
 CREATE UNIQUE INDEX IF NOT EXISTS multi_asset_fingerprint_uindex ON multi_asset (fingerprint);
 
 CREATE UNIQUE INDEX IF NOT EXISTS datum_hash_uindex ON datum (hash);
 CREATE UNIQUE INDEX IF NOT EXISTS pool_hash_hash_raw_index ON pool_hash (hash_raw);
 CREATE UNIQUE INDEX IF NOT EXISTS script_hash_uindex ON script (hash);
-
-CREATE INDEX IF NOT EXISTS idx_tx_chart_minute ON tx_chart ("minute");
-CREATE INDEX IF NOT EXISTS idx_tx_chart_hour ON tx_chart ("hour");
-CREATE INDEX IF NOT EXISTS idx_tx_chart_day ON tx_chart ("day");
-CREATE INDEX IF NOT EXISTS idx_tx_chart_month ON tx_chart ("month");
 
 -- Reward index
 CREATE INDEX IF NOT EXISTS reward_earned_epoch_idx ON reward (earned_epoch);
@@ -118,10 +94,6 @@ CREATE INDEX IF NOT EXISTS reward_pool_id_idx ON reward (pool_id);
 
 -- Optimize index for query
 
--- create composite index for table address_token:
-CREATE INDEX IF NOT EXISTS address_token_ident_stake_tx_id_balance_idx
-    ON address_token (ident, tx_id, balance);
-
 -- add new index table block
 CREATE INDEX IF NOT EXISTS idx_block_id_time_tx_count
     ON block (id, "time", tx_count);
@@ -130,34 +102,12 @@ CREATE INDEX IF NOT EXISTS idx_block_id_time_tx_count
 CREATE INDEX IF NOT EXISTS tx_block_id_id_idx
     ON tx (block_id, id);
 
--- create composite index for table address_tx_balance:
-CREATE INDEX IF NOT EXISTS address_tx_balance_address_id_time_balance_index
-    ON address_tx_balance (address_id, "time", balance);
-
--- creat address_address_has_script_idx for table address
-CREATE INDEX IF NOT EXISTS address_address_has_script_idx
-    ON address USING btree (address_has_script);
-
--- CREATE COMPOSITE INDEX FOR address_token_balance
-CREATE INDEX IF NOT EXISTS address_token_balance_ident_stake_address_id_balance_idx
-    ON address_token_balance (ident, stake_address_id, balance);
-
--- CREATE COMPOSITE INDEX FOR address_tx_balance
-CREATE INDEX IF NOT EXISTS address_tx_balance_stake_address_id_tx_id_balance_idx
-    ON address_tx_balance (stake_address_id, tx_id, balance);
-
 CREATE INDEX IF NOT EXISTS tx_metadata_hash_idx
     ON tx_metadata_hash (hash);
 
 CREATE INDEX IF NOT EXISTS tx__tx_metadata_hash_idx
     ON tx (tx_metadata_hash_id);
 
-CREATE INDEX IF NOT EXISTS stake_address_balance_idx ON stake_address USING btree (balance);
-
-
-CREATE INDEX IF NOT EXISTS address_balance_idx ON address USING btree (balance);
-CREATE INDEX IF NOT EXISTS address_tx_count_idx ON address USING btree (tx_count);
-CREATE UNIQUE INDEX IF NOT EXISTS address_tx_balance_tx_id_idx ON address_tx_balance USING btree (tx_id, address_id);
 CREATE INDEX IF NOT EXISTS multi_asset_supply_idx ON multi_asset (supply);
 CREATE INDEX IF NOT EXISTS multi_asset_time_idx ON multi_asset ("time");
 
@@ -180,6 +130,5 @@ CREATE INDEX IF NOT EXISTS tx_bootstrap_witnesses_tx_id_idx ON tx_bootstrap_witn
 
 CREATE INDEX IF NOT EXISTS redeemer_script_hash_idx ON redeemer (script_hash);
 
-CREATE INDEX IF NOT EXISTS address_payment_cred_idx ON address (payment_cred);
 CREATE INDEX IF NOT EXISTS redeemer_script_hash_tx_id_idx ON redeemer (script_hash, tx_id);
 CREATE INDEX IF NOT EXISTS stake_address_script_hash_idx ON stake_address (script_hash);

@@ -19,7 +19,9 @@ spring:
         jdbc:
           batch_size: 100
         order_inserts: true
-
+  batch:
+    job:
+      enabled: false
 apiPrefix: /api/v1
 
 logging:
@@ -43,6 +45,7 @@ store:
     write-thread-default-batch-size: 1000
     jooq-write-batch-size: 3000
     write-thread-count: 5
+    address-cache-enabled: true
   executor:
     enable-parallel-processing: true
     block-processing-threads: 15
