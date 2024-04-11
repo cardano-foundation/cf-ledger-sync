@@ -11,7 +11,6 @@ import org.cardanofoundation.ledgersync.repository.*;
 import org.cardanofoundation.ledgersync.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.service.EpochService;
 import org.cardanofoundation.ledgersync.service.MultiAssetService;
-import org.cardanofoundation.ledgersync.service.TxChartService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -121,9 +120,6 @@ class RollbackServiceImplTest {
   MultiAssetService multiAssetService;
 
   @Mock
-  TxChartService txChartService;
-
-  @Mock
   AggregatedDataCachingService aggregatedDataCachingService;
 
   @Mock
@@ -150,7 +146,7 @@ class RollbackServiceImplTest {
         stakeRegistrationRepository, treasuryRepository, txInRepository, txMetadataRepository,
         txOutRepository, unconsumeTxInRepository, withdrawalRepository, rollbackHistoryRepository,
         txBootstrapWitnessRepository, txWitnessRepository,
-        epochService, multiAssetService, txChartService,
+        epochService, multiAssetService,
         aggregatedDataCachingService
     );
   }
@@ -197,7 +193,6 @@ class RollbackServiceImplTest {
     Mockito.verifyNoInteractions(rollbackHistoryRepository);
     Mockito.verifyNoInteractions(epochService);
     Mockito.verifyNoInteractions(multiAssetService);
-    Mockito.verifyNoInteractions(txChartService);
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .saveLatestTxs();
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1)).commit();
@@ -256,7 +251,6 @@ class RollbackServiceImplTest {
     Mockito.verify(epochService, Mockito.times(1)).rollbackEpochStats(Mockito.anyList());
     Mockito.verifyNoMoreInteractions(epochService);
     Mockito.verifyNoInteractions(multiAssetService);
-    Mockito.verifyNoInteractions(txChartService);
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .subtractBlockCount(Mockito.anyInt());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
@@ -363,9 +357,6 @@ class RollbackServiceImplTest {
     Mockito.verify(multiAssetService, Mockito.times(1))
         .rollbackMultiAssets(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetService);
-    Mockito.verify(txChartService, Mockito.times(1))
-        .rollbackTxChart(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(txChartService);
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .subtractTxCount(Mockito.anyInt());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))

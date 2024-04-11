@@ -56,7 +56,6 @@ public class RollbackServiceImpl implements RollbackService {
     TxWitnessRepository txWitnessRepository;
     EpochService epochService;
     MultiAssetService multiAssetService;
-    TxChartService txChartService;
     AggregatedDataCachingService aggregatedDataCachingService;
 
 
@@ -126,7 +125,6 @@ public class RollbackServiceImpl implements RollbackService {
                         tx.getId(), tx.getHash(), tx.getBlockId()));
 
         multiAssetService.rollbackMultiAssets(txsForRollback);
-        txChartService.rollbackTxChart(txsForRollback);
         aggregatedDataCachingService.subtractTxCount(txsForRollback.size());
 
         log.info("Deleting records from tables related to txs/blocks being rolled back");
