@@ -98,6 +98,9 @@ scheduler:
 
 docker-compose-up:
   LOCALLY
+  WAIT
+    BUILD +all
+  END
 
   ARG network=preprod
   ARG background

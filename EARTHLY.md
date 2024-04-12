@@ -1,3 +1,24 @@
+# Running local environment using docker-compose
+
+There is no need to build the images first, as earthly targets include the build dependency, so you can just do this right the way:
+
+* Bring the environment up:
+```
+earthly +docker-compose-up --network=preview
+earthly +docker-compose-up --network=preprod
+earthly +docker-compose-up --network=sanchonet
+earthly +docker-compose-up --network=mainnet --background=true
+```
+You can add the `--background=true` argument to let docker-compose run in the background :)
+* Bring the environment down:
+```
+# Either
+earthly +docker-compose-down
+# Or just...
+docker-compose down [-v]
+```
+Optionally, you can also specify `--cleanup=true` which will cleanup the docker volumes (postgres data).
+
 # Build
 
 * Build all the available images:
@@ -19,22 +40,3 @@ cf-ledger-sync-scheduler:latest
 cf-ledger-sync-aggregation:latest
 cf-ledger-sync-streamer:latest
 ```
-
-# Running local environment using docker-compose
-
-* Bring the environment up:
-```
-earthly +docker-compose-up --network=preview
-earthly +docker-compose-up --network=preprod
-earthly +docker-compose-up --network=sanchonet
-earthly +docker-compose-up --network=mainnet --background=true
-```
-You can add the `--background=true` argument to let docker-compose run in the background :)
-* Bring the environment down:
-```
-# Either
-earthly +docker-compose-down
-# Or just...
-docker-compose down [-v]
-```
-Optionally, you can also specify `--cleanup=true` which will cleanup the docker volumes (postgres data).
