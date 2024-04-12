@@ -1,3 +1,8 @@
+# Prerequisites
+
+* [docker]
+* [earthly]
+
 # Running local environment using docker-compose
 
 There is no need to build the images first, as earthly targets include the build dependency, so you can just do this right the way:
@@ -40,3 +45,6 @@ cf-ledger-sync-scheduler:latest
 cf-ledger-sync-aggregation:latest
 cf-ledger-sync-streamer:latest
 ```
+
+[earhly]: https://docs.earthly.dev/install
+[docker]: https://docs.docker.com/get-docker/
