@@ -33,78 +33,31 @@ jobs:
           echo "DOCKER_LATEST_IMAGE_TAG=${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/${DOCKER_IMAGE_NAME}:latest" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "GITHUB_RUN_ID=${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
-      - name: Docker Login
+          echo "DOCKER_IMAGES_EXTRA_TAGS=${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT} ${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT}-${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Docker Login (private registry)
         uses: docker/login-action@v2
         with:
           registry: ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}
           username: ${{ env.PRIVATE_DOCKER_REGISTRY_USER }}
           password: ${{ env.PRIVATE_DOCKER_REGISTRY_PASS }}
 
+      - name: Docker Login (hub.docker.com)
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.HUB_DOCKER_COM_USER }}
+          password: ${{ secrets.HUB_DOCKER_COM_PASS }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and Push ledger sync docker image
-        uses: docker/build-push-action@v4
+      - uses: earthly/actions-setup@v1
         with:
-          file: ./Dockerfile
-          context: .
-          push: true
-          target: ledger-sync
-          tags: |
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:latest
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
-          build-args: |
-            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
-            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
-            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version: "0.8.6"
 
-      - name: Build and Push scheduler docker image
-        uses: docker/build-push-action@v4
-        with:
-          file: ./Dockerfile
-          context: .
-          push: true
-          target: scheduler
-          tags: |
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:latest
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-scheduler:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
-          build-args: |
-            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
-            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
-            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
-
-      - name: Build and Push streamer docker image
-        uses: docker/build-push-action@v4
-        with:
-          file: ./Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:latest
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-streamer:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
-          target: streamer
-          build-args: |
-            TARGET=streamer
-            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
-            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
-            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
-
-      - name: Build and Push aggregation docker image
-        uses: docker/build-push-action@v4
-        with:
-          file: ./Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-aggregation:latest
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-aggregation:${{ env.ARTIFACT_VERSION }}
-            ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}/cf-ledger-sync-aggregation:${{ env.ARTIFACT_VERSION }}-${{ env.GITHUB_RUN_ID }}
-          target: aggregation
-          build-args: |
-            TARGET=aggregation
-            PRIVATE_MVN_REGISTRY_URL=${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
-            PRIVATE_MVN_REGISTRY_USER=${{ secrets.GITLAB_PKG_REGISTRY_USER }}
-            PRIVATE_MVN_REGISTRY_PASS=${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
+      - name: 🌍 earthly (docker build and push)
+        env:
+          EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
+        run: |
+          earthly +docker-publish
