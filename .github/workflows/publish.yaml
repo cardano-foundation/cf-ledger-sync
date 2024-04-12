@@ -1,4 +1,4 @@
-name: Publish artifacts to (internal) Gitlab Packages
+name: Publish docker artifacts to docker registries
 
 on:
   workflow_dispatch:
