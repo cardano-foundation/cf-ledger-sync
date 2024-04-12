@@ -2,11 +2,11 @@
 multi-datasource:
   datasource-ledger-sync:
     hikari-config:
-        jdbc-url: jdbc:postgresql://${LEDGER_SYNC_HOST:10.4.10.75}:${LEDGER_SYNC_PORT:54322}/${LEDGER_SYNC_DB:explorer}
+        jdbc-url: jdbc:postgresql://${LEDGER_SYNC_HOST:10.4.10.112}:${LEDGER_SYNC_PORT:54334}/${LEDGER_SYNC_DB:ledger_sync}
         username: ${LEDGER_SYNC_USER_NAME:cardano-master}
-        password: ${LEDGER_SYNC_PASSWORD:postgres_master_pw}
+        password: ${LEDGER_SYNC_PASSWORD:dbpass}
         driver-class-name: org.postgresql.Driver
-        schema: ${LEDGER_SYNC_SCHEMA:cexplorer_verifier_data}
+        schema: ${LEDGER_SYNC_SCHEMA:preprod}
 #  datasource-db-sync:
 #    hikari-config:
 #      jdbc-url: jdbc:postgresql://${DB_SYNC_HOST:10.4.10.231}:${DB_SYNC_PORT:5434}/${DB_SYNC_DB:cardano_mainnet}
