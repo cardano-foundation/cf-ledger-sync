@@ -2,7 +2,7 @@ version: "3.9"
 services:
   cf-ledger-sync:
     restart: unless-stopped
-    image: cf-ledger-sync:latest
+    image: ${CF_LEDGER_SYNC_IMAGE:-cardanofoundation/cf-ledger-sync:latest}
     environment:
       - NETWORK=${NETWORK:-preprod}
       - DB_DIALECT=${DB_DIALECT:-org.hibernate.dialect.PostgreSQLDialect}
