@@ -35,6 +35,10 @@ services:
         -c max_wal_size=2GB
         -c max_parallel_workers_per_gather=4
         -c max_parallel_maintenance_workers=4
+        -c wal_level=minimal
+        -c max_wal_senders=0
+        -c synchronous_commit=off
+#        -c wal_writer_delay=5000
     restart: always
     logging:
       driver: "json-file"
@@ -63,8 +67,15 @@ services:
       - EVENT_TIME_THRESHOLD_IN_SECOND=${EVENT_TIME_THRESHOLD_IN_SECOND:-600}
       - BLOCK_TIME_CHECK_ENABLED=${BLOCK_TIME_CHECK_ENABLED:-true}
       - BLOCK_TIME_THRESHOLD_IN_SECOND=${BLOCK_TIME_THRESHOLD_IN_SECOND:-180}
+      - STORE_ACCOUNT_INITIALBALANCESNAPSHOTBLOCK=${STORE_ACCOUNT_INITIALBALANCESNAPSHOTBLOCK:-0}
+      - STORE_ACCOUNT_BALANCECALCJOBBATCHSIZE=${STORE_ACCOUNT_BALANCECALCJOBBATCHSIZE:-500}
+      - STORE_ACCOUNT_BALANCECALCJOBPARTITIONSIZE=${STORE_ACCOUNT_BALANCECALCJOBPARTITIONSIZE:-5}
+      - STORE_ADMIN_HEALTHCHECKINTERVAL=${STORE_ADMIN_HEALTHCHECKINTERVAL:-120}
+      - STORE_ADMIN_AUTORECOVERYENABLED=${STORE_ADMIN_AUTORECOVERYENABLED:-true}
     ports:
       - ${PORT:-8081}:8080
+    volumes:
+      - $PWD/logs:/app/logs
 
     logging:
       driver: "json-file"
