@@ -1,0 +1,32 @@
+version: '3.9'
+
+networks:
+  ledger-sync-net:
+
+services:
+  ledger-sync-postgres:
+    extends:
+      file: postgres-compose.yml
+      service: ledger-sync-postgres
+    networks:
+      - ledger-sync-net
+
+  ledger-sync:
+    extends:
+      file: main-app-compose.yml
+      service: ledger-sync
+    depends_on:
+      ledger-sync-postgres:
+        condition: service_healthy
+    networks:
+      - ledger-sync-net
+
+  ledger-sync-aggregation:
+    extends:
+      file: aggr-app-compose.yml
+      service: ledger-sync-aggregation
+    depends_on:
+      ledger-sync-postgres:
+        condition: service_healthy
+    networks:
+      - ledger-sync-net

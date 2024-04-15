@@ -1,63 +1,9 @@
 version: '3.9'
 
-networks:
-  ledger-sync-net:
-
 services:
-  ledger-sync-postgres:
-    image: postgres:14.5
-    shm_size: 16gb
-    environment:
-      - POSTGRES_USER=cardano-master
-      - POSTGRES_PASSWORD=dbpass
-      - POSTGRES_DB=ledger_sync
-      - POSTGRES_LOGGING=true
-    ports:
-      - "54333:5432"
-    volumes:
-      - $PWD/db-data/ledger-sync-postgres/:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "sh -c 'pg_isready -U cardano-master -d ledger_sync'" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: >
-      postgres
-        -c max_connections=500
-        -c max_locks_per_transaction=256
-        -c shared_buffers=12GB
-        -c effective_cache_size=20GB
-        -c maintenance_work_mem=4GB
-        -c checkpoint_completion_target=0.9
-        -c checkpoint_timeout=1h
-        -c wal_buffers=16MB
-        -c default_statistics_target=500
-        -c random_page_cost=1.1
-        -c effective_io_concurrency=500
-        -c work_mem=64GB
-        -c min_wal_size=1GB
-        -c max_wal_size=2GB
-        -c max_parallel_workers_per_gather=4
-        -c max_parallel_maintenance_workers=4
-        -c wal_level=minimal
-        -c max_wal_senders=0
-        -c synchronous_commit=off
-#        -c wal_writer_delay=5000
-    restart: always
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "100"
-    networks:
-      - ledger-sync-net
-
   ledger-sync-aggregation:
     image: cardanofoundation/ledger-sync-aggregation:dev
     container_name: ledger-sync-aggregation-${NETWORK:-mainnet}
-    depends_on:
-      ledger-sync-postgres:
-        condition: service_healthy
     #    build:
     #      context: .
     #      dockerfile: Dockerfile
@@ -89,6 +35,3 @@ services:
       options:
         max-size: "1m"
         max-file: "50"
-
-    networks:
-      - ledger-sync-net
