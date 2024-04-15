@@ -14,7 +14,7 @@ localCardanoNode:
   affinity: null
 
 image:
-  repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync
+  repository: cardanofoundation/cf-ledger-sync
   tag: "d5f1455"
   pullPolicy: Always
 
@@ -52,8 +52,9 @@ blocks:
 dbSchema: public
 
 aggregation:
+  enabled: false
   image:
-    repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-aggregation
+    repository: cardanofoundation/cf-ledger-sync-aggregation
     tag: "7b05530"
     pullPolicy: Always
   dbSchema: public
