@@ -16,6 +16,11 @@ services:
       - "54333:5432"
     volumes:
       - $PWD/db-data/ledger-sync-postgres/:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U cardano-master -d ledger_sync'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     command: >
       postgres
         -c max_connections=500
@@ -25,7 +30,6 @@ services:
         -c maintenance_work_mem=4GB
         -c checkpoint_completion_target=0.9
         -c checkpoint_timeout=1h
-        -c synchronous_commit=off
         -c wal_buffers=16MB
         -c default_statistics_target=500
         -c random_page_cost=1.1
@@ -35,6 +39,9 @@ services:
         -c max_wal_size=2GB
         -c max_parallel_workers_per_gather=4
         -c max_parallel_maintenance_workers=4
+        -c wal_level=minimal
+        -c max_wal_senders=0
+        -c synchronous_commit=off
     restart: always
     logging:
       driver: "json-file"
@@ -47,17 +54,20 @@ services:
   ledger-sync:
     image: cardanofoundation/ledger-sync:dev
     container_name: ledger-sync-${NETWORK:-mainnet}
+    depends_on:
+      ledger-sync-postgres:
+        condition: service_healthy
     #    build:
     #      context: .
     #      dockerfile: Dockerfile
     #      target: ledger-sync
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://ledger-sync-postgres:5432/ledger_sync?currentSchema=cexplorer}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://ledger-sync-postgres:5432/ledger_sync?currentSchema=ledger_sync}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-cardano-master}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-dbpass}
       - STORE_CARDANO_HOST=${STORE_CARDANO_HOST:-relays-new.cardano-mainnet.iohk.io}
       - STORE_CARDANO_PORT=${STORE_CARDANO_PORT:-3001}
-      - STORE_CARDANO_PROTOCOL_MAGIC=${STORE_CARDANO_PROTOCOL_MAGIC:-764824073}
+      - STORE_CARDANO_PROTOCOLMAGIC=${STORE_CARDANO_PROTOCOLMAGIC:-764824073}
       - NETWORK=${NETWORK:-mainnet}
       - BLOCKS_BATCH_SIZE=${BLOCKS_BATCH_SIZE:-100}
       - COMMIT_THRESHOLD=${COMMIT_THRESHOLD:-3000}
@@ -71,7 +81,7 @@ services:
     ports:
       - ${PORT:-8080}:8080
     volumes:
-      - $PWD/ledger-sync-logs:/app/logs/
+      - $PWD/logs:/app/logs/
 
     logging:
       driver: "json-file"
