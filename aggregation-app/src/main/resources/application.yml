@@ -11,7 +11,7 @@ spring:
     out-of-order: true
   datasource:
     hikari:
-      maximum-pool-size: 30
+      maximum-pool-size: 50
       minimum-idle: 5
   jpa:
     properties:
@@ -39,13 +39,17 @@ store:
     history-cleanup-enabled: false
     # 3 months
     balance-cleanup-slot-count: 7889238
-    address-tx-amount-include-zero-amount: true
     api-enabled: true
     parallel-write: true
     write-thread-default-batch-size: 1000
     jooq-write-batch-size: 3000
     write-thread-count: 5
+    save-address-tx-amount: true
+    address-tx-amount-include-zero-amount: true
+  utxo:
+    save-address: true
     address-cache-enabled: true
+    address-cache-size: 100000
   executor:
     enable-parallel-processing: true
     block-processing-threads: 15
@@ -54,6 +58,8 @@ store:
     blocks-partition-size: 10
     use-virtual-thread-for-batch-processing: false
     use-virtual-thread-for-event-processing: true
+  admin:
+    api-enabled: true
 
 ledger-sync:
   healthcheck:
