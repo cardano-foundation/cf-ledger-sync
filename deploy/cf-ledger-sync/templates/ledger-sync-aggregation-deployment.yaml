@@ -124,7 +124,7 @@ spec:
             - name: STORE_ADMIN_AUTORECOVERYENABLED
               value: "true"
             - name: STORE_EXECUTOR_USEVIRTUALTHREADFORBATCHPROCESSING
-              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" }}
+              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" | quote }}
 
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
