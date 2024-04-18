@@ -68,7 +68,7 @@ aggregation:
   enabled: false
   replicaCount: 1
   image:
-    repository: cardanofoundation/cf-ledger-sync-aggregation
+    repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-aggregation
     tag: "7b05530"
     pullPolicy: Always
   postgres:
