@@ -128,4 +128,6 @@ spec:
 
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
+  strategy:
+    type: Recreate
 {{ end }}

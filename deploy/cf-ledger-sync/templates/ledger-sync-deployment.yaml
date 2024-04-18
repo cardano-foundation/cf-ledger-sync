@@ -145,3 +145,5 @@ spec:
             timeoutSeconds: 1
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+  strategy:
+    type: Recreate
