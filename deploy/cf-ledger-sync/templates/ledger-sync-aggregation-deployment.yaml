@@ -56,7 +56,7 @@ spec:
             - name: STORE_CARDANO_PROTOCOL_MAGIC
               value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
             {{- end }}
-            
+
             ## Postgres
             {{- with .Values.aggregation.postgres }}
             - name: POSTGRES_HOST
@@ -102,8 +102,28 @@ spec:
                   key: {{ .passwordKey }}
             {{- end }}
 
+            - name: HEALTH_CHECK_ENABLED
+              value: "true"
+            - name: EVENT_TIME_THRESHOLD_IN_SECOND
+              value: "600"
+            - name: BLOCK_TIME_CHECK_ENABLED
+              value: "true"
+            - name: BLOCK_TIME_THRESHOLD_IN_SECOND
+              value: "180"
+
             - name: STORE_ACCOUNT_HISTORYCLEANUPENABLED
               value: {{ .Values.aggregation.store.account.history_cleanup_enabled | quote }}
+            - name: STORE_ACCOUNT_INITIALBALANCESNAPSHOTBLOCK
+              value: "0"
+            - name: STORE_ACCOUNT_BALANCECALCJOBBATCHSIZE
+              value: "500"
+            - name: STORE_ACCOUNT_BALANCECALCJOBPARTITIONSIZE
+              value: "5"
+            - name: STORE_ADMIN_HEALTHCHECKINTERVAL
+              value: "120"
+            - name: STORE_ADMIN_AUTORECOVERYENABLED
+              value: "true"
+
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
 {{ end }}
