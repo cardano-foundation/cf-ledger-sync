@@ -89,7 +89,7 @@ spec:
               {{- end }}
             - name: POSTGRES_PORT
               {{- if .port }}
-              value: {{ .port }}
+              value: {{ .port | quote }}
               {{- else }}
               valueFrom:
                 secretKeyRef:
