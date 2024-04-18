@@ -90,4 +90,4 @@ spec:
               value: {{ .Values.aggregation.store.account.history_cleanup_enabled | quote }}
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
-{{{ end }}}
+{{ end }}
