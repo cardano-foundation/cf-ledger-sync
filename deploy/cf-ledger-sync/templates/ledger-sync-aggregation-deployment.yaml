@@ -58,35 +58,37 @@ spec:
             {{- end }}
             
             ## Postgres
+            {{- with .Value.indexer.aggregation }}
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_HOST
+                  name: {{ .secretName }}
+                  key: {{ .hostKey }}
             - name: POSTGRES_PORT
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_PORT
+                  name: {{ .secretName }}
+                  key: {{ .portKey }}
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_DB
-            - name: SCHEMA
+                  name: {{ .secretName }}
+                  key: {{ .dbKey }}
+            - name: POSTGRES_SCHEMA
               value: {{ .Values.dbSchema | default "public" }}
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(SCHEMA)
+              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(POSTGRES_SCHEMA)
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_USER
+                  name: {{ .secretName }}
+                  key: {{ .userKey }}
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_PASSWORD
+                  name: {{ .secretName }}
+                  key: {{ .passwordKey }}
+            {{- end }}
 
             - name: STORE_ACCOUNT_HISTORYCLEANUPENABLED
               value: {{ .Values.aggregation.store.account.history_cleanup_enabled | quote }}

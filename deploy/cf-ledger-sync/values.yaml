@@ -51,13 +51,60 @@ blocks:
 
 dbSchema: public
 
+
+  - name: POSTGRES_HOST
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secrets
+        key: POSTGRES_HOST
+  - name: POSTGRES_PORT
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secrets
+        key: POSTGRES_PORT
+  - name: POSTGRES_DB
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secrets
+        key: POSTGRES_DB
+  - name: SPRING_DATASOURCE_URL
+    value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema={{ .Values.dbSchema | default "public" }}
+  - name: SPRING_DATASOURCE_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secrets
+        key: POSTGRES_USER
+  - name: SPRING_DATASOURCE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secrets
+        key: POSTGRES_PASSWORD
+
+indexer:
+  postgres:
+    dbSchema: public
+    secretName: postgres-secrets
+    hostKey: POSTGRES_HOST
+    portKey: POSTGRES_PORT
+    dbKey: POSTGRES_DB
+    userKey: POSTGRES_USER
+    passwordKey: POSTGRES_PASSWORD
+
+
 aggregation:
   enabled: false
   image:
     repository: cardanofoundation/cf-ledger-sync-aggregation
     tag: "7b05530"
     pullPolicy: Always
-  dbSchema: public
+  postgres:
+    dbSchema: aggregation
+    secretName: postgres-secrets
+    hostKey: POSTGRES_HOST
+    portKey: POSTGRES_PORT
+    dbKey: POSTGRES_DB
+    userKey: POSTGRES_USER
+    passwordKey: POSTGRES_PASSWORD
   store:
     account:
       history_cleanup_enabled: "true"
