@@ -79,22 +79,34 @@ spec:
             ## Postgres
             {{- with .Value.indexer.postgres }}
             - name: POSTGRES_HOST
+              {{- if .host }}
+              value: {{ .host }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: {{ .hostKey }}
+              {{- end }}
             - name: POSTGRES_PORT
+              {{- if .port }}
+              value: {{ .port }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: {{ .portKey }}
+              {{- end }}
             - name: POSTGRES_DB
+              {{- if .db }}
+              value: {{ .db }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: {{ .dbKey }}
+              {{- end }}
             - name: POSTGRES_SCHEMA
-              value: {{ .Values.dbSchema | default "public" }}
+              value: {{ .dbSchema | default "aggregation" }}
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(POSTGRES_SCHEMA)
             - name: SPRING_DATASOURCE_USERNAME
