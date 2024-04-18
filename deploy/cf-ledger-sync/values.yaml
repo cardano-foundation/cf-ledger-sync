@@ -82,4 +82,6 @@ aggregation:
   store:
     account:
       history_cleanup_enabled: "true"
+    executor:
+      use_virtual_thread_for_batch_processing: "false"
   resources: {}
