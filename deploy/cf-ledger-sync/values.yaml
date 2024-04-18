@@ -8,13 +8,13 @@ localCardanoNode:
   enabled: false
   image:
     repository: ghcr.io/blinklabs-io/cardano-node
-    tag: 8.7.3-2
+    tag: 8.9.0-1-amd64
   mithrilRestore: "true"
   tolerations: null
   affinity: null
 
 image:
-  repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync
+  repository: cardanofoundation/cf-ledger-sync
   tag: "d5f1455"
   pullPolicy: Always
 
@@ -48,3 +48,17 @@ diagnosticMode:
 blocks:
   batchSize: "100"
   commitThreshold: "3000"
+
+dbSchema: public
+
+aggregation:
+  enabled: false
+  image:
+    repository: cardanofoundation/cf-ledger-sync-aggregation
+    tag: "7b05530"
+    pullPolicy: Always
+  dbSchema: public
+  store:
+    account:
+      history_cleanup_enabled: "true"
+  resources: {}
