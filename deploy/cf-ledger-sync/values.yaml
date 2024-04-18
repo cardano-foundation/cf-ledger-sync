@@ -52,6 +52,8 @@ blocks:
 dbSchema: public
 
 indexer:
+  enabled: true
+  replicaCount: 1
   postgres:
     dbSchema: public
     secretName: postgres-secrets
@@ -64,6 +66,7 @@ indexer:
 
 aggregation:
   enabled: false
+  replicaCount: 1
   image:
     repository: cardanofoundation/cf-ledger-sync-aggregation
     tag: "7b05530"
