@@ -77,7 +77,7 @@ spec:
               value: {{ .Values.blocks.commitThreshold | default "3000" | quote }}
 
             ## Postgres
-            {{- with .Value.indexer.postgres }}
+            {{- with .Values.indexer.postgres }}
             - name: POSTGRES_HOST
               {{- if .host }}
               value: {{ .host }}

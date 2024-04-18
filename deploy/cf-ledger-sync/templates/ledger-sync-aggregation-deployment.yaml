@@ -58,7 +58,7 @@ spec:
             {{- end }}
             
             ## Postgres
-            {{- with .Value.aggregation.postgres }}
+            {{- with .Values.aggregation.postgres }}
             - name: POSTGRES_HOST
               {{- if .host }}
               value: {{ .host }}
