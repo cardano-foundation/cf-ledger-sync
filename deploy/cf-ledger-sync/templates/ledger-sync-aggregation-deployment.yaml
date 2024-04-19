@@ -86,10 +86,10 @@ spec:
                   name: {{ .secretName }}
                   key: {{ .dbKey }}
               {{- end }}
-            - name: POSTGRES_SCHEMA
+            - name: SCHEMA
               value: {{ .dbSchema | default "aggregation" }}
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(POSTGRES_SCHEMA)
+              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(SCHEMA)
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
