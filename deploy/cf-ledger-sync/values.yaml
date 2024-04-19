@@ -55,7 +55,7 @@ indexer:
   enabled: true
   replicaCount: 1
   postgres:
-    dbSchema: public
+#    dbSchema: public
     secretName: postgres-secrets
     hostKey: POSTGRES_HOST
     portKey: POSTGRES_PORT
@@ -72,7 +72,7 @@ aggregation:
     tag: "7b05530"
     pullPolicy: Always
   postgres:
-    dbSchema: aggregation
+#    dbSchema: aggregation
     secretName: postgres-secrets
     hostKey: POSTGRES_HOST
     portKey: POSTGRES_PORT

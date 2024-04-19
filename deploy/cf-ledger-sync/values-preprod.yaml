@@ -1,3 +1,11 @@
+indexer:
+  postgres:
+    dbSchema: preprod
+
+aggregation:
+  postgres:
+    dbSchema: aggregation-preprod
+
 domain: dev-sranjan.cf-explorer-preprod.eu-west-1.metadata.dev.cf-deployments.org
 dbSchema: preprod
 localCardanoNode:
