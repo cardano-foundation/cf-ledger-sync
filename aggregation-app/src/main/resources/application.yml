@@ -36,17 +36,17 @@ store:
   account:
     enabled: true
     balance-aggregation-enabled: true
-    history-cleanup-enabled: false
+    history-cleanup-enabled: ${ACCOUNT_HISTORY_CLEANUP_ENABLED:false}
     # 3 months
-    balance-cleanup-slot-count: 7889238
+    balance-cleanup-slot-count: ${ACCOUNT_BALANCE_CLEANUP_SLOT_COUNT:7889238}
     api-enabled: true
     parallel-write: true
     write-thread-default-batch-size: 1000
     jooq-write-batch-size: 3000
     write-thread-count: 5
-    save-address-tx-amount: true
-    address-tx-amount-include-zero-amount: true
-    address-tx-amount-exclude-zero-token-amount: false
+    save-address-tx-amount: ${SAVE_ADDRESS_TX_AMOUNT:true}
+    address-tx-amount-include-zero-amount: ${ADDRESS_TX_AMOUNT_INCLUDE_ZERO_AMOUNT:true}
+    address-tx-amount-exclude-zero-token-amount: ${ADDRESS_TX_AMOUNT_EXCLUDE_ZERO_TOKEN_AMOUNT:true}
   utxo:
     save-address: true
     address-cache-enabled: true
