@@ -46,6 +46,7 @@ store:
     write-thread-count: 5
     save-address-tx-amount: true
     address-tx-amount-include-zero-amount: true
+    address-tx-amount-exclude-zero-token-amount: false
   utxo:
     save-address: true
     address-cache-enabled: true
