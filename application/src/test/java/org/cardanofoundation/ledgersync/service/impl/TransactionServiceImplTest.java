@@ -22,6 +22,7 @@ import org.cardanofoundation.ledgersync.factory.CertificateSyncServiceFactory;
 import org.cardanofoundation.ledgersync.repository.ExtraKeyWitnessRepository;
 import org.cardanofoundation.ledgersync.repository.TxRepository;
 import org.cardanofoundation.ledgersync.service.*;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,8 +58,8 @@ class TransactionServiceImplTest {
   @Mock
   ParamProposalService paramProposalService;
 
-  @Mock
-  AddressBalanceService addressBalanceService;
+//  @Mock
+//  AddressBalanceService addressBalanceService;
 
   @Mock
   WithdrawalsService withdrawalsService;
@@ -105,19 +106,9 @@ class TransactionServiceImplTest {
   @Mock
   TxBootstrapWitnessService txBootstrapWitnessService;
 
+  @InjectMocks
   TransactionServiceImpl victim;
 
-  @BeforeEach
-  void setUp() {
-    victim = new TransactionServiceImpl(
-        txRepository, extraKeyWitnessRepository, multiAssetService, stakeAddressService,
-        paramProposalService, addressBalanceService, withdrawalsService, txMetaDataService,
-        redeemerService, scriptService, datumService, blockDataService, txOutService, txInService,
-        referenceInputService, aggregatedDataCachingService,
-        certificateSyncServiceFactory, batchCertificateDataService,
-        txMetaDataHashService, txWitnessService, txBootstrapWitnessService
-    );
-  }
 
   @Test
   @DisplayName("Should skip tx handling if no txs were supplied")
@@ -132,7 +123,6 @@ class TransactionServiceImplTest {
     Mockito.verifyNoInteractions(multiAssetService);
     Mockito.verifyNoInteractions(stakeAddressService);
     Mockito.verifyNoInteractions(paramProposalService);
-    Mockito.verifyNoInteractions(addressBalanceService);
     Mockito.verifyNoInteractions(withdrawalsService);
     Mockito.verifyNoInteractions(txMetaDataService);
     Mockito.verifyNoInteractions(redeemerService);
@@ -189,9 +179,6 @@ class TransactionServiceImplTest {
     Mockito.verify(paramProposalService, Mockito.times(1))
         .handleParamProposals(Mockito.anyCollection(), Mockito.anyMap());
     Mockito.verifyNoMoreInteractions(paramProposalService);
-    Mockito.verify(addressBalanceService, Mockito.times(1))
-        .handleAddressBalance(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap());
-    Mockito.verifyNoMoreInteractions(addressBalanceService);
     Mockito.verify(withdrawalsService, Mockito.times(1))
         .handleWithdrawal(
             Mockito.anyCollection(), Mockito.anyMap(),
@@ -211,8 +198,6 @@ class TransactionServiceImplTest {
     Mockito.verifyNoMoreInteractions(datumService);
     Mockito.verify(blockDataService, Mockito.times(1))
         .getStakeAddressTxHashMap();
-    Mockito.verify(blockDataService, Mockito.times(1))
-        .getAggregatedAddressBalanceMap();
     Mockito.verify(blockDataService, Mockito.times(100))
         .getAggregatedBlock(Mockito.anyString());
     Mockito.verifyNoMoreInteractions(blockDataService);

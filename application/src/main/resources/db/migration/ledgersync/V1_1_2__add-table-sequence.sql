@@ -499,49 +499,6 @@ CREATE SEQUENCE withdrawal_id_seq
 
 ALTER SEQUENCE withdrawal_id_seq OWNED BY withdrawal.id;
 
---
--- Name: address_id_seq; Type: SEQUENCE;
---
-
-CREATE SEQUENCE address_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE address_id_seq OWNED BY address.id;
-
---
--- Name: address_token_id_seq; Type: SEQUENCE;
---
-
-CREATE SEQUENCE address_token_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE address_token_id_seq OWNED BY address_token.id;
-
---
--- Name: address_tx_balance_id_seq; Type: SEQUENCE;
---
-
-CREATE SEQUENCE address_tx_balance_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE address_tx_balance_id_seq OWNED BY address_tx_balance.id;
-
-CREATE SEQUENCE address_token_balance_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE address_token_balance_id_seq OWNED BY address_token_balance.id;
 
 --
 -- Name: rollback_history_id_seq; Type: SEQUENCE;
@@ -905,34 +862,6 @@ ALTER TABLE ONLY withdrawal
 ALTER COLUMN id SET DEFAULT nextval('withdrawal_id_seq'::regclass);
 
 --
--- Name: address id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY address
-ALTER COLUMN id SET DEFAULT nextval('address_id_seq'::regclass);
-
---
--- Name: address_token id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY address_token
-ALTER COLUMN id SET DEFAULT nextval('address_token_id_seq'::regclass);
-
---
--- Name: address_tx_balance id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY address_tx_balance
-ALTER COLUMN id SET DEFAULT nextval('address_tx_balance_id_seq'::regclass);
-
---
--- Name: address_token_balance id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY address_token_balance
-ALTER COLUMN id SET DEFAULT nextval('address_token_balance_id_seq'::regclass);
-
---
 -- Name: rollback_history id; Type: DEFAULT;
 --
 
@@ -1293,36 +1222,6 @@ ALTER TABLE ONLY withdrawal
 
 ALTER TABLE ONLY unconsume_tx_in
     ADD CONSTRAINT unconsume_tx_in_pkey PRIMARY KEY (id);
-
---
--- Name: address address_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY address
-    ADD CONSTRAINT address_pkey PRIMARY KEY (id);
-
---
--- Name: address_tx_balance address_tx_balance_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY address_tx_balance
-    ADD CONSTRAINT address_tx_balance_pkey PRIMARY KEY (id);
-
---
--- Name: address_token address_token_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY address_token
-    ADD CONSTRAINT address_token_pkey PRIMARY KEY (id);
-
-
---
--- Name: address_token_balance address_token_balance_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY address_token_balance
-    ADD CONSTRAINT address_token_balance_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: rollback_history rollback_history_pkey; Type: CONSTRAINT;

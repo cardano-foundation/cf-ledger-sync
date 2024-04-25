@@ -8,11 +8,9 @@ import java.util.Optional;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
 import org.cardanofoundation.ledgersync.repository.*;
-import org.cardanofoundation.ledgersync.service.AddressBalanceService;
 import org.cardanofoundation.ledgersync.service.AggregatedDataCachingService;
 import org.cardanofoundation.ledgersync.service.EpochService;
 import org.cardanofoundation.ledgersync.service.MultiAssetService;
-import org.cardanofoundation.ledgersync.service.TxChartService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,12 +28,6 @@ class RollbackServiceImplTest {
 
   @Mock
   TxRepository txRepository;
-
-  @Mock
-  AddressTokenRepository addressTokenRepository;
-
-  @Mock
-  AddressTxBalanceRepository addressTxBalanceRepository;
 
   @Mock
   DatumRepository datumRepository;
@@ -125,13 +117,7 @@ class RollbackServiceImplTest {
   EpochService epochService;
 
   @Mock
-  AddressBalanceService addressBalanceService;
-
-  @Mock
   MultiAssetService multiAssetService;
-
-  @Mock
-  TxChartService txChartService;
 
   @Mock
   AggregatedDataCachingService aggregatedDataCachingService;
@@ -149,7 +135,7 @@ class RollbackServiceImplTest {
   @BeforeEach
   void setUp() {
     victim = new RollbackServiceImpl(
-        blockRepository, txRepository, addressTokenRepository, addressTxBalanceRepository,
+        blockRepository, txRepository,
         datumRepository, delegationRepository, extraKeyWitnessRepository, failedTxOutRepository,
         maTxMintRepository, multiAssetTxOutRepository, epochParamRepository,
         paramProposalRepository,
@@ -160,7 +146,7 @@ class RollbackServiceImplTest {
         stakeRegistrationRepository, treasuryRepository, txInRepository, txMetadataRepository,
         txOutRepository, unconsumeTxInRepository, withdrawalRepository, rollbackHistoryRepository,
         txBootstrapWitnessRepository, txWitnessRepository,
-        epochService, addressBalanceService, multiAssetService, txChartService,
+        epochService, multiAssetService,
         aggregatedDataCachingService
     );
   }
@@ -177,8 +163,6 @@ class RollbackServiceImplTest {
     Mockito.verify(blockRepository, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
     Mockito.verifyNoMoreInteractions(blockRepository);
     Mockito.verifyNoInteractions(txRepository);
-    Mockito.verifyNoInteractions(addressTokenRepository);
-    Mockito.verifyNoInteractions(addressTxBalanceRepository);
     Mockito.verifyNoInteractions(datumRepository);
     Mockito.verifyNoInteractions(delegationRepository);
     Mockito.verifyNoInteractions(extraKeyWitnessRepository);
@@ -208,9 +192,7 @@ class RollbackServiceImplTest {
     Mockito.verifyNoInteractions(withdrawalRepository);
     Mockito.verifyNoInteractions(rollbackHistoryRepository);
     Mockito.verifyNoInteractions(epochService);
-    Mockito.verifyNoInteractions(addressBalanceService);
     Mockito.verifyNoInteractions(multiAssetService);
-    Mockito.verifyNoInteractions(txChartService);
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .saveLatestTxs();
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1)).commit();
@@ -237,8 +219,6 @@ class RollbackServiceImplTest {
     Mockito.verifyNoMoreInteractions(blockRepository);
     Mockito.verify(txRepository, Mockito.times(1)).findAllByBlockIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txRepository);
-    Mockito.verifyNoInteractions(addressTokenRepository);
-    Mockito.verifyNoInteractions(addressTxBalanceRepository);
     Mockito.verifyNoInteractions(datumRepository);
     Mockito.verifyNoInteractions(delegationRepository);
     Mockito.verifyNoInteractions(extraKeyWitnessRepository);
@@ -270,9 +250,7 @@ class RollbackServiceImplTest {
     Mockito.verifyNoMoreInteractions(rollbackHistoryRepository);
     Mockito.verify(epochService, Mockito.times(1)).rollbackEpochStats(Mockito.anyList());
     Mockito.verifyNoMoreInteractions(epochService);
-    Mockito.verifyNoInteractions(addressBalanceService);
     Mockito.verifyNoInteractions(multiAssetService);
-    Mockito.verifyNoInteractions(txChartService);
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .subtractBlockCount(Mockito.anyInt());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
@@ -302,12 +280,6 @@ class RollbackServiceImplTest {
     Mockito.verify(txRepository, Mockito.times(1)).findAllByBlockIn(Mockito.anyCollection());
     Mockito.verify(txRepository, Mockito.times(1)).deleteAll(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txRepository);
-    Mockito.verify(addressTokenRepository, Mockito.times(1))
-        .deleteAllByTxIn(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(addressTokenRepository);
-    Mockito.verify(addressTxBalanceRepository, Mockito.times(1))
-        .deleteAllByTxIn(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(addressTxBalanceRepository);
     Mockito.verify(datumRepository, Mockito.times(1)).deleteAllByTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(datumRepository);
     Mockito.verify(delegationRepository, Mockito.times(1)).deleteAllByTxIn(Mockito.anyCollection());
@@ -382,15 +354,9 @@ class RollbackServiceImplTest {
     Mockito.verifyNoMoreInteractions(rollbackHistoryRepository);
     Mockito.verify(epochService, Mockito.times(1)).rollbackEpochStats(Mockito.anyList());
     Mockito.verifyNoMoreInteractions(epochService);
-    Mockito.verify(addressBalanceService, Mockito.times(1))
-        .rollbackAddressBalances(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(addressBalanceService);
     Mockito.verify(multiAssetService, Mockito.times(1))
         .rollbackMultiAssets(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetService);
-    Mockito.verify(txChartService, Mockito.times(1))
-        .rollbackTxChart(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(txChartService);
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))
         .subtractTxCount(Mockito.anyInt());
     Mockito.verify(aggregatedDataCachingService, Mockito.times(1))

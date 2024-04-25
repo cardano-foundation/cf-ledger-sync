@@ -17,8 +17,10 @@ dependencies {
     implementation project(':components:common')
     implementation project(':components:consumer-common')
     implementation project(':components:scheduler')
+    implementation project(':components:healthcheck')
 
     implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.governance.starter)
 
     implementation(libs.cardano.client.lib)
 

@@ -20,3 +20,9 @@ WORKDIR /app
 COPY --from=build /app/streamer-app/build/libs/ledger-sync-streamer-app*.jar /app/ledger-sync-streamer-app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "ledger-sync-streamer-app.jar"]
+
+FROM eclipse-temurin:21-jdk AS aggregation
+WORKDIR /app
+COPY --from=build /app/aggregation-app/build/libs/ledger-sync-aggregation-app*.jar /app/ledger-sync-aggregation-app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "ledger-sync-aggregation-app.jar"]

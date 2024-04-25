@@ -12,12 +12,12 @@ drop index idx_address_balance_address;
 drop index idx_address_balance_block_time;
 drop index idx_address_balance_epoch;
 drop index idx_address_balance_unit;
-drop index idx_address_balance_policy;
-drop index idx_address_stake_address;
-drop index idx_address_balance_policy_asset;
 
 -- stake address balance
 
 drop index idx_stake_addr_balance_stake_addr;
 drop index idx_stake_addr_balance_block_time;
 drop index idx_stake_addr_balance_epoch;
+
+-- address
+drop index idx_address_stake_address;

@@ -42,11 +42,25 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "cf-ledger-sync-aggregation.labels" -}}
+helm.sh/chart: {{ include "cf-ledger-sync.chart" . }}
+{{ include "cf-ledger-sync-aggregation.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+
 {{/*
 Selector labels
 */}}
 {{- define "cf-ledger-sync.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "cf-ledger-sync.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- define "cf-ledger-sync-aggregation.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "cf-ledger-sync.name" . }}{{ print "-aggregation" }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

@@ -11,7 +11,7 @@ spring:
     out-of-order: true
   datasource:
     hikari:
-      maximum-pool-size: 30
+      maximum-pool-size: 50
       minimum-idle: 5
   jpa:
     properties:
@@ -19,12 +19,14 @@ spring:
         jdbc:
           batch_size: 100
         order_inserts: true
-
+  batch:
+    job:
+      enabled: false
 apiPrefix: /api/v1
 
 logging:
   file:
-    name: ./logs/ls-aggregation.log
+    name: ./logs/ledger-sync-aggr.log
 
 store:
   event-publisher-id: 1000
@@ -34,13 +36,21 @@ store:
   account:
     enabled: true
     balance-aggregation-enabled: true
-    history-cleanup-enabled: true
+    history-cleanup-enabled: ${ACCOUNT_HISTORY_CLEANUP_ENABLED:false}
     # 3 months
-    balance-cleanup-slot-count: 7889238
+    balance-cleanup-slot-count: ${ACCOUNT_BALANCE_CLEANUP_SLOT_COUNT:7889238}
     api-enabled: true
     parallel-write: true
-    per-thread-batch-size: 6000
+    write-thread-default-batch-size: 1000
     jooq-write-batch-size: 3000
+    write-thread-count: 5
+    save-address-tx-amount: ${SAVE_ADDRESS_TX_AMOUNT:true}
+    address-tx-amount-include-zero-amount: ${ADDRESS_TX_AMOUNT_INCLUDE_ZERO_AMOUNT:true}
+    address-tx-amount-exclude-zero-token-amount: ${ADDRESS_TX_AMOUNT_EXCLUDE_ZERO_TOKEN_AMOUNT:true}
+  utxo:
+    save-address: true
+    address-cache-enabled: true
+    address-cache-size: 100000
   executor:
     enable-parallel-processing: true
     block-processing-threads: 15
@@ -48,4 +58,27 @@ store:
     blocks-batch-size: 100
     blocks-partition-size: 10
     use-virtual-thread-for-batch-processing: false
-    use-virtual-thread-for-event-processing: false
+    use-virtual-thread-for-event-processing: true
+  admin:
+    api-enabled: true
+
+ledger-sync:
+  healthcheck:
+    enabled: ${HEALTH_CHECK_ENABLED:true}
+    event-time-threshold: ${EVENT_TIME_THRESHOLD_IN_SECOND:600}
+    block-time-check-enabled: ${BLOCK_TIME_CHECK_ENABLED:true}
+    block-time-threshold: ${BLOCK_TIME_THRESHOLD_IN_SECOND:180}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "health,prometheus,health-status"
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    health-status:
+      enabled: ${HEALTH_CHECK_ENABLED:true}

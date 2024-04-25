@@ -318,16 +318,6 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
         if (Objects.nonNull(collateralReturn)) {
             collateralReturn.setIndex(aggregatedTxOuts.size());
         }
-        List<AggregatedTxOut> collateralReturnsSingleList =
-                (!validContract && Objects.nonNull(collateralReturn))
-                        ? List.of(collateralReturn) : Collections.emptyList();
-        /*
-         * Handle address balance from tx outputs or collateral return
-         * This is initial step of calculating balance. The same process will be
-         * done when tx ins are taken into account
-         */
-        mapAggregatedTxOutsToAddressBalanceMap(
-                validContract ? aggregatedTxOuts : collateralReturnsSingleList, txHash);
 
         var fee = transactionBody.getFee();
         if (!validContract && Objects.nonNull(transactionBody.getTotalCollateral())) {

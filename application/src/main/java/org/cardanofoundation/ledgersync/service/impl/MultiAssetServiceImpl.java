@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
+import com.bloxbean.cardano.client.api.util.AssetUtil;
 import com.bloxbean.cardano.client.util.HexUtil;
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.google.common.collect.Lists;
@@ -7,14 +8,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.common.util.StringUtil;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTxOut;
+import org.cardanofoundation.ledgersync.common.util.StringUtil;
 import org.cardanofoundation.ledgersync.constant.ConsumerConstant;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.projection.MaTxMintProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTotalVolumeProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTxCountProjection;
 import org.cardanofoundation.ledgersync.repository.MaTxMintRepository;
 import org.cardanofoundation.ledgersync.repository.MultiAssetRepository;
 import org.cardanofoundation.ledgersync.repository.MultiAssetTxOutRepository;
@@ -45,7 +44,6 @@ import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.BATCH_Q
 @Service
 public class MultiAssetServiceImpl implements MultiAssetService {
 
-    private static final long INITIAL_TX_COUNT = 0L;
     private static final String EMPTY_STRING = "";
 
     MaTxMintRepository maTxMintRepository;
@@ -91,9 +89,9 @@ public class MultiAssetServiceImpl implements MultiAssetService {
             mintAssets.forEach(amount -> {
                 //B
                 String assetName = HexUtil.encodeHexString(amount.getAssetNameBytes());
-
+                String unit = amount.getUnit() != null ? amount.getUnit().replace(".", "") : null;
                 // Get asset entity from minted existing asset map. If not exists, create a new one
-                var ma = getMultiAssetByPolicyAndNameFromList(tx, mintAssetsExists, amount.getPolicyId(),
+                var ma = getMultiAssetByPolicyAndNameFromList(tx, mintAssetsExists, unit, amount.getPolicyId(),
                         amount.getAssetNameBytes(), Objects.isNull(assetName) ? EMPTY_STRING : assetName);
                 var supply = ma.getSupply();
                 var quantity = amount.getQuantity();
@@ -135,6 +133,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
 
     private MultiAsset getMultiAssetByPolicyAndNameFromList(Tx tx,
                                                             Map<Pair<String, String>, MultiAsset> multiAssetMap,
+                                                            String unit,
                                                             String policy, byte[] assetNameBytes,
                                                             String name) {
         MultiAsset multiAsset = multiAssetMap.get(Pair.of(name, policy));
@@ -158,9 +157,8 @@ public class MultiAssetServiceImpl implements MultiAssetService {
                     .name(name)
                     .nameView(nameView)
                     .fingerprint(fingerPrint)
+                    .unit(unit)
                     .supply(BigInteger.ZERO)
-                    .totalVolume(BigInteger.ZERO)
-                    .txCount(INITIAL_TX_COUNT)
                     .time(tx.getBlock().getTime())
                     .build();
         }
@@ -275,50 +273,24 @@ public class MultiAssetServiceImpl implements MultiAssetService {
         // Find all multi asset mints
         List<MaTxMintProjection> maTxMints = maTxMintRepository.findAllByTxIn(txs);
 
-        // Find all multi asset ids (ident ids) as well as their associated tx count
-        List<MultiAssetTxCountProjection> multiAssetsTxCounts =
-                multiAssetRepository.getMultiAssetTxCountByTxs(txs);
-        if (CollectionUtils.isEmpty(maTxMints) && CollectionUtils.isEmpty(multiAssetsTxCounts)) {
+        if (CollectionUtils.isEmpty(maTxMints)) {
             log.info("No assets and asset mints were found, skipping multi asset rollback");
             return;
         }
-
         Set<Long> maIds = maTxMints.stream()
                 .map(MaTxMintProjection::getIdentId)
                 .collect(Collectors.toSet());
-        maIds.addAll(multiAssetsTxCounts
-                .stream()
-                .map(MultiAssetTxCountProjection::getIdentId)
-                .collect(Collectors.toSet()));
 
         // Find multi asset entities for rollback
         Map<Long, MultiAsset> multiAssetMap = multiAssetRepository.findAllById(maIds)
                 .stream()
                 .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
 
-        // Find multi asset total volume in txs for rollback
-        List<MultiAssetTotalVolumeProjection> multiAssetTotalVolumes =
-                multiAssetRepository.getMultiAssetTotalVolumeByTxs(txs);
-
         // Rollback asset mints
         maTxMints.forEach(maTxMint -> {
             Long identId = maTxMint.getIdentId();
             MultiAsset multiAsset = multiAssetMap.get(identId);
             multiAsset.setSupply(multiAsset.getSupply().subtract(maTxMint.getQuantity()));
-        });
-
-        // Rollback asset tx count
-        multiAssetsTxCounts.forEach(multiAssetTxCount -> {
-            MultiAsset multiAsset = multiAssetMap.get(multiAssetTxCount.getIdentId());
-            multiAsset.setTxCount(multiAsset.getTxCount() - multiAssetTxCount.getTxCount());
-        });
-
-        // Rollback asset total volume
-        multiAssetTotalVolumes.forEach(multiAssetTotalVolume -> {
-            MultiAsset multiAsset = multiAssetMap.get(multiAssetTotalVolume.getIdentId());
-            BigInteger newTotalVolume = multiAsset.getTotalVolume()
-                    .subtract(multiAssetTotalVolume.getTotalVolume());
-            multiAsset.setTotalVolume(newTotalVolume);
         });
 
         if (!CollectionUtils.isEmpty(multiAssetMap)) {

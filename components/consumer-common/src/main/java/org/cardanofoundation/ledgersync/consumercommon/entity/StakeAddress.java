@@ -1,15 +1,7 @@
 package org.cardanofoundation.ledgersync.consumercommon.entity;
 
-import org.cardanofoundation.ledgersync.consumercommon.validation.Addr29Type;
-import org.cardanofoundation.ledgersync.consumercommon.validation.Hash28Type;
-
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Objects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Digits;
@@ -18,8 +10,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.cardanofoundation.ledgersync.consumercommon.validation.Addr29Type;
+import org.cardanofoundation.ledgersync.consumercommon.validation.Hash28Type;
 import org.cardanofoundation.ledgersync.consumercommon.validation.Word128Type;
 import org.hibernate.Hibernate;
+
+import java.math.BigInteger;
+import java.util.Objects;
 
 @Entity
 @Table(name = "stake_address", uniqueConstraints = {
@@ -45,18 +42,10 @@ public class StakeAddress extends BaseEntity {
   @Hash28Type
   private String scriptHash;
 
-  @Column(name = "balance", nullable = false, precision = 39)
-  @Word128Type
-  @Digits(integer = 39, fraction = 0)
-  private BigInteger balance;
-
   @Column(name = "available_reward", nullable = false, precision = 39)
   @Word128Type
   @Digits(integer = 39, fraction = 0)
   private BigInteger availableReward;
-
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "stakeAddress")
-   private List<Address> addresses;
 
   @Override
   public boolean equals(Object o) {

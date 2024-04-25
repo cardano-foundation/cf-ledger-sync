@@ -1,7 +1,7 @@
 package org.cardanofoundation.ledgersync.listeners;
 
-import com.bloxbean.cardano.yaci.store.core.domain.Cursor;
-import com.bloxbean.cardano.yaci.store.core.service.CursorService;
+import com.bloxbean.cardano.yaci.store.common.domain.Cursor;
+import com.bloxbean.cardano.yaci.store.common.service.CursorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.repository.BlockRepository;

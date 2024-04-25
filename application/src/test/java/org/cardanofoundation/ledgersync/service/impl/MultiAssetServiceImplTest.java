@@ -1,14 +1,12 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
 import com.bloxbean.cardano.yaci.core.model.Amount;
-import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTxOut;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.projection.MaTxMintProjection;
 import org.cardanofoundation.ledgersync.projection.MaTxOutProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTotalVolumeProjection;
-import org.cardanofoundation.ledgersync.projection.MultiAssetTxCountProjection;
 import org.cardanofoundation.ledgersync.repository.MaTxMintRepository;
 import org.cardanofoundation.ledgersync.repository.MultiAssetRepository;
 import org.cardanofoundation.ledgersync.repository.MultiAssetTxOutRepository;
@@ -92,9 +90,9 @@ class MultiAssetServiceImplTest {
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Amount amount = Mockito.mock(Amount.class);
     String policyId = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb337999";
-
     Mockito.when(block.getBlockNo()).thenReturn(177242L);
     txMap.values().forEach(tx -> Mockito.when(tx.getBlock()).thenReturn(block));
+    Mockito.when(amount.getUnit()).thenReturn("e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb33799953554d4d495441574152445344656669");
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
     Mockito.when(amount.getAssetNameBytes())
               .thenReturn("SUMMITAWARDSDefi".getBytes(StandardCharsets.UTF_8));
@@ -131,6 +129,8 @@ class MultiAssetServiceImplTest {
     Assertions.assertEquals("asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv",
         multiAsset.getFingerprint());
     Assertions.assertEquals(policyId, multiAsset.getPolicy());
+    Assertions.assertEquals("e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb33799953554d4d495441574152445344656669",
+            multiAsset.getUnit());
   }
 
   @Test
@@ -141,6 +141,7 @@ class MultiAssetServiceImplTest {
     );
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Amount amount = Mockito.mock(Amount.class);
+    String unit = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb33799953554d4d495441574152445344656669";
     String policyId = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb337999";
     String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
@@ -148,9 +149,11 @@ class MultiAssetServiceImplTest {
         .name(HexUtil.encodeHexString(assetName.getBytes(StandardCharsets.UTF_8)))
         .fingerprint(assetFingerprint)
         .policy(policyId)
+        .unit(unit)
         .supply(BigInteger.ONE)
         .build();
 
+    Mockito.when(amount.getUnit()).thenReturn(unit);
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
     Mockito.when(amount.getAssetNameBytes()).thenReturn(assetName.getBytes(StandardCharsets.UTF_8));
     Mockito.when(amount.getQuantity()).thenReturn(BigInteger.ONE);
@@ -183,6 +186,7 @@ class MultiAssetServiceImplTest {
     Assertions.assertEquals(BigInteger.TWO, multiAsset.getSupply());
     Assertions.assertEquals(assetFingerprint, multiAsset.getFingerprint());
     Assertions.assertEquals(policyId, multiAsset.getPolicy());
+    Assertions.assertEquals(unit, multiAsset.getUnit());
   }
 
   @Test
@@ -391,8 +395,6 @@ class MultiAssetServiceImplTest {
     Mockito.verify(maTxMintRepository, Mockito.times(1))
         .findAllByTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(maTxMintRepository);
-    Mockito.verify(multiAssetRepository, Mockito.times(1))
-        .getMultiAssetTxCountByTxs(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
   }
 
@@ -402,33 +404,19 @@ class MultiAssetServiceImplTest {
   void shouldRollbackMultiAssetsSuccessfullyTest() {
     MaTxMintProjection maTxMintProjection = Mockito.mock(MaTxMintProjection.class);
     MaTxMintProjection maTxMintProjection2 = Mockito.mock(MaTxMintProjection.class);
-    MultiAssetTxCountProjection multiAssetTxCountProjection =
-        Mockito.mock(MultiAssetTxCountProjection.class);
-    MultiAssetTotalVolumeProjection multiAssetTotalVolumeProjection =
-        Mockito.mock(MultiAssetTotalVolumeProjection.class);
     MultiAsset givenMultiAsset = MultiAsset.builder()
         .id(1L)
-        .txCount(10L)
         .supply(BigInteger.TEN)
-        .totalVolume(BigInteger.TEN)
         .build();
 
     Mockito.when(maTxMintProjection.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(maTxMintProjection.getIdentId()).thenReturn(1L);
     Mockito.when(maTxMintProjection2.getQuantity()).thenReturn(BigInteger.ONE);
     Mockito.when(maTxMintProjection2.getIdentId()).thenReturn(1L);
-    Mockito.when(multiAssetTxCountProjection.getTxCount()).thenReturn(3L);
-    Mockito.when(multiAssetTxCountProjection.getIdentId()).thenReturn(1L);
-    Mockito.when(multiAssetTotalVolumeProjection.getTotalVolume()).thenReturn(BigInteger.ONE);
-    Mockito.when(multiAssetTotalVolumeProjection.getIdentId()).thenReturn(1L);
     Mockito.when(maTxMintRepository.findAllByTxIn(Mockito.anyCollection()))
         .thenReturn(List.of(maTxMintProjection, maTxMintProjection2));
-    Mockito.when(multiAssetRepository.getMultiAssetTxCountByTxs(Mockito.anyCollection()))
-        .thenReturn(List.of(multiAssetTxCountProjection));
     Mockito.when(multiAssetRepository.findAllById(Mockito.anyCollection()))
         .thenReturn(List.of(givenMultiAsset));
-    Mockito.when(multiAssetRepository.getMultiAssetTotalVolumeByTxs(Mockito.anyCollection()))
-        .thenReturn(List.of(multiAssetTotalVolumeProjection));
 
     victim.rollbackMultiAssets(List.of(new Tx()));
 
@@ -436,11 +424,7 @@ class MultiAssetServiceImplTest {
         .findAllByTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(maTxMintRepository);
     Mockito.verify(multiAssetRepository, Mockito.times(1))
-        .getMultiAssetTxCountByTxs(Mockito.anyCollection());
-    Mockito.verify(multiAssetRepository, Mockito.times(1))
         .findAllById(Mockito.anyCollection());
-    Mockito.verify(multiAssetRepository, Mockito.times(1))
-        .getMultiAssetTotalVolumeByTxs(Mockito.anyCollection());
     Mockito.verify(multiAssetRepository, Mockito.times(1))
         .saveAll(multiAssetsCaptor.capture());
     Mockito.verifyNoMoreInteractions(multiAssetRepository);
@@ -448,7 +432,5 @@ class MultiAssetServiceImplTest {
     Collection<MultiAsset> multiAssets = multiAssetsCaptor.getValue();
     MultiAsset multiAsset = new ArrayList<>(multiAssets).get(0);
     Assertions.assertEquals(BigInteger.valueOf(8L), multiAsset.getSupply());
-    Assertions.assertEquals(7L, multiAsset.getTxCount());
-    Assertions.assertEquals(BigInteger.valueOf(9L), multiAsset.getTotalVolume());
   }
 }

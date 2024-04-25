@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cf-ledger-sync.fullname" . }}
+  labels:
+    {{- include "cf-ledger-sync.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "cf-ledger-sync.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cf-ledger-sync.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .tolerations }}
+      tolerations:
+        {{ with index .tolerations }}
+{{ toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if .affinity }}
+      affinity:
+        {{ with index .affinity }}
+{{ toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: NETWORK
+              value: {{ .Values.network | default "preprod" }}
+            - name: DB_DIALECT
+              value: {{ .Values.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
+            {{ if .Values.useLocalCardanoNode }}
+            - name: STORE_CARDANO_HOST
+              value: "cardano-node"
+            - name: STORE_CARDANO_PORT
+              value: "3001"
+              {{ if eq .Values.localCardanoNode.network "preview" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "2"
+              {{- else if eq .Values.localCardanoNode.network "preprod" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "1"
+              {{- else if eq .Values.localCardanoNode.network "mainnet" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "764824073"
+              {{- else if eq .Values.localCardanoNode.network "sanchonet" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "4"
+              {{- end }}
+            {{- else }}
+            - name: STORE_CARDANO_HOST
+              value: {{ .Values.storeCardanoHost | default "preprod-node.world.dev.cardano.org" }}
+            - name: STORE_CARDANO_PORT
+              value: {{ .Values.storeCardanoPort | default "30000" | quote }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
+            {{- end }}
+
+            ## Batching
+            - name: BLOCKS_BATCH_SIZE
+              value: {{ .Values.blocks.batchSize | default "100" | quote }}
+            - name: COMMIT_THRESHOLD
+              value: {{ .Values.blocks.commitThreshold | default "3000" | quote }}
+
+            ## Postgres
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_DB
+            - name: SCHEMA
+              value: {{ .Values.dbSchema | default "public" }}
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(SCHEMA)
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_PASSWORD
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /actuator/health-status
+              port: http
+              scheme: HTTP
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            initialDelaySeconds: 30
+            failureThreshold: 10
+            httpGet:
+              path: /actuator/health-status
+              port: http
+              scheme: HTTP
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
