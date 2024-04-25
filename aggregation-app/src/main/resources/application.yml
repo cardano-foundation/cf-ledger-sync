@@ -36,7 +36,7 @@ store:
   account:
     enabled: true
     balance-aggregation-enabled: true
-    history-cleanup-enabled: ${ACCOUNT_HISTORY_CLEANUP_ENABLED:false}
+    history-cleanup-enabled: ${ACCOUNT_HISTORY_CLEANUP_ENABLED:true}
     # 3 months
     balance-cleanup-slot-count: ${ACCOUNT_BALANCE_CLEANUP_SLOT_COUNT:7889238}
     api-enabled: true
@@ -51,6 +51,8 @@ store:
     save-address: true
     address-cache-enabled: true
     address-cache-size: 100000
+    pruning-enabled: ${UTXO_PRUNING_ENABLED:true}
+    pruning-interval: ${UTXO_PRUNING_INTERVAL:600}
   executor:
     enable-parallel-processing: true
     block-processing-threads: 15
