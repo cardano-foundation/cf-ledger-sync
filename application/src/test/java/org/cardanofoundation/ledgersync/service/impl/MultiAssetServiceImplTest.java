@@ -90,9 +90,9 @@ class MultiAssetServiceImplTest {
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Amount amount = Mockito.mock(Amount.class);
     String policyId = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb337999";
-
     Mockito.when(block.getBlockNo()).thenReturn(177242L);
     txMap.values().forEach(tx -> Mockito.when(tx.getBlock()).thenReturn(block));
+    Mockito.when(amount.getUnit()).thenReturn("e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb33799953554d4d495441574152445344656669");
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
     Mockito.when(amount.getAssetNameBytes())
               .thenReturn("SUMMITAWARDSDefi".getBytes(StandardCharsets.UTF_8));
@@ -129,6 +129,8 @@ class MultiAssetServiceImplTest {
     Assertions.assertEquals("asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv",
         multiAsset.getFingerprint());
     Assertions.assertEquals(policyId, multiAsset.getPolicy());
+    Assertions.assertEquals("e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb33799953554d4d495441574152445344656669",
+            multiAsset.getUnit());
   }
 
   @Test
@@ -139,6 +141,7 @@ class MultiAssetServiceImplTest {
     );
     AggregatedTx aggregatedTx = Mockito.mock(AggregatedTx.class);
     Amount amount = Mockito.mock(Amount.class);
+    String unit = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb33799953554d4d495441574152445344656669";
     String policyId = "e2bab64ca481afc5a695b7db22fd0a7df4bf930158dfa652fb337999";
     String assetName = "SUMMITAWARDSDefi";
     String assetFingerprint = "asset132r28qxkhg0wddjjpt2qffzd9m7g37arndlxsv";
@@ -146,9 +149,11 @@ class MultiAssetServiceImplTest {
         .name(HexUtil.encodeHexString(assetName.getBytes(StandardCharsets.UTF_8)))
         .fingerprint(assetFingerprint)
         .policy(policyId)
+        .unit(unit)
         .supply(BigInteger.ONE)
         .build();
 
+    Mockito.when(amount.getUnit()).thenReturn(unit);
     Mockito.when(amount.getPolicyId()).thenReturn(policyId);
     Mockito.when(amount.getAssetNameBytes()).thenReturn(assetName.getBytes(StandardCharsets.UTF_8));
     Mockito.when(amount.getQuantity()).thenReturn(BigInteger.ONE);
@@ -181,6 +186,7 @@ class MultiAssetServiceImplTest {
     Assertions.assertEquals(BigInteger.TWO, multiAsset.getSupply());
     Assertions.assertEquals(assetFingerprint, multiAsset.getFingerprint());
     Assertions.assertEquals(policyId, multiAsset.getPolicy());
+    Assertions.assertEquals(unit, multiAsset.getUnit());
   }
 
   @Test

@@ -272,6 +272,7 @@ CREATE TABLE IF NOT EXISTS multi_asset
     fingerprint  character varying(255) NOT NULL,
     name         bytea                  NOT NULL,
     policy       character varying(56)  NOT NULL,
+    unit         character varying(255),
     supply       numeric(23, 0),
     "time"       timestamp without time zone,
     name_view    varchar(64)

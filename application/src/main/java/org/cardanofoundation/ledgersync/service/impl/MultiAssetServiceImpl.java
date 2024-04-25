@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
+import com.bloxbean.cardano.client.api.util.AssetUtil;
 import com.bloxbean.cardano.client.util.HexUtil;
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.google.common.collect.Lists;
@@ -88,9 +89,9 @@ public class MultiAssetServiceImpl implements MultiAssetService {
             mintAssets.forEach(amount -> {
                 //B
                 String assetName = HexUtil.encodeHexString(amount.getAssetNameBytes());
-
+                String unit = amount.getUnit() != null ? amount.getUnit().replace(".", "") : null;
                 // Get asset entity from minted existing asset map. If not exists, create a new one
-                var ma = getMultiAssetByPolicyAndNameFromList(tx, mintAssetsExists, amount.getPolicyId(),
+                var ma = getMultiAssetByPolicyAndNameFromList(tx, mintAssetsExists, unit, amount.getPolicyId(),
                         amount.getAssetNameBytes(), Objects.isNull(assetName) ? EMPTY_STRING : assetName);
                 var supply = ma.getSupply();
                 var quantity = amount.getQuantity();
@@ -132,6 +133,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
 
     private MultiAsset getMultiAssetByPolicyAndNameFromList(Tx tx,
                                                             Map<Pair<String, String>, MultiAsset> multiAssetMap,
+                                                            String unit,
                                                             String policy, byte[] assetNameBytes,
                                                             String name) {
         MultiAsset multiAsset = multiAssetMap.get(Pair.of(name, policy));
@@ -155,6 +157,7 @@ public class MultiAssetServiceImpl implements MultiAssetService {
                     .name(name)
                     .nameView(nameView)
                     .fingerprint(fingerPrint)
+                    .unit(unit)
                     .supply(BigInteger.ZERO)
                     .time(tx.getBlock().getTime())
                     .build();
