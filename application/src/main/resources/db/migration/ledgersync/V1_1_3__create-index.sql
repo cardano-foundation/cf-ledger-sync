@@ -78,6 +78,7 @@ CREATE INDEX IF NOT EXISTS redeemer_data_hash_index ON redeemer_data (hash);
 CREATE INDEX IF NOT EXISTS slot_leader_hash_index ON slot_leader (hash);
 
 CREATE INDEX IF NOT EXISTS idx_multi_asset_name_view ON multi_asset (name_view);
+CREATE INDEX IF NOT EXISTS idx_multi_asset_unit ON multi_asset (unit);
 CREATE UNIQUE INDEX IF NOT EXISTS multi_asset_fingerprint_uindex ON multi_asset (fingerprint);
 
 CREATE UNIQUE INDEX IF NOT EXISTS datum_hash_uindex ON datum (hash);

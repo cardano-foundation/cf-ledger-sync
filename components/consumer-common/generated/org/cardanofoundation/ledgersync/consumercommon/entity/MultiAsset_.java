@@ -11,6 +11,7 @@ import javax.annotation.processing.Generated;
 @StaticMetamodel(MultiAsset.class)
 public abstract class MultiAsset_ extends org.cardanofoundation.explorer.consumercommon.entity.BaseEntity_ {
 
+    	public static volatile SingularAttribute<MultiAsset, String> unit;
 	public static volatile SingularAttribute<MultiAsset, String> nameView;
 	public static volatile ListAttribute<MultiAsset, AddressToken> addressToken;
 	public static volatile SingularAttribute<MultiAsset, String> name;
@@ -19,6 +20,7 @@ public abstract class MultiAsset_ extends org.cardanofoundation.explorer.consume
 	public static volatile SingularAttribute<MultiAsset, BigInteger> supply;
 	public static volatile SingularAttribute<MultiAsset, String> policy;
 
+    	public static final String UNIT = "unit";
 	public static final String NAME_VIEW = "nameView";
 	public static final String ADDRESS_TOKEN = "addressToken";
 	public static final String NAME = "name";

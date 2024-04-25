@@ -43,6 +43,9 @@ public class MultiAsset extends BaseEntity {
   @Column(name = "fingerprint", nullable = false)
   private String fingerprint;
 
+  @Column(name = "unit")
+  private String unit;
+
   @Column(name = "supply", precision = 23)
   @Digits(integer = 23, fraction = 0)
   private BigInteger supply;
