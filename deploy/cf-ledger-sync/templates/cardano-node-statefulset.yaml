@@ -31,6 +31,9 @@ spec:
       containers:
         - name: cardano-node
           image: "{{ .image.repository }}:{{ .image.tag }}"
+          {{- if .sleep }}
+          command: ["bash", "-c", "sleep infinity"]
+          {{- end }}
           env:
             - name: RESTORE_SNAPSHOT
               value: "{{ .mithrilRestore | default true }}"
