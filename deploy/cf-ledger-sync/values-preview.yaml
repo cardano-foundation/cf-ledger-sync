@@ -12,7 +12,7 @@ indexer:
 
 aggregation:
   postgres:
-    dbSchema: aggregation-preview
+    dbSchema: preview_aggregation
   store:
     executor:
       use_virtual_thread_for_batch_processing: "true"

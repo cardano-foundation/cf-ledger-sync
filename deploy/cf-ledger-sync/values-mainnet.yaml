@@ -4,7 +4,7 @@ indexer:
 
 aggregation:
   postgres:
-    dbSchema: aggregation-mainnet
+    dbSchema: mainnet_aggregation
 
 dbSchema: mainnet
 network: mainnet

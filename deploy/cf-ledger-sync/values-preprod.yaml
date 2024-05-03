@@ -4,7 +4,7 @@ indexer:
 
 aggregation:
   postgres:
-    dbSchema: aggregation-preprod
+    dbSchema: preprod_aggregation
 
 domain: dev-sranjan.cf-explorer-preprod.eu-west-1.metadata.dev.cf-deployments.org
 dbSchema: preprod

@@ -4,7 +4,7 @@ indexer:
 
 aggregation:
   postgres:
-    dbSchema: aggregation-sanchonet
+    dbSchema: sanchonet_aggregation
 
 dbSchema: sanchonet
 network: sanchonet
