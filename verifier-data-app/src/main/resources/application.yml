@@ -2,18 +2,22 @@
 multi-datasource:
   datasource-ledger-sync:
     hikari-config:
-        jdbc-url: jdbc:postgresql://${LEDGER_SYNC_HOST:10.4.10.75}:${LEDGER_SYNC_PORT:54322}/${LEDGER_SYNC_DB:explorer}
-        username: ${LEDGER_SYNC_USER_NAME:cardano-master}
-        password: ${LEDGER_SYNC_PASSWORD:postgres_master_pw}
+        jdbc-url: jdbc:postgresql://${LEDGER_SYNC_HOST:10.4.10.112}:${LEDGER_SYNC_PORT:54333}/${LEDGER_SYNC_DB:ledger_sync}
+        username: ${LEDGER_SYNC_USER_NAME:verifier_read}
+        password: ${LEDGER_SYNC_PASSWORD:verifier_read}
         driver-class-name: org.postgresql.Driver
-        schema: ${LEDGER_SYNC_SCHEMA:cexplorer_verifier_data}
-#  datasource-db-sync:
-#    hikari-config:
-#      jdbc-url: jdbc:postgresql://${DB_SYNC_HOST:10.4.10.231}:${DB_SYNC_PORT:5434}/${DB_SYNC_DB:cardano_mainnet}
-#      username: ${DB_SYNC_USER_NAME:cardano_mainnet_read}
-#      password: ${DB_SYNC_PASSWORD:1}
-#      driver-class-name: org.postgresql.Driver
-#      schema: ${DB_SYNC_SCHEMA:public}
+        schema: ${LEDGER_SYNC_SCHEMA:mainnet}
+  datasource-db-sync:
+    hikari-config:
+      jdbc-url: jdbc:postgresql://${DB_SYNC_HOST:10.4.10.231}:${DB_SYNC_PORT:5434}/${DB_SYNC_DB:cardano_mainnet}
+      username: ${DB_SYNC_USER_NAME:cardano_mainnet_read}
+      password: ${DB_SYNC_PASSWORD:1}
+      driver-class-name: org.postgresql.Driver
+      schema: ${DB_SYNC_SCHEMA:public}
+amount:
+  ada_pots:
+    100_ada_pots: 100
+    1000_ada_pots: 1000
 spring:
   jpa:
     open-in-view: false
@@ -23,6 +27,5 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
         format_sql: true
-
 
 
