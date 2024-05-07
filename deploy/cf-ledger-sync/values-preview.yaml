@@ -5,3 +5,14 @@ localCardanoNode:
 storeCardanoHost: preview-node.play.dev.cardano.org
 storeCardanoPort: 3001
 storeCardanoProtocolMagic: 2
+
+indexer:
+  postgres:
+    dbSchema: preview
+
+aggregation:
+  postgres:
+    dbSchema: preview_aggregation
+  store:
+    executor:
+      use_virtual_thread_for_batch_processing: "true"

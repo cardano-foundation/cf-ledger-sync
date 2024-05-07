@@ -51,14 +51,42 @@ blocks:
 
 dbSchema: public
 
+indexer:
+  enabled: true
+  replicaCount: 1
+  postgres:
+#    dbSchema: public
+    secretName: postgres-secrets
+    hostKey: POSTGRES_HOST
+    portKey: POSTGRES_PORT
+    dbKey: POSTGRES_DB
+    userKey: POSTGRES_USER
+    passwordKey: POSTGRES_PASSWORD
+
+
 aggregation:
   enabled: false
+  replicaCount: 1
   image:
-    repository: cardanofoundation/cf-ledger-sync-aggregation
+    repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-aggregation
     tag: "7b05530"
     pullPolicy: Always
-  dbSchema: public
+  postgres:
+#    dbSchema: aggregation
+    secretName: postgres-secrets
+    hostKey: POSTGRES_HOST
+    portKey: POSTGRES_PORT
+    dbKey: POSTGRES_DB
+    userKey: POSTGRES_USER
+    passwordKey: POSTGRES_PASSWORD
   store:
     account:
       history_cleanup_enabled: "true"
+    executor:
+      # Whether to use parallel processing. This greatly reduces DB computation requirements
+      enable_parallel_processing: "true"
+      # Whether to use virtual threads. True recommended for multi-CPU architecture, false for VMs
+      use_virtual_thread_for_batch_processing: "true"
+      # Number of concurrent batching threads
+      block_processing_threads: 15
   resources: {}

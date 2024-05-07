@@ -1,3 +1,11 @@
+indexer:
+  postgres:
+    dbSchema: sanchonet
+
+aggregation:
+  postgres:
+    dbSchema: sanchonet_aggregation
+
 dbSchema: sanchonet
 network: sanchonet
 localCardanoNode:

@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "cf-ledger-sync-aggregation.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.aggregation.replicaCount }}
   selector:
     matchLabels:
       {{- include "cf-ledger-sync-aggregation.selectorLabels" . | nindent 6 }}
@@ -56,40 +56,82 @@ spec:
             - name: STORE_CARDANO_PROTOCOL_MAGIC
               value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
             {{- end }}
-            
+
             ## Postgres
+            {{- with .Values.aggregation.postgres }}
             - name: POSTGRES_HOST
+              {{- if .host }}
+              value: {{ .host }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_HOST
+                  name: {{ .secretName }}
+                  key: {{ .hostKey }}
+              {{- end }}
             - name: POSTGRES_PORT
+              {{- if .port }}
+              value: {{ .port | quote }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_PORT
+                  name: {{ .secretName }}
+                  key: {{ .portKey }}
+              {{- end }}
             - name: POSTGRES_DB
+              {{- if .db }}
+              value: {{ .db }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_DB
+                  name: {{ .secretName }}
+                  key: {{ .dbKey }}
+              {{- end }}
             - name: SCHEMA
-              value: {{ .Values.dbSchema | default "public" }}
+              value: {{ .dbSchema | default "aggregation" }}
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(SCHEMA)
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_USER
+                  name: {{ .secretName }}
+                  key: {{ .userKey }}
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_PASSWORD
+                  name: {{ .secretName }}
+                  key: {{ .passwordKey }}
+            {{- end }}
+
+            - name: HEALTH_CHECK_ENABLED
+              value: "true"
+            - name: EVENT_TIME_THRESHOLD_IN_SECOND
+              value: "600"
+            - name: BLOCK_TIME_CHECK_ENABLED
+              value: "true"
+            - name: BLOCK_TIME_THRESHOLD_IN_SECOND
+              value: "180"
 
             - name: STORE_ACCOUNT_HISTORYCLEANUPENABLED
               value: {{ .Values.aggregation.store.account.history_cleanup_enabled | quote }}
+            - name: STORE_ACCOUNT_INITIALBALANCESNAPSHOTBLOCK
+              value: "0"
+            - name: STORE_ACCOUNT_BALANCECALCJOBBATCHSIZE
+              value: "500"
+            - name: STORE_ACCOUNT_BALANCECALCJOBPARTITIONSIZE
+              value: "5"
+            - name: STORE_ADMIN_HEALTHCHECKINTERVAL
+              value: "120"
+            - name: STORE_ADMIN_AUTORECOVERYENABLED
+              value: "true"
+            - name: STORE_EXECUTOR_BLOCKPROCESSINGTHREADS
+              value: {{ .Values.aggregation.store.executor.block_processing_threads | default 15 | quote }}
+            - name: STORE_EXECUTOR_USEVIRTUALTHREADFORBATCHPROCESSING
+              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" | quote }}
+            - name: STORE_EXECUTOR_ENABLEPARALLELPROCESSING
+              value: {{ .Values.aggregation.store.executor.enable_parallel_processing | default "true" | quote }}
+
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
+  strategy:
+    type: Recreate
 {{ end }}

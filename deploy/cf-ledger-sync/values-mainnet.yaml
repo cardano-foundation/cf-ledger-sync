@@ -1,3 +1,11 @@
+indexer:
+  postgres:
+    dbSchema: mainnet
+
+aggregation:
+  postgres:
+    dbSchema: mainnet_aggregation
+
 dbSchema: mainnet
 network: mainnet
 localCardanoNode:
