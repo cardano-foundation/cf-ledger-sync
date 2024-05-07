@@ -23,7 +23,7 @@ spec:
       containers:
         - name: "{{ .Chart.Name }}-aggregation"
           image: "{{ .Values.aggregation.image.repository }}:{{ .Values.aggregation.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.aggregation.image.pullPolicy }}
           env:
             - name: NETWORK
               value: {{ .Values.network | default "preprod" }}

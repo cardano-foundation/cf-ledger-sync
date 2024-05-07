@@ -13,11 +13,6 @@ localCardanoNode:
   tolerations: null
   affinity: null
 
-image:
-  repository: cardanofoundation/cf-ledger-sync
-  tag: "d5f1455"
-  pullPolicy: Always
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -54,6 +49,10 @@ dbSchema: public
 indexer:
   enabled: true
   replicaCount: 1
+  image:
+    repository: cardanofoundation/cf-ledger-sync
+    tag: "d5f1455"
+    pullPolicy: Always
   postgres:
 #    dbSchema: public
     secretName: postgres-secrets

@@ -34,8 +34,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.indexer.image.repository }}:{{ .Values.indexer.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.indexer.image.pullPolicy }}
           env:
             - name: NETWORK
               value: {{ .Values.network | default "preprod" }}

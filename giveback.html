@@ -1,0 +1,151 @@
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script type="module">
+import { Lucid , Blockfrost,toUnit,Data,Constr,  fromHex,
+  toHex,sha256  } from "https://unpkg.com/lucid-cardano@0.10.0/web/mod.js"
+const lucid = await Lucid.new(
+  new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", "mainnet5JnwhqGoyF2CyTjns9IRXFrqysfJeQZl"),
+  "Mainnet",
+);
+import * as cbor from "https://deno.land/x/cbor@v1.4.1/index.js";
+
+import data from '../plutus.json' assert { type: "json" };
+console.log(data);
+
+
+const  rentScript = {
+type: "PlutusV2",
+script: toHex(cbor.encode(fromHex(data.validators[0].compiledCode)))
+};
+
+
+
+let api=undefined
+window.connect=async function connect(wallet){
+     api = await window.cardano[wallet].enable();
+    localStorage.setItem('wallet', wallet);
+}
+
+
+const validatorHash=lucid.utils.validatorToScriptHash(rentScript);
+console.log("validator hash")
+console.log(validatorHash)
+const CredentialSC=lucid.utils.scriptHashToCredential(validatorHash);
+
+   var wallet="nami"
+    api = await window.cardano[wallet].enable();
+   lucid.selectWallet(api);
+   window.owner=await lucid.wallet.address()
+   const { paymentCredential,stakeCredential } = lucid.utils.getAddressDetails(
+   await lucid.wallet.address(),
+   );
+
+   const addressRequest = lucid.utils.credentialToAddress(CredentialSC, stakeCredential);
+   const payment_vkh = new Constr(0, [paymentCredential.hash]);
+  const staking_vkh = new Constr(0, [stakeCredential.hash]); //secondo me qua è 0
+  const staking_inline = new Constr(0,[new Constr(0, [staking_vkh])])
+  const addressCbor = new Constr(0, [payment_vkh, staking_inline])
+
+    const address = await lucid.wallet.address()
+
+
+
+
+
+    const apiUrl = 'https://api.fluidtokens.com/get-bs-available-pools?expiredOnly=true&page=0';
+    let pool=undefined
+    await fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Handle the JSON data
+        pool=data
+        console.log(data);
+      })
+      .catch(error => {
+        // Handle errors
+        console.error('Fetch error:', error);
+      });
+
+    //qua riordino la pool
+    var poolsUsed=pool.sort(function(a,b){return a.rentUtxoId.localeCompare(b.rentUtxoId); }).slice(0, 15)
+
+
+    let tx = await lucid
+    .newTx()
+    let referenceScript = await lucid.utxosByOutRef([{ txHash: "2c812d5ba6d240eea79dca528f22a3854adcaac140f3151ecbcf5d945c5981e3", outputIndex: 0 }])
+    let i=0
+    while(i<poolsUsed.length){
+      var utxo=await lucid.utxosByOutRef([{ txHash: poolsUsed[i].rentUtxoId.substring(0, 64), outputIndex: parseInt(poolsUsed[i].rentUtxoId.substring(65)) }])
+
+      var redeemerGiveBack=Data.to(
+          new Constr(4,[
+            BigInt(i)
+          ])
+        )
+
+        var datumUtxo=Data.from(utxo[0].datum)
+        var datumGiveBack = Data.to(new Constr(0,
+        [datumUtxo.fields[0],//policy Borrower
+        datumUtxo.fields[1],//HERE THE POLICY OF THE TOKEN, if ADA is empty
+        datumUtxo.fields[2],//HERE THE ASSETNAME IN HEX, if ADA is empty
+        datumUtxo.fields[3],//HERE THE PRICE BEWARE OF DECIMALES
+        datumUtxo.fields[4],//HERE THE POLICY OF THE TOKEN, if ADA is empty
+        datumUtxo.fields[5],//HERE THE ASSETNAME IN HEX, if ADA is empty
+        datumUtxo.fields[6],//HERE THE PRICE BEWARE OF DECIMALES
+        datumUtxo.fields[7],
+        datumUtxo.fields[0],
+        datumUtxo.fields[9],
+        datumUtxo.fields[10],
+        datumUtxo.fields[11],
+        datumUtxo.fields[12],
+        datumUtxo.fields[13],
+        datumUtxo.fields[14]
+        ])
+        );
+
+      let ownerCredential=lucid.utils.keyHashToCredential(poolsUsed[i].rentData.renterAddress[1])
+      var addressOwner=lucid.utils.credentialToAddress(CredentialSC, ownerCredential)
+
+        tx=tx.collectFrom(utxo,redeemerGiveBack)
+           .readFrom(referenceScript)
+           .payToContract(addressOwner, { inline: datumGiveBack },{["lovelace"]:BigInt(poolsUsed[i].rentData.poolAmount)})
+      i=i+1;
+    }
+
+
+
+
+
+
+    let lower = (Date.now() - 100000)
+    let upper = (Date.now() + 500000)
+
+    lower = lower - lower % 1000;
+    upper = upper - upper % 1000;
+
+    console.log(upper-lower)
+
+
+    tx=await tx.validFrom(lower)
+    .validTo(upper)
+    .complete();
+
+    const signedTx = await tx.sign().complete();
+    const txHash = await signedTx.submit();
+    console.log(txHash)
+
+
+
+</script>
+
+  </body>
+</html>
