@@ -50,8 +50,8 @@ indexer:
   enabled: true
   replicaCount: 1
   image:
-    repository: cardanofoundation/cf-ledger-sync
-    tag: "d5f1455"
+    repository: "pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync"
+    tag: "a842354-8831465254"
     pullPolicy: Always
   postgres:
 #    dbSchema: public
@@ -67,8 +67,8 @@ aggregation:
   enabled: false
   replicaCount: 1
   image:
-    repository: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-aggregation
-    tag: "7b05530"
+    repository: "pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync"
+    tag: "a842354-8831465254"
     pullPolicy: Always
   postgres:
 #    dbSchema: aggregation
