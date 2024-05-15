@@ -8,10 +8,15 @@ import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
 import com.bloxbean.cardano.yaci.core.model.certs.CertificateType;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeDelegation;
 import com.bloxbean.cardano.yaci.core.model.certs.StakeDeregistration;
+import com.bloxbean.cardano.yaci.core.model.governance.ProposalProcedure;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedTxIn;
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
+import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Redeemer;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Redeemer.RedeemerBuilder;
 import org.cardanofoundation.ledgersync.consumercommon.entity.RedeemerData;
@@ -19,10 +24,6 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.RedeemerData.Redee
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
 import org.cardanofoundation.ledgersync.consumercommon.entity.TxOut;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.ScriptPurposeType;
-import org.cardanofoundation.ledgersync.common.util.HexUtil;
-import org.cardanofoundation.ledgersync.common.util.JsonUtil;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedTxIn;
 import org.cardanofoundation.ledgersync.projection.TxOutProjection;
 import org.cardanofoundation.ledgersync.repository.RedeemerDataRepository;
 import org.cardanofoundation.ledgersync.repository.RedeemerRepository;
@@ -198,9 +199,13 @@ public class RedeemerServiceImpl implements RedeemerService {
             }
             case Mint -> handleMintingScriptHash(aggregatedTx.getMint(), pointerIndex);
             case Cert -> handleCertPtr(aggregatedTx.getCertificates(), pointerIndex);
-            default -> // Reward pointer
-                    handleRewardPtr(new ArrayList<>(aggregatedTx.getWithdrawals().keySet()),
+            case Reward -> handleRewardPtr(new ArrayList<>(aggregatedTx.getWithdrawals().keySet()),
                             pointerIndex);
+            case Voting, Proposing -> null; //TODO check later
+            default -> {
+                log.error("Unsupported redeemer tag {}", tag);
+                yield null;
+            }
         };
     }
 

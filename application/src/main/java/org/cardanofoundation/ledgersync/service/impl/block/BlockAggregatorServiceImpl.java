@@ -360,6 +360,8 @@ public class BlockAggregatorServiceImpl extends BlockAggregatorService<BlockEven
                 .mint(transactionBody.getMint())
                 .requiredSigners(transactionBody.getRequiredSigners())
                 .witnesses(witnesses)
+                .votingProcedures(transactionBody.getVotingProcedures())
+                .proposalProcedures(transactionBody.getProposalProcedures())
                 .fee(fee)
                 .outSum(outSum)
                 .deposit(0)
