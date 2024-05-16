@@ -5,6 +5,8 @@ import com.bloxbean.cardano.yaci.core.model.Update;
 import com.bloxbean.cardano.yaci.core.model.Witnesses;
 import com.bloxbean.cardano.yaci.core.model.byron.ByronTxWitnesses;
 import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
+import com.bloxbean.cardano.yaci.core.model.governance.ProposalProcedure;
+import com.bloxbean.cardano.yaci.core.model.governance.VotingProcedures;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +42,8 @@ public class AggregatedTx {
     Witnesses witnesses;
     List<ByronTxWitnesses> byronTxWitnesses;
     String auxiliaryDataHash;
+    VotingProcedures votingProcedures;
+    List<ProposalProcedure> proposalProcedures;
 
     public void setFee(BigInteger fee) {
         this.fee = fee;
