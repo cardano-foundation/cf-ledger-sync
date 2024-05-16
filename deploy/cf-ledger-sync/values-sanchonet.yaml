@@ -10,6 +10,7 @@ dbSchema: sanchonet
 network: sanchonet
 localCardanoNode:
   network: sanchonet
+  volumeSize: 10Gi
 storeCardanoHost: sanchonet-node.play.dev.cardano.org
 storeCardanoPort: 3001
 storeCardanoProtocolMagic: 4

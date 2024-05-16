@@ -10,3 +10,4 @@ domain: dev-sranjan.cf-explorer-preprod.eu-west-1.metadata.dev.cf-deployments.or
 dbSchema: preprod
 localCardanoNode:
   network: preprod
+  volumeSize: 20Gi
