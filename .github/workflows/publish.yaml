@@ -18,7 +18,7 @@ env:
 jobs:
   publish:
     permissions:
-      contents: read
+      contents: write
       packages: write
     runs-on: self-hosted
     steps:
@@ -28,15 +28,24 @@ jobs:
       - name: Set extra environment and metadata
         id: metadata
         run: |
-          ARTIFACT_VERSION=$(grep version gradle.properties | awk '{print $NF}')
           GIT_SHORT_COMMIT=${GITHUB_SHA::7}
           DOCKER_IMAGE_NAME=$(basename ${GITHUB_REPOSITORY})
+
+          # if a tag triggered the version, use the tag to set the version in gradle.properties
+          if [ "${GITHUB_REF_TYPE}" == "tag" ]
+          then
+            TRIGGERING_TAG=${GITHUB_REF#refs/tags/v}
+            sed -i "s|^version.*|version = ${TRIGGERING_TAG}|" gradle.properties
+            DOCKER_IMAGES_EXTRA_TAGS="${TRIGGERING_TAG} latest"
+            echo "DOCKER_IMAGES_EXTRA_TAGS=${DOCKER_IMAGES_EXTRA_TAGS}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          fi
+          ARTIFACT_VERSION=$(grep version gradle.properties | awk '{print $NF}')
 
           echo "ARTIFACT_VERSION=${ARTIFACT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "GIT_SHORT_COMMIT=${GIT_SHORT_COMMIT}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "GITHUB_RUN_ID=${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
-          echo "DOCKER_IMAGES_EXTRA_TAGS=${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT} ${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT}-${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          echo "DOCKER_IMAGES_EXTRA_TAGS=${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT} ${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT}-${GITHUB_RUN_ID} ${DOCKER_IMAGES_EXTRA_TAGS}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
       - name: Docker Login (private registry)
         uses: docker/login-action@v2
@@ -63,4 +72,42 @@ jobs:
         env:
           EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
         run: |
-          earthly +docker-publish
+          if [ "${GITHUB_REF_TYPE}" == "tag" ]
+          then
+            earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
+          else
+            earthly +docker-publish
+          fi
+
+      - name: Preprare release notes
+        if: github.ref_type == 'tag'
+        id: release_notes
+        run: |
+          cat > release-notes.md <<EOF
+          # Run with docker-compose
+          ```
+          export CF_LEDGER_SYNC_DOCKER_IMAGE=cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}
+          docker-compose up -d
+          ```
+          EOF
+      
+      - name: Create Github release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          body_path: release_notes.md
+          files: |
+            build/*jar
+
+      - name: Bump version to next snapshot
+        if: github.ref_type == 'tag'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          NEW_ARTIFACT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          sed -i "s|^version.*|version = ${NEW_ARTIFACT_VERSION}-SNAPSHOT|" gradle.properties
+          git commit gradle.properties -m "chore(gradle): Bump version to ${ARTIFACT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
+          git push
