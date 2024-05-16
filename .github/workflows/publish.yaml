@@ -84,10 +84,10 @@ jobs:
         run: |
           cat > release-notes.md <<EOF
           # Run with docker-compose
-          ```
+          \`\`\`
           export CF_LEDGER_SYNC_DOCKER_IMAGE=cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}
           docker-compose up -d
-          ```
+          \`\`\`
           EOF
       
       - name: Create Github release
@@ -96,7 +96,7 @@ jobs:
         with:
           draft: true
           fail_on_unmatched_files: true
-          body_path: release_notes.md
+          body_path: release-notes.md
           files: |
             build/*jar
 
