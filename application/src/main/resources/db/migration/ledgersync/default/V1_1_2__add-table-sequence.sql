@@ -130,17 +130,7 @@ CREATE SEQUENCE failed_tx_out_id_seq
     NO MAXVALUE CACHE 1;
 
 ALTER SEQUENCE failed_tx_out_id_seq OWNED BY failed_tx_out.id;
---
--- Name: ma_tx_mint_id_seq; Type: SEQUENCE;
---
 
-CREATE SEQUENCE ma_tx_mint_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE ma_tx_mint_id_seq OWNED BY ma_tx_mint.id;
 --
 -- Name: ma_tx_out_id_seq; Type: SEQUENCE;
 --
@@ -163,17 +153,7 @@ CREATE SEQUENCE meta_id_seq
     NO MAXVALUE CACHE 1;
 
 ALTER SEQUENCE meta_id_seq OWNED BY meta.id;
---
--- Name: multi_asset_id_seq; Type: SEQUENCE;
---
 
-CREATE SEQUENCE multi_asset_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE multi_asset_id_seq OWNED BY multi_asset.id;
 --
 -- Name: param_proposal_id_seq; Type: SEQUENCE;
 --
@@ -454,17 +434,7 @@ CREATE SEQUENCE tx_in_id_seq
     NO MAXVALUE CACHE 1;
 
 ALTER SEQUENCE tx_in_id_seq OWNED BY tx_in.id;
---
--- Name: tx_metadata_id_seq; Type: SEQUENCE;
---
 
-CREATE SEQUENCE tx_metadata_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE CACHE 1;
-
-ALTER SEQUENCE tx_metadata_id_seq OWNED BY tx_metadata.id;
 --
 -- Name: tx_out_id_seq; Type: SEQUENCE;
 --
@@ -608,13 +578,6 @@ ALTER TABLE ONLY failed_tx_out
 ALTER COLUMN id SET DEFAULT nextval('failed_tx_out_id_seq'::regclass);
 
 
---
--- Name: ma_tx_mint id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY ma_tx_mint
-ALTER COLUMN id SET DEFAULT nextval('ma_tx_mint_id_seq'::regclass);
-
 
 --
 -- Name: ma_tx_out id; Type: DEFAULT;
@@ -631,13 +594,6 @@ ALTER COLUMN id SET DEFAULT nextval('ma_tx_out_id_seq'::regclass);
 ALTER TABLE ONLY meta
 ALTER COLUMN id SET DEFAULT nextval('meta_id_seq'::regclass);
 
-
---
--- Name: multi_asset id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY multi_asset
-ALTER COLUMN id SET DEFAULT nextval('multi_asset_id_seq'::regclass);
 
 
 --
@@ -831,14 +787,6 @@ ALTER COLUMN id SET DEFAULT nextval('tx_in_id_seq'::regclass);
 
 
 --
--- Name: tx_metadata id; Type: DEFAULT;
---
-
-ALTER TABLE ONLY tx_metadata
-ALTER COLUMN id SET DEFAULT nextval('tx_metadata_id_seq'::regclass);
-
-
---
 -- Name: tx_out id; Type: DEFAULT;
 --
 
@@ -964,13 +912,6 @@ ALTER TABLE ONLY failed_tx_out
     ADD CONSTRAINT failed_tx_out_pkey PRIMARY KEY (id);
 
 
---
--- Name: ma_tx_mint ma_tx_mint_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY ma_tx_mint
-    ADD CONSTRAINT ma_tx_mint_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: ma_tx_out ma_tx_out_pkey; Type: CONSTRAINT;
@@ -987,13 +928,6 @@ ALTER TABLE ONLY ma_tx_out
 ALTER TABLE ONLY meta
     ADD CONSTRAINT meta_pkey PRIMARY KEY (id);
 
-
---
--- Name: multi_asset multi_asset_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY multi_asset
-    ADD CONSTRAINT multi_asset_pkey PRIMARY KEY (id);
 
 
 --
@@ -1185,15 +1119,6 @@ ALTER TABLE ONLY treasury
 
 ALTER TABLE ONLY tx_in
     ADD CONSTRAINT tx_in_pkey PRIMARY KEY (id);
-
-
---
--- Name: tx_metadata tx_metadata_pkey; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY tx_metadata
-    ADD CONSTRAINT tx_metadata_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: tx_out tx_out_pkey; Type: CONSTRAINT;

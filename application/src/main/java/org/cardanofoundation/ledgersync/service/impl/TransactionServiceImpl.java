@@ -10,6 +10,7 @@ import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTxIn;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTxOut;
+import org.cardanofoundation.ledgersync.configuration.StoreProperties;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.dto.EUTXOWrapper;
 import org.cardanofoundation.ledgersync.factory.CertificateSyncServiceFactory;
@@ -60,6 +61,8 @@ public class TransactionServiceImpl implements TransactionService {
     TxMetaDataHashService txMetaDataHashService;
     TxWitnessService txWitnessService;
     TxBootstrapWitnessService txBootstrapWitnessService;
+
+    StoreProperties storeProperties;
 
     @Override
     public void prepareAndHandleTxs(Map<String, Block> blockMap,
@@ -154,7 +157,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         // MUST SET FIRST
         // multi asset mint
-        multiAssetService.handleMultiAssetMint(successTxs, txMap);
+        if (!storeProperties.getAssets().isEnabled()) {
+            multiAssetService.handleMultiAssetMint(successTxs, txMap);
+        }
 
         // Handle stake address and its first appeared tx
         Map<String, StakeAddress> stakeAddressMap = stakeAddressService
@@ -200,7 +205,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 
         // auxiliary
-        txMetaDataService.handleAuxiliaryDataMaps(txMap);
+        if (!storeProperties.getMetadata().isEnabled()) {
+            txMetaDataService.handleAuxiliaryDataMaps(txMap);
+        }
 
         //param proposal
         paramProposalService.handleParamProposals(successTxs, txMap);

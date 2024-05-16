@@ -226,17 +226,6 @@ CREATE TABLE IF NOT EXISTS failed_tx_out
     tx_id               bigint                 NOT NULL
     );
 
---
--- Name: ma_tx_mint; Type: TABLE;
---
-
-CREATE TABLE IF NOT EXISTS ma_tx_mint
-(
-    id       bigint         NOT NULL,
-    quantity numeric(20, 0) NOT NULL,
-    ident    bigint         NOT NULL,
-    tx_id    bigint         NOT NULL
-    );
 
 --
 -- Name: ma_tx_out; Type: TABLE;
@@ -262,21 +251,7 @@ CREATE TABLE IF NOT EXISTS meta
     version      character varying(255)      NOT NULL
     );
 
---
--- Name: multi_asset; Type: TABLE;
---
 
-CREATE TABLE IF NOT EXISTS multi_asset
-(
-    id           bigint                 NOT NULL,
-    fingerprint  character varying(255) NOT NULL,
-    name         bytea                  NOT NULL,
-    policy       character varying(56)  NOT NULL,
-    unit         character varying(255),
-    supply       numeric(23, 0),
-    "time"       timestamp without time zone,
-    name_view    varchar(64)
-    );
 
 --
 -- Name: param_proposal; Type: TABLE;
@@ -680,20 +655,6 @@ CREATE TABLE IF NOT EXISTS tx_in
     tx_out_id    bigint,
     redeemer_id  bigint
 );
-
-
---
--- Name: tx_metadata; Type: TABLE;
---
-
-CREATE TABLE IF NOT EXISTS tx_metadata
-(
-    id    bigint         NOT NULL,
-    bytes bytea,
-    json  text,
-    key   numeric(20, 0) NOT NULL,
-    tx_id bigint         NOT NULL
-    );
 
 
 --

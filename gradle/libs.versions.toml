@@ -6,6 +6,8 @@ yaci-store-remote-starter="com.bloxbean.cardano:yaci-store-remote-spring-boot-st
 yaci-store-governance-starter="com.bloxbean.cardano:yaci-store-governance-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
 yaci-store-admin-starter="com.bloxbean.cardano:yaci-store-admin-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
 yaci-store-events="com.bloxbean.cardano:yaci-store-events:0.1.0-rc4-ed7acef-SNAPSHOT"
+yaci-store-starter-assets="com.bloxbean.cardano:yaci-store-assets-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
+yaci-store-starter-metadata="com.bloxbean.cardano:yaci-store-metadata-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
 
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.1"
 snakeyaml="org.yaml:snakeyaml:2.0"

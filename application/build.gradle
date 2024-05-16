@@ -12,6 +12,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.flywaydb:flyway-core:9.22.3'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     implementation project(':components:common')
@@ -21,6 +22,8 @@ dependencies {
 
     implementation(libs.yaci.store.starter)
     implementation(libs.yaci.store.governance.starter)
+    implementation(libs.yaci.store.starter.assets)
+    implementation(libs.yaci.store.starter.metadata)
 
     implementation(libs.cardano.client.lib)
 
