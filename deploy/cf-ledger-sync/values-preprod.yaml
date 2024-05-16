@@ -1,4 +1,13 @@
+indexer:
+  postgres:
+    dbSchema: preprod
+
+aggregation:
+  postgres:
+    dbSchema: preprod_aggregation
+
 domain: dev-sranjan.cf-explorer-preprod.eu-west-1.metadata.dev.cf-deployments.org
 dbSchema: preprod
 localCardanoNode:
   network: preprod
+  volumeSize: 20Gi
