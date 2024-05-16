@@ -31,70 +31,42 @@ docker-publish:
         FOR image_tag IN $DOCKER_IMAGES_EXTRA_TAGS
           IF [ "$registry" = "hub.docker.com" ]
             RUN docker tag ${IMAGE_NAME}:latest ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
-            RUN docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
+            RUN echo docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
           ELSE
             RUN docker tag ${IMAGE_NAME}:latest ${registry}/${IMAGE_NAME}:${image_tag}
-            RUN docker push ${registry}/${IMAGE_NAME}:${image_tag}
+            RUN echo docker push ${registry}/${IMAGE_NAME}:${image_tag}
           END
         END
       END
       IF [ "$registry" = "hub.docker.com" ]
         RUN docker tag ${IMAGE_NAME}:latest ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-        RUN docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
+        RUN echo docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
       ELSE
         RUN docker tag ${IMAGE_NAME}:latest ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-        RUN docker push ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
+        RUN echo docker push ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
       END
     END
   END
 
-build:
-  FROM eclipse-temurin:21-jdk
-  WORKDIR /app
-  COPY . /app
-  RUN ./gradlew clean build -x test
-
-  SAVE ARTIFACT /app /app
-
-TEMPLATED_DOCKERFILE_BUILD:
-  FUNCTION
-  ARG APP_DIR
-  ARG JAR_NAME
-  ARG IMAGE_NAME
-  FROM eclipse-temurin:21-jdk
-  WORKDIR /app
-  COPY +build/app/${APP_DIR}/build/libs/${JAR_NAME}*.jar /app/${JAR_NAME}.jar
-  EXPOSE 8080
-  ENTRYPOINT java -jar ${JAR_NAME}.jar
-  SAVE IMAGE $IMAGE_NAME:latest
-
 ledger-sync:
   ARG EARTHLY_TARGET_NAME
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --APP_DIR=application \
-    --JAR_NAME=${EARTHLY_TARGET_NAME}-application \
-    --IMAGE_NAME=${DOCKER_IMAGE_PREFIX}
+  FROM DOCKERFILE -f Dockerfile --target ${EARTHLY_TARGET_NAME} .
+  SAVE IMAGE ${DOCKER_IMAGE_PREFIX}:latest
 
 aggregation:
   ARG EARTHLY_TARGET_NAME
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --APP_DIR=${EARTHLY_TARGET_NAME}-app \
-    --JAR_NAME=ledger-sync-${EARTHLY_TARGET_NAME}-app \
-    --IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}
+  FROM DOCKERFILE -f Dockerfile --target $EARTHLY_TARGET_NAME .
+  SAVE IMAGE ${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}:latest
 
 streamer:
   ARG EARTHLY_TARGET_NAME
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --APP_DIR=${EARTHLY_TARGET_NAME}-app \
-    --JAR_NAME=ledger-sync-${EARTHLY_TARGET_NAME}-app \
-    --IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}
+  FROM DOCKERFILE -f Dockerfile --target $EARTHLY_TARGET_NAME .
+  SAVE IMAGE ${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}:latest
 
 scheduler:
   ARG EARTHLY_TARGET_NAME
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --APP_DIR=${EARTHLY_TARGET_NAME}-app \
-    --JAR_NAME=ledger-sync-${EARTHLY_TARGET_NAME}-app \
-    --IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}
+  FROM DOCKERFILE -f Dockerfile --target $EARTHLY_TARGET_NAME .
+  SAVE IMAGE ${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}:latest
 
 docker-compose-up:
   LOCALLY
