@@ -214,13 +214,13 @@ public class EpochParam extends BaseEntity {
   @Column(name = "dvt_p_p_economic_group")
   private Double dvtPPEconomicGroup;
 
-  @Column(name = "pvt_p_p_technical_group")
+  @Column(name = "dvt_p_p_technical_group")
   private Double dvtPPTechnicalGroup;
 
-  @Column(name = "pvt_p_p_gov_group")
+  @Column(name = "dvt_p_p_gov_group")
   private Double dvtPPGovGroup;
 
-  @Column(name = "pvt_treasury_withdrawal")
+  @Column(name = "dvt_treasury_withdrawal")
   private Double dvtTreasuryWithdrawal;
 
   @Column(name = "committee_min_size")
