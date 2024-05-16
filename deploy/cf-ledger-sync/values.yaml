@@ -58,7 +58,7 @@ indexer:
     secretName: postgres-secrets
     hostKey: POSTGRES_HOST
     portKey: POSTGRES_PORT
-    dbKey: POSTGRES_DB
+    dbKey: LEDGER_SYNC_DB
     userKey: POSTGRES_USER
     passwordKey: POSTGRES_PASSWORD
 
@@ -75,7 +75,7 @@ aggregation:
     secretName: postgres-secrets
     hostKey: POSTGRES_HOST
     portKey: POSTGRES_PORT
-    dbKey: POSTGRES_DB
+    dbKey: LEDGER_SYNC_DB
     userKey: POSTGRES_USER
     passwordKey: POSTGRES_PASSWORD
   store:
