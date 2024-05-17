@@ -52,6 +52,8 @@ docker-publish:
 
 maven-central-publish:
   FROM gradle:jdk21-alpine
+  WORKDIR /src
+  COPY ./ /src
   RUN mkdir -p ~/.gradle && \
       echo "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
       base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
