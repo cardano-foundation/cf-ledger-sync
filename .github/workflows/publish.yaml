@@ -63,43 +63,43 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - uses: earthly/actions-setup@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          version: "0.8.6"
+      #- uses: earthly/actions-setup@v1
+      #  with:
+      #    github-token: ${{ secrets.GITHUB_TOKEN }}
+      #    version: "0.8.6"
 
-      - name: 🌍 earthly (docker build and push)
-        env:
-          EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
-        run: |
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]
-          then
-            earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
-          else
-            earthly +docker-publish
-          fi
+      #- name: 🌍 earthly (docker build and push)
+      #  env:
+      #    EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
+      #  run: |
+      #    if [ "${GITHUB_REF_TYPE}" == "tag" ]
+      #    then
+      #      earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
+      #    else
+      #      earthly +docker-publish
+      #    fi
 
-      - name: Preprare release notes
-        if: github.ref_type == 'tag'
-        id: release_notes
-        run: |
-          cat > release-notes.md <<EOF
-          # Run with docker-compose
-          \`\`\`
-          export CF_LEDGER_SYNC_DOCKER_IMAGE=cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}
-          docker-compose up
-          \`\`\`
-          EOF
-      
-      - name: Create Github release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: true
-          fail_on_unmatched_files: true
-          body_path: release-notes.md
-          files: |
-            build/*jar
+      #- name: Preprare release notes
+      #  if: github.ref_type == 'tag'
+      #  id: release_notes
+      #  run: |
+      #    cat > release-notes.md <<EOF
+      #    # Run with docker-compose
+      #    \`\`\`
+      #    export CF_LEDGER_SYNC_DOCKER_IMAGE=cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}
+      #    docker-compose up
+      #    \`\`\`
+      #    EOF
+      #
+      #- name: Create Github release
+      #  if: github.ref_type == 'tag'
+      #  uses: softprops/action-gh-release@v2
+      #  with:
+      #    draft: true
+      #    fail_on_unmatched_files: true
+      #    body_path: release-notes.md
+      #    files: |
+      #      build/*jar
 
       - name: Bump version to next snapshot
         if: github.ref_type == 'tag'
