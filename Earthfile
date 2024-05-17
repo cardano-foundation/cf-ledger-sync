@@ -52,7 +52,6 @@ docker-publish:
 
 maven-central-publish:
   FROM DOCKERFILE -f Dockerfile --target build .
-  ARG 
   ARG MAVEN_USERNAME
   ARG MAVEN_PASSWORD
   ARG MAVEN_CENTRAL_GPG_PRIVATE_KEY
