@@ -50,6 +50,16 @@ docker-publish:
     END
   END
 
+maven-central-publish:
+  FROM eclipse-temurin:21-jdk
+  RUN mkdir -p ~/gradle && \
+      echo "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
+      base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+  RUN ./gradlew publish --warn --stacktrace \
+      -Psigning.keyId=${MAVEN_CENTRAL_GPG_KEY_ID} \
+      -Psigning.password=${MAVEN_CENTRAL_GPG_PASSPHRASE} \
+      -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)
+
 TEMPLATED_DOCKERFILE_BUILD:
   FUNCTION
   ARG DOCKERFILE_TARGET
@@ -59,8 +69,9 @@ TEMPLATED_DOCKERFILE_BUILD:
   SAVE IMAGE ${DOCKER_IMAGE_NAME}:latest
   IF [ ! -z "$RELEASE_TAG" ]
     RUN mv /app/*jar /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.jar
+    RUN md5sum /app/*jar > /app/md5sum
   END
-  SAVE ARTIFACT /app/*jar AS LOCAL build/
+  SAVE ARTIFACT /app/* AS LOCAL build/
 
 ledger-sync:
   ARG EARTHLY_TARGET_NAME

@@ -101,6 +101,20 @@ jobs:
           files: |
             build/*jar
 
+      - name: Publish to Maven Central
+        run: |
+          if [ "${GITHUB_REF_TYPE}" == "tag" ]
+          then
+            earthly \
+              --secret MAVEN_CENTRAL_OSSRH_USERNAME \
+              --secret MAVEN_CENTRAL_OSSRH_TOKEN \
+              --secret MAVEN_CENTRAL_GPG_PRIVATE_KEY \
+              --secret MAVEN_CENTRAL_GPG_KEY_ID \
+              --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
+              +maven-central-publish
+          fi
+
+
       - name: Bump version to next snapshot
         if: github.ref_type == 'tag'
         run: |
