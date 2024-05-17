@@ -1,13 +1,9 @@
 CREATE INDEX IF NOT EXISTS idx_epoch_no ON epoch USING btree (no);
 CREATE INDEX IF NOT EXISTS idx_reserved_pool_ticker_pool_hash ON reserved_pool_ticker USING btree (pool_hash);
 CREATE INDEX IF NOT EXISTS idx_slot_leader_pool_hash_id ON slot_leader USING btree (pool_hash_id);
-CREATE INDEX IF NOT EXISTS idx_epoch_param_block_id ON epoch_param USING btree (block_id);
-CREATE INDEX IF NOT EXISTS idx_epoch_param_cost_model_id ON epoch_param USING btree (cost_model_id);
 CREATE INDEX IF NOT EXISTS idx_tx_block_id ON tx USING btree (block_id);
 CREATE INDEX IF NOT EXISTS idx_datum_tx_id ON datum USING btree (tx_id);
 CREATE INDEX IF NOT EXISTS idx_extra_key_witness_tx_id ON extra_key_witness USING btree (tx_id);
-CREATE INDEX IF NOT EXISTS idx_param_proposal_cost_model_id ON param_proposal USING btree (cost_model_id);
-CREATE INDEX IF NOT EXISTS idx_param_proposal_registered_tx_id ON param_proposal USING btree (registered_tx_id);
 CREATE INDEX IF NOT EXISTS idx_pool_metadata_ref_registered_tx_id ON pool_metadata_ref USING btree (registered_tx_id);
 CREATE INDEX IF NOT EXISTS idx_pool_offline_data_pmr_id ON pool_offline_data USING btree (pmr_id);
 CREATE INDEX IF NOT EXISTS idx_pool_offline_fetch_error_pmr_id ON pool_offline_fetch_error USING btree (pmr_id);

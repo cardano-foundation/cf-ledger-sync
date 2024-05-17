@@ -30,9 +30,9 @@ class EpochParamServiceImplTest {
   void setHandleEpochParamsLastGreaterThanMaxSlot() {
     BlockRepositoryLS blockRepositoryLS = Mockito.mock(BlockRepositoryLS.class);
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
-    EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
+    EpochParamRepositoryLS epochParamRepository = Mockito.mock(EpochParamRepositoryLS.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+    CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -60,9 +60,9 @@ class EpochParamServiceImplTest {
   void setDefShelleyEpochParamException() {
     BlockRepositoryLS blockRepositoryLS = Mockito.mock(BlockRepositoryLS.class);
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
-    EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
+    EpochParamRepositoryLS epochParamRepository = Mockito.mock(EpochParamRepositoryLS.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+    CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -97,9 +97,9 @@ class EpochParamServiceImplTest {
   void setDefShelleyEpochParamEraShelley() {
     BlockRepositoryLS blockRepositoryLS = Mockito.mock(BlockRepositoryLS.class);
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
-    EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
+    EpochParamRepositoryLS epochParamRepository = Mockito.mock(EpochParamRepositoryLS.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+    CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -147,9 +147,9 @@ class EpochParamServiceImplTest {
   void setDefShelleyEpochParamEraAlonzo() {
     BlockRepositoryLS blockRepositoryLS = Mockito.mock(BlockRepositoryLS.class);
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
-    EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
+    EpochParamRepositoryLS epochParamRepository = Mockito.mock(EpochParamRepositoryLS.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+    CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -222,9 +222,9 @@ class EpochParamServiceImplTest {
     BlockRepositoryLS blockRepositoryLS = Mockito.mock(BlockRepositoryLS.class);
     ArgumentCaptor<CostModel> savedCostModel= ArgumentCaptor.forClass(CostModel.class);
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
-    EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
+    EpochParamRepositoryLS epochParamRepository = Mockito.mock(EpochParamRepositoryLS.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+    CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
 

@@ -40,6 +40,10 @@ public class DynamicFlywayConfig {
             locations.add("classpath:db/migration/ledgersync/blocks");
         }
 
+        if (!storeProperties.getEpoch().isEnabled()) {
+            locations.add("classpath:db/migration/ledgersync/epoch");
+        }
+
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .sqlMigrationPrefix(flywayProperties.getSqlMigrationPrefix())

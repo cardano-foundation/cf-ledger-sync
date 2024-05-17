@@ -210,7 +210,9 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         //param proposal
-        paramProposalService.handleParamProposals(successTxs, txMap);
+        if (!storeProperties.getEpoch().isEnabled()) {
+            paramProposalService.handleParamProposals(successTxs, txMap);
+        }
 
         // reference inputs
         referenceInputService.handleReferenceInputs(

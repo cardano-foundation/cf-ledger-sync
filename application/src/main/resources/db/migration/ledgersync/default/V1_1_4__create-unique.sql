@@ -30,13 +30,6 @@ ALTER TABLE ONLY unconsume_tx_in
     ADD CONSTRAINT unique_col_txin UNIQUE (tx_in_id, tx_out_id, tx_out_index);
 
 
---
--- Name: cost_model unique_cost_model; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY cost_model
-    ADD CONSTRAINT unique_cost_model UNIQUE (hash);
-
 
 --
 -- Name: datum unique_datum; Type: CONSTRAINT;
@@ -70,13 +63,6 @@ ALTER TABLE ONLY epoch
     ADD CONSTRAINT unique_epoch UNIQUE (no);
 
 
---
--- Name: epoch_param unique_epoch_param; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY epoch_param
-    ADD CONSTRAINT unique_epoch_param UNIQUE (epoch_no, block_id);
-
 
 --
 -- Name: epoch_sync_time unique_epoch_sync_time; Type: CONSTRAINT;
@@ -101,13 +87,6 @@ ALTER TABLE ONLY ma_tx_out
 ALTER TABLE ONLY meta
     ADD CONSTRAINT unique_meta UNIQUE (start_time);
 
-
---
--- Name: param_proposal unique_param_proposal; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY param_proposal
-    ADD CONSTRAINT unique_param_proposal UNIQUE (key, registered_tx_id);
 
 
 --

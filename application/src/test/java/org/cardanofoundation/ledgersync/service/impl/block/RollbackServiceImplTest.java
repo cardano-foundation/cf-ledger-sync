@@ -48,7 +48,7 @@ class RollbackServiceImplTest {
   MultiAssetTxOutRepository multiAssetTxOutRepository;
 
   @Mock
-  EpochParamRepository epochParamRepository;
+  EpochParamRepositoryLS epochParamRepositoryLS;
 
   @Mock
   ParamProposalRepository paramProposalRepository;
@@ -137,7 +137,7 @@ class RollbackServiceImplTest {
     victim = new RollbackServiceImpl(
             blockRepositoryLS, txRepository,
         datumRepository, delegationRepository, extraKeyWitnessRepository, failedTxOutRepository,
-        maTxMintRepository, multiAssetTxOutRepository, epochParamRepository,
+        maTxMintRepository, multiAssetTxOutRepository, epochParamRepositoryLS,
         paramProposalRepository,
         poolMetadataRefRepository, poolOwnerRepository, poolRelayRepository, poolRetireRepository,
         poolUpdateRepository, potTransferRepository, redeemerRepository, redeemerDataRepository,
@@ -169,7 +169,7 @@ class RollbackServiceImplTest {
     Mockito.verifyNoInteractions(failedTxOutRepository);
     Mockito.verifyNoInteractions(maTxMintRepository);
     Mockito.verifyNoInteractions(multiAssetTxOutRepository);
-    Mockito.verifyNoInteractions(epochParamRepository);
+    Mockito.verifyNoInteractions(epochParamRepositoryLS);
     Mockito.verifyNoInteractions(paramProposalRepository);
     Mockito.verifyNoInteractions(poolMetadataRefRepository);
     Mockito.verifyNoInteractions(poolOwnerRepository);
@@ -225,7 +225,7 @@ class RollbackServiceImplTest {
     Mockito.verifyNoInteractions(failedTxOutRepository);
     Mockito.verifyNoInteractions(maTxMintRepository);
     Mockito.verifyNoInteractions(multiAssetTxOutRepository);
-    Mockito.verifyNoInteractions(epochParamRepository);
+    Mockito.verifyNoInteractions(epochParamRepositoryLS);
     Mockito.verifyNoInteractions(paramProposalRepository);
     Mockito.verifyNoInteractions(poolMetadataRefRepository);
     Mockito.verifyNoInteractions(poolOwnerRepository);
@@ -295,9 +295,9 @@ class RollbackServiceImplTest {
     Mockito.verify(multiAssetTxOutRepository, Mockito.times(1))
         .deleteAllByTxOutTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(multiAssetTxOutRepository);
-    Mockito.verify(epochParamRepository, Mockito.times(1))
+    Mockito.verify(epochParamRepositoryLS, Mockito.times(1))
         .deleteAllByBlockIn(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(epochParamRepository);
+    Mockito.verifyNoMoreInteractions(epochParamRepositoryLS);
     Mockito.verify(paramProposalRepository, Mockito.times(1))
         .deleteAllByRegisteredTxIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(paramProposalRepository);

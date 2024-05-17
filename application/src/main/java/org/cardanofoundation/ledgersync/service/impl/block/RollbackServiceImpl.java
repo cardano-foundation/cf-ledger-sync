@@ -30,7 +30,7 @@ public class RollbackServiceImpl implements RollbackService {
     FailedTxOutRepository failedTxOutRepository;
     MaTxMintRepository maTxMintRepository;
     MultiAssetTxOutRepository multiAssetTxOutRepository;
-    EpochParamRepository epochParamRepository;
+    EpochParamRepositoryLS epochParamRepositoryLS;
     ParamProposalRepository paramProposalRepository;
     PoolMetadataRefRepository poolMetadataRefRepository;
     PoolOwnerRepository poolOwnerRepository;
@@ -134,7 +134,7 @@ public class RollbackServiceImpl implements RollbackService {
         failedTxOutRepository.deleteAllByTxIn(txsForRollback);
         maTxMintRepository.deleteAllByTxIn(txsForRollback);
         multiAssetTxOutRepository.deleteAllByTxOutTxIn(txsForRollback);
-        epochParamRepository.deleteAllByBlockIn(rollbackBlocks);
+        epochParamRepositoryLS.deleteAllByBlockIn(rollbackBlocks);
         paramProposalRepository.deleteAllByRegisteredTxIn(txsForRollback);
         poolMetadataRefRepository.deleteAllByRegisteredTxIn(txsForRollback);
         poolOwnerRepository.deleteAllByPoolUpdateRegisteredTxIn(txsForRollback);

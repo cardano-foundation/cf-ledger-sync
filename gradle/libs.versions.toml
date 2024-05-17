@@ -8,6 +8,7 @@ yaci-store-admin-starter="com.bloxbean.cardano:yaci-store-admin-spring-boot-star
 yaci-store-events="com.bloxbean.cardano:yaci-store-events:0.1.0-rc4-ed7acef-SNAPSHOT"
 yaci-store-starter-assets="com.bloxbean.cardano:yaci-store-assets-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
 yaci-store-starter-block="com.bloxbean.cardano:yaci-store-blocks-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
+yaci-store-starter-epoch="com.bloxbean.cardano:yaci-store-epoch-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
 yaci-store-starter-metadata="com.bloxbean.cardano:yaci-store-metadata-spring-boot-starter:0.1.0-rc4-ed7acef-SNAPSHOT"
 
 cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.5.1"
@@ -35,3 +36,4 @@ junit-api="org.junit.jupiter:junit-jupiter-api:5.9.0"
 assertj-core="org.assertj:assertj-core:3.25.1"
 
 hypersistence-utils-hibernate="io.hypersistence:hypersistence-utils-hibernate-63:3.7.1"
+flyway="org.flywaydb:flyway-core:9.22.3"

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.*;
 import org.cardanofoundation.ledgersync.common.common.Era;
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
+import org.cardanofoundation.ledgersync.configuration.StoreProperties;
 import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.TokenType;
 import org.cardanofoundation.ledgersync.converter.AvvmAddressConverter;
@@ -153,6 +154,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     final CostModelService costModelService;
     final EpochParamService epochParamService;
     final GenesisFetching genesisFetching;
+    final StoreProperties storeProperties;
 
     @PostConstruct
     void init(){

@@ -31,9 +31,9 @@ public class EpochParamServiceImpl implements EpochParamService {
 
     final BlockRepositoryLS blockRepositoryLS;
     final ParamProposalRepository paramProposalRepository;
-    final EpochParamRepository epochParamRepository;
+    final EpochParamRepositoryLS epochParamRepository;
     final EpochRepository epochRepository;
-    final CostModelRepository costModelRepository;
+    final CostModelRepositoryLS costModelRepository;
 //    final CostModelService costModelService;
     final GenesisDataService genesisDataService;
     final EpochParamMapper epochParamMapper;
@@ -44,8 +44,8 @@ public class EpochParamServiceImpl implements EpochParamService {
     EpochParam defConwayEpochParam;
 
     public EpochParamServiceImpl(BlockRepositoryLS blockRepositoryLS, ParamProposalRepository paramProposalRepository,
-                                 EpochParamRepository epochParamRepository, EpochRepository epochRepository,
-                                 CostModelRepository costModelRepository,
+                                 EpochParamRepositoryLS epochParamRepository, EpochRepository epochRepository,
+                                 CostModelRepositoryLS costModelRepository,
                                  @Lazy GenesisDataService genesisDataService,
                                  EpochParamMapper epochParamMapper, ObjectMapper objectMapper) {
         this.blockRepositoryLS = blockRepositoryLS;

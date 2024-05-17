@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
+import org.cardanofoundation.ledgersync.configuration.StoreProperties;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.consumercommon.entity.SlotLeader;
 import org.cardanofoundation.ledgersync.repository.BlockRepositoryLS;
@@ -34,6 +35,8 @@ public class BlockSyncServiceImpl implements BlockSyncService {
     EpochParamService epochParamService;
     MetricCollectorService metricCollectorService;
     AggregatedDataCachingService aggregatedDataCachingService;
+
+    StoreProperties storeProperties;
 
     @Override
     @Transactional
@@ -74,7 +77,9 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         epochService.handleEpoch(allAggregatedBlocks);
 
         // Handle epoch param
-        epochParamService.handleEpochParams();
+        if (!storeProperties.getEpoch().isEnabled()) {
+            epochParamService.handleEpochParams();
+        }
 
         // Cache latest txs
         aggregatedDataCachingService.saveLatestTxs();
