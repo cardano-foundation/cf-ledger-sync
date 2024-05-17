@@ -56,6 +56,7 @@ maven-central-publish:
       --secret MAVEN_CENTRAL_GPG_PRIVATE_KEY \
       mkdir -p ~/.gradle && \
       echo "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
+      cat ~/.gradle/secring.gpg.b64 && \
       base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
   RUN \
       --secret MAVEN_CENTRAL_GPG_KEY_ID \
