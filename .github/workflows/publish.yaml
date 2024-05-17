@@ -107,6 +107,8 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+          git fetch --all --tags
+
           NEW_ARTIFACT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           sed -i "s|^version.*|version = ${NEW_ARTIFACT_VERSION}-SNAPSHOT|" gradle.properties
           git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
