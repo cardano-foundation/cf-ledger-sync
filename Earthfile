@@ -69,7 +69,7 @@ TEMPLATED_DOCKERFILE_BUILD:
   SAVE IMAGE ${DOCKER_IMAGE_NAME}:latest
   IF [ ! -z "$RELEASE_TAG" ]
     RUN mv /app/*jar /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.jar
-    RUN md5sum /app/*jar > /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.md5sum
+    RUN md5sum /app/*jar > /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.jar.md5sum
   END
   SAVE ARTIFACT /app/* AS LOCAL build/
 
