@@ -109,12 +109,12 @@ jobs:
 
           NEW_ARTIFACT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           sed -i "s|^version.*|version = ${NEW_ARTIFACT_VERSION}-SNAPSHOT|" gradle.properties
-          git commit gradle.properties -m "chore(gradle): Bump version to ${ARTIFACT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
+          git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
           # Commit to main if it contains the tag, otherwise to whatever first branch contains the tag
-          if [ $(git branch --no-color --format='%(refname:short)' --contains tags/$TRIGGERING_TAG | grep -c ^main$) -gt 0 ]
+          if [ $(git branch --no-color --format='%(refname:short)' --contains tags/${TRIGGERING_TAG} | grep -c ^main$) -gt 0 ]
           then
             git push origin HEAD:main
           else
-            TAG_BRANCH=$(git branch --no-color --format='%(refname:short)' --contains tags/$TRIGGERING_TAG | head -n1 | awk '{print $NF}')
+            TAG_BRANCH=$(git branch --no-color --format='%(refname:short)' --contains tags/${TRIGGERING_TAG} | head -n1 | awk '{print $NF}')
             git push origin HEAD:${TAG_BRANCH}
           fi
