@@ -52,7 +52,7 @@ docker-publish:
 
 maven-central-publish:
   FROM eclipse-temurin:21-jdk
-  RUN mkdir -p ~/gradle && \
+  RUN mkdir -p ~/.gradle && \
       echo "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
       base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
   RUN ./gradlew publish --warn --stacktrace \
@@ -69,7 +69,7 @@ TEMPLATED_DOCKERFILE_BUILD:
   SAVE IMAGE ${DOCKER_IMAGE_NAME}:latest
   IF [ ! -z "$RELEASE_TAG" ]
     RUN mv /app/*jar /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.jar
-    RUN md5sum /app/*jar > /app/md5sum
+    RUN md5sum /app/*jar > /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.md5sum
   END
   SAVE ARTIFACT /app/* AS LOCAL build/
 
