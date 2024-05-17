@@ -60,14 +60,14 @@ jobs:
           username: ${{ secrets.HUB_DOCKER_COM_USER }}
           password: ${{ secrets.HUB_DOCKER_COM_PASS }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
+      #- name: Set up Docker Buildx
+      #  uses: docker/setup-buildx-action@v2
+      #
       #- uses: earthly/actions-setup@v1
       #  with:
       #    github-token: ${{ secrets.GITHUB_TOKEN }}
       #    version: "0.8.6"
-
+      #
       #- name: 🌍 earthly (docker build and push)
       #  env:
       #    EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
@@ -78,7 +78,7 @@ jobs:
       #    else
       #      earthly +docker-publish
       #    fi
-
+      #
       #- name: Preprare release notes
       #  if: github.ref_type == 'tag'
       #  id: release_notes
@@ -109,6 +109,8 @@ jobs:
 
           git fetch --all --tags
           set -x
+          git for-each-ref | grep ^${GIT_SHORT_COMMIT}
+          git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.head | head -n1 | sed 's|.*refs/head/\(.*\)|\1|'
           git branch --no-color --format='%(refname:short)' --contains tags/v${TRIGGERING_TAG}
 
           NEW_ARTIFACT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
