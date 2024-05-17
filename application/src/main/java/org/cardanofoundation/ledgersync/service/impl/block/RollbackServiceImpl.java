@@ -22,7 +22,7 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RollbackServiceImpl implements RollbackService {
 
-    BlockRepository blockRepository;
+    BlockRepositoryLS blockRepositoryLS;
     TxRepository txRepository;
     DatumRepository datumRepository;
     DelegationRepository delegationRepository;
@@ -64,7 +64,7 @@ public class RollbackServiceImpl implements RollbackService {
     public void rollBackFrom(long blockNo) {
         log.info("---------------------------------------------------------------------");
         log.warn("Roll back from block no {}", blockNo);
-        Optional<Block> blockRollBack = blockRepository.findBlockByBlockNo(blockNo);
+        Optional<Block> blockRollBack = blockRepositoryLS.findBlockByBlockNo(blockNo);
         if (blockRollBack.isEmpty()) {
             log.warn("Block {} for roll back not found", blockNo);
         } else {
@@ -77,7 +77,7 @@ public class RollbackServiceImpl implements RollbackService {
     }
 
     private void startRollback(Block rollbackBlock) {
-        var blocksForRollback = blockRepository
+        var blocksForRollback = blockRepositoryLS
                 .findAllByBlockNoGreaterThanOrderByBlockNoDesc(rollbackBlock.getBlockNo());
         //blocksForRollback.add(rollbackBlock);
         //var lastRollbackBlock = blocksForRollback.get(0);
@@ -101,7 +101,7 @@ public class RollbackServiceImpl implements RollbackService {
         //log.info("Roll back to block no {}", lastRollbackBlock.getBlockNo());
         int rollbackBlocksCount = blocksForRollback.size();
         aggregatedDataCachingService.subtractBlockCount(blocksForRollback.size());
-        blockRepository.deleteAll(blocksForRollback);
+        blockRepositoryLS.deleteAll(blocksForRollback);
         log.info("Rollback finished: {} blocks were rolled back", rollbackBlocksCount);
     }
 

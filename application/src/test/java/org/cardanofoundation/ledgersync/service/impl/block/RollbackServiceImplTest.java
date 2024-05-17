@@ -24,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 class RollbackServiceImplTest {
 
   @Mock
-  BlockRepository blockRepository;
+  BlockRepositoryLS blockRepositoryLS;
 
   @Mock
   TxRepository txRepository;
@@ -135,7 +135,7 @@ class RollbackServiceImplTest {
   @BeforeEach
   void setUp() {
     victim = new RollbackServiceImpl(
-        blockRepository, txRepository,
+            blockRepositoryLS, txRepository,
         datumRepository, delegationRepository, extraKeyWitnessRepository, failedTxOutRepository,
         maTxMintRepository, multiAssetTxOutRepository, epochParamRepository,
         paramProposalRepository,
@@ -156,12 +156,12 @@ class RollbackServiceImplTest {
   void shouldSkipRollbackIfBlockNotFoundTest() { // NOSONAR
     Optional<Block> block = Optional.empty();
 
-    Mockito.when(blockRepository.findBlockByBlockNo(ROLLBACK_BLOCK_NO)).thenReturn(block);
+    Mockito.when(blockRepositoryLS.findBlockByBlockNo(ROLLBACK_BLOCK_NO)).thenReturn(block);
 
     victim.rollBackFrom(ROLLBACK_BLOCK_NO);
 
-    Mockito.verify(blockRepository, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
-    Mockito.verifyNoMoreInteractions(blockRepository);
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
+    Mockito.verifyNoMoreInteractions(blockRepositoryLS);
     Mockito.verifyNoInteractions(txRepository);
     Mockito.verifyNoInteractions(datumRepository);
     Mockito.verifyNoInteractions(delegationRepository);
@@ -204,19 +204,19 @@ class RollbackServiceImplTest {
   void rollbackEmptyBlockTest() { // NOSONAR
     Optional<Block> block = Optional.of(Mockito.mock(Block.class));
 
-    Mockito.when(blockRepository.findBlockByBlockNo(ROLLBACK_BLOCK_NO)).thenReturn(block);
-    Mockito.when(blockRepository.findAllByBlockNoGreaterThanOrderByBlockNoDesc(Mockito.anyLong()))
+    Mockito.when(blockRepositoryLS.findBlockByBlockNo(ROLLBACK_BLOCK_NO)).thenReturn(block);
+    Mockito.when(blockRepositoryLS.findAllByBlockNoGreaterThanOrderByBlockNoDesc(Mockito.anyLong()))
         .thenReturn(new ArrayList<>());
     Mockito.when(txRepository.findAllByBlockIn(Mockito.anyCollection()))
         .thenReturn(Collections.emptyList());
 
     victim.rollBackFrom(ROLLBACK_BLOCK_NO);
 
-    Mockito.verify(blockRepository, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
-    Mockito.verify(blockRepository, Mockito.times(1))
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
+    Mockito.verify(blockRepositoryLS, Mockito.times(1))
         .findAllByBlockNoGreaterThanOrderByBlockNoDesc(Mockito.anyLong());
-    Mockito.verify(blockRepository, Mockito.times(1)).deleteAll(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(blockRepository);
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).deleteAll(Mockito.anyCollection());
+    Mockito.verifyNoMoreInteractions(blockRepositoryLS);
     Mockito.verify(txRepository, Mockito.times(1)).findAllByBlockIn(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txRepository);
     Mockito.verifyNoInteractions(datumRepository);
@@ -264,19 +264,19 @@ class RollbackServiceImplTest {
   void rollbackBlockWithTxTest() { // NOSONAR
     Optional<Block> block = Optional.of(Mockito.mock(Block.class));
 
-    Mockito.when(blockRepository.findBlockByBlockNo(ROLLBACK_BLOCK_NO)).thenReturn(block);
-    Mockito.when(blockRepository.findAllByBlockNoGreaterThanOrderByBlockNoDesc(Mockito.anyLong()))
+    Mockito.when(blockRepositoryLS.findBlockByBlockNo(ROLLBACK_BLOCK_NO)).thenReturn(block);
+    Mockito.when(blockRepositoryLS.findAllByBlockNoGreaterThanOrderByBlockNoDesc(Mockito.anyLong()))
         .thenReturn(new ArrayList<>());
     Mockito.when(txRepository.findAllByBlockIn(Mockito.anyCollection()))
         .thenReturn(List.of(Mockito.mock(Tx.class)));
 
     victim.rollBackFrom(ROLLBACK_BLOCK_NO);
 
-    Mockito.verify(blockRepository, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
-    Mockito.verify(blockRepository, Mockito.times(1))
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).findBlockByBlockNo(Mockito.anyLong());
+    Mockito.verify(blockRepositoryLS, Mockito.times(1))
         .findAllByBlockNoGreaterThanOrderByBlockNoDesc(Mockito.anyLong());
-    Mockito.verify(blockRepository, Mockito.times(1)).deleteAll(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(blockRepository);
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).deleteAll(Mockito.anyCollection());
+    Mockito.verifyNoMoreInteractions(blockRepositoryLS);
     Mockito.verify(txRepository, Mockito.times(1)).findAllByBlockIn(Mockito.anyCollection());
     Mockito.verify(txRepository, Mockito.times(1)).deleteAll(Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(txRepository);

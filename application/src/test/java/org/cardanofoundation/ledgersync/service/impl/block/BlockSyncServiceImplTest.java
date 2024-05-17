@@ -4,7 +4,7 @@ import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.constant.ConsumerConstant;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
-import org.cardanofoundation.ledgersync.repository.BlockRepository;
+import org.cardanofoundation.ledgersync.repository.BlockRepositoryLS;
 import org.cardanofoundation.ledgersync.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 class BlockSyncServiceImplTest {
 
   @Mock
-  BlockRepository blockRepository;
+  BlockRepositoryLS blockRepositoryLS;
 
   @Mock
   TransactionService transactionService;
@@ -55,12 +55,12 @@ class BlockSyncServiceImplTest {
     Mockito.when(blockDataService.getBlockSize()).thenReturn(0);
 
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
-        blockRepository, transactionService, blockDataService,
+            blockRepositoryLS, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService,
         metricCollectorService, aggregatedDataCachingService
     );
     victim.startBlockSyncing();
-    Mockito.verifyNoInteractions(blockRepository);
+    Mockito.verifyNoInteractions(blockRepositoryLS);
 
     Mockito.verifyNoInteractions(transactionService);
     Mockito.verify(blockDataService, Mockito.times(1)).getBlockSize();
@@ -86,13 +86,13 @@ class BlockSyncServiceImplTest {
     Mockito.when(blockDataService.getAllAggregatedBlocks()).thenReturn(List.of(aggregatedBlock));
 
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
-        blockRepository, transactionService, blockDataService,
+            blockRepositoryLS, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService,
         metricCollectorService, aggregatedDataCachingService
     );
     Assertions.assertThrows(IllegalStateException.class, victim::startBlockSyncing);
 
-    Mockito.verify(blockRepository, Mockito.times(1)).findBlockByHash(Mockito.anyString());
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).findBlockByHash(Mockito.anyString());
     Mockito.verifyNoInteractions(transactionService);
     Mockito.verify(blockDataService, Mockito.times(1)).getBlockSize();
     Mockito.verify(blockDataService, Mockito.times(1)).getFirstAndLastBlock();
@@ -119,19 +119,19 @@ class BlockSyncServiceImplTest {
     Mockito.when(blockDataService.getFirstAndLastBlock())
         .thenReturn(Pair.of(aggregatedBlock, aggregatedBlock));
     Mockito.when(blockDataService.getAllAggregatedBlocks()).thenReturn(List.of(aggregatedBlock));
-    Mockito.when(blockRepository.findBlockByHash(Mockito.anyString()))
+    Mockito.when(blockRepositoryLS.findBlockByHash(Mockito.anyString()))
         .thenReturn(Optional.of(Mockito.mock(Block.class)));
 
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
-        blockRepository, transactionService, blockDataService,
+            blockRepositoryLS, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService,
         metricCollectorService, aggregatedDataCachingService
     );
     victim.startBlockSyncing();
 
-    Mockito.verify(blockRepository, Mockito.times(1)).findBlockByHash(Mockito.anyString());
-    Mockito.verify(blockRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(blockRepository);
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).findBlockByHash(Mockito.anyString());
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).saveAll(Mockito.anyCollection());
+    Mockito.verifyNoMoreInteractions(blockRepositoryLS);
     Mockito.verify(transactionService, Mockito.times(1))
         .prepareAndHandleTxs(Mockito.anyMap(), Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(transactionService);
@@ -173,19 +173,19 @@ class BlockSyncServiceImplTest {
     Mockito.when(blockDataService.getFirstAndLastBlock())
         .thenReturn(Pair.of(aggregatedBlock, aggregatedBlock));
     Mockito.when(blockDataService.getAllAggregatedBlocks()).thenReturn(List.of(aggregatedBlock));
-    Mockito.when(blockRepository.findBlockByHash(Mockito.anyString()))
+    Mockito.when(blockRepositoryLS.findBlockByHash(Mockito.anyString()))
         .thenReturn(Optional.of(Mockito.mock(Block.class)));
 
     BlockSyncServiceImpl victim = new BlockSyncServiceImpl(
-        blockRepository, transactionService, blockDataService,
+            blockRepositoryLS, transactionService, blockDataService,
         slotLeaderService, epochService, epochParamService,
         metricCollectorService, aggregatedDataCachingService
     );
     victim.startBlockSyncing();
 
-    Mockito.verify(blockRepository, Mockito.times(1)).findBlockByHash(Mockito.anyString());
-    Mockito.verify(blockRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
-    Mockito.verifyNoMoreInteractions(blockRepository);
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).findBlockByHash(Mockito.anyString());
+    Mockito.verify(blockRepositoryLS, Mockito.times(1)).saveAll(Mockito.anyCollection());
+    Mockito.verifyNoMoreInteractions(blockRepositoryLS);
     Mockito.verify(transactionService, Mockito.times(1))
         .prepareAndHandleTxs(Mockito.anyMap(), Mockito.anyCollection());
     Mockito.verifyNoMoreInteractions(transactionService);

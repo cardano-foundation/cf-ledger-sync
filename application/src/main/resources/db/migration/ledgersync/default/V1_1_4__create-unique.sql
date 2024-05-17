@@ -13,13 +13,6 @@ ALTER TABLE ONLY ada_pots
     ADD CONSTRAINT unique_ada_pots UNIQUE (block_id);
 
 
---
--- Name: block unique_block; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY block
-    ADD CONSTRAINT unique_block UNIQUE (hash);
-
 
 --
 -- Name: failed_tx_out unique_col_failed_txout; Type: CONSTRAINT;
@@ -94,14 +87,6 @@ ALTER TABLE ONLY epoch_sync_time
 
 
 --
--- Name: ma_tx_mint unique_ma_tx_mint; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY ma_tx_mint
-    ADD CONSTRAINT unique_ma_tx_mint UNIQUE (ident, tx_id);
-
-
---
 -- Name: ma_tx_out unique_ma_tx_out; Type: CONSTRAINT;
 --
 
@@ -115,14 +100,6 @@ ALTER TABLE ONLY ma_tx_out
 
 ALTER TABLE ONLY meta
     ADD CONSTRAINT unique_meta UNIQUE (start_time);
-
-
---
--- Name: multi_asset unique_multi_asset; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY multi_asset
-    ADD CONSTRAINT unique_multi_asset UNIQUE (policy, name);
 
 
 --
@@ -289,13 +266,6 @@ ALTER TABLE ONLY treasury
 ALTER TABLE ONLY tx
     ADD CONSTRAINT unique_tx UNIQUE (hash);
 
-
---
--- Name: tx_metadata unique_tx_metadata; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY tx_metadata
-    ADD CONSTRAINT unique_tx_metadata UNIQUE (key, tx_id);
 
 
 --

@@ -10,10 +10,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class StoreProperties {
     private Assets assets = new Assets();
     private Metadata metadata = new Metadata();
+    private Blocks blocks = new Blocks();
 
     @Getter
     @Setter
     public static final class Assets {
+        private boolean enabled = true;
+    }
+
+    @Getter
+    @Setter
+    public static final class Blocks {
         private boolean enabled = true;
     }
 

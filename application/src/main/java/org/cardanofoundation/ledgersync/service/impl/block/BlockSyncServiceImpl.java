@@ -9,7 +9,7 @@ import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedSlotLeader;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
 import org.cardanofoundation.ledgersync.consumercommon.entity.SlotLeader;
-import org.cardanofoundation.ledgersync.repository.BlockRepository;
+import org.cardanofoundation.ledgersync.repository.BlockRepositoryLS;
 import org.cardanofoundation.ledgersync.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ import static org.cardanofoundation.ledgersync.constant.ConsumerConstant.getNetw
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BlockSyncServiceImpl implements BlockSyncService {
 
-    BlockRepository blockRepository;
+    BlockRepositoryLS blockRepositoryLS;
 
     TransactionService transactionService;
     BlockDataService blockDataService;
@@ -65,7 +65,7 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         // Initialize block entities
         Collection<AggregatedBlock> allAggregatedBlocks = blockDataService.getAllAggregatedBlocks();
         allAggregatedBlocks.forEach(aggregatedBlock -> handleBlock(aggregatedBlock, blockMap));
-        blockRepository.saveAll(blockMap.values());
+        blockRepositoryLS.saveAll(blockMap.values());
         aggregatedDataCachingService.addBlockCount(allAggregatedBlocks.size());
         // Prepare and handle transaction contents
         transactionService.prepareAndHandleTxs(blockMap, allAggregatedBlocks);
@@ -96,7 +96,7 @@ public class BlockSyncServiceImpl implements BlockSyncService {
         if (Boolean.FALSE.equals(aggregatedBlock.getIsGenesis())
                 && aggregatedBlock.getBlockNo() != null && aggregatedBlock.getBlockNo() != 0) {
             Optional.ofNullable(blockMap.get(aggregatedBlock.getPrevBlockHash())) //TODO refactor
-                    .or(() -> blockRepository.findBlockByHash(aggregatedBlock.getPrevBlockHash()))
+                    .or(() -> blockRepositoryLS.findBlockByHash(aggregatedBlock.getPrevBlockHash()))
                     .ifPresentOrElse(block::setPrevious, () -> {
                         if (aggregatedBlock.getBlockNo().equals(BigInteger.ZERO.longValue()) &&
                                 getNetworkNotStartWithByron().contains(aggregatedBlock.getNetwork())) {

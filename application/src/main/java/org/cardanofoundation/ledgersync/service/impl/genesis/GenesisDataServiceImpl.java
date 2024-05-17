@@ -17,7 +17,7 @@ import org.cardanofoundation.ledgersync.consumercommon.enumeration.TokenType;
 import org.cardanofoundation.ledgersync.converter.AvvmAddressConverter;
 import org.cardanofoundation.ledgersync.converter.CostModelConverter;
 import org.cardanofoundation.ledgersync.dto.GenesisData;
-import org.cardanofoundation.ledgersync.repository.BlockRepository;
+import org.cardanofoundation.ledgersync.repository.BlockRepositoryLS;
 import org.cardanofoundation.ledgersync.repository.SlotLeaderRepository;
 import org.cardanofoundation.ledgersync.service.*;
 import org.cardanofoundation.ledgersync.service.impl.BlockDataServiceImpl;
@@ -144,7 +144,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     Set<String> delegationKeyHashes;
 
     final ObjectMapper objectMapper;
-    final BlockRepository blockRepository;
+    final BlockRepositoryLS blockRepositoryLS;
     final SlotLeaderRepository slotLeaderRepository;
 
     final BlockDataServiceImpl blockDataService;
@@ -189,7 +189,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         log.info("Genesis hash: {}", this.genesisHash);
 
         // if block table have blocks do not thing
-        if (blockRepository.getBlockIdHeight().isPresent()) {
+        if (blockRepositoryLS.getBlockIdHeight().isPresent()) {
             return;
         }
         log.info("setup byron genesis data");

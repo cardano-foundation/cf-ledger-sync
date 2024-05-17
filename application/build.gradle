@@ -23,6 +23,7 @@ dependencies {
     implementation(libs.yaci.store.starter)
     implementation(libs.yaci.store.governance.starter)
     implementation(libs.yaci.store.starter.assets)
+    implementation(libs.yaci.store.starter.block)
     implementation(libs.yaci.store.starter.metadata)
 
     implementation(libs.cardano.client.lib)

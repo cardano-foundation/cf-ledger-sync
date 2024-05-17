@@ -1,19 +1,11 @@
 CREATE INDEX IF NOT EXISTS idx_epoch_no ON epoch USING btree (no);
 CREATE INDEX IF NOT EXISTS idx_reserved_pool_ticker_pool_hash ON reserved_pool_ticker USING btree (pool_hash);
 CREATE INDEX IF NOT EXISTS idx_slot_leader_pool_hash_id ON slot_leader USING btree (pool_hash_id);
-CREATE INDEX IF NOT EXISTS idx_block_block_no ON block USING btree (block_no);
-CREATE INDEX IF NOT EXISTS idx_block_epoch_no ON block USING btree (epoch_no);
-CREATE INDEX IF NOT EXISTS idx_block_previous_id ON block USING btree (previous_id);
-CREATE INDEX IF NOT EXISTS idx_block_slot_leader_id ON block USING btree (slot_leader_id);
-CREATE INDEX IF NOT EXISTS idx_block_slot_no ON block USING btree (slot_no);
-CREATE INDEX IF NOT EXISTS idx_block_time ON block USING btree ("time");
 CREATE INDEX IF NOT EXISTS idx_epoch_param_block_id ON epoch_param USING btree (block_id);
 CREATE INDEX IF NOT EXISTS idx_epoch_param_cost_model_id ON epoch_param USING btree (cost_model_id);
 CREATE INDEX IF NOT EXISTS idx_tx_block_id ON tx USING btree (block_id);
-CREATE INDEX IF NOT EXISTS idx_tx_metadata_tx_id ON tx_metadata USING btree (tx_id);
 CREATE INDEX IF NOT EXISTS idx_datum_tx_id ON datum USING btree (tx_id);
 CREATE INDEX IF NOT EXISTS idx_extra_key_witness_tx_id ON extra_key_witness USING btree (tx_id);
-CREATE INDEX IF NOT EXISTS idx_ma_tx_mint_tx_id ON ma_tx_mint USING btree (tx_id);
 CREATE INDEX IF NOT EXISTS idx_param_proposal_cost_model_id ON param_proposal USING btree (cost_model_id);
 CREATE INDEX IF NOT EXISTS idx_param_proposal_registered_tx_id ON param_proposal USING btree (registered_tx_id);
 CREATE INDEX IF NOT EXISTS idx_pool_metadata_ref_registered_tx_id ON pool_metadata_ref USING btree (registered_tx_id);
@@ -69,17 +61,12 @@ CREATE INDEX IF NOT EXISTS idx_delegation_tx_id ON delegation USING btree (tx_id
 CREATE INDEX IF NOT EXISTS pool_owner_pool_update_id_idx ON pool_owner USING btree (pool_update_id);
 CREATE INDEX IF NOT EXISTS idx_pool_relay_update_id ON pool_relay USING btree (update_id);
 
-CREATE INDEX IF NOT EXISTS ma_tx_mint_ident_index ON ma_tx_mint (ident);
 CREATE INDEX IF NOT EXISTS extra_key_witness_hash_index ON extra_key_witness (hash);
 CREATE INDEX IF NOT EXISTS ma_tx_out_ident_index ON ma_tx_out (ident);
 
 CREATE INDEX IF NOT EXISTS pool_offline_data_pool_id_index ON pool_offline_data (pool_id);
 CREATE INDEX IF NOT EXISTS redeemer_data_hash_index ON redeemer_data (hash);
 CREATE INDEX IF NOT EXISTS slot_leader_hash_index ON slot_leader (hash);
-
-CREATE INDEX IF NOT EXISTS idx_multi_asset_name_view ON multi_asset (name_view);
-CREATE INDEX IF NOT EXISTS idx_multi_asset_unit ON multi_asset (unit);
-CREATE UNIQUE INDEX IF NOT EXISTS multi_asset_fingerprint_uindex ON multi_asset (fingerprint);
 
 CREATE UNIQUE INDEX IF NOT EXISTS datum_hash_uindex ON datum (hash);
 CREATE UNIQUE INDEX IF NOT EXISTS pool_hash_hash_raw_index ON pool_hash (hash_raw);
@@ -95,10 +82,6 @@ CREATE INDEX IF NOT EXISTS reward_pool_id_idx ON reward (pool_id);
 
 -- Optimize index for query
 
--- add new index table block
-CREATE INDEX IF NOT EXISTS idx_block_id_time_tx_count
-    ON block (id, "time", tx_count);
-
 -- change index idx_tx_block_id of table tx:
 CREATE INDEX IF NOT EXISTS tx_block_id_id_idx
     ON tx (block_id, id);
@@ -109,21 +92,14 @@ CREATE INDEX IF NOT EXISTS tx_metadata_hash_idx
 CREATE INDEX IF NOT EXISTS tx__tx_metadata_hash_idx
     ON tx (tx_metadata_hash_id);
 
-CREATE INDEX IF NOT EXISTS multi_asset_supply_idx ON multi_asset (supply);
-CREATE INDEX IF NOT EXISTS multi_asset_time_idx ON multi_asset ("time");
-
-
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA pg_catalog;
-CREATE INDEX IF NOT EXISTS name_view_gin_lower ON multi_asset USING gin (lower(name_view) gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS pool_name_gin_lower ON pool_offline_data USING gin (lower(pool_name) gin_trgm_ops);
-CREATE INDEX IF NOT EXISTS tx_count_idx ON block USING btree (tx_count);
 
 CREATE INDEX IF NOT EXISTS tx_fee_idx ON tx USING btree (fee);
 CREATE INDEX IF NOT EXISTS tx_out_sum_idx ON tx USING btree (out_sum);
 
 CREATE INDEX IF NOT EXISTS idx_unconsume_tx_in_redeemer_id ON unconsume_tx_in(redeemer_id);
 
-CREATE INDEX IF NOT EXISTS idx_name_view_length ON multi_asset (LENGTH(name_view));
 CREATE INDEX IF NOT EXISTS idx_pool_name_length ON pool_offline_data (LENGTH(pool_name));
 
 CREATE INDEX IF NOT EXISTS tx_witnesses_tx_id_idx ON tx_witnesses (tx_id);

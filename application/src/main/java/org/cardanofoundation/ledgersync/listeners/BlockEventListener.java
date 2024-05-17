@@ -5,8 +5,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedBlock;
-import org.cardanofoundation.ledgersync.healthcheck.service.HealthCheckCachingService;
-import org.cardanofoundation.ledgersync.repository.BlockRepository;
+import org.cardanofoundation.ledgersync.repository.BlockRepositoryLS;
 import org.cardanofoundation.ledgersync.service.*;
 import org.cardanofoundation.ledgersync.service.impl.block.BlockAggregatorServiceImpl;
 import org.cardanofoundation.ledgersync.service.impl.block.ByronEbbAggregatorServiceImpl;
@@ -16,10 +15,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -37,7 +32,7 @@ public class BlockEventListener {
     private final BlockDataService blockDataService;
     private final RollbackService rollbackService;
 
-    private final BlockRepository blockRepository;
+    private final BlockRepositoryLS blockRepositoryLS;
     private final MetricCollectorService metricCollectorService;
     private final AtomicInteger blockCount = new AtomicInteger(0);
 
@@ -52,7 +47,7 @@ public class BlockEventListener {
 
     @PostConstruct
     private void initBlockHeight() {
-        long blockNo = blockRepository.getBlockHeight().orElse(0L);
+        long blockNo = blockRepositoryLS.getBlockHeight().orElse(0L);
         blockHeight = new AtomicLong(blockNo);
         log.info("Block height {}", blockNo);
     }
@@ -101,7 +96,7 @@ public class BlockEventListener {
     @Transactional
     public void handleRollback(RollbackEvent rollbackEvent) {
         long rollbackBlockNo = 0;
-        var rollBackBlock = blockRepository.findBySlotNo(rollbackEvent.getRollbackTo().getSlot());
+        var rollBackBlock = blockRepositoryLS.findBySlotNo(rollbackEvent.getRollbackTo().getSlot());
 
         if (rollBackBlock.isPresent()) {
             rollbackBlockNo = rollBackBlock.get().getBlockNo();
@@ -120,7 +115,7 @@ public class BlockEventListener {
     }
 
     private boolean checkIfBlockExists(EventMetadata metadata) {
-        var optional = blockRepository.findBlockByHash(metadata.getBlockHash());
+        var optional = blockRepositoryLS.findBlockByHash(metadata.getBlockHash());
         if (optional.isPresent()) {
             log.info("Block already exists. Skipping block no {}, hash {}", metadata.getEpochSlot(),
                     metadata.getBlockHash());
@@ -141,7 +136,7 @@ public class BlockEventListener {
             }
 
             if (eventMetadata.getBlock() == 0) {//EBB or genesis block
-                boolean isExists = blockRepository.existsBlockByHash(eventMetadata.getBlockHash());
+                boolean isExists = blockRepositoryLS.existsBlockByHash(eventMetadata.getBlockHash());
                 if (isExists) {
                     log.warn("Skip existed block : number {}, slot_no {}, hash {}",
                             eventMetadata.getBlock(),
@@ -158,7 +153,7 @@ public class BlockEventListener {
 //                    return;
             }
 
-            if (Boolean.TRUE.equals(blockRepository.existsBlockByHash(aggregatedBlock.getHash()))) {
+            if (Boolean.TRUE.equals(blockRepositoryLS.existsBlockByHash(aggregatedBlock.getHash()))) {
                 log.warn("Skip existed block : number {}, slot_no {}, hash {}",
                         eventMetadata.getBlock(),
                         eventMetadata.getSlot(), eventMetadata.getBlockHash());

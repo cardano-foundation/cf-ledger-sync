@@ -36,6 +36,10 @@ public class DynamicFlywayConfig {
             locations.add("classpath:db/migration/ledgersync/metadata");
         }
 
+        if (!storeProperties.getBlocks().isEnabled()) {
+            locations.add("classpath:db/migration/ledgersync/blocks");
+        }
+
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .sqlMigrationPrefix(flywayProperties.getSqlMigrationPrefix())
