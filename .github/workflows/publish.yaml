@@ -109,18 +109,16 @@ jobs:
 
           git fetch --all --tags
           set -x
-          git for-each-ref | grep ^${GIT_SHORT_COMMIT}
-          git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.head | head -n1 | sed 's|.*refs/head/\(.*\)|\1|'
-          git branch --no-color --format='%(refname:short)' --contains tags/v${TRIGGERING_TAG}
+          git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | head -n1 | sed 's|.*refs/remotes/origin/\(.*\)|\1|'
 
           NEW_ARTIFACT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           sed -i "s|^version.*|version = ${NEW_ARTIFACT_VERSION}-SNAPSHOT|" gradle.properties
           git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
           # Commit to main if it contains the tag, otherwise to whatever first branch contains the tag
-          if [ $(git branch --no-color --format='%(refname:short)' --contains tags/v${TRIGGERING_TAG} | grep -c ^main$) -gt 0 ]
+          if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
           then
             TAG_BRANCH=main
           else
-            TAG_BRANCH=$(git branch --no-color --format='%(refname:short)' --contains tags/v${TRIGGERING_TAG} | head -n1 | awk '{print $NF}')
+            TAG_BRANCH=$(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | head -n1 | sed 's|.*refs/remotes/origin/\(.*\)|\1|')
           fi
           git push origin HEAD:${TAG_BRANCH}
