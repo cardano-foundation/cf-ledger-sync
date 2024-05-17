@@ -99,7 +99,7 @@ jobs:
           fail_on_unmatched_files: true
           body_path: release-notes.md
           files: |
-            build/*jar
+            build/*
 
       - name: Publish to Maven Central
         run: |
