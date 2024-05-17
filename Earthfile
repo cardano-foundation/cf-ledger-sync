@@ -51,11 +51,11 @@ docker-publish:
   END
 
 maven-central-publish:
-  FROM eclipse-temurin:21-jdk
+  FROM gradle:jdk21-alpine
   RUN mkdir -p ~/.gradle && \
       echo "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
       base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
-  RUN ./gradlew publish --warn --stacktrace \
+  RUN gradle publish --warn --stacktrace \
       -Psigning.keyId=${MAVEN_CENTRAL_GPG_KEY_ID} \
       -Psigning.password=${MAVEN_CENTRAL_GPG_PASSPHRASE} \
       -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)
