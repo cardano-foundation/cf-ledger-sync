@@ -51,9 +51,7 @@ docker-publish:
   END
 
 maven-central-publish:
-  FROM eclipse-temurin:21-jdk
-  WORKDIR /app
-  COPY ./ /app
+  FROM DOCKERFILE -f Dockerfile --target build .
   RUN mkdir -p ~/.gradle && \
       echo "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
       base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
