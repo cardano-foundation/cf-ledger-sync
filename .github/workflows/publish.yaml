@@ -85,8 +85,8 @@ jobs:
               --secret MAVEN_CENTRAL_GPG_PRIVATE_KEY \
               --secret MAVEN_CENTRAL_GPG_KEY_ID \
               --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
-              +maven-central-publish \
-              +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
+              +maven-central-publish && \
+             earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
           else
             earthly +docker-publish
           fi

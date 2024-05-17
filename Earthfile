@@ -61,7 +61,7 @@ maven-central-publish:
       --secret MAVEN_CENTRAL_GPG_KEY_ID \
       --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
       --secret MAVEN_USERNAME \
-      --secert MAVEN_PASSWORD \
+      --secret MAVEN_PASSWORD \
       ./gradlew publish --warn --stacktrace \
       -Psigning.keyId=${MAVEN_CENTRAL_GPG_KEY_ID} \
       -Psigning.password=${MAVEN_CENTRAL_GPG_PASSPHRASE} \
