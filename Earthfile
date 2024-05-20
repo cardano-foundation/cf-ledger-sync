@@ -52,6 +52,7 @@ docker-publish:
 
 maven-central-publish:
   FROM DOCKERFILE -f Dockerfile --target build .
+  RUN apt update -qq && apt install -y gpg
   RUN \
       --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
       --secret MAVEN_CENTRAL_GPG_KEY_BASE64 \
