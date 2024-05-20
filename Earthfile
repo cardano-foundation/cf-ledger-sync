@@ -60,13 +60,14 @@ maven-central-publish:
       echo -n "${MAVEN_CENTRAL_GPG_KEY_BASE64}" > ~/.gradle/secring.gpg.b64 && \
       base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg && \
       echo "${MAVEN_CENTRAL_GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 --import ~/.gradle/secring.gpg
+  RUN gpg --list-keys
   RUN \
       --secret MAVEN_CENTRAL_GPG_KEY_ID \
       --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
       --secret MAVEN_USERNAME \
       --secret MAVEN_PASSWORD \
       ./gradlew publish --warn --stacktrace \
-         "-Psigning.gnupg.keyName=AF79A015" \
+         "-Psigning.gnupg.keyId=${MAVEN_CENTRAL_GPG_KEY_ID}" \
          "-Psigning.gnupg.passphrase=${MAVEN_CENTRAL_GPG_PASSPHRASE}" \
          "-Psigning.secretKeyRingFile=${HOME}/.gradle/secring.gpg"
 
