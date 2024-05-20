@@ -127,9 +127,10 @@ spec:
               value: {{ .Values.aggregation.store.executor.block_processing_threads | default 15 | quote }}
             - name: STORE_EXECUTOR_USEVIRTUALTHREADFORBATCHPROCESSING
               value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" | quote }}
+            - name: STORE_EXECUTOR_USEVIRTUALTHREADFOREVENTPROCESSING
+              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_event_processing | default "false" | quote }}
             - name: STORE_EXECUTOR_ENABLEPARALLELPROCESSING
               value: {{ .Values.aggregation.store.executor.enable_parallel_processing | default "true" | quote }}
-
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
   strategy:

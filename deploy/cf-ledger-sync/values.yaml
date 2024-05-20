@@ -86,6 +86,7 @@ aggregation:
       enable_parallel_processing: "true"
       # Whether to use virtual threads. True recommended for multi-CPU architecture, false for VMs
       use_virtual_thread_for_batch_processing: "true"
+      use_virtual_thread_for_event_processing: "true"
       # Number of concurrent batching threads
       block_processing_threads: 15
   resources: {}
