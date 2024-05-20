@@ -218,7 +218,8 @@ class EpochParamServiceImplTest {
         .updateByEpochParam(any(), any());
     Mockito.verify(epochParamMapper, Mockito.times(1))
         .updateByParamProposal(any(), any());
-    Mockito.verify(costModelService, Mockito.times(1)).getGenesisCostModel();
+    Mockito.verify(costModelService, Mockito.times(1)).setGenesisCostModel(any(), any());
+    Mockito.verify(costModelService, Mockito.times(1)).getGenesisCostModel(any());
   }
 
   @Test

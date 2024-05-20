@@ -18,12 +18,14 @@ import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.repository.CostModelRepository;
 import org.cardanofoundation.ledgersync.service.CostModelService;
+import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -36,17 +38,16 @@ import java.util.stream.Collectors;
 public class CostModelServiceImpl implements CostModelService {
 
     final CostModelRepository costModelRepository;
-    CostModel genesisCostModel;
-
+    final Map<PlutusKey, CostModel> genesisCostModelMap = new HashMap<>();
 
     @Override
-    public CostModel getGenesisCostModel() {
-        return this.genesisCostModel;
+    public CostModel getGenesisCostModel(PlutusKey plutusKey) {
+        return this.genesisCostModelMap.get(plutusKey);
     }
 
     @Override
-    public void setGenesisCostModel(CostModel costModel) {
-        setup(costModel);
+    public void setGenesisCostModel(PlutusKey plutusKey, CostModel costModel) {
+        setup(plutusKey, costModel);
     }
 
 
@@ -63,12 +64,14 @@ public class CostModelServiceImpl implements CostModelService {
                 .map(costModelMessage -> {
                     String hash = costModelMessage._1;
                     Map<Integer, String> costModelMap = costModelMessage._2;
-                    var languageMap = costModelMap.keySet()
+
+                    var languagePlutusV1V2Map = costModelMap.keySet()
                             .stream()
+                            .filter(language -> language < 2)
                             .collect(Collectors.toMap(this::getPlutusKey,
                                     language -> getPlutusValue(language,
                                             convertCborCostModelToBigIntegerList(costModelMap.get(language)))));
-
+                // TODO: plutus v3
 //          var languageMap = costModelMessage.keySet()
 //              .stream()
 //              .collect(Collectors.toMap(this::getPlutusKey,
@@ -76,7 +79,8 @@ public class CostModelServiceImpl implements CostModelService {
 //                      costModelMessage.getLanguages()
 //                          .get(language))));
 //
-                    var json = JsonUtil.getPrettyJson(languageMap);
+
+                    var json = JsonUtil.getPrettyJson(languagePlutusV1V2Map);
                     return CostModel.builder()
                             .costs(json)
                             .hash(hash)
@@ -102,9 +106,9 @@ public class CostModelServiceImpl implements CostModelService {
     private String getPlutusKey(Language language) {
         switch (language) {
             case PLUTUS_V1:
-                return PLUTUS_V1_KEY;
+                return PlutusKey.PLUTUS_V1.value;
             case PLUTUS_V2:
-                return PLUTUS_V2_KEY;
+                return PlutusKey.PLUTUS_V2.value;
             default:
                 log.error("Un handle language {}", language);
                 System.exit(1);
@@ -115,9 +119,11 @@ public class CostModelServiceImpl implements CostModelService {
     private String getPlutusKey(int language) {
         switch (language) {
             case 0:
-                return PLUTUS_V1_KEY;
+                return PlutusKey.PLUTUS_V1.value;
             case 1:
-                return PLUTUS_V2_KEY;
+                return PlutusKey.PLUTUS_V2.value;
+            case 2:
+                return PlutusKey.PLUTUS_V3.value;
             default:
                 log.error("Un handle language {}", language);
                 System.exit(1);
@@ -146,10 +152,12 @@ public class CostModelServiceImpl implements CostModelService {
                 .collect(Collectors.toList());
     }
 
-    public void setup(CostModel costModel) {
+    public void setup(PlutusKey plutusKey, CostModel costModel) {
         costModelRepository.findByHash(costModel.getHash())
-                .ifPresentOrElse(cm -> genesisCostModel = cm, () ->
-                        costModelRepository.save(costModel)
+                .ifPresentOrElse(cm -> genesisCostModelMap.put(plutusKey, cm), () -> {
+                            costModelRepository.save(costModel);
+                            genesisCostModelMap.put(plutusKey, costModel);
+                        }
                 );
     }
 }

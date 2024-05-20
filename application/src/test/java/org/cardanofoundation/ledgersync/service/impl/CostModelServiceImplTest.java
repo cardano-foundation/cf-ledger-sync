@@ -5,6 +5,7 @@ import com.bloxbean.cardano.yaci.core.model.Update;
 import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.repository.CostModelRepository;
+import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -28,13 +29,14 @@ class CostModelServiceImplTest {
         Mockito.when(costModelRepository.findByHash("thx00")).thenReturn(costModelOption);
         CostModelServiceImpl costModelService = new CostModelServiceImpl(costModelRepository);
 
-        costModelService.setGenesisCostModel(costModel);
+        costModelService.setGenesisCostModel(PlutusKey.PLUTUS_V1, costModel);
         Mockito.verify(costModelRepository, Mockito.times(0)).save(Mockito.any());
-        assertEquals(costModelFound, costModelService.getGenesisCostModel());
+        assertEquals(costModelFound, costModelService.getGenesisCostModel(PlutusKey.PLUTUS_V1));
     }
 
     @Test
     void getGenesisCostModelSave() {
+
         CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
         CostModel costModel = Mockito.mock(CostModel.class);
         Optional<CostModel> costModelOption = Optional.ofNullable(null);
@@ -43,10 +45,9 @@ class CostModelServiceImplTest {
         Mockito.when(costModelRepository.findByHash("thx00")).thenReturn(costModelOption);
         CostModelServiceImpl costModelService = new CostModelServiceImpl(costModelRepository);
 
-        costModelService.setGenesisCostModel(costModel);
+        costModelService.setGenesisCostModel(PlutusKey.PLUTUS_V1, costModel);
         Mockito.verify(costModelRepository, Mockito.times(1)).save(costModel);
-        //Genesis cost = null?
-        assertNull(costModelService.getGenesisCostModel());
+        assertEquals(costModel, costModelService.getGenesisCostModel(PlutusKey.PLUTUS_V1));
     }
 
 

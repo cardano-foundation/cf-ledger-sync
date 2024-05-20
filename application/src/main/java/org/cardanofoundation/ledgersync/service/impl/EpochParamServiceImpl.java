@@ -16,6 +16,7 @@ import org.cardanofoundation.ledgersync.repository.ParamProposalRepository;
 import org.cardanofoundation.ledgersync.service.CostModelService;
 import org.cardanofoundation.ledgersync.service.EpochParamService;
 import org.cardanofoundation.ledgersync.service.GenesisDataService;
+import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.cardanofoundation.ledgersync.util.EpochParamUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -114,7 +115,9 @@ public class EpochParamServiceImpl implements EpochParamService {
             epochParamMapper.updateByEpochParam(curEpochParam, defShelleyEpochParam);
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
 
-            curEpochParam.setCostModel(costModelService.getGenesisCostModel());
+            costModelService.setGenesisCostModel(PlutusKey.PLUTUS_V1, defAlonzoEpochParam.getCostModel());
+            curEpochParam.setCostModel(costModelService.getGenesisCostModel(PlutusKey.PLUTUS_V1));
+
             curEpochParam.setMinUtxoValue(null);
         }
 
@@ -124,7 +127,10 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         if (curEra == EraType.ALONZO && prevEra == EraType.MARY) {
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
-            curEpochParam.setCostModel(costModelService.getGenesisCostModel());
+
+            costModelService.setGenesisCostModel(PlutusKey.PLUTUS_V1, defAlonzoEpochParam.getCostModel());
+            curEpochParam.setCostModel(costModelService.getGenesisCostModel(PlutusKey.PLUTUS_V1));
+
             curEpochParam.setMinUtxoValue(null);
         }
 
@@ -134,6 +140,8 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         if (curEra == EraType.CONWAY && prevEra == EraType.BABBAGE) {
             epochParamMapper.updateByEpochParam(curEpochParam, defConwayEpochParam);
+            costModelService.setGenesisCostModel(PlutusKey.PLUTUS_V3, defConwayEpochParam.getCostModel());
+            curEpochParam.setCostModel(costModelService.getGenesisCostModel(PlutusKey.PLUTUS_V3));
         }
 
         List<ParamProposal> prevParamProposals = paramProposalRepository

@@ -2,15 +2,14 @@ package org.cardanofoundation.ledgersync.service;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
+import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface CostModelService {
-    String PLUTUS_V1_KEY = "PlutusV1";
-    String PLUTUS_V2_KEY = "PlutusV2";
 
-    CostModel getGenesisCostModel();
+    CostModel getGenesisCostModel(PlutusKey plutusKey);
 
-    void setGenesisCostModel(CostModel costModel);
+    void setGenesisCostModel(PlutusKey plutusKey, CostModel costModel);
 
     @Transactional
     void handleCostModel(AggregatedTx tx);
