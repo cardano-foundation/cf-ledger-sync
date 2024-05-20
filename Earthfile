@@ -66,9 +66,8 @@ maven-central-publish:
       --secret MAVEN_USERNAME \
       --secret MAVEN_PASSWORD \
       ./gradlew publish --warn --stacktrace \
-         "-Psigning.gnupg.keyName=${MAVEN_CENTRAL_GPG_KEY_ID:-8}" \
-         "-Psigning.gnupg.keyId=${MAVEN_CENTRAL_GPG_KEY_ID:-8}" \
-         "-Psigning.gnupg.passphrase=${MAVEN_CENTRAL_GPG_PASSPHRASE}" \
+         "-Psigning.keyId=${MAVEN_CENTRAL_GPG_KEY_ID:-8}" \
+         "-Psigning.passphrase=${MAVEN_CENTRAL_GPG_PASSPHRASE}" \
          "-Psigning.secretKeyRingFile=${HOME}/.gradle/secring.gpg"
 
 TEMPLATED_DOCKERFILE_BUILD:
