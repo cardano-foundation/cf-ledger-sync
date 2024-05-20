@@ -53,19 +53,21 @@ docker-publish:
 maven-central-publish:
   FROM DOCKERFILE -f Dockerfile --target build .
   RUN \
-      --secret MAVEN_CENTRAL_GPG_PRIVATE_KEY \
+      --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
+      --secret MAVEN_CENTRAL_GPG_KEY_BASE64 \
       mkdir -p ~/.gradle && \
-      echo -n "${MAVEN_CENTRAL_GPG_PRIVATE_KEY}" > ~/.gradle/secring.gpg.b64 && \
-      base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+      echo -n "${MAVEN_CENTRAL_GPG_KEY_BASE64}" > ~/.gradle/secring.gpg.b64 && \
+      base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg && \
+      echo "${MAVEN_CENTRAL_GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 --import ~/.gradle/secring.gpg
   RUN \
       --secret MAVEN_CENTRAL_GPG_KEY_ID \
       --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
       --secret MAVEN_USERNAME \
       --secret MAVEN_PASSWORD \
       ./gradlew publish --warn --stacktrace \
-      -Psigning.keyId=${MAVEN_CENTRAL_GPG_KEY_ID} \
-      -Psigning.password=${MAVEN_CENTRAL_GPG_PASSPHRASE} \
-      -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)
+         "-Psigning.gnupg.keyName=AF79A015" \
+         "-Psigning.gnupg.passphrase=${MAVEN_CENTRAL_GPG_PASSPHRASE}" \
+         "-Psigning.secretKeyRingFile=${HOME}/.gradle/secring.gpg"
 
 TEMPLATED_DOCKERFILE_BUILD:
   FUNCTION

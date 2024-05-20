@@ -73,7 +73,7 @@ jobs:
           EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_OSSRH_TOKEN }}
-          MAVEN_CENTRAL_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_BASE64 }}
+          MAVEN_CENTRAL_GPG_KEY_BASE64: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_BASE64 }}
           MAVEN_CENTRAL_GPG_KEY_ID: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_ID }}
           MAVEN_CENTRAL_GPG_PASSPHRASE: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
         run: |
@@ -82,9 +82,9 @@ jobs:
             earthly \
               --secret MAVEN_USERNAME \
               --secret MAVEN_PASSWORD \
-              --secret MAVEN_CENTRAL_GPG_PRIVATE_KEY \
               --secret MAVEN_CENTRAL_GPG_KEY_ID \
               --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
+              --secret MAVEN_CENTRAL_GPG_KEY_BASE64 \
               +maven-central-publish && \
              earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
           else
