@@ -123,6 +123,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     private final static String QUORUM = "quorum";
 
     private final static String PLUTUS_V_3_COST_MODEL = "plutusV3CostModel";
+    private final static String MIN_FEE_REF_SCRIPT_COST_PER_BYTE = "minFeeRefScriptCostPerByte";
 
     @Value("${genesis.byron}")
     String genesisByron;
@@ -399,6 +400,10 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .drepDeposit(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_DEPOSIT)))
                     .drepActivity(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_ACTIVITY)))
                     .build();
+
+            if (genesisConwayJsonMap.get(MIN_FEE_REF_SCRIPT_COST_PER_BYTE) != null) {
+                genesisConwayProtocols.setMinFeeRefScriptCostPerByte(convertObjectToBigDecimal(genesisConwayJsonMap.get(MIN_FEE_REF_SCRIPT_COST_PER_BYTE)).doubleValue());
+            }
 
             if (genesisConwayJsonMap.get(PLUTUS_V_3_COST_MODEL) != null) {
                 final Map<String, List<Long>> plutusV3CostModel = new HashMap<>();

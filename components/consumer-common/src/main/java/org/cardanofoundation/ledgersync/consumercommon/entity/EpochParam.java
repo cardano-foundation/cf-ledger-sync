@@ -254,9 +254,7 @@ public class EpochParam extends BaseEntity {
   private BigInteger drepActivity;
 
   @Column(name = "min_fee_ref_script_cost_per_byte")
-  @Word64Type
-  @Digits(integer = 20, fraction = 0)
-  private BigInteger minFeeRefScriptCostPerByte;
+  private Double minFeeRefScriptCostPerByte;
 
   @Override
   public boolean equals(Object o) {
