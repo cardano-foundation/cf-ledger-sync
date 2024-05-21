@@ -256,8 +256,12 @@ public class RedeemerServiceImpl implements RedeemerService {
             return stakeDeregistration.getStakeCredential().getHash();
         }
 
-        AuthCommitteeHotCert authCommitteeHotCert = (AuthCommitteeHotCert) certificate;
-        return authCommitteeHotCert.getCommitteeHotCredential().getHash(); // TODO: need to check again
+        if (certificate.getType() == CertificateType.AUTH_COMMITTEE_HOT_CERT) {
+            AuthCommitteeHotCert authCommitteeHotCert = (AuthCommitteeHotCert) certificate;
+            return authCommitteeHotCert.getCommitteeHotCredential().getHash(); // TODO: need to check again
+        }
+
+        return null;
     }
 
     private String handleRewardPtr(List<String> rewardAccounts, int pointerIndex) {
