@@ -4,10 +4,7 @@ import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.bloxbean.cardano.yaci.core.model.Datum;
 import com.bloxbean.cardano.yaci.core.model.ExUnits;
 import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
-import com.bloxbean.cardano.yaci.core.model.certs.Certificate;
-import com.bloxbean.cardano.yaci.core.model.certs.CertificateType;
-import com.bloxbean.cardano.yaci.core.model.certs.StakeDelegation;
-import com.bloxbean.cardano.yaci.core.model.certs.StakeDeregistration;
+import com.bloxbean.cardano.yaci.core.model.certs.*;
 import com.bloxbean.cardano.yaci.core.model.governance.ProposalProcedure;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -254,8 +251,13 @@ public class RedeemerServiceImpl implements RedeemerService {
         }
 
         // Stake de-registration
-        StakeDeregistration stakeDeregistration = (StakeDeregistration) certificate;
-        return stakeDeregistration.getStakeCredential().getHash();
+        if (certificate.getType() == CertificateType.STAKE_DEREGISTRATION) {
+            StakeDeregistration stakeDeregistration = (StakeDeregistration) certificate;
+            return stakeDeregistration.getStakeCredential().getHash();
+        }
+
+        AuthCommitteeHotCert authCommitteeHotCert = (AuthCommitteeHotCert) certificate;
+        return authCommitteeHotCert.getCommitteeHotCredential().getHash();
     }
 
     private String handleRewardPtr(List<String> rewardAccounts, int pointerIndex) {
