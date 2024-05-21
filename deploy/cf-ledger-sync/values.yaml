@@ -61,13 +61,13 @@ indexer:
     dbKey: LEDGER_SYNC_DB
     userKey: POSTGRES_USER
     passwordKey: POSTGRES_PASSWORD
-  resources:
-    limits:
-      cpu: 2
-      memory: 4Gi
-    requests:
-      cpu: 1
-      memory: 512Mi
+  resources: {}
+#    limits:
+#      cpu: 2
+#      memory: 4Gi
+#    requests:
+#      cpu: 1
+#      memory: 512Mi
 
 
 aggregation:
@@ -96,10 +96,10 @@ aggregation:
       use_virtual_thread_for_event_processing: "true"
       # Number of concurrent batching threads
       block_processing_threads: 15
-  resources:
-    limits:
-      cpu: 2
-      memory: 4Gi
-    requests:
-      cpu: 1
-      memory: 512Mi
+  resources: {}
+#    limits:
+#      cpu: 2
+#      memory: 4Gi
+#    requests:
+#      cpu: 1
+#      memory: 512Mi
