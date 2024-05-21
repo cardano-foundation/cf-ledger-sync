@@ -117,7 +117,9 @@ public class EpochParamServiceImpl implements EpochParamService {
         if (curEra == EraType.ALONZO && prevEra == null) {
             epochParamMapper.updateByEpochParam(curEpochParam, defShelleyEpochParam);
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
-            costModelRepository.save(defAlonzoEpochParam.getCostModel());
+            var costModel = defAlonzoEpochParam.getCostModel();
+            costModelRepository.save(costModel);
+            curEpochParam.setCostModel(costModel);
             curEpochParam.setMinUtxoValue(null);
         }
 
@@ -127,7 +129,9 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         if (curEra == EraType.ALONZO && prevEra == EraType.MARY) {
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
-            costModelRepository.save(defAlonzoEpochParam.getCostModel());
+            var costModel = defAlonzoEpochParam.getCostModel();
+            costModelRepository.save(costModel);
+            curEpochParam.setCostModel(costModel);
             curEpochParam.setMinUtxoValue(null);
         }
 
