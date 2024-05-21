@@ -165,8 +165,6 @@ public class EpochParamServiceImpl implements EpochParamService {
 
             costModelRepository.save(currentCostModel);
             curEpochParam.setCostModel(currentCostModel);
-//            costModelService.setGenesisCostModel(PlutusKey.PLUTUS_V3, defConwayEpochParam.getCostModel());
-//            curEpochParam.setCostModel(costModelService.getGenesisCostModel(PlutusKey.PLUTUS_V3));
         }
 
         List<ParamProposal> prevParamProposals = paramProposalRepository
