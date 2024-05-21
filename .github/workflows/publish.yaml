@@ -109,7 +109,7 @@ jobs:
           sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
           git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
 
-          sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}|" docker-compose.yaml
+          sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}}|" docker-compose.yaml
           git commit docker-compose.yaml -m "chore(docker-compose): Bump image version to ${ARTIFACT_VERSION} (automated commit by gha run id $GITHUB_RUN_ID)"
 
 
