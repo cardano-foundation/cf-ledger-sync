@@ -65,13 +65,19 @@ public class CostModelServiceImpl implements CostModelService {
                     String hash = costModelMessage._1;
                     Map<Integer, String> costModelMap = costModelMessage._2;
 
-                    var languagePlutusV1V2Map = costModelMap.keySet()
+                    Map<String, Map<String, BigInteger>> languagePlutusV1V2Map = costModelMap.keySet()
                             .stream()
                             .filter(language -> language < 2)
                             .collect(Collectors.toMap(this::getPlutusKey,
                                     language -> getPlutusValue(language,
                                             convertCborCostModelToBigIntegerList(costModelMap.get(language)))));
-                // TODO: plutus v3
+                    Map<String, List<BigInteger>> languagePlutusV3Map = costModelMap.keySet().stream().
+                            filter(language -> language == 3)
+                            .collect(Collectors.toMap(this::getPlutusKey,
+                                    language -> convertCborCostModelToBigIntegerList(costModelMap.get(language))));
+                    Map<String, Object> languageMap = new HashMap<>();
+                    languageMap.putAll(languagePlutusV1V2Map);
+                    languageMap.putAll(languagePlutusV3Map);
 //          var languageMap = costModelMessage.keySet()
 //              .stream()
 //              .collect(Collectors.toMap(this::getPlutusKey,
@@ -80,7 +86,7 @@ public class CostModelServiceImpl implements CostModelService {
 //                          .get(language))));
 //
 
-                    var json = JsonUtil.getPrettyJson(languagePlutusV1V2Map);
+                    var json = JsonUtil.getPrettyJson(languageMap);
                     return CostModel.builder()
                             .costs(json)
                             .hash(hash)
