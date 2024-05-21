@@ -146,7 +146,7 @@ spec:
             successThreshold: 1
             timeoutSeconds: 1
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.indexer.resources | nindent 12 }}
   strategy:
     type: Recreate
 {{ end }}
