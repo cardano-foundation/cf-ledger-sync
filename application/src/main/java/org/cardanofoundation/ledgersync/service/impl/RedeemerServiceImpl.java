@@ -1,11 +1,11 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
-import com.bloxbean.cardano.yaci.core.model.Amount;
-import com.bloxbean.cardano.yaci.core.model.Datum;
-import com.bloxbean.cardano.yaci.core.model.ExUnits;
-import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
+import com.bloxbean.cardano.client.address.Address;
+import com.bloxbean.cardano.yaci.core.model.*;
 import com.bloxbean.cardano.yaci.core.model.certs.*;
 import com.bloxbean.cardano.yaci.core.model.governance.ProposalProcedure;
+import com.bloxbean.cardano.yaci.core.model.governance.Voter;
+import com.bloxbean.cardano.yaci.core.model.governance.VotingProcedures;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -198,7 +198,8 @@ public class RedeemerServiceImpl implements RedeemerService {
             case Cert -> handleCertPtr(aggregatedTx.getCertificates(), pointerIndex);
             case Reward -> handleRewardPtr(new ArrayList<>(aggregatedTx.getWithdrawals().keySet()),
                             pointerIndex);
-            case Voting, Proposing -> null; //TODO check later
+            case Voting -> handleVotingPtr(aggregatedTx.getVotingProcedures(), pointerIndex);
+            case Proposing -> handleProposingPtr(aggregatedTx.getProposalProcedures(), pointerIndex);
             default -> {
                 log.error("Unsupported redeemer tag {}", tag);
                 yield null;
@@ -244,30 +245,77 @@ public class RedeemerServiceImpl implements RedeemerService {
             List<Certificate> certificates, int pointerIndex) {
         Certificate certificate = certificates.get(pointerIndex);
 
-        // Stake delegation
-        if (certificate.getType() == CertificateType.STAKE_DELEGATION) {
-            StakeDelegation delegation = (StakeDelegation) certificate;
-            return delegation.getStakeCredential().getHash();
-        }
+        String credentialHash;
+        if (certificate instanceof StakeRegistration cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof StakeDelegation cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof StakeDeregistration cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof RegCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof UnregCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof VoteDelegCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof StakeVoteDelegCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof StakeRegDelegCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof VoteRegDelegCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof StakeVoteRegDelegCert cert)
+            credentialHash = credentialHash(cert.getStakeCredential());
+        else if (certificate instanceof AuthCommitteeHotCert cert)
+            credentialHash = credentialHash(cert.getCommitteeColdCredential());
+        else if (certificate instanceof ResignCommitteeColdCert cert)
+            credentialHash = credentialHash(cert.getCommitteeColdCredential());
+        else if (certificate instanceof RegDrepCert cert)
+            credentialHash = credentialHash(cert.getDrepCredential());
+        else if (certificate instanceof UnregDrepCert cert)
+            credentialHash = credentialHash(cert.getDrepCredential());
+        else if (certificate instanceof UpdateDrepCert cert)
+            credentialHash = credentialHash(cert.getDrepCredential());
+        else
+            credentialHash = null;
 
-        // Stake de-registration
-        if (certificate.getType() == CertificateType.STAKE_DEREGISTRATION) {
-            StakeDeregistration stakeDeregistration = (StakeDeregistration) certificate;
-            return stakeDeregistration.getStakeCredential().getHash();
-        }
-
-        if (certificate.getType() == CertificateType.AUTH_COMMITTEE_HOT_CERT) {
-            AuthCommitteeHotCert authCommitteeHotCert = (AuthCommitteeHotCert) certificate;
-            return authCommitteeHotCert.getCommitteeHotCredential().getHash(); // TODO: need to check again
-        }
-
-        return null;
+        //TODO -- For other certificate types ??
+        //PoolRegistration, PoolRetirement, GenesisKeyDelegation, MoveInstantaneousRewardsCert
+        return credentialHash;
     }
 
     private String handleRewardPtr(List<String> rewardAccounts, int pointerIndex) {
         String rewardAccount = rewardAccounts.get(pointerIndex);
         // Trim network tag
         return rewardAccount.substring(2);
+    }
+
+    private String handleVotingPtr(VotingProcedures votingProcedures, int pointerIndex) {
+        if (votingProcedures == null || votingProcedures.getVoting() == null || votingProcedures.getVoting().isEmpty())
+            return null;
+
+        Set<Voter> voters = ((LinkedHashMap)votingProcedures.getVoting()).keySet();
+        int i = 0;
+        Voter voter = null;
+        for (var v : voters) {
+            if (i == pointerIndex) {
+                voter = v;
+                break;
+            }
+            i++;
+        }
+
+        return voter != null ? voter.getHash() : null;
+    }
+
+    private String handleProposingPtr(List<ProposalProcedure> proposalProcedures, int pointerIndex) {
+        if (proposalProcedures == null || proposalProcedures.isEmpty() || pointerIndex > proposalProcedures.size() - 1)
+            return null;
+
+        //TODO - Get the constitution policy (script hash)
+        //For now set scriptHash to null
+
+        return null;
     }
 
     private RedeemerData buildRedeemerData(Datum plutusData, Tx tx) {
@@ -281,4 +329,11 @@ public class RedeemerServiceImpl implements RedeemerService {
         return redeemerDataBuilder.build();
     }
 
+    private String credentialHash(StakeCredential stakeCredential) {
+        return stakeCredential != null? stakeCredential.getHash() : null;
+    }
+
+    private String credentialHash(Credential credential) {
+        return credential != null? credential.getHash() : null;
+    }
 }
