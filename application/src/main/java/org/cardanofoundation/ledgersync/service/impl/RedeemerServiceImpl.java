@@ -257,7 +257,7 @@ public class RedeemerServiceImpl implements RedeemerService {
         }
 
         AuthCommitteeHotCert authCommitteeHotCert = (AuthCommitteeHotCert) certificate;
-        return authCommitteeHotCert.getCommitteeHotCredential().getHash();
+        return authCommitteeHotCert.getCommitteeHotCredential().getHash(); // TODO: need to check again
     }
 
     private String handleRewardPtr(List<String> rewardAccounts, int pointerIndex) {
