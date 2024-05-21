@@ -376,14 +376,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             final var poolVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(POOL_VOTING_THRESHOLDS);
             final var dRepVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(D_REP_VOTING_THRESHOLDS);
 
-            final Map<String, List<Long>> plutusV3CostModel = new HashMap<>();
-            plutusV3CostModel.put(CostModelConverter.PLUTUS_V3, (ArrayList<Long>) genesisConwayJsonMap.get(PLUTUS_V_3_COST_MODEL));
-            final var costModel = CostModel.builder()
-                    .costs(objectMapper.writeValueAsString(plutusV3CostModel))
-                    .hash("genesis.conway") //TODO check later
-                    .build();
-
-            EpochParam genesisShelleyProtocols = EpochParam.builder()
+            EpochParam genesisConwayProtocols = EpochParam.builder()
                     .pvtCommitteeNormal(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NORMAL)).doubleValue())
                     .pvtCommitteeNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NO_CONFIDENCE)).doubleValue())
                     .pvtHardForkInitiation(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_HARD_FORK_INITIATION)).doubleValue())
@@ -405,10 +398,22 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .govActionDeposit(convertObjecToBigInteger(genesisConwayJsonMap.get(GOV_ACTION_DEPOSIT)))
                     .drepDeposit(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_DEPOSIT)))
                     .drepActivity(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_ACTIVITY)))
-                    .costModel(costModel)
                     .build();
 
-            genesisData.setConway(genesisShelleyProtocols);
+            if (genesisConwayJsonMap.get(PLUTUS_V_3_COST_MODEL) != null) {
+                final Map<String, List<Long>> plutusV3CostModel = new HashMap<>();
+
+                plutusV3CostModel.put(CostModelConverter.PLUTUS_V3, (ArrayList<Long>) genesisConwayJsonMap.get(PLUTUS_V_3_COST_MODEL));
+
+                final var costModel = CostModel.builder()
+                        .costs(objectMapper.writeValueAsString(plutusV3CostModel))
+                        .hash("genesis.conway") //TODO check later
+                        .build();
+
+                genesisConwayProtocols.setCostModel(costModel);
+            }
+
+            genesisData.setConway(genesisConwayProtocols);
         } catch (Exception e) {
             log.error("Genesis data at {} can't parse from json to java object", genesisConway);
             log.error("{} value \n {}", genesisAlonzo, genesisConwayJson);
