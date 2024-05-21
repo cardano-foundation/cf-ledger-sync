@@ -3,7 +3,6 @@ package org.cardanofoundation.ledgersync.service.impl;
 import co.nstant.in.cbor.model.Array;
 import co.nstant.in.cbor.model.SimpleValue;
 import co.nstant.in.cbor.model.UnsignedInteger;
-import com.bloxbean.cardano.client.plutus.spec.Language;
 import com.bloxbean.cardano.client.util.HexUtil;
 import com.bloxbean.cardano.client.util.Tuple;
 import com.bloxbean.cardano.yaci.core.util.CborSerializationUtil;
@@ -11,11 +10,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
+import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.common.common.cost.mdl.PlutusV1Keys;
 import org.cardanofoundation.ledgersync.common.common.cost.mdl.PlutusV2Keys;
 import org.cardanofoundation.ledgersync.common.util.JsonUtil;
-import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
+import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.repository.CostModelRepository;
 import org.cardanofoundation.ledgersync.service.CostModelService;
 import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
@@ -38,18 +37,6 @@ import java.util.stream.Collectors;
 public class CostModelServiceImpl implements CostModelService {
 
     final CostModelRepository costModelRepository;
-    final Map<PlutusKey, CostModel> genesisCostModelMap = new HashMap<>();
-
-    @Override
-    public CostModel getGenesisCostModel(PlutusKey plutusKey) {
-        return this.genesisCostModelMap.get(plutusKey);
-    }
-
-    @Override
-    public void setGenesisCostModel(PlutusKey plutusKey, CostModel costModel) {
-        setup(plutusKey, costModel);
-    }
-
 
     @Override
     public void handleCostModel(AggregatedTx tx) {
@@ -109,19 +96,6 @@ public class CostModelServiceImpl implements CostModelService {
         return costModelOptional.orElse(null);
     }
 
-    private String getPlutusKey(Language language) {
-        switch (language) {
-            case PLUTUS_V1:
-                return PlutusKey.PLUTUS_V1.value;
-            case PLUTUS_V2:
-                return PlutusKey.PLUTUS_V2.value;
-            default:
-                log.error("Un handle language {}", language);
-                System.exit(1);
-        }
-        return null;
-    }
-
     private String getPlutusKey(int language) {
         switch (language) {
             case 0:
@@ -156,14 +130,5 @@ public class CostModelServiceImpl implements CostModelService {
                 .filter(item -> item != SimpleValue.BREAK)
                 .map(item -> ((UnsignedInteger) item).getValue())
                 .collect(Collectors.toList());
-    }
-
-    public void setup(PlutusKey plutusKey, CostModel costModel) {
-        costModelRepository.findByHash(costModel.getHash())
-                .ifPresentOrElse(cm -> genesisCostModelMap.put(plutusKey, cm), () -> {
-                            costModelRepository.save(costModel);
-                            genesisCostModelMap.put(plutusKey, costModel);
-                        }
-                );
     }
 }
