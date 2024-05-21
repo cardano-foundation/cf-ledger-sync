@@ -40,8 +40,10 @@ jobs:
             sed -i "s|^version.*|version = ${TRIGGERING_TAG}|" gradle.properties
           fi
           ARTIFACT_VERSION=$(grep version gradle.properties | awk '{print $NF}')
+          NEW_ARTIFACT_SNAPSHOT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
 
           echo "ARTIFACT_VERSION=${ARTIFACT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          echo "NEW_ARTIFACT_SNAPSHOT_VERSION=${NEW_ARTIFACT_SNAPSHOT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "GIT_SHORT_COMMIT=${GIT_SHORT_COMMIT}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "GITHUB_RUN_ID=${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
@@ -71,23 +73,10 @@ jobs:
       - name: 🌍 earthly (docker+mavn build and push)
         env:
           EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
-          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_OSSRH_TOKEN }}
-          MAVEN_CENTRAL_GPG_KEY_BASE64: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_BASE64 }}
-            #          MAVEN_CENTRAL_GPG_KEY_ID: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_ID }}
-          MAVEN_CENTRAL_GPG_PASSPHRASE: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
-          MAVEN_CENTRAL_GPG_KEY_ID: 5E362818AF79A015
         run: |
           if [ "${GITHUB_REF_TYPE}" == "tag" ]
           then
-            earthly \
-              --secret MAVEN_USERNAME \
-              --secret MAVEN_PASSWORD \
-              --secret MAVEN_CENTRAL_GPG_KEY_ID \
-              --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
-              --secret MAVEN_CENTRAL_GPG_KEY_BASE64 \
-              +maven-central-publish && \
-             earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
+            earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
           else
             earthly +docker-publish
           fi
@@ -97,11 +86,7 @@ jobs:
         id: release_notes
         run: |
           cat > release-notes.md <<EOF
-          # Run with docker-compose
-          \`\`\`
-          export CF_LEDGER_SYNC_DOCKER_IMAGE=cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}
-          docker-compose up
-          \`\`\`
+          # PLACEHODLER
           EOF
       
       - name: Create Github release
@@ -114,17 +99,20 @@ jobs:
           files: |
             build/*
 
-      - name: Bump version to next snapshot
+      - name: Bump versions
         if: github.ref_type == 'tag'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
           git fetch --all --tags
 
-          NEW_ARTIFACT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          sed -i "s|^version.*|version = ${NEW_ARTIFACT_VERSION}-SNAPSHOT|" gradle.properties
-          git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
+          sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
+          git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
+
+          sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}|" docker-compose.yml
+          git commit docker-compose.yml -m "chore(docker-compose): Bump image version to ${ARTIFACT_VERSION} (automated commit by gha run id $GITHUB_RUN_ID)"
+
+
           # Commit to main if it contains the tag, otherwise to whatever first branch contains the tag
           if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
           then

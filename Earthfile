@@ -33,42 +33,22 @@ docker-publish:
         FOR image_tag IN $DOCKER_IMAGES_EXTRA_TAGS
           IF [ "$registry" = "hub.docker.com" ]
             RUN docker tag ${IMAGE_NAME}:latest ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
-            RUN echo docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
+            RUN docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
           ELSE
             RUN docker tag ${IMAGE_NAME}:latest ${registry}/${IMAGE_NAME}:${image_tag}
-            RUN echo docker push ${registry}/${IMAGE_NAME}:${image_tag}
+            RUN docker push ${registry}/${IMAGE_NAME}:${image_tag}
           END
         END
       END
       IF [ "$registry" = "hub.docker.com" ]
         RUN docker tag ${IMAGE_NAME}:latest ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-        RUN echo docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
+        RUN docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
       ELSE
         RUN docker tag ${IMAGE_NAME}:latest ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-        RUN echo docker push ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
+        RUN docker push ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
       END
     END
   END
-
-maven-central-publish:
-  FROM DOCKERFILE -f Dockerfile --target build .
-  RUN apt update -qq && apt install -y gpg
-  RUN \
-      --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
-      --secret MAVEN_CENTRAL_GPG_KEY_BASE64 \
-      mkdir -p ~/.gradle && \
-      echo -n "${MAVEN_CENTRAL_GPG_KEY_BASE64}" > ~/.gradle/secring.gpg.b64 && \
-      base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg && \
-      echo "${MAVEN_CENTRAL_GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 --import ~/.gradle/secring.gpg
-  RUN \
-      --secret MAVEN_CENTRAL_GPG_KEY_ID \
-      --secret MAVEN_CENTRAL_GPG_PASSPHRASE \
-      --secret MAVEN_USERNAME \
-      --secret MAVEN_PASSWORD \
-      ./gradlew publish --warning-mode all --warn --stacktrace \
-         "-Psigning.gnupg.keyId=${MAVEN_CENTRAL_GPG_KEY_ID:-8}" \
-         "-Psigning.gnupg.passphrase=${MAVEN_CENTRAL_GPG_PASSPHRASE}" \
-         "-Psigning.gnupg.secretKeyRingFile=${HOME}/.gradle/secring.gpg"
 
 TEMPLATED_DOCKERFILE_BUILD:
   FUNCTION
