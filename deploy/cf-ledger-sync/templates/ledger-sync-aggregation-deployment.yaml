@@ -36,7 +36,9 @@ spec:
             - name: DB_DIALECT
               value: {{ .Values.aggregation.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
             - name: JAVA_OPTIONS
-              value: "-Xms1G -Xmx5G"
+              value: "-Xms1G -Xmx12G"
+            - name: JDK_JAVA_OPTIONS
+              value: "-Xms1G -Xmx12G"
 
             {{ if .Values.useLocalCardanoNode }}
             - name: STORE_CARDANO_HOST

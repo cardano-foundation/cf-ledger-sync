@@ -98,8 +98,8 @@ aggregation:
       block_processing_threads: 15
   resources:
     limits:
-      cpu: 4
-      memory: 6Gi
+      cpu: 12
+      memory: 13Gi
     requests:
       cpu: 1
       memory: 512Mi
