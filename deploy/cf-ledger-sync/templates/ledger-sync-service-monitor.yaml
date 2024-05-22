@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "cf-ledger-sync.fullname" . }}
+  name: {{ include "cf-ledger-sync.fullname" . }}-{{ $.Release.Namespace }}
   labels:
     release: prometheus-stack
     {{- include "cf-ledger-sync.labels" . | nindent 4 }}
