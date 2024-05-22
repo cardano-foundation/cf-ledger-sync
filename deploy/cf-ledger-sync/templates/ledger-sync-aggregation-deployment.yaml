@@ -141,6 +141,9 @@ spec:
 
             - name: STORE_EXECUTOR_BLOCKPROCESSINGTHREADS
               value: {{ .Values.aggregation.store.executor.block_processing_threads | default 15 | quote }}
+            - name: STORE_EXECUTOR_EVENTPROCESSINGTHREADS
+              value: {{ .Values.aggregation.store.executor.event_processing_threads | default 30 | quote }}
+
             - name: STORE_EXECUTOR_USEVIRTUALTHREADFORBATCHPROCESSING
               value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" | quote }}
             - name: STORE_EXECUTOR_USEVIRTUALTHREADFOREVENTPROCESSING

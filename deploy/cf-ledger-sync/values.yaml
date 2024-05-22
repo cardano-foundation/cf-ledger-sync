@@ -96,6 +96,7 @@ aggregation:
       use_virtual_thread_for_event_processing: "true"
       # Number of concurrent batching threads
       block_processing_threads: 15
+      event_processing_threads: 30
   resources:
     limits:
       cpu: 12
