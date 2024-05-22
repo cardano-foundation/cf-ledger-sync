@@ -111,7 +111,10 @@ spec:
                   name: {{ .secretName }}
                   key: {{ .passwordKey }}
             {{- end }}
-
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
             - name: HEALTH_CHECK_ENABLED
               value: "true"
             - name: EVENT_TIME_THRESHOLD_IN_SECOND
