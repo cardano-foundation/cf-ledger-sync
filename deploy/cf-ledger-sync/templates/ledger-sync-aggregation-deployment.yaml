@@ -134,21 +134,21 @@ spec:
             - name: STORE_ADMIN_AUTORECOVERYENABLED
               value: "true"
 
-            - name: STORE_EXECUTOR_BLOCKSBATCHSIZE
+            - name: STORE_EXECUTOR_BLOCKS_BATCH_SIZE
               value: {{ .Values.aggregation.store.executor.blocks_batch_size | default 100 | quote }}
-            - name: STORE_EXECUTOR_BLOCKSPARTITIONSIZE
+            - name: STORE_EXECUTOR_BLOCKS_PARTITION_SIZE
               value: {{ .Values.aggregation.store.executor.blocks_partition_size | default 10 | quote }}
 
-            - name: STORE_EXECUTOR_BLOCKPROCESSINGTHREADS
+            - name: STORE_EXECUTOR_BLOCK_PROCESSING_THREADS
               value: {{ .Values.aggregation.store.executor.block_processing_threads | default 15 | quote }}
-            - name: STORE_EXECUTOR_EVENTPROCESSINGTHREADS
+            - name: STORE_EXECUTOR_EVENT_PROCESSING_THREADS
               value: {{ .Values.aggregation.store.executor.event_processing_threads | default 30 | quote }}
 
-            - name: STORE_EXECUTOR_USEVIRTUALTHREADFORBATCHPROCESSING
+            - name: STORE_EXECUTOR_USE_VIRTUAL_THREAD_FOR_BATCH_PROCESSING
               value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" | quote }}
-            - name: STORE_EXECUTOR_USEVIRTUALTHREADFOREVENTPROCESSING
+            - name: STORE_EXECUTOR_USE_VIRTUAL_THREAD_FOR_EVENT_PROCESSING
               value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_event_processing | default "false" | quote }}
-            - name: STORE_EXECUTOR_ENABLEPARALLELPROCESSING
+            - name: STORE_EXECUTOR_ENABLE_PARALLEL_PROCESSING
               value: {{ .Values.aggregation.store.executor.enable_parallel_processing | default "true" | quote }}
           ports:
             - name: http
