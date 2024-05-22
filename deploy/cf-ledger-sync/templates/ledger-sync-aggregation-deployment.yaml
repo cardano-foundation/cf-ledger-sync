@@ -35,6 +35,8 @@ spec:
               value: {{ .Values.network | default "preprod" }}
             - name: DB_DIALECT
               value: {{ .Values.aggregation.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
+            - name: JAVA_OPTIONS
+              value: "-Xms1G -Xmx5G"
 
             {{ if .Values.useLocalCardanoNode }}
             - name: STORE_CARDANO_HOST
