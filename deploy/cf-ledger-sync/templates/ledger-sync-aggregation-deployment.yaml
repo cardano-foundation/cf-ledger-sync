@@ -112,7 +112,6 @@ spec:
                   key: {{ .passwordKey }}
             {{- end }}
 
-              protocol: TCP
             - name: HEALTH_CHECK_ENABLED
               value: "true"
             - name: EVENT_TIME_THRESHOLD_IN_SECOND
@@ -151,6 +150,7 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
+              protocol: TCP
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
   strategy:
