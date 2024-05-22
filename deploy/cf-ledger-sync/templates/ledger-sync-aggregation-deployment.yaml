@@ -111,9 +111,7 @@ spec:
                   name: {{ .secretName }}
                   key: {{ .passwordKey }}
             {{- end }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
+
               protocol: TCP
             - name: HEALTH_CHECK_ENABLED
               value: "true"
@@ -150,6 +148,9 @@ spec:
               value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_event_processing | default "false" | quote }}
             - name: STORE_EXECUTOR_ENABLEPARALLELPROCESSING
               value: {{ .Values.aggregation.store.executor.enable_parallel_processing | default "true" | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
           resources:
             {{- toYaml .Values.aggregation.resources | nindent 12 }}
   strategy:
