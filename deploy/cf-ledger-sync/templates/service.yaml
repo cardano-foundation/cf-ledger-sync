@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,19 @@ spec:
       name: http
   selector:
     {{- include "cf-ledger-sync.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cf-ledger-sync.fullname" . }}{{ print "-aggregation" }}
+  labels:
+    {{- include "cf-ledger-sync-aggregation.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cf-ledger-sync-aggregation.selectorLabels" . | nindent 4 }}
