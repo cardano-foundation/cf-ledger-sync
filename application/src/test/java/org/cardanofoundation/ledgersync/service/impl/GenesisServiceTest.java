@@ -95,7 +95,7 @@ class GenesisServiceTest {
     Assertions.assertNotNull(data.getTxs());
     Assertions.assertNotNull(data.getTxOuts());
     Assertions.assertNotNull(data.getSlotLeaders());
-    Assertions.assertNotNull(data.getCostModel());
+    Assertions.assertNotNull(data.getAlonzoCostModel());
     Assertions.assertNotNull(data.getShelley());
     Assertions.assertNotNull(data.getAlonzo());
     Assertions.assertNotNull(data.getConway());
@@ -423,7 +423,7 @@ class GenesisServiceTest {
     Assertions.assertNotNull(data.getTxs());
     Assertions.assertNotNull(data.getTxOuts());
     Assertions.assertNotNull(data.getSlotLeaders());
-    Assertions.assertNotNull(data.getCostModel());
+    Assertions.assertNotNull(data.getAlonzoCostModel());
     Assertions.assertNotNull(data.getShelley());
     Assertions.assertNotNull(data.getAlonzo());
 

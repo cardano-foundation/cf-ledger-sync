@@ -1,29 +1,27 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
-import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
-import org.cardanofoundation.ledgersync.consumercommon.entity.Epoch;
-import org.cardanofoundation.ledgersync.consumercommon.entity.EpochParam;
-import org.cardanofoundation.ledgersync.consumercommon.entity.ParamProposal;
-import org.cardanofoundation.ledgersync.consumercommon.enumeration.EraType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cardanofoundation.ledgersync.constant.ConsumerConstant;
+import org.cardanofoundation.ledgersync.consumercommon.entity.*;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.EraType;
 import org.cardanofoundation.ledgersync.mapper.EpochParamMapper;
-import org.cardanofoundation.ledgersync.repository.BlockRepository;
-import org.cardanofoundation.ledgersync.repository.EpochParamRepository;
-import org.cardanofoundation.ledgersync.repository.EpochRepository;
-import org.cardanofoundation.ledgersync.repository.ParamProposalRepository;
-import org.cardanofoundation.ledgersync.service.CostModelService;
+import org.cardanofoundation.ledgersync.repository.*;
 import org.cardanofoundation.ledgersync.service.GenesisDataService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 
+//TODO: refactor this class
 class EpochParamServiceImplTest {
 
   @BeforeEach
@@ -36,7 +34,7 @@ class EpochParamServiceImplTest {
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelService costModelService = Mockito.mock(CostModelService.class);
+    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -51,8 +49,8 @@ class EpochParamServiceImplTest {
     Mockito.when(epochRepository.findAll()).thenReturn(epoches);
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
-        paramProposalRepository, epochParamRepository, epochRepository, costModelService, genesisDataService,
-        epochParamMapper);
+        paramProposalRepository, epochParamRepository, epochRepository, costModelRepository, genesisDataService,
+        epochParamMapper, new ObjectMapper());
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
 
@@ -66,7 +64,7 @@ class EpochParamServiceImplTest {
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelService costModelService = Mockito.mock(CostModelService.class);
+    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -88,8 +86,8 @@ class EpochParamServiceImplTest {
     Mockito.when(epochRepository.findEpochByNo(33)).thenReturn(optionalEpoch);
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
-        paramProposalRepository, epochParamRepository, epochRepository,
-        costModelService, genesisDataService, epochParamMapper);
+            paramProposalRepository, epochParamRepository, epochRepository, costModelRepository, genesisDataService,
+            epochParamMapper, new ObjectMapper());
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
     Assertions.assertThrows(RuntimeException.class,
@@ -103,7 +101,7 @@ class EpochParamServiceImplTest {
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelService costModelService = Mockito.mock(CostModelService.class);
+    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -136,8 +134,8 @@ class EpochParamServiceImplTest {
     Mockito.when(blockRepository.findFirstByEpochNo(3)).thenReturn(optionalBlock);
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
-        paramProposalRepository, epochParamRepository, epochRepository,
-        costModelService, genesisDataService, epochParamMapper);
+        paramProposalRepository, epochParamRepository, epochRepository, costModelRepository, genesisDataService, epochParamMapper,
+            new ObjectMapper());
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
 
@@ -153,7 +151,7 @@ class EpochParamServiceImplTest {
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelService costModelService = Mockito.mock(CostModelService.class);
+    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
     EpochParam defShelleyEpochParam = Mockito.mock(EpochParam.class);
@@ -208,7 +206,7 @@ class EpochParamServiceImplTest {
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
         paramProposalRepository, epochParamRepository, epochRepository,
-        costModelService, genesisDataService, epochParamMapper);
+        costModelRepository, genesisDataService, epochParamMapper, new ObjectMapper());
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
 
@@ -218,16 +216,17 @@ class EpochParamServiceImplTest {
         .updateByEpochParam(any(), any());
     Mockito.verify(epochParamMapper, Mockito.times(1))
         .updateByParamProposal(any(), any());
-    Mockito.verify(costModelService, Mockito.times(1)).getGenesisCostModel();
+    Mockito.verify(costModelRepository, Mockito.times(1)).save(any());
   }
 
   @Test
   void setDefShelleyEpochParamEraConway() {
+    ArgumentCaptor<CostModel> savedCostModel= ArgumentCaptor.forClass(CostModel.class);
     BlockRepository blockRepository = Mockito.mock(BlockRepository.class);
     ParamProposalRepository paramProposalRepository = Mockito.mock(ParamProposalRepository.class);
     EpochParamRepository epochParamRepository = Mockito.mock(EpochParamRepository.class);
     EpochRepository epochRepository = Mockito.mock(EpochRepository.class);
-    CostModelService costModelService = Mockito.mock(CostModelService.class);
+    CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
     GenesisDataService genesisDataService = Mockito.mock(GenesisDataService.class);
     EpochParamMapper epochParamMapper = Mockito.mock(EpochParamMapper.class);
 
@@ -236,14 +235,24 @@ class EpochParamServiceImplTest {
     EpochParam defBabbageEpochParam = Mockito.mock(EpochParam.class);
     EpochParam defConwayEpochParam = Mockito.mock(EpochParam.class);
 
+    Mockito.when(defConwayEpochParam.getCostModel()).thenReturn(CostModel.builder().costs("{\"PlutusV3\":[1,2,3]}")
+            .hash("genesis.conway").build());
+
     Epoch epoch = Mockito.mock(Epoch.class);
     Epoch epoch2 = Mockito.mock(Epoch.class);
     EpochParam mockEpochParam = Mockito.mock(EpochParam.class);
 
     Mockito.when(mockEpochParam.getEpochNo()).thenReturn(4);
+
+
     Mockito.when(epochParamRepository.findLastEpochParam()).thenReturn(Optional.of(mockEpochParam));
 
     Optional<EpochParam> prevEpochParam = Optional.of(defBabbageEpochParam);
+    Mockito.when(prevEpochParam.get().getCostModel()).thenReturn(
+            CostModel.builder()
+                    .costs("{\"PlutusV2\":{\"key1\":1,\"key2\":2}}")
+                    .hash("abc")
+                    .build());
     Mockito.when(epochParamRepository.findEpochParamByEpochNo(4))
             .thenReturn(prevEpochParam);
     Mockito.when(epoch.getNo()).thenReturn(5);
@@ -289,7 +298,7 @@ class EpochParamServiceImplTest {
 
     EpochParamServiceImpl epochParamServiceImpl = new EpochParamServiceImpl(blockRepository,
             paramProposalRepository, epochParamRepository, epochRepository,
-            costModelService, genesisDataService, epochParamMapper);
+            costModelRepository, genesisDataService, epochParamMapper, new ObjectMapper());
     epochParamServiceImpl.setDefShelleyEpochParam(defShelleyEpochParam);
     epochParamServiceImpl.setDefAlonzoEpochParam(defAlonzoEpochParam);
     epochParamServiceImpl.setDefBabbageEpochParam(defBabbageEpochParam);
@@ -301,5 +310,7 @@ class EpochParamServiceImplTest {
             .updateByEpochParam(any(), any());
     Mockito.verify(epochParamMapper, Mockito.times(1))
             .updateByParamProposal(any(), any());
+    Mockito.verify(costModelRepository, Mockito.times(1)).save(savedCostModel.capture());
+    Assertions.assertEquals("{\"PlutusV3\":[1,2,3],\"PlutusV2\":{\"key1\":1,\"key2\":2}}" , savedCostModel.getValue().getCosts());
   }
 }

@@ -1,27 +1,27 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
+import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.consumercommon.entity.Block;
-import org.cardanofoundation.ledgersync.consumercommon.entity.Epoch;
-import org.cardanofoundation.ledgersync.consumercommon.entity.EpochParam;
-import org.cardanofoundation.ledgersync.consumercommon.entity.ParamProposal;
+import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.EraType;
 import org.cardanofoundation.ledgersync.mapper.EpochParamMapper;
-import org.cardanofoundation.ledgersync.repository.BlockRepository;
-import org.cardanofoundation.ledgersync.repository.EpochParamRepository;
-import org.cardanofoundation.ledgersync.repository.EpochRepository;
-import org.cardanofoundation.ledgersync.repository.ParamProposalRepository;
+import org.cardanofoundation.ledgersync.repository.*;
 import org.cardanofoundation.ledgersync.service.CostModelService;
 import org.cardanofoundation.ledgersync.service.EpochParamService;
 import org.cardanofoundation.ledgersync.service.GenesisDataService;
+import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.cardanofoundation.ledgersync.util.EpochParamUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -34,9 +34,11 @@ public class EpochParamServiceImpl implements EpochParamService {
     final ParamProposalRepository paramProposalRepository;
     final EpochParamRepository epochParamRepository;
     final EpochRepository epochRepository;
-    final CostModelService costModelService;
+    final CostModelRepository costModelRepository;
+//    final CostModelService costModelService;
     final GenesisDataService genesisDataService;
     final EpochParamMapper epochParamMapper;
+    final ObjectMapper objectMapper;
     EpochParam defShelleyEpochParam;
     EpochParam defAlonzoEpochParam;
     EpochParam defBabbageEpochParam;
@@ -44,16 +46,17 @@ public class EpochParamServiceImpl implements EpochParamService {
 
     public EpochParamServiceImpl(BlockRepository blockRepository, ParamProposalRepository paramProposalRepository,
                                  EpochParamRepository epochParamRepository, EpochRepository epochRepository,
-                                 CostModelService costModelService,
+                                 CostModelRepository costModelRepository,
                                  @Lazy GenesisDataService genesisDataService,
-                                 EpochParamMapper epochParamMapper) {
+                                 EpochParamMapper epochParamMapper, ObjectMapper objectMapper) {
         this.blockRepository = blockRepository;
         this.paramProposalRepository = paramProposalRepository;
         this.epochParamRepository = epochParamRepository;
         this.epochRepository = epochRepository;
-        this.costModelService = costModelService;
+        this.costModelRepository = costModelRepository;
         this.genesisDataService = genesisDataService;
         this.epochParamMapper = epochParamMapper;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -93,6 +96,7 @@ public class EpochParamServiceImpl implements EpochParamService {
      *
      * @param epochNo
      */
+    @SneakyThrows
     void handleEpochParam(int epochNo) {
         EraType curEra = getEra(epochNo);
         EraType prevEra = getEra(epochNo - BigInteger.ONE.intValue());
@@ -113,8 +117,9 @@ public class EpochParamServiceImpl implements EpochParamService {
         if (curEra == EraType.ALONZO && prevEra == null) {
             epochParamMapper.updateByEpochParam(curEpochParam, defShelleyEpochParam);
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
-
-            curEpochParam.setCostModel(costModelService.getGenesisCostModel());
+            var costModel = defAlonzoEpochParam.getCostModel();
+            costModelRepository.save(costModel);
+            curEpochParam.setCostModel(costModel);
             curEpochParam.setMinUtxoValue(null);
         }
 
@@ -124,7 +129,9 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         if (curEra == EraType.ALONZO && prevEra == EraType.MARY) {
             epochParamMapper.updateByEpochParam(curEpochParam, defAlonzoEpochParam);
-            curEpochParam.setCostModel(costModelService.getGenesisCostModel());
+            var costModel = defAlonzoEpochParam.getCostModel();
+            costModelRepository.save(costModel);
+            curEpochParam.setCostModel(costModel);
             curEpochParam.setMinUtxoValue(null);
         }
 
@@ -134,6 +141,34 @@ public class EpochParamServiceImpl implements EpochParamService {
 
         if (curEra == EraType.CONWAY && prevEra == EraType.BABBAGE) {
             epochParamMapper.updateByEpochParam(curEpochParam, defConwayEpochParam);
+            var genesisConwayCostModel = defConwayEpochParam.getCostModel();
+            var currentCostModel = CostModel.builder()
+                    .hash(genesisConwayCostModel.getHash())
+                    .build();
+            CostModel prevCostModel = prevEpochParam.map(EpochParam::getCostModel).orElse(null);
+            if (prevCostModel != null) {
+                // merge prev costs into genesis conway cost model
+                Map<String, Object> costs = objectMapper.readValue(prevCostModel.getCosts(), new TypeReference<>() {
+                });
+                Map<String, Object> genesisConwayCosts = objectMapper.readValue(genesisConwayCostModel.getCosts(), new TypeReference<>() {
+                });
+
+                Map<String, Object> mergedCosts = new HashMap<>();
+
+                costs.forEach((key, value) -> {
+                    if (!mergedCosts.containsKey(key)) {
+                        mergedCosts.put(key, value);
+                    }
+                });
+                mergedCosts.put(PlutusKey.PLUTUS_V3.value, genesisConwayCosts.get(PlutusKey.PLUTUS_V3.value));
+
+                currentCostModel.setCosts(objectMapper.writeValueAsString(mergedCosts));
+            } else {
+                currentCostModel.setCosts(genesisConwayCostModel.getCosts());
+            }
+
+            costModelRepository.save(currentCostModel);
+            curEpochParam.setCostModel(currentCostModel);
         }
 
         List<ParamProposal> prevParamProposals = paramProposalRepository

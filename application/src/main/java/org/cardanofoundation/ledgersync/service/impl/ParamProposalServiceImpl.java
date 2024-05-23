@@ -155,7 +155,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                     var govActionDeposit = protocolParamUpdate.getGovActionDeposit();
                     var drepDeposit = protocolParamUpdate.getDrepDeposit();
                     var drepActivity = toBigInteger(protocolParamUpdate.getDrepActivity());
-                    var minFeeRefScriptCostPerByte = toBigInteger(protocolParamUpdate.getMinFeeRefScriptCostPerByte());
+                    var minFeeRefScriptCostPerByte = toDouble(protocolParamUpdate.getMinFeeRefScriptCostPerByte());
 
                     return ParamProposal.builder()
                             .key(entrySet.getKey())

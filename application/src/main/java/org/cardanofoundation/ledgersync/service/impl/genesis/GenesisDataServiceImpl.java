@@ -122,6 +122,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     private final static String MEMBERS = "members";
     private final static String QUORUM = "quorum";
 
+    private final static String PLUTUS_V_3_COST_MODEL = "plutusV3CostModel";
+    private final static String MIN_FEE_REF_SCRIPT_COST_PER_BYTE = "minFeeRefScriptCostPerByte";
 
     @Value("${genesis.byron}")
     String genesisByron;
@@ -172,8 +174,8 @@ public class GenesisDataServiceImpl implements GenesisDataService {
         epochParamService.setDefBabbageEpochParam(genesisData.getBabbage());
         log.info("setup conway genesis");
         epochParamService.setDefConwayEpochParam(genesisData.getConway());
-        log.info("setup genesis cost model");
-        costModelService.setGenesisCostModel(genesisData.getCostModel());
+//        log.info("setup genesis cost model");
+//        costModelService.setGenesisCostModel(genesisData.getAlonzoCostModel());
     }
 
     @Transactional
@@ -375,7 +377,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
             final var poolVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(POOL_VOTING_THRESHOLDS);
             final var dRepVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(D_REP_VOTING_THRESHOLDS);
 
-            EpochParam genesisShelleyProtocols = EpochParam.builder()
+            EpochParam genesisConwayProtocols = EpochParam.builder()
                     .pvtCommitteeNormal(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NORMAL)).doubleValue())
                     .pvtCommitteeNoConfidence(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NO_CONFIDENCE)).doubleValue())
                     .pvtHardForkInitiation(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_HARD_FORK_INITIATION)).doubleValue())
@@ -399,7 +401,24 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .drepActivity(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_ACTIVITY)))
                     .build();
 
-            genesisData.setConway(genesisShelleyProtocols);
+            if (genesisConwayJsonMap.get(MIN_FEE_REF_SCRIPT_COST_PER_BYTE) != null) {
+                genesisConwayProtocols.setMinFeeRefScriptCostPerByte(convertObjectToBigDecimal(genesisConwayJsonMap.get(MIN_FEE_REF_SCRIPT_COST_PER_BYTE)).doubleValue());
+            }
+
+            if (genesisConwayJsonMap.get(PLUTUS_V_3_COST_MODEL) != null) {
+                final Map<String, List<Long>> plutusV3CostModel = new HashMap<>();
+
+                plutusV3CostModel.put(CostModelConverter.PLUTUS_V3, (ArrayList<Long>) genesisConwayJsonMap.get(PLUTUS_V_3_COST_MODEL));
+
+                final var costModel = CostModel.builder()
+                        .costs(objectMapper.writeValueAsString(plutusV3CostModel))
+                        .hash("genesis.conway") //TODO check later
+                        .build();
+
+                genesisConwayProtocols.setCostModel(costModel);
+            }
+
+            genesisData.setConway(genesisConwayProtocols);
         } catch (Exception e) {
             log.error("Genesis data at {} can't parse from json to java object", genesisConway);
             log.error("{} value \n {}", genesisAlonzo, genesisConwayJson);
@@ -457,7 +476,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .build();
 
             genesisData.setAlonzo(genesisShelleyProtocols);
-            genesisData.setCostModel(costModel);
+            genesisData.setAlonzoCostModel(costModel);
         } catch (Exception e) {
             log.error("Genesis data at {} can't parse from json to java object", genesisAlonzo);
             log.error("{} value \n {}", genesisAlonzo, genesisAlonzoJson);
