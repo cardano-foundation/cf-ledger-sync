@@ -122,7 +122,7 @@ spec:
               value: "180"
 
             - name: STORE_ACCOUNT_HISTORYCLEANUPENABLED
-              value: {{ .Values.aggregation.store.account.history_cleanup_enabled | quote }}
+              value: {{ .Values.aggregation.store.account.history_cleanup_enabled | default "false" | quote }}
             - name: STORE_ACCOUNT_INITIALBALANCESNAPSHOTBLOCK
               value: "0"
             - name: STORE_ACCOUNT_BALANCECALCJOBBATCHSIZE
@@ -133,21 +133,23 @@ spec:
               value: "120"
             - name: STORE_ADMIN_AUTORECOVERYENABLED
               value: "true"
+            - name: STORE_ADMIN_APIENABLED
+              value: "true"
 
-            - name: STORE_EXECUTOR_BLOCKS_BATCH_SIZE
-              value: {{ .Values.aggregation.store.executor.blocks_batch_size | default 100 | quote }}
-            - name: STORE_EXECUTOR_BLOCKS_PARTITION_SIZE
-              value: {{ .Values.aggregation.store.executor.blocks_partition_size | default 10 | quote }}
-
-            - name: STORE_EXECUTOR_BLOCK_PROCESSING_THREADS
-              value: {{ .Values.aggregation.store.executor.block_processing_threads | default 15 | quote }}
-            - name: STORE_EXECUTOR_EVENT_PROCESSING_THREADS
-              value: {{ .Values.aggregation.store.executor.event_processing_threads | default 30 | quote }}
+#            - name: STORE_EXECUTOR_BLOCKS_BATCH_SIZE
+#              value: {{ .Values.aggregation.store.executor.blocks_batch_size | default 100 | quote }}
+#            - name: STORE_EXECUTOR_BLOCKS_PARTITION_SIZE
+#              value: {{ .Values.aggregation.store.executor.blocks_partition_size | default 10 | quote }}
+#
+#            - name: STORE_EXECUTOR_BLOCK_PROCESSING_THREADS
+#              value: {{ .Values.aggregation.store.executor.block_processing_threads | default 15 | quote }}
+#            - name: STORE_EXECUTOR_EVENT_PROCESSING_THREADS
+#              value: {{ .Values.aggregation.store.executor.event_processing_threads | default 30 | quote }}
 
             - name: STORE_EXECUTOR_USE_VIRTUAL_THREAD_FOR_BATCH_PROCESSING
-              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "false" | quote }}
+              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_batch_processing | default "true" | quote }}
             - name: STORE_EXECUTOR_USE_VIRTUAL_THREAD_FOR_EVENT_PROCESSING
-              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_event_processing | default "false" | quote }}
+              value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_event_processing | default "true" | quote }}
             - name: STORE_EXECUTOR_ENABLE_PARALLEL_PROCESSING
               value: {{ .Values.aggregation.store.executor.enable_parallel_processing | default "true" | quote }}
           ports:
