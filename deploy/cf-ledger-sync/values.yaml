@@ -85,6 +85,8 @@ aggregation:
     dbKey: LEDGER_SYNC_DB
     userKey: POSTGRES_USER
     passwordKey: POSTGRES_PASSWORD
+  db:
+    maximum_pool_size: 50
   store:
     account:
       history_cleanup_enabled: "true"
