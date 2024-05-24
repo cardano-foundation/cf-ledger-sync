@@ -113,7 +113,7 @@ spec:
             {{- end }}
 
             - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-              value: {{ .Values.aggregation.db.maximum_pool_size | default 50 }}
+              value: {{ .Values.aggregation.db.maximum_pool_size | default 50 | quote }}
 
             - name: HEALTH_CHECK_ENABLED
               value: "true"
