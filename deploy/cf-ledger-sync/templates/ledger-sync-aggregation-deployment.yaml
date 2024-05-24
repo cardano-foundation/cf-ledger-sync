@@ -112,6 +112,9 @@ spec:
                   key: {{ .passwordKey }}
             {{- end }}
 
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: {{ .Values.aggregation.db.maximum_pool_size | default 50 }}
+
             - name: HEALTH_CHECK_ENABLED
               value: "true"
             - name: EVENT_TIME_THRESHOLD_IN_SECOND
