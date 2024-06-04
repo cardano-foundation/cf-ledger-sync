@@ -300,6 +300,14 @@
 |address_raw||                                                                |
 |token_type||                                                                |
 |inline_datum_id|inline_datum| Join with the transaction_script and datum table in yaci_store |
+
+### 1. ma_tx_out - address_utxo
+| **Ledger_Sync** | **Yaci_Store**       | **Note**                                                                            |
+|:----------------|:---------------------|:------------------------------------------------------------------------------------|
+| quantity        | amounts->>'quantity' |                                                                                     |
+| ident           |                      | LS: Reference to `multi_assets` table. <br>Yaci store: Can join with `assets` table |
+| tx_out_id       | tx_hash              |                                                                                     |
+
 ## B. Analyze **tx_input** table
 ### 1. tx_in - tx_input
 
