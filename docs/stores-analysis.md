@@ -263,6 +263,14 @@
 |signature|signature|                                         |
 |index_arr, index_arr_size|idx|                                         |
 |type|type| In Ledger_sync, the type is always null |
+
+### 2. extra_key_witness - transaction_witness
+
+| **Ledger_Sync** | **Yaci_Store** | **Note**                                |
+|:----------------|:---------------|:----------------------------------------|
+| hash            | pub_keyhash    |                                         |
+| tx_id           | tx_hash        |                                         |
+
 ## C. Analyze **withdrawal** table
 ### 1. withdrawal - withdrawal
 
