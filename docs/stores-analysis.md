@@ -46,9 +46,9 @@
 
 ### 3. slot_leader - block
 
-| **Ledger_Sync**| **Yaci_Store**|**Note**|
-|:---------------|:-------------| :- |
-| slot_leader    | hash         ||
+| **Ledger_Sync** | **Yaci_Store** | **Note** |
+|:----------------|:---------------|:---------|
+| hash            | slot_leader    |          |
 ## B. Analyze **roll_back** table
 - Not found in Ledger_sync
 # III. Epoch store
