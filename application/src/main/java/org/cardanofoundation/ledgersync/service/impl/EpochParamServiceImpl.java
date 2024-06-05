@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
+import com.bloxbean.cardano.yaci.core.util.StringUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
@@ -185,6 +186,10 @@ public class EpochParamServiceImpl implements EpochParamService {
                         () -> new RuntimeException("Block not found for epoch: " + epochNo));
         curEpochParam.setEpochNo(epochNo);
         curEpochParam.setBlock(block);
+
+        if (curEpochParam.getExtraEntropy() != null && curEpochParam.getExtraEntropy().isEmpty()) {
+            curEpochParam.setExtraEntropy(null);
+        }
         epochParamRepository.save(curEpochParam);
     }
 
