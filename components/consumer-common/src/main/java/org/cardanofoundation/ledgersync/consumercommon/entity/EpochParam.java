@@ -256,6 +256,9 @@ public class EpochParam extends BaseEntity {
   @Column(name = "min_fee_ref_script_cost_per_byte")
   private Double minFeeRefScriptCostPerByte;
 
+  @Column(name = "cc_threshold")
+  private Double ccThreshold;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -287,6 +290,6 @@ public class EpochParam extends BaseEntity {
         dvtHardForkInitiation, dvtPPNetworkGroup, dvtPPEconomicGroup,
         dvtPPTechnicalGroup, dvtPPGovGroup, dvtTreasuryWithdrawal,
         committeeMinSize, committeeMaxTermLength, govActionLifetime,
-        govActionDeposit, drepDeposit, drepActivity, minFeeRefScriptCostPerByte);
+        govActionDeposit, drepDeposit, drepActivity, minFeeRefScriptCostPerByte, ccThreshold);
   }
 }

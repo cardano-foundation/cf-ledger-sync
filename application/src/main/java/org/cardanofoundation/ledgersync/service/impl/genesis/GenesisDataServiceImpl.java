@@ -120,7 +120,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
 
     private final static String COMMITTEE = "committee";
     private final static String MEMBERS = "members";
-    private final static String QUORUM = "quorum";
+    private final static String THRESHOLD = "threshold";
 
     private final static String PLUTUS_V_3_COST_MODEL = "plutusV3CostModel";
     private final static String MIN_FEE_REF_SCRIPT_COST_PER_BYTE = "minFeeRefScriptCostPerByte";
@@ -376,6 +376,7 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     });
             final var poolVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(POOL_VOTING_THRESHOLDS);
             final var dRepVotingThresholds = (Map<String, Object>) genesisConwayJsonMap.get(D_REP_VOTING_THRESHOLDS);
+            final var committee = (Map<String, Object>) genesisConwayJsonMap.get(COMMITTEE);
 
             EpochParam genesisConwayProtocols = EpochParam.builder()
                     .pvtCommitteeNormal(convertObjectToBigDecimal(poolVotingThresholds.get(PVT_COMMITTEE_NORMAL)).doubleValue())
@@ -400,6 +401,10 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .drepDeposit(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_DEPOSIT)))
                     .drepActivity(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_ACTIVITY)))
                     .build();
+
+            if (committee.get(THRESHOLD) != null) {
+                genesisConwayProtocols.setCcThreshold(convertObjectToBigDecimal(committee.get(THRESHOLD)).doubleValue());
+            }
 
             if (genesisConwayJsonMap.get(MIN_FEE_REF_SCRIPT_COST_PER_BYTE) != null) {
                 genesisConwayProtocols.setMinFeeRefScriptCostPerByte(convertObjectToBigDecimal(genesisConwayJsonMap.get(MIN_FEE_REF_SCRIPT_COST_PER_BYTE)).doubleValue());
