@@ -84,10 +84,27 @@
 |epoch_no|epoch||
 |cost_model_id|cost_model_hash||
 |others|params||
-# IV. Govermane store
+
+# IV. Epoch aggregate
+## A. Analyze  **transaction_metadata** table
+### 1. epoch -  epoch
+| **Ledger_Sync**     | **Yaci_Store**    | **Note**                                                                                         |
+|:--------------------|:------------------|:-------------------------------------------------------------------------------------------------|
+| no                  | number            |                                                                                                  |
+| blk_count           | block_count       |                                                                                                  |
+| start_time          | start_time        |                                                                                                  |
+| end_time            | end_time          |                                                                                                  |
+| fees                | total_fees        |                                                                                                  |
+| out_sum             | total_output      |                                                                                                  |
+| tx_count            | transaction_count |                                                                                                  |
+| max_slot            | max_slot          | LedgerSync: The maximum slot of each epoch<br>YaciStore: The slot of the last block in the epoch |
+| era                 |                   | Can be additionally stored in YaciStore.                                                         |
+| rewards_distributed |                   | All values are null.                                                                             |
+
+# V. Governance store
 - Ledger_sync is using the entire table from yaci_store.
-# V. Live store
-# VI. Metadata store
+# VI. Live store
+# VII. Metadata store
 ## A. Analyze  **transaction_metadata** table
 - tx_metadata + tx_metadata_hash = transaction_metadata
 ### 1. tx_metadata -  transaction_metadata
@@ -103,9 +120,9 @@
 |**Ledger_Sync**|**Yaci_Store**|**Note**|
 | :- | :- | :- |
 |hash|tx_hash||
-# VII. Mir store
+# VIII. Mir store
 - Regarding reward.
-# VIII. Script store
+# IX. Script store
 - script + redeemer +redeemer_data + datum = script + transaction_script + datum
 ## A. Analyze **script** table
 ### 1. script - script
@@ -150,7 +167,7 @@
 |bytes|datum||
 |tx_id|created_at_tx||
 |value|||
-# IX. Staking store
+# X. Staking store
 - stake_registration + stake_deregistration = stake_registration
 - pool_hash + pool_metadata_ref + pool_owner + pool_relays + pool_update = delegation
 ## A. Analyze **stake_registration** table
@@ -235,7 +252,7 @@
 |retiring_epoch|retirement_epoch||
 |announced_tx_id|tx_hash||
 |hash_id|pool_id||
-# X. Transaction store
+# XI. Transaction store
 ## A. Analyze **transaction** table
 ### 1. tx - transaction
 
@@ -282,7 +299,7 @@
 |redeemer_id||Join with the transaction_script table in yaci_store|
 ## D. Analyze **invalid_transaction** table
 - Not found in Ledger_sync
-# XI. Utxo store
+# XII. Utxo store
 ## A. Analyze **address_utxo** table
 ### 1. tx_out - address_utxo
 
