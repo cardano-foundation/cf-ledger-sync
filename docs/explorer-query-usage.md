@@ -152,3 +152,24 @@
 - epoch
 - pool_hash
 - pool_offline_data
+
+## 10. CommitteeRegistrationRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### countByExpiredEpochNo
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT COUNT(cr) FROM CommitteeRegistration cr "
+              + "JOIN EpochParam ep ON cr.epoch = ep.epochNo "
+              + "WHERE (ep.epochNo + ep.committeeMaxTermLength) >= :expiredEpoch")
+    ```
+- related table:
+  - epoch_param
+</details>
+
+### Related table:
+- epoch_param
+
