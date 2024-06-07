@@ -21,10 +21,12 @@
 
 #### findFirstByBlockNo
 - related table:
-  - epoch
+  - slot_leader
+> **_NOTE:_** Include the slot_leader information.
 #### findFirstByHash
 - related table:
-  - epoch
+  - slot_leader
+> **_NOTE:_** Include the slot_leader information.
 #### findAllBlock
 - query:
     ```sql
@@ -155,6 +157,7 @@
 - epoch
 - pool_hash
 - pool_offline_data
+> **_NOTE:_** A new table for pools is needed to store pool-related information.
 
 ## 10. CommitteeRegistrationRepository
 <details>
@@ -193,6 +196,7 @@
     ```
 - related table:
   - XXX
+> **_NOTE:_** Some note.
 </details>
 
 ### Related table:
