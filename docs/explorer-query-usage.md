@@ -7,10 +7,13 @@
 ## 7. AggregatePoolInfoRepository
 ## 8. AssetMetadataRepository
 - Created by cf-ledger-consumer-schedules
-### List queries:
+<details>
+<summary> <h3>List queries:</h3></summary>
+
 #### findFirstBySubject
 #### findBySubjectIn
 #### findByFingerprintIn
+</details>
 
 ## 9. BlockRepository
 <details>
@@ -172,4 +175,27 @@
 
 ### Related table:
 - epoch_param
+
+
+
+
+
+## x. TEMPLATE
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### TEMPLATE QUERY
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT * from TEMPLATE"
+    ```
+- related table:
+  - XXX
+</details>
+
+### Related table:
+- XXX
+
 
