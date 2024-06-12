@@ -497,7 +497,32 @@
     ```
 </details>
 
+## 19. EpochStakeCheckpointRepository
+> **_NOTE:_** - Regarding reward, Analyze later
 
+## 20. EpochStakeRepository
+> **_NOTE:_** - Analyze later
+
+## 21. FailedTxOutRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findFailedTxOutByTx
+- query:
+    ```sql
+    @Query(
+      "SELECT failedTxOut.address AS address, tx.hash AS txHash, failedTxOut.value AS value,"
+          + " failedTxOut.index AS index, failedTxOut.multiAssetsDescr AS assetsJson"
+          + " FROM FailedTxOut failedTxOut "
+          + " INNER JOIN Tx tx ON failedTxOut.tx = tx "
+          + " WHERE tx = :tx")
+    ```
+- related table:
+  - tx
+</details>
+
+### Related table:
+- tx
 
 
 
