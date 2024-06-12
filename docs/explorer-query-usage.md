@@ -425,6 +425,42 @@
 > - How can we distinguish the order between two transactions?.
 > - It's necessary to create the pool_offline_data table when using the staking store of yaci_store.
 
+## 15. DelegationVoteRepository
+> **_NOTE:_** - Regarding governance, we are currently using `delegation_vote` tables from yaci_store.
+
+## 16. DRepRegistrationRepository
+> **_NOTE:_** - Regarding governance, we are currently using `drep_registration` tables from yaci_store.
+
+## 17. EpochParamRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findEpochParamByEpochNo
+#### findEpochParamInTime
+- query:
+    ```sql
+      @Query(
+      value =
+          "SELECT ep "
+              + "FROM EpochParam ep "
+              + "JOIN Epoch e ON e.no = ep.epochNo "
+              + "WHERE e.startTime <=  :epochTime")
+    ```
+- related table:
+  - epoch
+#### findKeyDepositByEpochNo
+- query:
+    ```sql
+    @Query(value = "SELECT COALESCE(ep.keyDeposit, 0) FROM EpochParam ep WHERE ep.epochNo = :epochNo")
+    ```
+#### findByEpochNoIn
+#### findByEpochNo
+</details>
+
+### Related table:
+- epoch
+
+
 
 
 ## x. TEMPLATE
