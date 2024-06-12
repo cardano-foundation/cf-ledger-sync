@@ -155,6 +155,19 @@ spec:
               value: {{ .Values.aggregation.store.executor.use_virtual_thread_for_event_processing | default "true" | quote }}
             - name: STORE_EXECUTOR_ENABLE_PARALLEL_PROCESSING
               value: {{ .Values.aggregation.store.executor.enable_parallel_processing | default "true" | quote }}
+
+            - name: HIKARI_MINIMUM_IDLE
+              value: {{ .Values.indexer.hikari.minimumIdle | default "10" | quote }}
+            - name: HIKARI_MAXIMUM_POOL_SIZE
+              value: {{ .Values.indexer.hikari.maximumPoolSize | default "48" | quote }}
+            - name: HIKARI_CONNECTION_TIMEOUT
+              value: {{ .Values.indexer.hikari.connectionTimeout | default "50000" | quote }}
+            - name: HIKARI_IDLE_TIMEOUT
+              value: {{ .Values.indexer.hikari.idleTimeout | default "300000" | quote }}
+            - name: HIKARI_MAX_LIFETIME
+              value: {{ .Values.indexer.hikari.maxLifetime | default "900000" | quote }}
+            - name: HIKARI_AUTO_COMMIT
+              value: {{ .Values.indexer.hikari.autoCommit | default "true" | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
