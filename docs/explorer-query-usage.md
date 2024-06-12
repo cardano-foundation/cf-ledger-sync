@@ -538,6 +538,100 @@
     ```
 </details>
 
+## 24. LatestStakeAddressBalanceRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findByStakeAddress
+- query:
+    ```sql
+    @Query("SELECT s FROM LatestStakeAddressBalance s WHERE s.address = :stakeAddress")
+    ```
+</details>
+
+## 25. LatestTokenBalanceRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findTokenAndBalanceByAddress
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+          SELECT ma.fingerprint as fingerprint,
+          ma.policy as policy,
+          ma.name as tokenName,
+          ltb.quantity as quantity,
+          am.url as url, am.decimals as decimals, am.ticker as ticker,
+          am.logo as logo, am.description as description, am.subject as subject
+          FROM LatestTokenBalance ltb
+          INNER JOIN MultiAsset ma ON ma.unit = ltb.unit
+          LEFT JOIN AssetMetadata am ON ma.fingerprint = ma.fingerprint
+          WHERE ltb.address = :address
+          AND ltb.quantity > 0
+          """)
+    ```
+- related table:
+  - multi_asset
+  - asset_metadata
+#### findTokenAndBalanceByAddressAndNameView
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+          SELECT ma.fingerprint as fingerprint,
+          ma.policy as policy,
+          ma.name as tokenName,
+          ltb.quantity as quantity,
+          am.url as url, am.decimals as decimals, am.ticker as ticker,
+          am.logo as logo, am.description as description, am.subject as subject
+          FROM LatestTokenBalance ltb
+          INNER JOIN MultiAsset ma ON ma.unit = ltb.unit
+          LEFT JOIN AssetMetadata am ON ma.fingerprint = ma.fingerprint
+          WHERE ltb.address = :address
+          AND (lower(ma.nameView) LIKE CONCAT('%', :searchValue, '%') OR ma.fingerprint = :searchValue)
+          AND ltb.quantity > 0
+          """)
+    ```
+- related table:
+  - multi_asset
+  - asset_metadata
+#### findAddressAndBalanceByPolicy
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+      SELECT ltb.address as address, ltb.quantity as quantity, ma.name as tokenName, ma.fingerprint as fingerprint
+      FROM LatestTokenBalance ltb
+               INNER JOIN MultiAsset ma ON ma.unit = ltb.unit
+      WHERE ltb.policy = :policy
+      AND ltb.quantity > 0
+      """)
+    ```
+- related table:
+  - multi_asset
+#### getTopHolderOfToken
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+    select (case when ltb.stakeAddress is null then ltb.address else ltb.stakeAddress end) as address, ltb.quantity as quantity
+    from LatestTokenBalance ltb
+    where ltb.unit = :unit
+    and ltb.quantity > 0
+    """)
+    ```
+</details>
+
+### Related table:
+- multi_asset
+- asset_metadata
+
+
 ## x. TEMPLATE
 <details>
 <summary> <h3>List queries:</h3></summary>
