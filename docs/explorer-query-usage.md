@@ -524,7 +524,19 @@
 ### Related table:
 - tx
 
+## 22. GovernanceActionRepository
+> **_NOTE:_** - Regarding governance, we are currently using `gov_action_proposal` tables from yaci_store
 
+## 23. LatestAddressBalanceRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAllLatestAddressBalance
+- query:
+    ```sql
+    @Query(value = "SELECT lab FROM LatestAddressBalance lab")
+    ```
+</details>
 
 ## x. TEMPLATE
 <details>
