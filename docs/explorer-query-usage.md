@@ -460,6 +460,44 @@
 ### Related table:
 - epoch
 
+## 18. EpochRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findFirstByNo
+#### findCurrentEpochNo
+- query:
+    ```sql
+    @Query(value = "SELECT max(no) FROM Epoch")
+    ```
+#### findCurrentEpochSummary
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT no as no, blkCount as blkCount, maxSlot as maxSlot , startTime as startTime"
+              + ",endTime as endTime "
+              + "FROM Epoch "
+              + "WHERE no  = (SELECT MAX(epoch.no) FROM Epoch epoch)")
+    ```
+#### findByCurrentEpochNo
+- query:
+    ```sql
+    @Query(value = "SELECT ep FROM Epoch ep WHERE ep.no = (SELECT max(epoch.no) FROM Epoch epoch)")
+    ```
+#### findEpochTime
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT new org.cardanofoundation.explorer.api.projection.EpochTimeProjection( "
+              + "e.no, e.startTime, e.endTime) "
+              + "FROM Epoch e "
+              + "WHERE e.no BETWEEN :min AND :max")
+    ```
+</details>
+
+
 
 
 
