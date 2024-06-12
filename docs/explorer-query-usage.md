@@ -631,6 +631,92 @@
 - multi_asset
 - asset_metadata
 
+## 26. LatestVotingProcedureRepository
+> **_NOTE:_** - Regarding governance
+
+## 27. MaTxMintRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findByTxId
+- query:
+    ```sql
+    @Query(
+      "SELECT ma.name as name, ma.policy as policy, mtm.quantity as assetQuantity,"
+          + " ma.fingerprint as fingerprint, am.url as url, am.ticker as ticker,"
+          + " am.decimals as decimals, am.logo as logo, am.description as description"
+          + " FROM MaTxMint mtm "
+          + " JOIN MultiAsset ma ON ma.id = mtm.ident.id"
+          + " LEFT JOIN AssetMetadata am ON am.fingerprint = ma.fingerprint"
+          + " WHERE mtm.tx.id=:txId")
+    ```
+- related table:
+  - multi_asset
+  - asset_metadata
+#### findByIdent
+- query:
+    ```sql
+    @Query(
+      "SELECT maTxMint"
+          + " FROM MaTxMint maTxMint "
+          + " WHERE maTxMint.ident.fingerprint = :tokenId ")
+  @EntityGraph(attributePaths = {MaTxMint_.TX, "tx.block"})
+    ```
+- related table:
+  - tx
+#### getTxMetadataToken
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tm.json FROM Tx tx"
+              + " JOIN MaTxMint mtm ON mtm.tx = tx"
+              + " JOIN TxMetadata tm ON tm.tx = tx"
+              + " JOIN MultiAsset ma ON ma = mtm.ident"
+              + " WHERE ma.fingerprint = :fingerprint AND tm.key = :label"
+              + " ORDER BY mtm.id DESC LIMIT 1")
+    ```
+- related table:
+  - tx_metadata
+  - multi_asset
+#### findFirstTxMintByMultiAssetId
+- query:
+    ```sql
+     @Query(
+      value = "SELECT mtm.tx_id from ma_tx_mint mtm where mtm.ident = :multiAssetId LIMIT 1",
+      nativeQuery = true)
+    ```
+#### existsMoreOneMintTx
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT TRUE FROM MaTxMint mtm "
+              + "WHERE mtm.ident IN :multiAssets "
+              + "AND mtm.tx.id != :txId")
+    ```
+#### mintNumber
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT CASE WHEN count(mtm.id) >= 1 THEN TRUE ELSE FALSE END AS FLAG "
+              + "FROM MaTxMint mtm "
+              + "JOIN MultiAsset ma ON ma = mtm.ident "
+              + "WHERE ma.fingerprint = :fingerprint AND mtm.quantity = 1")
+    ```
+- related table:
+  - multi_asset
+</details>
+
+### Related table:
+- multi_asset
+- asset_metadata
+- tx
+- tx_metadata
+
+
+
 
 ## x. TEMPLATE
 <details>
