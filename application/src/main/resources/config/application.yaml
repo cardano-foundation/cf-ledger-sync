@@ -4,12 +4,12 @@ spring:
     # Hikari specific configs
     hikari:
       pool-name: explorer-consumer-pool
-      minimum-idle: 10 #minimum number of idle connections maintained by HikariCP in a connection pool
-      maximum-pool-size: ${MAXIMUM_POOL_SIZE:48} #maximum pool size
-      idle-timeout: 300000 #maximum idle time for connection
-      max-lifetime: 900000 #maximum lifetime in milliseconds of a connection in the pool after it is closed.
-      connection-timeout: 50000 #maximum number of milliseconds that a client will wait for a connection
-      auto-commit: true #default auto-commit behavior.
+      minimum-idle: ${HIKARI_MINIMUM_IDLE:10} #minimum number of idle connections maintained by HikariCP in a connection pool
+      maximum-pool-size: ${HIKARI_MAXIMUM_POOL_SIZE:48} #maximum pool size
+      idle-timeout: ${HIKARI_IDLE_TIMEOUT:300000} #maximum idle time for connection
+      max-lifetime: ${HIKARI_MAX_LIFETIME:900000} #maximum lifetime in milliseconds of a connection in the pool after it is closed.
+      connection-timeout: ${HIKARI_CONNECTION_TIMEOUT:50000} #maximum number of milliseconds that a client will wait for a connection
+      auto-commit: ${HIKARI_AUTO_COMMIT:true} #default auto-commit behavior.
       connection-init-sql: SELECT 1
       data-source-properties:
         cachePrepStmts: true
