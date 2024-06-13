@@ -15,7 +15,7 @@ import org.cardanofoundation.ledgersync.common.common.cost.mdl.PlutusV1Keys;
 import org.cardanofoundation.ledgersync.common.common.cost.mdl.PlutusV2Keys;
 import org.cardanofoundation.ledgersync.common.util.JsonUtil;
 import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
-import org.cardanofoundation.ledgersync.repository.CostModelRepository;
+import org.cardanofoundation.ledgersync.repository.CostModelRepositoryLS;
 import org.cardanofoundation.ledgersync.service.CostModelService;
 import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CostModelServiceImpl implements CostModelService {
 
-    final CostModelRepository costModelRepository;
+    final CostModelRepositoryLS costModelRepositoryLS;
 
     @Override
     public void handleCostModel(AggregatedTx tx) {
@@ -83,16 +83,16 @@ public class CostModelServiceImpl implements CostModelService {
                         , (past, future) -> future));
 
         if (!ObjectUtils.isEmpty(costModels)) {
-            costModelRepository.existHash(
+            costModelRepositoryLS.existHash(
                             costModels.keySet())
                     .forEach(costModels::remove);
-            costModelRepository.saveAll(costModels.values());
+            costModelRepositoryLS.saveAll(costModels.values());
         }
     }
 
     @Override
     public CostModel findCostModelByHash(String hash) {
-        var costModelOptional = costModelRepository.findByHash(hash);
+        var costModelOptional = costModelRepositoryLS.findByHash(hash);
         return costModelOptional.orElse(null);
     }
 

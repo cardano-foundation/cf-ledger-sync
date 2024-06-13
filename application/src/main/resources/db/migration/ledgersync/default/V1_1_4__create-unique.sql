@@ -13,13 +13,6 @@ ALTER TABLE ONLY ada_pots
     ADD CONSTRAINT unique_ada_pots UNIQUE (block_id);
 
 
---
--- Name: block unique_block; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY block
-    ADD CONSTRAINT unique_block UNIQUE (hash);
-
 
 --
 -- Name: failed_tx_out unique_col_failed_txout; Type: CONSTRAINT;
@@ -36,13 +29,6 @@ ALTER TABLE ONLY failed_tx_out
 ALTER TABLE ONLY unconsume_tx_in
     ADD CONSTRAINT unique_col_txin UNIQUE (tx_in_id, tx_out_id, tx_out_index);
 
-
---
--- Name: cost_model unique_cost_model; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY cost_model
-    ADD CONSTRAINT unique_cost_model UNIQUE (hash);
 
 
 --
@@ -77,13 +63,6 @@ ALTER TABLE ONLY epoch
     ADD CONSTRAINT unique_epoch UNIQUE (no);
 
 
---
--- Name: epoch_param unique_epoch_param; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY epoch_param
-    ADD CONSTRAINT unique_epoch_param UNIQUE (epoch_no, block_id);
-
 
 --
 -- Name: epoch_sync_time unique_epoch_sync_time; Type: CONSTRAINT;
@@ -91,14 +70,6 @@ ALTER TABLE ONLY epoch_param
 
 ALTER TABLE ONLY epoch_sync_time
     ADD CONSTRAINT unique_epoch_sync_time UNIQUE (no);
-
-
---
--- Name: ma_tx_mint unique_ma_tx_mint; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY ma_tx_mint
-    ADD CONSTRAINT unique_ma_tx_mint UNIQUE (ident, tx_id);
 
 
 --
@@ -116,21 +87,6 @@ ALTER TABLE ONLY ma_tx_out
 ALTER TABLE ONLY meta
     ADD CONSTRAINT unique_meta UNIQUE (start_time);
 
-
---
--- Name: multi_asset unique_multi_asset; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY multi_asset
-    ADD CONSTRAINT unique_multi_asset UNIQUE (policy, name);
-
-
---
--- Name: param_proposal unique_param_proposal; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY param_proposal
-    ADD CONSTRAINT unique_param_proposal UNIQUE (key, registered_tx_id);
 
 
 --
@@ -289,13 +245,6 @@ ALTER TABLE ONLY treasury
 ALTER TABLE ONLY tx
     ADD CONSTRAINT unique_tx UNIQUE (hash);
 
-
---
--- Name: tx_metadata unique_tx_metadata; Type: CONSTRAINT;
---
-
-ALTER TABLE ONLY tx_metadata
-    ADD CONSTRAINT unique_tx_metadata UNIQUE (key, tx_id);
 
 
 --

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BlockRepository extends JpaRepository<Block, Long> {
+public interface BlockRepositoryLS extends JpaRepository<Block, Long> {
     Optional<Block> findBlockByHash(String hash);
 
     Optional<Block> findBlockByBlockNo(long number);

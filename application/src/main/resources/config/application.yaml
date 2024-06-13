@@ -47,8 +47,7 @@ spring:
     sql-migration-separator: __
     sql-migration-suffixes: .sql
     locations:
-      - classpath:db/migration/ledgersync
-      - classpath:db/store/{vendor}
+      - classpath:db/migration/ledgersync/default
     validate-on-migrate: ${FLYWAY_VALIDATE:false}
     create-schemas: ${ALLOW_CREATE_SCHEMA:true}
     out-of-order: true

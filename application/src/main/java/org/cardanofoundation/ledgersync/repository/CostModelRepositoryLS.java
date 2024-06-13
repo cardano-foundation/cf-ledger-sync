@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface CostModelRepository extends JpaRepository<CostModel, Long> {
+public interface CostModelRepositoryLS extends JpaRepository<CostModel, Long> {
 
     @Query("SELECT MAX(c.id) FROM CostModel c")
     Optional<Long> findCostModeMaxId();

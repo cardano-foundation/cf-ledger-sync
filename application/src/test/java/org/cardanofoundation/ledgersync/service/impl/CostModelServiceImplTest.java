@@ -4,7 +4,7 @@ import com.bloxbean.cardano.yaci.core.model.ProtocolParamUpdate;
 import com.bloxbean.cardano.yaci.core.model.Update;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
 import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
-import org.cardanofoundation.ledgersync.repository.CostModelRepository;
+import org.cardanofoundation.ledgersync.repository.CostModelRepositoryLS;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -19,7 +19,7 @@ class CostModelServiceImplTest {
 
     @Test
     void handleCostModelNoUpdates() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+        CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
         AggregatedTx tx = Mockito.mock(AggregatedTx.class);
         Update update = Mockito.mock(Update.class);
 
@@ -31,7 +31,7 @@ class CostModelServiceImplTest {
 
     @Test
     void handleCostModelPlutusV1() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+        CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
         AggregatedTx tx = Mockito.mock(AggregatedTx.class);
         Update update = Mockito.mock(Update.class);
         ProtocolParamUpdate protocolParamUpdate = Mockito.mock(ProtocolParamUpdate.class);
@@ -58,7 +58,7 @@ class CostModelServiceImplTest {
 
     @Test
     void handleCostModelPlutusV2() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+        CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
         AggregatedTx tx = Mockito.mock(AggregatedTx.class);
         Update update = Mockito.mock(Update.class);
         ProtocolParamUpdate protocolParamUpdate = Mockito.mock(ProtocolParamUpdate.class);
@@ -87,7 +87,7 @@ class CostModelServiceImplTest {
 
     @Test
     void findCostModelByHashReturnNull() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+        CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
 
         CostModelServiceImpl costModelService = new CostModelServiceImpl(costModelRepository);
 
@@ -96,7 +96,7 @@ class CostModelServiceImplTest {
 
     @Test
     void findCostModelByHashReturnCostModel() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
+        CostModelRepositoryLS costModelRepository = Mockito.mock(CostModelRepositoryLS.class);
         CostModel costModel = Mockito.mock(CostModel.class);
         CostModel costModelFinded = Mockito.mock(CostModel.class);
         Optional<CostModel> costModelOption = Optional.of(costModelFinded);

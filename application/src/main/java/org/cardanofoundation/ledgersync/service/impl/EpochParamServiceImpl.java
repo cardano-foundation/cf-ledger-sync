@@ -11,7 +11,6 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.*;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.EraType;
 import org.cardanofoundation.ledgersync.mapper.EpochParamMapper;
 import org.cardanofoundation.ledgersync.repository.*;
-import org.cardanofoundation.ledgersync.service.CostModelService;
 import org.cardanofoundation.ledgersync.service.EpochParamService;
 import org.cardanofoundation.ledgersync.service.GenesisDataService;
 import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
@@ -31,11 +30,11 @@ import java.util.Optional;
 @Service
 public class EpochParamServiceImpl implements EpochParamService {
 
-    final BlockRepository blockRepository;
+    final BlockRepositoryLS blockRepositoryLS;
     final ParamProposalRepository paramProposalRepository;
-    final EpochParamRepository epochParamRepository;
+    final EpochParamRepositoryLS epochParamRepository;
     final EpochRepository epochRepository;
-    final CostModelRepository costModelRepository;
+    final CostModelRepositoryLS costModelRepository;
 //    final CostModelService costModelService;
     final GenesisDataService genesisDataService;
     final EpochParamMapper epochParamMapper;
@@ -45,12 +44,12 @@ public class EpochParamServiceImpl implements EpochParamService {
     EpochParam defBabbageEpochParam;
     EpochParam defConwayEpochParam;
 
-    public EpochParamServiceImpl(BlockRepository blockRepository, ParamProposalRepository paramProposalRepository,
-                                 EpochParamRepository epochParamRepository, EpochRepository epochRepository,
-                                 CostModelRepository costModelRepository,
+    public EpochParamServiceImpl(BlockRepositoryLS blockRepositoryLS, ParamProposalRepository paramProposalRepository,
+                                 EpochParamRepositoryLS epochParamRepository, EpochRepository epochRepository,
+                                 CostModelRepositoryLS costModelRepository,
                                  @Lazy GenesisDataService genesisDataService,
                                  EpochParamMapper epochParamMapper, ObjectMapper objectMapper) {
-        this.blockRepository = blockRepository;
+        this.blockRepositoryLS = blockRepositoryLS;
         this.paramProposalRepository = paramProposalRepository;
         this.epochParamRepository = epochParamRepository;
         this.epochRepository = epochRepository;
@@ -181,7 +180,7 @@ public class EpochParamServiceImpl implements EpochParamService {
             epochParamMapper.updateByParamProposal(curEpochParam, paramProposalToUpdate);
         }
 
-        Block block = blockRepository.findFirstByEpochNo(epochNo)
+        Block block = blockRepositoryLS.findFirstByEpochNo(epochNo)
                 .orElseThrow(
                         () -> new RuntimeException("Block not found for epoch: " + epochNo));
         curEpochParam.setEpochNo(epochNo);
