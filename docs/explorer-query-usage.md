@@ -1050,6 +1050,306 @@
 - tx
 - block
 
+## 30. PoolHashRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findEpochByPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT bk.epochNo AS epochNo, count(bk.id) AS countBlock FROM PoolHash ph "
+              + "JOIN SlotLeader sl ON sl.poolHash.id = ph.id "
+              + "JOIN Block bk ON bk.slotLeader.id = sl.id "
+              + "WHERE ph.id = :poolId AND bk.epochNo IN :epochNo "
+              + "GROUP BY bk.epochNo")
+    ```
+- related table:
+  - slot_leader
+  - block
+#### findAllWithoutUsingKoi0s
+- query:
+    ```sql
+    @Query(
+      value =
+          " SELECT ph.id AS poolId, ph.view AS poolView, po.poolName AS poolName, pu.pledge AS pledge, "
+              + "po.tickerName as tickerName, LENGTH(po.poolName) as poolNameLength, "
+              + "COALESCE(api.governanceParticipationRate, -1) as governanceParticipationRate, COALESCE(api.votingPower, -1) as votingPower,"
+              + "COALESCE(api.blockLifeTime, 0) as lifetimeBlock, COALESCE(api.blockInEpoch, 0) as epochBlock "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData po ON ph.id = po.poolId AND (po.id IS NULL OR po.id = (SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.poolId = ph.id)) "
+              + "LEFT JOIN PoolUpdate pu ON ph.id = pu.poolHashId AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHashId = ph.id)"
+              + "LEFT JOIN AggregatePoolInfo api on api.poolId = ph.id "
+              + "WHERE ph.id NOT IN :exceptPoolIds "
+              + "AND ( :param is null OR ph.view = :param OR ph.hashRaw = :param "
+              + "OR LOWER(po.poolName) LIKE CONCAT('%', :param, '%') OR LOWER(po.tickerName) LIKE CONCAT('%', :param, '%'))"
+              + "AND ( :minPledge <= coalesce(pu.pledge,0) and :maxPledge >= coalesce(pu.pledge,0) )"
+              + "AND ( :minVotingPower <= coalesce(api.votingPower,0) and :maxVotingPower >= coalesce(api.votingPower,0)) "
+              + "AND ( :minGovParticipationRate <= coalesce(api.governanceParticipationRate,0) and :maxGovParticipationRate >= coalesce(api.governanceParticipationRate,0)) "
+              + "AND ( :minBlockLifeTime <= coalesce(api.blockLifeTime,0) and :maxBlockLifeTime >= coalesce(api.blockLifeTime,0))")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - pool_update
+  - aggregate_pool_info
+#### findAllWithUsingKoiOs
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS poolId, ph.view AS poolView, po.poolName AS poolName, pu.pledge AS pledge, "
+              + "po.tickerName as tickerName, LENGTH(po.poolName) as poolNameLength, "
+              + "COALESCE(pi.activeStake, -1) AS poolSize, COALESCE(pi.liveSaturation, -1) AS saturation, "
+              + "COALESCE(api.governanceParticipationRate, -1) as governanceParticipationRate, COALESCE(api.votingPower, -1) as votingPower,"
+              + "COALESCE(api.blockLifeTime, 0) as lifetimeBlock, COALESCE(api.blockInEpoch, 0) as epochBlock "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData po ON ph.id = po.poolId AND (po.id IS NULL OR po.id = (SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.poolId = ph.id)) "
+              + "LEFT JOIN PoolUpdate pu ON ph.id = pu.poolHashId AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHashId = ph.id) "
+              + "LEFT JOIN PoolInfo pi ON ph.id = pi.poolId AND pi.fetchedAtEpoch = :epochNo "
+              + "LEFT JOIN AggregatePoolInfo api on api.poolId = ph.id "
+              + "WHERE ph.id NOT IN :exceptPoolIds "
+              + "AND ( :param is null OR  ph.view = :param OR ph.hashRaw = :param "
+              + "OR LOWER(po.poolName) LIKE CONCAT('%', :param, '%')  OR LOWER(po.tickerName) LIKE CONCAT('%', :param, '%'))"
+              + "AND ( :minPoolSize <= coalesce(pi.activeStake, 0) and :maxPoolSize >= coalesce(pi.activeStake,0) )"
+              + "AND ( :minPledge <= coalesce(pu.pledge,0) and :maxPledge >= coalesce(pu.pledge,0) )"
+              + "AND ( :minSaturation <= coalesce(pi.liveSaturation,0) and :maxSaturation >= coalesce(pi.liveSaturation,0) ) "
+              + "AND ( :minVotingPower <= coalesce(api.votingPower,0) and :maxVotingPower >= coalesce(api.votingPower,0) ) "
+              + "AND ( :minGovParticipationRate <= coalesce(api.governanceParticipationRate,0) and :maxGovParticipationRate >= coalesce(api.governanceParticipationRate,0) ) "
+              + "AND ( :minBlockLifeTime <= coalesce(api.blockLifeTime,0) and :maxBlockLifeTime >= coalesce(api.blockLifeTime,0) ) ")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - pool_update
+  - aggregate_pool_info
+#### getListPoolIdIn
+- query:
+    ```sql
+    @Query(value = "SELECT ph.id FROM PoolHash ph " + "WHERE ph.view IN :poolViews ")
+    ```
+#### findByViewOrHashRaw
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph FROM PoolHash ph "
+              + "WHERE (ph.view = :poolViewOrHash "
+              + "OR ph.hashRaw = :poolViewOrHash)")
+    ```
+#### getDataForPoolDetailNoReward
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS poolId, ph.hashRaw AS hashRaw, po.poolName AS poolName, po.tickerName AS tickerName, pu.pledge AS pledge, pu.margin AS margin, "
+              + "pu.fixedCost AS cost, ep.optimalPoolCount AS paramK, sa.view AS rewardAddress, "
+              + "po.json as json, po.iconUrl AS iconUrl, po.logoUrl AS logoUrl, ph.view AS poolView "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData po ON ph.id = po.pool.id AND (po.id is NULL OR po.id = (SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.pool.id  = ph.id)) "
+              + "LEFT JOIN PoolUpdate pu ON ph.id = pu.poolHash.id AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHash.id  = ph.id) "
+              + "LEFT JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+              + "LEFT JOIN EpochParam ep ON ep.epochNo = :epochNo "
+              + "WHERE (ph.view = :poolViewOrHash "
+              + "OR ph.hashRaw = :poolViewOrHash)")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - pool_update
+  - stake_address
+  - epoch_param
+#### getDataForPoolDetail
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS poolId, ph.hashRaw AS hashRaw, po.poolName AS poolName, po.tickerName AS tickerName, pu.pledge AS pledge, pu.margin AS margin, "
+              + "pu.fixedCost AS cost, ep.optimalPoolCount AS paramK, ap.reserves AS reserves, sa.view AS rewardAddress, "
+              + "po.json as json, po.iconUrl AS iconUrl, po.logoUrl AS logoUrl, ph.view AS poolView "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData po ON ph.id = po.pool.id AND (po.id is NULL OR po.id = (SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.pool.id  = ph.id)) "
+              + "LEFT JOIN PoolUpdate pu ON ph.id = pu.poolHash.id AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHash.id  = ph.id) "
+              + "LEFT JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+              + "LEFT JOIN EpochParam ep ON ep.epochNo = :epochNo "
+              + "LEFT JOIN AdaPots ap ON ap.epochNo = :epochNo "
+              + "WHERE (ph.view = :poolViewOrHash "
+              + "OR ph.hashRaw = :poolViewOrHash)")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - stake_address
+  - epoch_param
+  - ada_pots
+#### getPoolRegistration
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.pledge AS pledge, pu.margin AS margin, pu.vrfKeyHash AS vrfKey, pu.fixedCost AS cost, tx.hash AS txHash, bk.time AS time, tx.deposit AS deposit, tx.fee AS fee, sa.view AS rewardAccount "
+              + "FROM PoolUpdate pu "
+              + "JOIN Tx tx ON pu.registeredTx.id = tx.id "
+              + "JOIN Block bk ON tx.block.id  = bk.id "
+              + "JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+              + "WHERE pu.id = :id")
+    ```
+- related table:
+  - pool_update
+  - tx
+  - block
+  - stake_address
+#### getPoolInfo
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS id, pod.poolName AS poolName, ph.hashRaw AS poolId, ph.view AS poolView, pod.iconUrl as icon "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData pod ON ph.id  = pod.pool.id AND pod.id = (SELECT max(pod2.id) FROM PoolOfflineData pod2 WHERE ph.id = pod2.pool.id ) "
+              + "WHERE (ph.view = :poolViewOrHash "
+              + "OR ph.hashRaw = :poolViewOrHash)")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+#### getPoolRegistrationByPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.id AS poolUpdateId, pu.pledge AS pledge, pu.margin AS margin, pu.vrfKeyHash AS vrfKey, pu.fixedCost AS cost, tx.hash AS txHash, bk.time AS time, ep.poolDeposit AS deposit, tx.fee AS fee, sa.view AS rewardAccount "
+              + "FROM PoolUpdate pu "
+              + "JOIN Tx tx ON pu.registeredTx.id = tx.id "
+              + "JOIN Block bk ON tx.block.id  = bk.id "
+              + "JOIN EpochParam ep ON ep.epochNo = bk.epochNo "
+              + "JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+              + "WHERE pu.id IN :poolCertificateIds ")
+    ```
+- related table:
+  - pool_update
+  - tx
+  - block
+  - epoch_param
+  - stake_address
+#### findByPoolNameLike
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS id, pod.poolName AS poolName, ph.hashRaw AS poolId, ph.view AS poolView, pod.iconUrl as icon "
+              + "FROM PoolHash ph "
+              + "INNER JOIN PoolOfflineData pod ON ph.id  = pod.pool.id AND pod.id = "
+              + "(SELECT max(pod2.id) FROM PoolOfflineData pod2 WHERE ph.id = pod2.pool.id ) "
+              + "WHERE LOWER(pod.poolName) LIKE CONCAT('%', :query, '%') OR "
+              + "LOWER(pod.tickerName) LIKE CONCAT('%', :query, '%') ")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+#### getSlotNoWhenFirstDelegationByPoolHash
+- query:
+    ```sql
+    @Query(
+      value =
+          "select min(d.slotNo) from PoolHash ph"
+              + " join Delegation d on d.poolHash.id = ph.id"
+              + " where ph.hashRaw =:poolHash")
+    ```
+#### getSlotCreatedAtGroupByPoolHash
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+    select min(d.slotNo) as createdAt, ph.hashRaw as poolHash, ph.id as poolId from PoolHash ph
+    join Delegation d on d.poolHash.id = ph.id
+    group by ph.hashRaw, ph.id
+    order by ph.id desc
+""")
+    ```
+- related table:
+  - delegation
+#### getHashRawByView
+- query:
+    ```sql
+    @Query(value = "select ph.hashRaw from PoolHash ph where ph.view = :view")
+    ```
+#### getPoolNameByPoolHashOrPoolView
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pod.poolName AS poolName"
+              + " FROM PoolHash ph"
+              + " INNER JOIN PoolOfflineData pod ON ph.id  = pod.poolId AND pod.id ="
+              + " (SELECT max(pod2.id) FROM PoolOfflineData pod2 WHERE ph.id = pod2.poolId)"
+              + " WHERE  ph.hashRaw = :poolViewOrHash or ph.view = :poolViewOrHash")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+#### getPoolRangeWithUsingKoi0s
+- query:
+    ```sql
+    @Query(
+      value =
+          " SELECT min(pi.activeStake) as minPoolSize, max(pi.activeStake) as maxPoolSize,"
+              + " min(pi.liveSaturation) as minSaturation, max(pi.liveSaturation) as maxSaturation,"
+              + " min(pu.pledge) as minPledge, max(pu.pledge) as maxPledge,"
+              + " min(api.votingPower) as minVotingPower, max(api.votingPower) as maxVotingPower,"
+              + " min (api.governanceParticipationRate) as minGovParticipationRate, max(api.governanceParticipationRate) as maxGovParticipationRate,"
+              + " min (api.blockLifeTime) as minLifetimeBlock, max(api.blockLifeTime) as maxLifetimeBlock"
+              + " FROM PoolHash ph"
+              + " left join PoolOfflineData po ON ph.id = po.poolId AND (po.id IS NULL OR po.id = (SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.poolId = ph.id))"
+              + " left join PoolUpdate pu ON ph.id = pu.poolHashId AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHashId = ph.id)"
+              + " LEFT JOIN PoolInfo pi ON ph.id = pi.poolId AND pi.fetchedAtEpoch = :epochNo "
+              + " left join AggregatePoolInfo api on api.poolId = ph.id ")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - pool_update
+  - pool_info
+  - aggregate_pool_info
+#### getPoolRangeWithoutUsingKoi0s
+- query:
+    ```sql
+    @Query(
+      value =
+          " SELECT min(pu.pledge) as minPledge, max(pu.pledge) as maxPledge,"
+              + " min(api.votingPower) as minVotingPower, max(api.votingPower) as maxVotingPower,"
+              + " min (api.governanceParticipationRate) as minGovParticipationRate, max(api.governanceParticipationRate) as maxGovParticipationRate,"
+              + " min (api.blockLifeTime) as minLifetimeBlock, max(api.blockLifeTime) as maxLifetimeBlock"
+              + " FROM PoolHash ph"
+              + " left join PoolUpdate pu ON ph.id = pu.poolHashId AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHashId = ph.id)"
+              + " left join AggregatePoolInfo api on api.poolId = ph.id ")
+    ```
+- related table:
+  - pool_hash
+  - pool_update
+  - aggregate_pool_info
+</details>
+
+### Related table:
+- slot_leader
+- block
+- pool_hash
+- pool_offline_data
+- pool_update
+- aggregate_pool_info
+- stake_address
+- epoch_param
+- ada_pots
+- tx
+- epoch_param
+- delegation
+- pool_info
+- aggregate_pool_info
+
+
+
 
 ## x. TEMPLATE
 <details>
