@@ -715,6 +715,168 @@
 - tx
 - tx_metadata
 
+## 28. MultiAssetRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAll
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ma.id as id, ma.policy as policy, ma.name as name, ma.nameView as nameView, ttc.txCount as txCount,"
+              + " ma.fingerprint as fingerprint, ma.supply as supply, ma.time as time,"
+              + " LENGTH(ma.nameView) as nameViewLength, "
+              + " am.url as url, am.ticker as ticker, am.decimals as decimals, "
+              + " am.logo as logo, am.description as description, am.subject as subject"
+              + " FROM MultiAsset ma"
+              + " LEFT JOIN AssetMetadata am ON am.fingerprint = ma.fingerprint"
+              + " INNER JOIN TokenTxCount ttc on ttc.ident = ma.id "
+              + " WHERE ma.fingerprint = :query OR LOWER(ma.nameView) LIKE CONCAT('%', :query, '%')")
+    ```
+- related table:
+  - asset_metadata
+  - token_tx_count
+#### countAllByQuery
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT COUNT(*) FROM (SELECT 1 FROM multi_asset ma "
+              + "WHERE ma.fingerprint = :query OR LOWER(ma.name_view) LIKE CONCAT('%', :query, '%') limit 1000) as A",
+      nativeQuery = true)
+    ```
+#### findMultiAssets
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ma.id as id, ma.policy as policy, ma.name as name, ma.nameView as nameView, coalesce(ttc.txCount,0) as txCount,"
+              + " ma.fingerprint as fingerprint, ma.supply as supply, ma.time as time,"
+              + " LENGTH(ma.nameView) as nameViewLength, "
+              + " am.url as url, am.ticker as ticker, am.decimals as decimals, "
+              + " am.logo as logo, am.description as description, am.subject as subject"
+              + " FROM MultiAsset ma"
+              + " LEFT JOIN AssetMetadata am ON am.fingerprint = ma.fingerprint"
+              + " INNER JOIN TokenTxCount ttc on ttc.ident = ma.id")
+    ```
+- related table:
+  - asset_metadata
+  - token_tx_count
+#### findMultiAssets
+#### findByFingerprint
+#### countByPolicy
+#### findAllByPolicy
+#### findTokenInfoByScriptHash
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+          SELECT ma.id as id, ma.policy as policy, ma.name as name, ma.nameView as nameView, ttc.txCount as txCount,
+                ma.fingerprint as fingerprint, ma.supply as supply, ma.time as time,
+                am.subject as subject, am.url as url, am.ticker as ticker,
+                am.decimals as decimals, am.logo as logo, am.description as description
+                FROM MultiAsset ma
+                LEFT JOIN AssetMetadata am ON am.fingerprint = ma.fingerprint
+                INNER JOIN TokenTxCount ttc on ttc.ident = ma.id
+                WHERE ma.policy = :scriptHash
+      """)
+    ```
+- related table:
+  - asset_metadata
+  - token_tx_count
+#### findAllByIdIn
+#### getTokenTxCount
+- query:
+    ```sql
+    @Query(
+      value =
+          """
+          SELECT ttc.txCount
+                FROM MultiAsset ma
+                LEFT JOIN TokenTxCount ttc on ttc.ident = ma.id
+                WHERE ma.fingerprint = :fingerprint
+      """)
+    ```
+- related table:
+  - token_tx_count
+#### findByNameViewLike
+- query:
+    ```sql
+    @Query("SELECT ma FROM MultiAsset ma WHERE lower(ma.nameView) LIKE CONCAT('%', :query, '%') ")
+    ```
+#### getMintingAssets
+- query:
+    ```sql
+    @Query(
+      "SELECT ma.fingerprint as fingerprint, ma.name as tokenName, mtm.quantity as quantity FROM MultiAsset ma "
+          + "JOIN MaTxMint mtm on (mtm.ident = ma and mtm.tx = :tx and ma.policy = :policy)")
+    ```
+- related table:
+  - ma_tx_mint
+#### countMultiAssetByPolicy
+- query:
+    ```sql
+    @Query(
+      "SELECT COALESCE(count(multiAsset.id), 0)"
+          + " FROM MultiAsset multiAsset"
+          + " WHERE multiAsset.policy = :policy")
+    ```
+#### countAssetHoldersByPolicy
+- query:
+    ```sql
+     @Query(
+      value =
+          """
+    SELECT COALESCE(COUNT(latestTokenBalance), 0) as numberOfHolders
+              FROM MultiAsset multiAsset
+              LEFT JOIN LatestTokenBalance latestTokenBalance ON multiAsset.unit = latestTokenBalance.unit
+              WHERE multiAsset.policy = :policy
+    """)
+    ```
+- related table:
+  - latest_token_balance
+#### findTopMultiAssetByScriptHashIn
+- query:
+    ```sql
+    @Query(
+      value =
+          "WITH firstResult AS ("
+              + " SELECT topMultiAsset.*"
+              + " FROM script s"
+              + " CROSS JOIN LATERAL"
+              + " (SELECT ma.name as name, ma.name_view as name_view, ma.policy as policy, ma.fingerprint as fingerprint"
+              + " FROM multi_asset ma "
+              + " JOIN token_tx_count ttc on ttc.ident = ma.id"
+              + " WHERE ma.policy = s.hash ORDER BY ttc.tx_count DESC LIMIT 5)"
+              + " AS topMultiAsset WHERE s.hash IN :scriptHashes)"
+              + " SELECT firstResult.policy as policy, firstResult.name as name, firstResult.name_view as nameView, firstResult.fingerprint as fingerprint,"
+              + " am.url as url, am.ticker as ticker, am.decimals as decimals, "
+              + " am.logo as logo, am.description as description, am.subject as subject"
+              + " FROM firstResult"
+              + " LEFT JOIN asset_metadata am ON am.fingerprint = firstResult.fingerprint",
+      nativeQuery = true)
+    ```
+- related table:
+  - script
+  - token_tx_count
+  - asset_metadata
+#### getSliceByPolicy
+#### findAllByUnitIn
+- query:
+    ```sql
+    @Query("SELECT ma FROM MultiAsset ma WHERE ma.unit IN :units")
+    ```
+</details>
+
+### Related table:
+- asset_metadata
+- token_tx_count
+- ma_tx_mint
+- latest_token_balance
+- script
+
 
 
 
