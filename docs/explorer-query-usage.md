@@ -1625,6 +1625,297 @@
 - tx
 - block
 
+## 37. PoolUpdateRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findOwnerAccountByPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT sa.view FROM PoolHash ph "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id AND pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE ph.id = pu2.poolHash.id) "
+              + "JOIN PoolOwner po ON pu.id = po.poolUpdate.id "
+              + "JOIN StakeAddress sa ON po.stakeAddress.id = sa.id "
+              + "WHERE ph.id  = :poolId ")
+    ```
+- related table:
+  - pool_owner
+  - stake_address
+#### findOwnerAccountByPoolView
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT sa.view FROM PoolHash ph "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id "
+              + "JOIN PoolOwner po ON pu.id = po.poolUpdate.id "
+              + "JOIN StakeAddress sa ON po.stakeAddress.id = sa.id "
+              + "WHERE (ph.view  = :poolView OR ph.hashRaw = :poolView) "
+              + "GROUP BY sa.view")
+    ```
+- related table:
+  - pool_owner
+  - stake_address
+#### findByTx
+- query:
+    ```sql
+     @Query(
+      "SELECT pu.id AS poolUpdateId, ph.view AS poolView, pu.pledge AS pledge, "
+          + "pu.margin AS margin, pu.vrfKeyHash AS vrfKey, pu.fixedCost  AS cost, sa.view AS rewardAccount, "
+          + "pmr.url AS metadataUrl, pmr.hash as metadataHash "
+          + "FROM PoolUpdate pu "
+          + "INNER JOIN PoolHash ph ON pu.poolHash.id = ph.id "
+          + "LEFT JOIN PoolMetadataRef pmr ON pu.meta = pmr "
+          + "INNER JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+          + "WHERE pu.registeredTx = :tx")
+    ```
+- related table:
+  - pool_hash
+  - pool_metadata_ref
+  - stake_address
+#### getDataForPoolRegistration
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.registeredTxId AS txId, pu.pledge AS pledge, pu.margin AS margin, pu.fixedCost AS cost, "
+              + "pu.poolHash.id AS poolId, po.poolName AS poolName, ph.view AS poolView "
+              + "FROM PoolUpdate pu  "
+              + "JOIN PoolHash ph ON pu.poolHash.id = ph.id "
+              + "LEFT JOIN PoolOfflineData po ON pu.poolHash.id = po.pool.id AND (po.id is NULL OR po.id = "
+              + "(SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.pool.id  = pu.poolHash.id)) ",
+      countQuery = "SELECT count(pu) FROM PoolUpdate pu")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+#### getCreatedTimeOfPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT bk.time FROM PoolUpdate pu "
+              + "JOIN Tx t ON pu.registeredTx.id = t.id "
+              + "JOIN Block bk ON t.block.id = bk.id "
+              + "WHERE pu.id = (SELECT min(pu2.id) FROM PoolUpdate pu2 WHERE pu2.poolHash.id = :poolId) "
+              + "AND pu.poolHash.id = :poolId ")
+    ```
+- related table:
+  - tx
+  - block
+#### findOwnerAccountByPoolUpdate
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.id AS poolUpdateId, sa.view AS view FROM PoolUpdate pu "
+              + "JOIN PoolOwner po ON pu.id = po.poolUpdate.id "
+              + "JOIN StakeAddress sa ON po.stakeAddress.id = sa.id "
+              + "WHERE pu.id IN :poolUpdateIds ")
+    ```
+- related table:
+  - pool_owner
+  - stake_address
+#### findPoolUpdateByPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.id AS poolUpdateId, tx.hash AS txHash, tx.fee AS fee, bk.time AS time, pu.margin AS margin "
+              + "FROM PoolUpdate pu "
+              + "JOIN Tx tx ON pu.registeredTx.id  = tx.id "
+              + "JOIN Block bk ON tx.blockId = bk.id "
+              + "WHERE pu.id IN :poolCertificateIds "
+              + "AND (:txHash IS NULL OR tx.hash = :txHash) "
+              + "AND (CAST(:fromDate AS timestamp) IS NULL OR bk.time >= :fromDate) "
+              + "AND (CAST(:toDate AS timestamp) IS NULL OR bk.time <= :toDate) ")
+    ```
+- related table:
+  - tx
+  - block
+#### findPoolUpdateDetailById
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS hashId, ph.hashRaw AS poolId , ph.view AS poolView, pod.poolName AS poolName, "
+              + "pu.pledge AS pledge, pu.margin AS margin, pu.vrfKeyHash AS vrfKey, pu.fixedCost  AS cost, "
+              + "tx.hash AS txHash, bk.time AS time, tx.fee AS fee, sa.view AS rewardAccount, tx.deposit AS deposit "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData pod ON ph.id = pod.pool.id AND pod.id = (SELECT max(pod2.id) FROM PoolOfflineData pod2 WHERE ph.id = pod2.pool.id) "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id "
+              + "JOIN Tx tx ON pu.registeredTx.id = tx.id "
+              + "JOIN Block bk ON tx.block.id  = bk.id "
+              + "JOIN StakeAddress sa ON pu.rewardAddr.id  = sa.id "
+              + "WHERE pu.id = :id ")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - tx
+  - block
+  - stake_address
+#### findOwnerAccountByPoolUpdate
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT sa.view FROM PoolUpdate pu "
+              + "JOIN PoolOwner po ON pu.id = po.poolUpdate.id "
+              + "JOIN StakeAddress sa ON po.stakeAddress.id = sa.id "
+              + "WHERE pu.id  = :id ")
+    ```
+- related table:
+  - pool_owner
+  - stake_address
+> **_NOTE:_** Should be changed to PoolOwnerRepository.
+#### findTopByIdLessThanAndPoolHashIdOrderByIdDesc
+#### findPoolUpdateByPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.id AS poolUpdateId, ph.id AS hashId, ph.hashRaw AS poolId , ph.view AS poolView, pod.poolName AS poolName, pu.pledge AS pledge, pu.margin AS margin, pu.vrfKeyHash AS vrfKey, pu.fixedCost  AS cost, tx.hash AS txHash, bk.time AS time, tx.fee AS fee, sa.view AS rewardAccount, tx.deposit AS deposit "
+              + "FROM PoolHash ph "
+              + "LEFT JOIN PoolOfflineData pod ON ph.id = pod.pool.id AND pod.id = (SELECT max(pod2.id) FROM PoolOfflineData pod2 WHERE ph.id = pod2.pool.id) "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id "
+              + "JOIN Tx tx ON pu.registeredTx.id = tx.id "
+              + "JOIN Block bk ON tx.block.id  = bk.id "
+              + "JOIN StakeAddress sa ON pu.rewardAddr.id  = sa.id "
+              + "WHERE pu.id IN :poolCertificateIds ")
+    ```
+- related table:
+  - pool_offline_data
+  - tx
+  - block
+  - stake_address
+#### findPoolByRewardAccount
+- query:
+    ```sql
+    @Query(
+      "SELECT poolHash.view FROM PoolUpdate poolUpdate "
+          + "INNER JOIN PoolHash poolHash ON poolUpdate.poolHash = poolHash "
+          + "WHERE poolUpdate.rewardAddr = :stakeAddress "
+          + "AND poolUpdate.registeredTx.id = "
+          + "(SELECT max(poolUpdate2.registeredTx.id) "
+          + "FROM PoolUpdate poolUpdate2 "
+          + "WHERE poolUpdate2.poolHash = poolHash) "
+          + "AND (SELECT COALESCE(max(poolRetire.retiringEpoch), 0) + 2 "
+          + "FROM PoolRetire poolRetire WHERE poolRetire.poolHash = poolHash) < poolUpdate.activeEpochNo")
+    ```
+- related table:
+  - pool_hash
+  - pool_retire
+#### findPoolRegistrationByPool
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pu.id AS poolUpdateId, tx.hash AS txHash, tx.fee AS fee, bk.time AS time, pu.margin AS margin, ep.poolDeposit AS deposit "
+              + "FROM PoolUpdate pu "
+              + "JOIN Tx tx ON pu.registeredTx.id  = tx.id "
+              + "JOIN Block bk ON tx.blockId = bk.id "
+              + "JOIN EpochParam ep ON ep.epochNo = bk.epochNo "
+              + "WHERE pu.id IN :poolCertificateIds "
+              + "AND (:txHash IS NULL OR tx.hash = :txHash) "
+              + "AND (CAST(:fromDate AS timestamp) IS NULL OR bk.time >= :fromDate) "
+              + "AND (CAST(:toDate AS timestamp) IS NULL OR bk.time <= :toDate) ")
+    ```
+- related table:
+  - tx
+  - block
+  - epoch_param
+#### findRewardAccountByPoolView
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT sa.view FROM PoolHash ph "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id "
+              + "JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+              + "WHERE (ph.view = :poolViewOrHash "
+              + "OR ph.hashRaw = :poolViewOrHash) "
+              + "GROUP BY sa.view")
+    ```
+- related table:
+  - stake_address
+#### findRewardAccountByPoolId
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT sa.view FROM PoolHash ph "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id "
+              + "JOIN StakeAddress sa ON pu.rewardAddr.id = sa.id "
+              + "WHERE ph.id = :poolId "
+              + "GROUP BY sa.view")
+    ```
+- related table:
+  - stake_address
+#### TEMPLATE_QUERY
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT COUNT(pu.id) FROM PoolUpdate pu "
+              + "JOIN PoolHash ph ON pu.poolHash.id = ph.id "
+              + "WHERE (ph.view = :poolViewOrHash "
+              + "OR ph.hashRaw = :poolViewOrHash)")
+    ```
+- related table:
+  - pool_hash
+#### getPoolUpdateByPoolViewOrHash
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.id as txId, tx.hash as txHash, b.epochNo as txEpochNo,"
+              + "pu.activeEpochNo as certEpochNo, pu.certIndex as certIndex, pu.id as poolUpdateId, "
+              + "b.time as blockTime, b.blockNo as blockNo, b.epochSlotNo as epochSlotNo, b.slotNo as slotNo "
+              + "FROM PoolUpdate pu "
+              + "JOIN Tx tx on pu.registeredTx = tx "
+              + "JOIN Block b on tx.block = b "
+              + "WHERE pu.poolHash.view = :poolViewOrHash "
+              + "OR pu.poolHash.hashRaw = :poolViewOrHash ")
+    ```
+- related table:
+  - tx
+  - block
+#### getLastPoolUpdateByPoolHash
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.id as txId, tx.hash as txHash, b.epochNo as txEpochNo,"
+              + "pu.activeEpochNo as certEpochNo, pu.certIndex as certIndex, pu.id as poolUpdateId, "
+              + "b.time as blockTime, b.blockNo as blockNo, b.epochSlotNo as epochSlotNo, b.slotNo as slotNo "
+              + "FROM PoolUpdate pu "
+              + "JOIN Tx tx on pu.registeredTx = tx "
+              + "JOIN Block b on tx.block = b "
+              + "WHERE pu.poolHash.view = :poolViewOrHash "
+              + "OR pu.poolHash.hashRaw = :poolViewOrHash "
+              + "ORDER BY tx.id DESC, pu.certIndex DESC "
+              + "LIMIT 1")
+    ```
+- related table:
+  - tx
+  - block
+  - pool_hash
+</details>
+
+### Related table:
+- pool_update
+- pool_owner
+- pool_retire
+- stake_address
+- pool_metadata_ref
+- tx
+- block
+- epoch_param
+- pool_hash
+
 
 
 
