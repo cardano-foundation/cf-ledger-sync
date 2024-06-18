@@ -1417,6 +1417,41 @@
 ### Related table:
 - pool_history
 
+## 33. PoolInfoRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### getTotalLiveStake
+- query:
+    ```sql
+    @Query(value = "SELECT SUM(pi.liveStake) FROM PoolInfo pi WHERE pi.fetchedAtEpoch = :epochNo")
+    ```
+#### getPoolInfoKoios
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pi.pool.view AS view, pi.activeStake AS activeStake, pi.liveSaturation AS saturation "
+              + "FROM PoolInfo pi "
+              + "WHERE pi.pool.view IN :poolIds AND pi.fetchedAtEpoch = :epochNo")
+    ```
+#### getActiveStakeByPoolAndEpoch
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pi.activeStake FROM PoolInfo pi "
+              + "WHERE (pi.pool.view = :poolId OR pi.pool.hashRaw = :poolId) AND pi.fetchedAtEpoch = :epochNo")
+    ```
+#### getTotalActiveStake
+- query:
+    ```sql
+     @Query(value = "SELECT SUM(pi.activeStake) FROM PoolInfo pi WHERE pi.fetchedAtEpoch = :epochNo")
+    ```
+</details>
+
+### Related table:
+- pool_info
 
 
 
