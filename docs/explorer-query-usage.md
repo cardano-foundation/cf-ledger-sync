@@ -1366,6 +1366,59 @@
 ### Related table:
 - pool_history_checkpoint
 
+## 32. PoolHistoryRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### getPoolHistoryKoios
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.epochNo AS epochNo, ph.delegatorRewards AS delegateReward, ph.epochRos AS ros, "
+              + "ph.activeStake AS activeStake, ph.poolFees AS poolFees "
+              + "FROM PoolHistory ph "
+              + "WHERE ph.pool.view = :poolId "
+              + "ORDER BY ph.epochNo DESC")
+    ```
+#### getPoolHistoryKoios
+- query:
+    ```sql
+     @Query(
+      value =
+          "SELECT ph.epochNo AS epochNo, ph.delegatorRewards AS delegateReward, ph.epochRos AS ros, "
+              + "ph.activeStake AS activeStake, ph.poolFees AS poolFees "
+              + "FROM PoolHistory ph "
+              + "WHERE ph.pool.view = :poolId "
+              + "ORDER BY ph.epochNo DESC")
+    ```
+#### getPoolHistoryKoiosForEpochChart
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.epochNo AS chartKey, ph.activeStake AS chartValue "
+              + "FROM PoolHistory ph "
+              + "WHERE ph.pool.view = :poolId "
+              + "ORDER BY ph.epochNo ASC")
+    ```
+#### getDataForDelegatorChart
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.epochNo AS chartKey, CAST(ph.delegatorCnt as long) AS chartValue "
+              + "FROM PoolHistory ph "
+              + "WHERE ph.pool.view = :poolId "
+              + "ORDER BY ph.epochNo ASC")
+    ```
+</details>
+
+### Related table:
+- pool_history
+
+
+
 
 
 ## x. TEMPLATE
