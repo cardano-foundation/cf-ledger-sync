@@ -2006,6 +2006,85 @@
 
 </details>
 
+## 41. StakeDeRegistrationRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findMaxTxIdByStake
+- query:
+    ```sql
+    @Query(
+      "SELECT max(stakeDeregis.tx.id) "
+          + " FROM StakeDeregistration stakeDeregis"
+          + " WHERE stakeDeregis.addr = :stake")
+    ```
+#### getStakeDeRegistrationsByAddress
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.hash as txHash, b.time as time,"
+              + " b.epochSlotNo as epochSlotNo, b.blockNo as blockNo, b.epochNo as epochNo, b.slotNo as slotNo,"
+              + " 'De Registered' AS action, tx.blockIndex as blockIndex, tx.fee as fee, tx.deposit as deposit"
+              + " FROM StakeDeregistration sd"
+              + " JOIN Tx tx ON tx.id = sd.tx.id"
+              + " JOIN Block b ON b.id = tx.blockId"
+              + " WHERE sd.addr = :stakeKey"
+              + " ORDER BY b.blockNo DESC, tx.blockIndex DESC")
+    ```
+- related table:
+  - tx
+  - block
+#### getStakeDeRegistrationsByAddress
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.hash as txHash, b.time as time,"
+              + " b.epochSlotNo as epochSlotNo, b.blockNo as blockNo, b.epochNo as epochNo,"
+              + " 'De Registered' AS action, tx.blockIndex as blockIndex, tx.fee as fee, tx.deposit as deposit"
+              + " FROM StakeDeregistration dr"
+              + " JOIN Tx tx ON tx.id = dr.tx.id"
+              + " JOIN Block b ON b.id = tx.blockId"
+              + " WHERE dr.addr = :stakeKey"
+              + " AND (b.time >= :fromTime ) "
+              + " AND (b.time <= :toTime)"
+              + " AND ( :txHash IS NULL OR tx.hash = :txHash)")
+    ```
+- related table:
+  - tx
+  - block
+#### findByAddressAndTx
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.hash as txHash, b.time as time, b.epochNo as epochNo,"
+              + " tx.fee as fee, tx.deposit as deposit"
+              + " FROM StakeDeregistration sd"
+              + " JOIN Tx tx ON tx.id = sd.tx.id"
+              + " JOIN Block b ON b.id = tx.blockId"
+              + " JOIN StakeAddress sa ON sa.id = sd.addr.id"
+              + " WHERE sa.view = :stakeKey"
+              + " AND tx.hash = :txHash")
+    ```
+- related table:
+  - tx
+  - block
+  - stake_address
+#### findByTx
+- related table:
+  - stake_address
+#### existsByAddr
+
+</details>
+
+### Related table:
+- stake_deregistration
+- tx
+- block
+- stake_address
+
 
 
 
