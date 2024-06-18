@@ -2317,6 +2317,18 @@
 ### Related table:
 - tx_chart
 
+## 48. TxMetadataRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAllByTxOrderByKeyAsc
+#### findAllByTxHash
+- query:
+    ```sql
+    @Query("SELECT t FROM TxMetadata t WHERE t.tx.hash = :txHash")
+    ```
+</details>
+
 
 
 
