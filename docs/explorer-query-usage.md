@@ -1500,6 +1500,132 @@
 ### Related table:
 - pool_relay
 
+## 36. PoolRetireRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findByAnnouncedTx
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pr.announcedTx.id as txId, pr.retiringEpoch as retiringEpoch, "
+              + "ph.view as poolId "
+              + "FROM PoolRetire pr "
+              + "INNER JOIN PoolHash ph ON pr.poolHash.id = ph.id "
+              + "WHERE pr.announcedTx = :tx")
+    ```
+- related table:
+  - pool_hash
+#### getDataForPoolDeRegistration
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pr.announcedTxId as txId, pu.pledge AS pledge, pu.margin AS margin, "
+              + "pu.fixedCost AS cost, pu.poolHash.id AS poolId, po.poolName AS poolName, ph.view AS poolView "
+              + "FROM PoolRetire pr "
+              + "JOIN PoolHash ph ON pr.poolHash.id = ph.id "
+              + "LEFT JOIN PoolOfflineData po ON pr.poolHash.id  = po.pool.id AND (po.id is NULL OR po.id = "
+              + "(SELECT max(po2.id) FROM PoolOfflineData po2 WHERE po2.pool.id  = pr.poolHash.id)) "
+              + "LEFT JOIN PoolUpdate pu ON pr.poolHash.id = pu.poolHash.id "
+              + "AND (pu.id = (SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE pr.poolHash.id  = pu2.poolHash.id))",
+      countQuery = "SELECT count(pr) FROM PoolRetire pr")
+    ```
+- related table:
+  - pool_hash
+  - pool_offline_data
+  - pool_update
+#### getPoolDeRegistration
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.fee AS fee, pr.retiringEpoch AS retiringEpoch, tx.hash AS txHash, bk.time AS time, "
+              + "CASE "
+              + "WHEN tx.id = (SELECT max(pr1.announcedTx.id) FROM PoolRetire pr1 WHERE pr1.announcedTx.id = tx.id AND pr.retiringEpoch = pr1.retiringEpoch) THEN TRUE "
+              + "ELSE FALSE "
+              + "END AS refundFlag "
+              + "FROM PoolRetire pr "
+              + "JOIN Tx tx ON pr.announcedTx.id  = tx.id "
+              + "JOIN Block bk ON tx.block.id = bk.id "
+              + "WHERE pr.id IN :poolRetiredIds "
+              + "AND (:txHash IS NULL OR tx.hash = :txHash) "
+              + "AND (CAST(:fromDate AS timestamp) IS NULL OR bk.time >= :fromDate) "
+              + "AND (CAST(:toDate AS timestamp) IS NULL OR bk.time <= :toDate) ",
+      countQuery =
+          "SELECT pr.id "
+              + "FROM PoolRetire pr "
+              + "JOIN Tx tx ON pr.announcedTx.id  = tx.id "
+              + "JOIN Block bk ON tx.block.id = bk.id "
+              + "WHERE pr.id IN :poolRetiredIds "
+              + "AND (:txHash IS NULL OR tx.hash = :txHash) "
+              + "AND (CAST(:fromDate AS timestamp) IS NULL OR bk.time >= :fromDate) "
+              + "AND (CAST(:toDate AS timestamp) IS NULL OR bk.time <= :toDate)")
+    ```
+- related table:
+  - tx
+  - block
+#### findByPoolView
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT pr.retiringEpoch FROM PoolRetire pr "
+              + "JOIN PoolHash ph ON pr.poolHash.id  = ph.id "
+              + "WHERE ph.view = :poolView OR ph.hashRaw = :poolView "
+              + "ORDER BY pr.id DESC")
+    ```
+- related table:
+  - pool_hash
+#### existsByPoolHash
+#### getPoolRetireByPoolViewOrHash
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.id as txId, tx.hash as txHash, b.epochNo as txEpochNo,"
+              + "pr.retiringEpoch as certEpochNo, pr.certIndex as certIndex, pr.id as poolRetireId, "
+              + "b.time as blockTime, b.blockNo as blockNo, b.epochSlotNo as epochSlotNo, b.slotNo as slotNo "
+              + "FROM PoolRetire pr "
+              + "JOIN Tx tx on pr.announcedTx = tx "
+              + "JOIN Block b on tx.block = b "
+              + "WHERE pr.poolHash.view = :poolViewOrHash "
+              + "OR pr.poolHash.hashRaw = :poolViewOrHash ")
+    ```
+- related table:
+  - tx
+  - block
+#### getLastPoolRetireByPoolHash
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.id as txId, tx.hash as txHash, b.epochNo as txEpochNo,"
+              + "pr.retiringEpoch as certEpochNo, pr.certIndex as certIndex, pr.id as poolRetireId, "
+              + "b.time as blockTime, b.blockNo as blockNo, b.epochSlotNo as epochSlotNo, b.slotNo as slotNo "
+              + "FROM PoolRetire pr "
+              + "JOIN Tx tx on pr.announcedTx = tx "
+              + "JOIN Block b on tx.block = b "
+              + "WHERE pr.poolHash.view = :poolViewOrHash "
+              + "OR pr.poolHash.hashRaw = :poolViewOrHash "
+              + "ORDER BY tx.id DESC, pr.certIndex DESC "
+              + "LIMIT 1")
+    ```
+- related table:
+  - tx
+  - block
+</details>
+
+### Related table:
+- pool_retire
+- pool_hash
+- pool_offline_data
+- pool_update
+- tx
+- block
+
+
 
 
 ## x. TEMPLATE
