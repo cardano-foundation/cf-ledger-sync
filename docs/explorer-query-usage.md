@@ -1483,6 +1483,23 @@
 - pool_owner
 - stake_address
 
+## 35. PoolRelayRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findByPoolHashIdIn
+- query:
+    ```sql
+    @Query(
+      "SELECT pr.poolUpdate.id as poolUpdateId, pr.dnsName as dnsName, "
+          + " pr.dnsSrvName as dnsSrvName, pr.ipv4 as ipv4, pr.ipv6 as ipv6, pr.port as port"
+          + " FROM PoolRelay pr WHERE pr.poolUpdate.id IN :poolUpdateIds")
+    ```
+</details>
+
+### Related table:
+- pool_relay
+
 
 
 ## x. TEMPLATE
