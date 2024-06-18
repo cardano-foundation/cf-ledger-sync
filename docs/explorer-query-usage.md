@@ -1348,6 +1348,23 @@
 - pool_info
 - aggregate_pool_info
 
+## 31. PoolHistoryCheckpointRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### checkRewardByPoolViewAndEpoch
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT COUNT(cp.id) FROM PoolHistoryCheckpoint cp "
+              + "WHERE cp.view IN :poolViews AND cp.epochCheckpoint = "
+              + "(SELECT max(e.no) - 1 FROM Epoch e) AND cp.isSpendableReward = TRUE")
+    ```
+</details>
+
+### Related table:
+- pool_history_checkpoint
 
 
 
