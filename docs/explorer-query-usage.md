@@ -2464,6 +2464,132 @@
 - datum
 - failed_tx_out
 
+## 50. TxRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAllTx
+- query:
+    ```sql
+    @Query(
+      value = "SELECT tx FROM Tx tx WHERE tx.blockId IS NOT NULL",
+      countQuery = "SELECT sum(e.txCount) FROM Epoch e")
+    ```
+- related table:
+  - epoch
+#### findByBlockIn
+#### findAllByBlock
+#### findByBlockNo
+- query:
+    ```sql
+    @Query(
+      "SELECT tx FROM Tx tx INNER JOIN Block b ON b.id = tx.blockId "
+          + "WHERE b.blockNo = :blockNo")
+    ```
+- related table:
+  - block
+#### findByBlockHash
+- query:
+    ```sql
+    @Query(
+      "SELECT tx FROM Tx tx INNER JOIN Block b ON b.id = tx.blockId " + "WHERE b.hash = :blockHash")
+    ```
+#### findByHash
+- related table:
+  - block
+  - tx_metadata_hash
+#### findLatestTxId
+- query:
+    ```sql
+    @Query(value = "SELECT tx.id FROM Tx tx ")
+    ```
+#### findLatestTxIO
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT tx.hash as hash, "
+              + "b.blockNo as blockNo, "
+              + "outp.address as toAddress, "
+              + "inp.address as fromAddress, "
+              + "tx.outSum as amount,"
+              + "tx.validContract as validContract, "
+              + "b.time as time, "
+              + "b.epochNo as epochNo, "
+              + "b.epochSlotNo as epochSlotNo, "
+              + "b.slotNo as slot "
+              + "FROM Tx tx "
+              + "JOIN Block b ON b.id = tx.blockId "
+              + "JOIN TxIn txi ON txi.txInputId = tx.id "
+              + "LEFT JOIN TxOut outp ON outp.tx.id = tx.id "
+              + "LEFT JOIN TxOut inp ON inp.tx.id = txi.txOutputId AND "
+              + "inp.index = txi.txOutIndex "
+              + "WHERE tx.id IN :txIds "
+              + "ORDER BY b.blockNo DESC, tx.blockIndex DESC")
+    ```
+- related table:
+  - block
+  - tx_in
+  - tx_out
+#### findByIdIn
+- query:
+    ```sql
+    @Query("SELECT tx FROM Tx tx WHERE tx.id IN :ids ORDER BY tx.blockId DESC, tx.blockIndex DESC")
+    ```
+- related table:
+  - block
+#### findTxIn
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.id as id, "
+          + "tx.hash as hash, "
+          + "b.blockNo as blockNo, "
+          + "b.time as time, "
+          + "b.epochNo as epochNo, "
+          + "b.epochSlotNo as epochSlotNo, "
+          + "b.slotNo as slot "
+          + "FROM Tx tx "
+          + "JOIN Block b ON b.id = tx.blockId "
+          + "WHERE tx.id IN :txIds "
+          + "ORDER BY b.blockNo DESC, tx.blockIndex DESC")
+    ```
+- related table:
+  - block
+#### getSmartContractTxsByTxIds
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.id as txId, tx.hash as hash, b.time as time, b.blockNo as blockNo,  "
+          + " b.epochNo as epochNo, b.epochSlotNo as epochSlotNo, b.slotNo as absoluteSlot "
+          + " FROM Tx tx "
+          + " JOIN Block b ON tx.block = b"
+          + " WHERE tx.id IN :txIds")
+    ```
+- related table:
+  - block
+#### getSmartContractTxsPurpose
+- query:
+    ```sql
+    @Query(
+      "SELECT DISTINCT(r.purpose) as scriptPurposeType, tx.id as txId FROM Tx tx"
+          + " JOIN Redeemer r ON r.tx = tx"
+          + " WHERE tx.id IN :txIds"
+          + " AND r.scriptHash = :scriptHash")
+    ```
+- related table:
+  - redeemer
+#### findAllByHashIn
+</details>
+
+### Related table:
+- tx
+- epoch
+- block
+- tx_in
+- tx_out
+- redeemer
+
 
 
 
