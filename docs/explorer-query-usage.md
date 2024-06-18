@@ -1924,6 +1924,79 @@
 
 </details>
 
+## 39. StakeAddressRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findByView
+#### findStakeAddressOrderByBalance
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT sa.id as id, sa.view as stakeAddress, lsab.quantity as totalStake"
+              + " FROM StakeAddress sa"
+              + " LEFT JOIN LatestStakeAddressBalance lsab ON sa.view = lsab.address"
+              + " WHERE EXISTS (SELECT d FROM Delegation d WHERE d.address = sa)"
+              + " AND (SELECT max(sr.txId) FROM StakeRegistration sr WHERE sr.addr = sa) >"
+              + " (SELECT COALESCE(max(sd.txId), 0) FROM StakeDeregistration sd WHERE sd.addr = sa)"
+              + " AND lsab.quantity IS NOT NULL"
+              + " ORDER BY totalStake DESC")
+    ```
+- related table:
+  - latest_stake_address_balance
+  - delegation
+  - stake_registration
+#### getPoolViewByStakeKey
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.view FROM StakeAddress sa "
+              + "JOIN PoolOwner po ON sa.id  = po.stakeAddress.id "
+              + "JOIN PoolUpdate pu ON po.poolUpdate.id  = pu.id "
+              + "JOIN PoolHash ph ON pu.poolHash.id = ph.id "
+              + "WHERE sa.view = :stakeKey "
+              + "GROUP BY ph.view ")
+    ```
+- related table:
+  - pool_owner
+  - pool_update
+  - pool_hash
+#### getViewByAddressId
+- query:
+    ```sql
+    @Query(value = "SELECT sa.view FROM StakeAddress sa WHERE sa.id IN :addressIds")
+    ```
+#### getStakeAssociatedAddress
+- query:
+    ```sql
+    @Query("SELECT stake.view" + " FROM StakeAddress stake" + " WHERE stake.scriptHash = :scriptHash")
+    ```
+#### getBalanceByView
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT COALESCE(SUM(lsab.quantity), 0) FROM LatestStakeAddressBalance lsab WHERE lsab.address IN :views")
+    ```
+- related table:
+  - latest_stake_address_balance
+#### getAssociatedAddress
+- query:
+    ```sql
+    @Query(value = "SELECT sa.view FROM StakeAddress sa WHERE sa.scriptHash = :scriptHash")
+    ```
+</details>
+
+### Related table:
+- stake_address
+- latest_stake_address_balance
+- delegation
+- stake_registration
+- pool_owner
+- pool_update
+- pool_hash
 
 
 
