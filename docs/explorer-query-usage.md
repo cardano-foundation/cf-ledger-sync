@@ -2329,6 +2329,142 @@
     ```
 </details>
 
+## 49. TxOutRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAddressOutputListByTxId
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.id AS txId, txOut.address AS address"
+          + " FROM TxOut txOut"
+          + " INNER JOIN Tx tx ON tx.id = txOut.tx.id"
+          + " WHERE tx.id IN :txIds"
+          + " ORDER BY txOut.index ASC")
+    ```
+- related table:
+  - tx
+#### findAddressInputListByTxId
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.id AS txId, txOut.address AS address"
+          + "   FROM TxOut txOut "
+          + "   INNER JOIN TxIn txIn ON txOut.tx.id = txIn.txOut.id"
+          + "   INNER JOIN Tx tx ON tx.id = txIn.txInput.id AND txIn.txOutIndex = txOut.index"
+          + "   WHERE tx.id IN :txIds"
+          + "   ORDER BY txIn.id ASC")
+    ```
+- related table:
+  - tx_in
+  - tx
+#### getTxAddressOutputInfo
+- query:
+    ```sql
+    @Query(
+      "SELECT txOut.address AS address, txOut.index as index, COALESCE(stake.view, txOut.address) AS stakeAddress,"
+          + "   txOut.value AS value, maTxOut.quantity as assetQuantity,"
+          + "   stake.view as stakeView, "
+          + "   asset.name as assetName, asset.fingerprint as assetId, asset.id as multiAssetId"
+          + " FROM TxOut txOut "
+          + " LEFT JOIN StakeAddress stake ON txOut.stakeAddress = stake "
+          + " LEFT JOIN MaTxOut maTxOut ON maTxOut.txOut = txOut"
+          + " LEFT JOIN MultiAsset asset ON maTxOut.ident = asset"
+          + " WHERE txOut.tx = :tx"
+          + " ORDER BY txOut.index ASC")
+    ```
+- related table:
+  - stake_address
+  - ma_tx_out
+  - multi_asset
+#### getTxAddressInputInfo
+- query:
+    ```sql
+    @Query(
+      "SELECT txOut.address AS address, txOut.index as index, txIn.txOut.hash AS txHash,"
+          + "   COALESCE(stake.view,txOut.address) AS stakeAddress,"
+          + "   stake.view as stakeView, "
+          + "   txOut.value AS value, maTxOut.quantity as assetQuantity,"
+          + "   asset.name as assetName, asset.fingerprint as assetId, asset.id as multiAssetId"
+          + " FROM TxOut txOut "
+          + " INNER JOIN TxIn txIn ON txOut.tx = txIn.txOut AND txIn.txOutIndex = txOut.index "
+          + " LEFT JOIN StakeAddress stake ON txOut.stakeAddress = stake"
+          + " LEFT JOIN MaTxOut maTxOut ON maTxOut.txOut = txOut"
+          + " LEFT JOIN MultiAsset asset ON maTxOut.ident = asset"
+          + " WHERE txIn.txInput = :tx"
+          + " ORDER BY txIn.id ASC")
+    ```
+- related table:
+  - tx_in
+  - stake_address
+  - ma_tx_out
+  - multi_asset
+#### getContractDatumOutByTx
+- query:
+    ```sql
+    @Query(
+      "SELECT txOut.id as txOutId, txOut.address as address, d.hash as datumHashOut, d.bytes as datumBytesOut"
+          + " FROM TxOut txOut"
+          + " JOIN Datum d ON (txOut.dataHash = d.hash OR txOut.inlineDatum = d)"
+          + " WHERE txOut.tx = :tx"
+          + " ORDER BY txOut.index DESC")
+    ```
+- related table:
+  - datum
+#### getContractDatumOutByTxFail
+- query:
+    ```sql
+    @Query(
+      "SELECT failedTxOut.id as txOutId, failedTxOut.address as address, d.hash as datumHashOut, d.bytes as datumBytesOut"
+          + " FROM FailedTxOut failedTxOut"
+          + " JOIN Datum d ON (failedTxOut.dataHash = d.hash OR failedTxOut.inlineDatum = d)"
+          + " WHERE failedTxOut.tx = :tx"
+          + " ORDER BY failedTxOut.index DESC")
+    ```
+- related table:
+  - failed_tx_out
+  - datum
+#### sumValueOutputByTxAndStakeAddress
+- query:
+    ```sql
+    @Query(
+      "SELECT COALESCE(sum(txOut.value), 0) FROM TxOut txOut "
+          + "INNER JOIN Tx tx ON tx.id = txOut.tx.id "
+          + "INNER JOIN StakeAddress stake ON txOut.stakeAddress = stake "
+          + "WHERE tx.hash = :txHash AND stake.view = :stakeAddress")
+    ```
+- related table:
+  - tx
+  - stake_address
+#### sumValueInputByTxAndStakeAddress
+- query:
+    ```sql
+    @Query(
+      "SELECT COALESCE(sum(txOut.value), 0) "
+          + "FROM TxOut txOut "
+          + "INNER JOIN TxIn txIn ON txOut.tx.id = txIn.txOut.id "
+          + "INNER JOIN Tx tx ON tx.id = txIn.txInput.id AND txIn.txOutIndex = txOut.index "
+          + "INNER JOIN StakeAddress stake ON txOut.stakeAddress = stake "
+          + "WHERE tx.hash = :txHash AND stake.view = :stakeAddress")
+    ```
+- related table:
+  - tx_in
+  - tx
+  - stake_address
+</details>
+
+### Related table:
+- tx_out
+- tx
+- tx_in
+- stake_address
+- ma_tx_out
+- multi_asset
+- datum
+- failed_tx_out
+
+
 
 
 
