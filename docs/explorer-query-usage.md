@@ -2206,6 +2206,59 @@
 
 </details>
 
+## 45. TreasuryRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### getTreasuryByAddress
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.hash as txHash, block.time as time, block.epochSlotNo as epochSlotNo, block.slotNo as slotNo,"
+          + " block.blockNo as blockNo, tx.blockIndex as blockIndex, block.epochNo as epochNo,"
+          + " treasury.amount as amount"
+          + " FROM Treasury treasury"
+          + " INNER JOIN Tx tx ON treasury.tx = tx"
+          + " INNER JOIN Block block ON tx.block = block"
+          + " INNER JOIN StakeAddress stake ON treasury.addr = stake"
+          + " WHERE stake.view = :stakeKey"
+          + " ORDER BY block.blockNo DESC, tx.blockIndex DESC")
+    ```
+- related table:
+  - tx
+  - block
+  - stake_address
+#### findByTx
+- query:
+    ```sql
+    @Query(
+      "SELECT stake.view as stakeAddress, treasury.amount as amount"
+          + " FROM Treasury treasury"
+          + " INNER JOIN StakeAddress stake ON treasury.addr = stake"
+          + " WHERE treasury.tx = :tx"
+          + " ORDER BY treasury.amount DESC")
+    ```
+- related table:
+  - stake_address
+  - tx
+#### findAllTx
+- query:
+    ```sql
+    @Query(
+      "SELECT treasury.tx.id as txId, count(DISTINCT treasury.addr) as numberOfStakes, sum(treasury.amount) as rewards"
+          + " FROM Treasury treasury"
+          + " GROUP BY treasury.tx.id")
+    ```
+- related table:
+  - tx
+</details>
+
+### Related table:
+- treasury
+- tx
+- block
+- stake_address
+
 
 
 
