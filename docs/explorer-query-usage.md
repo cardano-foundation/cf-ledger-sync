@@ -2272,6 +2272,50 @@
 - tx_bootstrap_witnesses
 - tx
 
+## 47. TxChartRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### getTransactionGraphByHour
+- query:
+    ```sql
+    @Query(
+      "SELECT SUM(tx.txSimple) AS simpleTransactions,"
+          + " SUM(tx.txWithMetadataWithoutSc) AS metadata,"
+          + "SUM(tx.txWithSc) AS smartContract, "
+          + "tx.hour AS time FROM TxChart tx "
+          + "WHERE tx.hour in :hours "
+          + "GROUP BY tx.hour "
+          + "ORDER BY tx.hour ASC ")
+    ```
+#### getTransactionGraphByDay
+- query:
+    ```sql
+    @Query(
+      "SELECT SUM(tx.txSimple) AS simpleTransactions,"
+          + " SUM(tx.txWithMetadataWithoutSc) AS metadata ,"
+          + "SUM(tx.txWithSc) AS smartContract, "
+          + "tx.day AS time FROM TxChart tx "
+          + "WHERE tx.day in :day "
+          + "GROUP BY tx.day "
+          + "ORDER BY tx.day ASC ")
+    ```
+#### getTransactionGraphDayGreaterThan
+- query:
+    ```sql
+    @Query(
+      "SELECT SUM(tx.txSimple) AS simpleTransactions,"
+          + " SUM(tx.txWithMetadataWithoutSc) AS  metadata,"
+          + "SUM(tx.txWithSc) AS smartContract, "
+          + "tx.day AS time FROM TxChart tx "
+          + "WHERE tx.day >= :day "
+          + "GROUP BY tx.day "
+          + "ORDER BY tx.day ASC")
+    ```
+</details>
+
+### Related table:
+- tx_chart
 
 
 
