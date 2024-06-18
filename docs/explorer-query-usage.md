@@ -2259,6 +2259,19 @@
 - block
 - stake_address
 
+## 46. TxBootstrapWitnessesRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAllByTx
+- related table:
+  - tx
+</details>
+
+### Related table:
+- tx_bootstrap_witnesses
+- tx
+
 
 
 
