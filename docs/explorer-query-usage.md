@@ -1916,6 +1916,14 @@
 - epoch_param
 - pool_hash
 
+## 38. SlotLeaderRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findByIdIn
+
+</details>
+
 
 
 
