@@ -2198,6 +2198,15 @@
 ### Related table:
 - stake_tx_balance
 
+## 44. TokenTxCountRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findById
+
+</details>
+
+
 
 
 
