@@ -1998,6 +1998,15 @@
 - pool_update
 - pool_hash
 
+## 40. StakeAddressTxCountRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findById
+
+</details>
+
+
 
 
 ## x. TEMPLATE
