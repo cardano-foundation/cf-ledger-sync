@@ -1453,6 +1453,35 @@
 ### Related table:
 - pool_info
 
+## 34. PoolOwnerRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### getStakeKeyList
+- query:
+    ```sql
+    @Query(
+      value =
+          "SELECT ph.id AS poolId, sa.view AS address "
+              + "FROM PoolHash ph "
+              + "JOIN PoolUpdate pu ON ph.id = pu.poolHash.id AND pu.id = "
+              + "(SELECT max(pu2.id) FROM PoolUpdate pu2 WHERE ph.id = pu2.poolHash.id) "
+              + "JOIN PoolOwner po ON po.poolUpdate.id  = pu.id  "
+              + "JOIN StakeAddress sa ON sa.id = po.stakeAddress.id "
+              + "WHERE ph.id IN :poolIds "
+              + "GROUP BY ph.id, sa.view ")
+    ```
+- related table:
+  - pool_hash
+  - pool_update
+  - stake_address
+</details>
+
+### Related table:
+- pool_hash
+- pool_update
+- pool_owner
+- stake_address
 
 
 
