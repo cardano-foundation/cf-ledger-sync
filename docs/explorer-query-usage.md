@@ -2661,26 +2661,129 @@
 - voting_procedure
 - gov_action_proposal
 
-
-
-
-## x. TEMPLATE
+## 54. WithdrawalRepository
 <details>
 <summary> <h3>List queries:</h3></summary>
 
+#### findByTx
+- related table:
+  - stake_address
+#### getRewardWithdrawnByStakeAddress
+- query:
+    ```sql
+    @Query(
+      "SELECT SUM(w.amount) FROM Withdrawal w "
+          + " INNER JOIN StakeAddress stakeAddress ON w.addr.id = stakeAddress.id"
+          + " WHERE stakeAddress.view = :stakeAddress")
+    ```
+- related table:
+  - stake_address
+#### getWithdrawalByAddressAndTx
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.hash as txHash,withdrawal.amount as amount, block.time as time, tx.fee as fee,"
+          + " block.epochNo as epochNo, tx.id as txId"
+          + " FROM Withdrawal withdrawal"
+          + " INNER JOIN Tx tx ON withdrawal.tx = tx"
+          + " INNER JOIN Block block ON tx.block = block"
+          + " WHERE withdrawal.addr = :stakeKey AND tx.hash = :hash")
+    ```
+- related table:
+  - tx
+  - block
+#### getWithdrawalByAddress
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.hash as txHash, block.time as time, block.epochSlotNo as epochSlotNo, block.slotNo as slotNo,"
+          + " block.blockNo as blockNo, block.epochNo as epochNo, withdrawal.amount as amount"
+          + " FROM Withdrawal withdrawal"
+          + " INNER JOIN Tx tx ON withdrawal.tx = tx"
+          + " INNER JOIN Block block ON tx.block = block"
+          + " INNER JOIN StakeAddress stake ON withdrawal.addr = stake"
+          + " WHERE stake.view = :stakeKey"
+          + " ORDER BY block.blockNo DESC, tx.blockIndex DESC")
+    ```
+- related table:
+  - tx
+  - block
+  - stake_address
+#### getWithdrawalByAddress
+- query:
+    ```sql
+    @Query(
+      "SELECT tx.hash as txHash, block.time as time, block.epochSlotNo as epochSlotNo,"
+          + " tx.fee as fee, block.blockNo as blockNo, block.epochNo as epochNo,"
+          + " withdrawal.amount as amount"
+          + " FROM Withdrawal withdrawal"
+          + " INNER JOIN Tx tx ON withdrawal.tx = tx"
+          + " INNER JOIN Block block ON tx.block = block"
+          + " WHERE withdrawal.addr = :stakeKey"
+          + " AND (block.time >= :fromTime )"
+          + " AND (block.time <= :toTime)"
+          + " AND ( :txHash IS NULL OR tx.hash = :txHash)")
+    ```
+- related table:
+  - tx
+  - block
+  - stake_address
 #### TEMPLATE_QUERY
 - query:
     ```sql
     @Query(
-      value =
-          "SELECT * from TEMPLATE"
+      "SELECT new org.cardanofoundation.explorer.api.model.response.stake.lifecycle.StakeRewardResponse("
+          + "block.epochNo, epoch.endTime, sum(withdrawal.amount))"
+          + " FROM Withdrawal withdrawal"
+          + " INNER JOIN Tx tx ON withdrawal.tx = tx"
+          + " INNER JOIN Block block ON tx.block = block"
+          + " INNER JOIN Epoch epoch ON block.epochNo = epoch.no"
+          + " WHERE withdrawal.addr = :stakeAddress"
+          + " GROUP BY block.epochNo, epoch.endTime")
     ```
 - related table:
-  - XXX
+  - tx
+  - block
+  - epoch
+  - stake_address
+#### sumByAddrAndTx
+- query:
+    ```sql
+    @Query(
+      "SELECT sum(w.amount) FROM Withdrawal w"
+          + " WHERE w.addr = :stakeAddress AND w.tx.id < :txId")
+    ```
+- related table:
+  - stake_address
+#### existsByAddr
+#### getRewardWithdrawnByAddrIn
+- query:
+    ```sql
+    @Query(
+      "SELECT w.stakeAddressId as stakeAddressId, SUM(w.amount) as amount"
+          + " FROM Withdrawal w"
+          + " WHERE w.stakeAddressId IN :stakeIds"
+          + " GROUP BY w.stakeAddressId")
+    ```
+#### getRewardWithdrawnByAddressList
+- query:
+    ```sql
+    @Query(
+      "SELECT COALESCE(SUM(w.amount), 0) FROM Withdrawal w "
+          + " INNER JOIN StakeAddress stakeAddress ON w.addr.id = stakeAddress.id"
+          + " WHERE stakeAddress.view IN :addressList")
+    ```
+- related table:
+  - stake_address
 </details>
 
+
 ### Related table:
-- XXX
-> **_NOTE:_** Some note.
+- withdrawal
+- stake_address
+- tx
+- block
+- epoch
+
 
 
