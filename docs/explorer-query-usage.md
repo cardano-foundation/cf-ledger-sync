@@ -2590,6 +2590,14 @@
 - tx_out
 - redeemer
 
+## 51. TxWitnessesRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findAllByTx
+
+</details>
+
 
 
 
