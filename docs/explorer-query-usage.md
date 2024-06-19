@@ -2627,6 +2627,40 @@
 - ma_tx_out
 - multi_asset
 
+## 53. VotingProcedureRepository
+<details>
+<summary> <h3>List queries:</h3></summary>
+
+#### findVotingProcedureByVoterHashAndGovActionType
+- query:
+    ```sql
+    @Query(
+      value =
+          "select gap.txHash as govActionTxHash, gap.index as govActionIndex, gap.type as govActionType, vp.voterHash as voterHash,"
+              + " vp.txHash as votingProcedureTxHash, vp.index as votingProcedureTxIndex, vp.blockTime as blockTime,vp.vote as vote"
+              + " from VotingProcedure vp "
+              + " join GovActionProposal gap on gap.txHash = vp.govActionTxHash and gap.index = vp.govActionIndex"
+              + " where vp.voterHash = :voterHash and (:govActionType is null or gap.type = :govActionType)"
+              + " and gap.blockTime >= :blockTime")
+    ```
+- related table:
+  - gov_action_proposal
+#### getVotingProcedureByTxHashAndIndexAndVoterHash
+- query:
+    ```sql
+    @Query(
+      value =
+          "select vp.govActionTxHash as govActionTxHash, vp.govActionIndex as govActionIndex, vp.vote as vote, vp.txHash as votingProcedureTxHash, vp.index as votingProcedureTxIndex,"
+              + " vp.blockTime as blockTime"
+              + " from VotingProcedure vp where vp.govActionTxHash = :txHash and vp.govActionIndex = :index and vp.voterHash = :voterHash and vp.voterType in :voterType"
+              + " order by vp.blockTime desc")
+    ```
+</details>
+
+### Related table:
+- voting_procedure
+- gov_action_proposal
+
 
 
 
