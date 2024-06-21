@@ -1,11 +1,14 @@
 package org.cardanofoundation.ledgersync.service.impl;
 
+import com.bloxbean.cardano.client.address.Address;
 import com.bloxbean.cardano.yaci.core.model.Amount;
 import com.bloxbean.cardano.yaci.core.model.Datum;
 import com.bloxbean.cardano.yaci.core.model.ExUnits;
 import com.bloxbean.cardano.yaci.core.model.RedeemerTag;
 import com.bloxbean.cardano.yaci.core.model.certs.*;
 import com.bloxbean.cardano.yaci.core.model.governance.ProposalProcedure;
+import com.bloxbean.cardano.yaci.core.model.governance.Voter;
+import com.bloxbean.cardano.yaci.core.model.governance.VotingProcedures;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -198,7 +201,8 @@ public class RedeemerServiceImpl implements RedeemerService {
             case Cert -> handleCertPtr(aggregatedTx.getCertificates(), pointerIndex);
             case Reward -> handleRewardPtr(new ArrayList<>(aggregatedTx.getWithdrawals().keySet()),
                             pointerIndex);
-            case Voting, Proposing -> null; //TODO check later
+            case Voting -> handleVotingPtr(aggregatedTx.getVotingProcedures(), pointerIndex);
+            case Proposing -> handleProposingPtr(aggregatedTx.getProposalProcedures(), pointerIndex);
             default -> {
                 log.error("Unsupported redeemer tag {}", tag);
                 yield null;
@@ -268,6 +272,37 @@ public class RedeemerServiceImpl implements RedeemerService {
         String rewardAccount = rewardAccounts.get(pointerIndex);
         // Trim network tag
         return rewardAccount.substring(2);
+    }
+
+    private String handleVotingPtr(VotingProcedures votingProcedures, int pointerIndex) {
+        if (votingProcedures == null || votingProcedures.getVoting() == null || votingProcedures.getVoting().isEmpty())
+            return null;
+
+        Set<Voter> voters = ((LinkedHashMap)votingProcedures.getVoting()).keySet();
+        int i = 0;
+        Voter voter = null;
+        for (var v : voters) {
+            if (i == pointerIndex) {
+                voter = v;
+                break;
+            }
+            i++;
+        }
+
+        return voter != null ? voter.getHash() : null;
+    }
+
+    private String handleProposingPtr(List<ProposalProcedure> proposalProcedures, int pointerIndex) {
+        if (proposalProcedures == null || proposalProcedures.isEmpty() || pointerIndex > proposalProcedures.size() - 1)
+            return null;
+
+        ProposalProcedure proposalProcedure = proposalProcedures.get(pointerIndex);
+        var rewardAccount = proposalProcedures.get(pointerIndex).getRewardAccount();
+
+        Address address = new Address(com.bloxbean.cardano.client.util.HexUtil.decodeHexString(rewardAccount));
+        String delegationHash = com.bloxbean.cardano.client.util.HexUtil.encodeHexString(address.getDelegationCredential().get().getBytes());
+
+        return delegationHash;
     }
 
     private RedeemerData buildRedeemerData(Datum plutusData, Tx tx) {
