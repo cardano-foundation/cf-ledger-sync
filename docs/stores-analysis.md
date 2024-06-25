@@ -21,22 +21,22 @@
 ## A. Analyze **block** table
 ### 1. block - block
 
-| **Ledger_Sync**         | **Yaci_Store**    | **Note**                                                                                                                                |
-|:------------------------|:------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| block_no                | number            |                                                                                                                                         |
-| epoch_no                | epoch             |                                                                                                                                         |
-| epoch_slot_no           | epoch_slot        |                                                                                                                                         |
-| hash                    | hash              |                                                                                                                                         |
-| op_cert                 | op_cert_hot_vkey  |                                                                                                                                         |
-| op_cert_counter         | op_cert_seq_number|                                                                                                                                         |
-| proto_major, proto_minor| protocol_version  |                                                                                                                                         |
-| size                    | body_size         |                                                                                                                                         |
-| slot_leader_id          | slot_leader       | In ledger_sync, slot_leader_id là id trong bảng slot_leader                                                                         |
-| slot_no                 | slot              |                                                                                                                                         |
-| time                    | block_time        |                                                                                                                                         |
-| tx_count                | no_of_txs         |                                                                                                                                         |
-| vrf_key                 | vrf_vkey          | <p>Bech32.encode(HexUtil.decodeHexString(headerBody.getVrfVkey()), ConsumerConstant.VRF_KEY_PREFIX)</p><p></p>                          |
-| previous_id             | prev_hash         |                                                                                                                                         |
+| **Ledger_Sync**          | **Yaci_Store**     | **Note**                                                                                                       |
+|:-------------------------|:-------------------|:---------------------------------------------------------------------------------------------------------------|
+| block_no                 | number             |                                                                                                                |
+| epoch_no                 | epoch              |                                                                                                                |
+| epoch_slot_no            | epoch_slot         |                                                                                                                |
+| hash                     | hash               |                                                                                                                |
+| op_cert                  | op_cert_hot_vkey   |                                                                                                                |
+| op_cert_counter          | op_cert_seq_number |                                                                                                                |
+| proto_major, proto_minor | protocol_version   |                                                                                                                |
+| size                     | body_size          |                                                                                                                |
+| slot_leader_id           | slot_leader        | In ledger_sync, slot_leader_id is id of slot_leader table                                                      |
+| slot_no                  | slot               |                                                                                                                |
+| time                     | block_time         |                                                                                                                |
+| tx_count                 | no_of_txs          |                                                                                                                |
+| vrf_key                  | vrf_vkey           | <p>Bech32.encode(HexUtil.decodeHexString(headerBody.getVrfVkey()), ConsumerConstant.VRF_KEY_PREFIX)</p><p></p> |
+| previous_id              | prev_hash          |                                                                                                                |
 
 ### 2. ada_pots - block
 
