@@ -316,20 +316,20 @@
 
 ### 1. tx - transaction
 
-| **Ledger_Sync**     | **Yaci_Store**     | **Note**                                                                                                                                                                                                                                                           |
-|:--------------------|:-------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| block_id            | block_hash         |                                                                                                                                                                                                                                                                    |
-| fee                 | fee                |                                                                                                                                                                                                                                                                    |
-| hash                | tx_hash            |                                                                                                                                                                                                                                                                    |
-| tx_metadata_hash_id | auxiliary_datahash |                                                                                                                                                                                                                                                                    |
-| block_index         |                    | Index of transaction in block                                                                                                                                                                                                                                      |
-| deposit             |                    |                                                                                                                                                                                                                                                                    |
-| invalid_before      |                    | All values are null.                                                                                                                                                                                                                                               |
-| invalid_hereafter   |                    | All values are null.                                                                                                                                                                                                                                               |
-| out_sum             |                    | The sum of the transaction outputs (in Lovelace).                                                                                                                                                                                                                  |
-| script_size         |                    | All values are null.                                                                                                                                                                                                                                               |
-| size                |                    | <p>Definition: The size of the transaction in bytes.<br>Logic in ledger_sync :<br>size là size của script<br>public void addScriptSize(int size) {</p><p>if (this.size == null) {</p><p>`      `this.size = 0;</p><p>}</p><p>this.size += size;</p><p>}</p><p></p> |
-| valid_contract      |                    | Logic in ledger_sync:<br>validContract = !invalidTransactions.contains(txIdx);<br>                                                                                                                                                                                 |
+| **Ledger_Sync**     | **Yaci_Store**     | **Note**                                                                                                                                                                                                                                                                            |
+|:--------------------|:-------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| block_id            | block_hash         |                                                                                                                                                                                                                                                                                     |
+| fee                 | fee                |                                                                                                                                                                                                                                                                                     |
+| hash                | tx_hash            |                                                                                                                                                                                                                                                                                     |
+| tx_metadata_hash_id | auxiliary_datahash |                                                                                                                                                                                                                                                                                     |
+| block_index         |                    | Index of transaction in block                                                                                                                                                                                                                                                       |
+| deposit             |                    |                                                                                                                                                                                                                                                                                     |
+| invalid_before      |                    | All values are null.                                                                                                                                                                                                                                                                |
+| invalid_hereafter   |                    | All values are null.                                                                                                                                                                                                                                                                |
+| out_sum             |                    | The sum of the transaction outputs (in Lovelace).                                                                                                                                                                                                                                   |
+| script_size         |                    | All values are null.                                                                                                                                                                                                                                                                |
+| size                |                    | <p>Definition: The size of the transaction in bytes.<br>Logic in ledger_sync :<br>size là size của script<br>public void addScriptSize(int size) {</p><p>if (this.size == null) {</p><p> &nbsp;&nbsp;&nbsp;&nbsp;this.size = 0;</p><p>}</p><p>this.size += size;</p><p>}</p><p></p> |
+| valid_contract      |                    | Logic in ledger_sync:<br>validContract = !invalidTransactions.contains(txIdx);<br>                                                                                                                                                                                                  |
 
 ## B. Analyze **transaction_witness** table
 
@@ -407,7 +407,7 @@
 
 ## C. Analyze **address** table
 
-- Not found in ledger_sync
+- Currently, the address table of yaci_store is being used in ledger_sync.
 
 # XIII.Gap between ledger_sync and yaci_store
 
@@ -424,3 +424,16 @@
 
 - [ ] Need to add a `pool_view` column to the pool_registration table or new table
     - pool_view = Bech32.encode(HexUtil.decodeHexString(hash_raw), ConsumerConstant.POOL_HASH_PREFIX))
+
+## Transaction store
+
+- [ ] Need to add a `block_index` column for transaction.
+- [ ] Need to add a `deposit` column for transaction.
+- [ ] Need to add a `out_sum` column for transaction.
+- [ ] Need to add a `size` column for transaction.
+
+## Utxo store
+
+- [ ] Need to add a `address_has_script` column for address_utxo.
+- [ ] Need to add a `address_raw` column for address_utxo.
+- [ ] Need to add a `token_type` column for address_utxo.
