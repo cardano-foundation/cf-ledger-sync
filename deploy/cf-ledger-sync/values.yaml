@@ -62,6 +62,7 @@ indexer:
     userKey: POSTGRES_USER
     passwordKey: POSTGRES_PASSWORD
   resources: {}
+  hikari: {}
 #    limits:
 #      cpu: 2
 #      memory: 4Gi
