@@ -1011,12 +1011,14 @@ A table for the execution history of Flyway schema migrations.
 | execution_time | integer (32) | File execution time                                                                               |
 | success        | bool         | Status of change                                                                                  |
 
-## `gov_action_proposal`
+### `gov_action_proposal`
+
+A table contains information about proposed government actions.
 
 * Primary Id: {`tx_hash`, `idx`}
 
 | **Column name** | **Type**     | **Description**                                                                                                                 |
-| --------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------|--------------|---------------------------------------------------------------------------------------------------------------------------------|
 | **tx_hash**     | string       | The hash of the tx that includes this certificate                                                                               |
 | **idx**         | integer (32) | The index of this proposal procedure within its transaction                                                                     |
 | deposit         | integer (64) | The deposit amount payed for this proposal (in lovelace)                                                                        |
@@ -1031,12 +1033,12 @@ A table for the execution history of Flyway schema migrations.
 | block_time      | integer (64) | Block time                                                                                                                      |
 | update_datetime | timestamp    | Date and time the record was last updated                                                                                       |
 
-## `voting_procedure`
+### `voting_procedure`
 
 * Primary Id: {`tx_hash`, `voter_hash`, `gov_action_tx_hash`, `gov_action_index`}
 
 | **Column name**        | **Type**     | **Description**                                                         |
-| ---------------------- | ------------ | ----------------------------------------------------------------------- |
+|------------------------|--------------|-------------------------------------------------------------------------|
 | **tx_hash**            | string       | Transaction hash of the tx that includes this VotingProcedure           |
 | **voter_hash**         | string       | Hash identifying the voter (not null, part of primary key)              |
 | **gov_action_tx_hash** | string       | Transaction hash of the governance action                               |
@@ -1052,3 +1054,99 @@ A table for the execution history of Flyway schema migrations.
 | block                  | integer (64) | Block number                                                            |
 | block_time             | integer (64) | Block time                                                              |
 | update_datetime        | timestamp    | Date and time the record was last updated                               |
+
+## Utxo store
+### `address_utxo`
+
+| **Column name**  | **Type**     | **Description**                                                              |
+|:-----------------|:-------------|:-----------------------------------------------------------------------------|
+| **tx_hash**      | string       | The hash identifier of the transaction that contains this transaction output |
+| **output_index** | smallint     | The index of this transaction output with the transaction                    |
+| slot             | integer (64) | Slot number                                                                  |
+| block_hash       | string       | Hash of the block                                                            |
+| epoch            | integer (32) | Epoch number                                                                 |
+| lovelace_amount  | integer (64) | The output value (in Lovelace) of the transaction output                     |
+| amounts          | jsonb        | Object containing the amount of each multi-asset coin in the UTXO.           |
+
+### `tx_input`
+
+| **Column name**     | **Type**     | **Description**                                                     |
+|:--------------------|:-------------|:--------------------------------------------------------------------|
+| **tx_hash**         | string       | The hash identifier of the transaction                              |
+| **output_index**    | smallint     | The index within the transaction outputs                            |
+| spend_at_slot       | integer (64) | Slot number in which the UTXO was spent                             |
+| spent_at_block      | integer (64) | Block number in which the UTXO was spent                            |
+| spent_at_block_hash | string       | Unique identifier for the block containing the spending transaction |
+| spent_block_time    | integer (64) | Unix timestamp of the block containing the spending transaction     |
+| spent_epoch         | integer (32) | Epoch number when the UTXO was spent                                |
+| spent_tx_hash       | string       | Unique identifier for the spending transaction                      |
+
+### `address`
+
+| **Column name**    | **Type**  | **Description**                                       |
+|:-------------------|:----------|:------------------------------------------------------|
+| **id**             | bigserial | Unique identifier for the address (auto-incrementing) |
+| address            | string    | Bech32 address in the Cardano blockchain.             |
+| addr_full          | text      | Full address information (might include more details) |
+| payment_credential | string    | Bech32 payment credential for the address             |
+| stake_address      | string    | Bech32 stake address associated with the address      |
+| stake_credential   | string    | Bech32 stake credential associated with the address   |
+| update_datetime    | timestamp | Timestamp of the last update to this record.          |
+
+## Account aggregation
+
+### `address_balance`
+
+| **Column Name** | **Data Type** | **Description**                                           |
+|-----------------|---------------|-----------------------------------------------------------|
+| **address**     | string        | Bech32 encoded address                                    |
+| **unit**        | string        | The unit for the quantity (e.g., lovelace for ADA)        |
+| **slot**        | integer (64)  | Slot number                                               |
+| quantity        | numeric       | Numeric representation of the asset amount                |
+| addr_full       | text          | Full address details in Cardano format                    |
+| policy          | string        | Policy ID (fingerprint) of the off-chain asset definition |
+| asset_name      | string        | Optional human-readable name of the asset                 |
+| block_hash      | string        | Hash of the block                                         |
+| block           | integer (64)  | Block number                                              |
+| block_time      | integer (64)  | Block time                                                |
+| epoch           | integer (32)  | Epoch number                                              |
+| update_datetime | timestamp     | Date and time the record was last updated                 |
+
+### `stake_address_balance`
+
+| **Column Name**  | **Data Type** | **Description**                                             |
+|------------------|---------------|-------------------------------------------------------------|
+| **address**      | string        | Bech32 encoded stake address                                |
+| **slot**         | integer (64)  | Slot number                                                 |
+| quantity         | numeric       | Numeric representation of the lovelace                      |
+| stake_credential | string        | Stake credential associated with the address                |
+| block_hash       | string        | Hash of the block                                           |
+| block            | integer (64)  | Block number                                                |
+| block_time       | integer (64)  | Unix timestamp representing the time the block was produced |
+| epoch            | integer (32)  | Epoch number                                                |
+| update_datetime  | timestamp     | Date and time the record was last updated                   |
+
+### `address_tx_amount`
+
+| **Column Name** | **Data Type** | **Description**                                                        |
+|-----------------|---------------|------------------------------------------------------------------------|
+| **address**     | string        | Bech32 encoded address                                                 |
+| **unit**        | string        | Optional unit for the quantity (e.g., lovelace for ADA)                |
+| **tx_hash**     | string        | The hash identifier of the transaction                                 |
+| slot            | integer (64)  | Slot number                                                            |
+| quantity        | numeric       | Numeric representation of the asset amount involved in the transaction |
+| addr_full       | text          | Full address details in Cardano format                                 |
+| stake_address   | string        | Bech32 encoded stake address associated with the transaction           |
+| block           | integer (64)  | Block number                                                           |
+| block_time      | integer (64)  | Unix timestamp representing the time the block was produced            |
+| epoch           | integer (32)  | Epoch number when the transaction occurred                             |
+
+### `account_config`
+
+| **Column Name** | **Data Type** | **Description**                                                |
+|-----------------|---------------|----------------------------------------------------------------|
+| **config_id**   | string        | Unique identifier for the account configuration                |
+| status          | string        | Current status of the account configuration (BALANCE_SNAPSHOT) |
+| slot            | integer (64)  | Slot number                                                    |
+| block           | integer (64)  | Block number                                                   |
+| block_hash      | string        | Hash of the block                                              |
