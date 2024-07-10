@@ -7,7 +7,7 @@ A table for every unique pool key hash.
 * Primary Id: `id`
 
 | Column name | Type         | Description                           |
-|-------------|--------------|---------------------------------------|
+| ----------- | ------------ | ------------------------------------- |
 | `id`        | integer (64) |                                       |
 | `hash_raw`  | string       | The raw string of the pool hash.      |
 | `pool_size` | numeric      | The size of the pool.                 |
@@ -21,7 +21,7 @@ Every unique slot leader (ie an entity that mines a block). It could be a pool o
 * Primary Id: `id`
 
 | Column name    | Type         | Description                                                       |
-|----------------|--------------|-------------------------------------------------------------------|
+| -------------- | ------------ | ----------------------------------------------------------------- |
 | `id`           | integer (64) |                                                                   |
 | `hash`         | string       | The hash of of the block producer identifier.                     |
 | `pool_hash_id` | integer (64) | If the slot leader is a pool, an index into the `PoolHash` table. |
@@ -34,7 +34,7 @@ A table for blocks on the chain.
 * Primary Id: `id`
 
 | Column name       | Type         | Description                                                                                                                                                                                          |
-|-------------------|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`              | integer (64) |                                                                                                                                                                                                      |
 | `hash`            | string       | The hash identifier of the block.                                                                                                                                                                    |
 | `epoch_no`        | integer (32) | The epoch number.                                                                                                                                                                                    |
@@ -60,7 +60,7 @@ only ever have a single row.
 * Primary Id: `id`
 
 | Column name   | Type         | Description                                                   |
-|---------------|--------------|---------------------------------------------------------------|
+| ------------- | ------------ | ------------------------------------------------------------- |
 | `id`          | integer (64) |                                                               |
 | `stage_one`   | integer (64) | Set up PostgreSQL data types (using SQL 'DOMAIN' statements). |
 | `stage_two`   | integer (64) | Persistent generated migrations.                              |
@@ -73,7 +73,7 @@ A table for transactions within a block on the chain.
 * Primary Id: `id`
 
 | Column name         | Type         | Description                                                                               |
-|---------------------|--------------|-------------------------------------------------------------------------------------------|
+| ------------------- | ------------ | ----------------------------------------------------------------------------------------- |
 | `id`                | integer (64) |                                                                                           |
 | `hash`              | integer (64) | The hash identifier of the transaction.                                                   |
 | `block_id`          | integer (64) | The Block table index of the block that contains this transaction.                        |
@@ -95,7 +95,7 @@ address is registered or in fact that is was ever registered.
 * Primary Id: `id`
 
 | Column name        | Type         | Description                                                               |
-|--------------------|--------------|---------------------------------------------------------------------------|
+| ------------------ | ------------ | ------------------------------------------------------------------------- |
 | `id`               | integer (64) |                                                                           |
 | `hash_raw`         | string       | The raw bytes of the stake address hash.                                  |
 | `view`             | string       | The Bech32 encoded version of the stake address.                          |
@@ -109,7 +109,7 @@ A table for transaction outputs.
 * Primary Id: `id`
 
 | Column name           | Type         | Description                                                                                                                           |
-|-----------------------|--------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                  | integer (64) |                                                                                                                                       |
 | `address`             | string       | The human readable encoding of the output address. Will be Base58 for Byron era addresses and Bech32 for Shelley era.                 |
 | `address_has_script`  | boolean      | Flag which shows if this address is locked by a script.                                                                               |
@@ -131,7 +131,7 @@ A table for transaction inputs.
 * Primary Id: `id`
 
 | Column name    | Type         | Description                                                                            |
-|----------------|--------------|----------------------------------------------------------------------------------------|
+| -------------- | ------------ | -------------------------------------------------------------------------------------- |
 | `id`           | integer (64) |                                                                                        |
 | `tx_in_id`     | integer (64) | The Tx table index of the transaction that contains this transaction input.            |
 | `tx_out_index` | smallint     | The index within the transaction outputs.                                              |
@@ -145,7 +145,7 @@ A table for reference transaction inputs.
 * Primary Id: `id`
 
 | Column name    | Type         | Description                                                                |
-|----------------|--------------|----------------------------------------------------------------------------|
+| -------------- | ------------ | -------------------------------------------------------------------------- |
 | `id`           | integer (64) |                                                                            |
 | `tx_in_id`     | integer (64) | The Tx table index of the transaction that contains this transaction input |
 | `tx_out_id`    | integer (64) | The Tx table index of the transaction that contains the referenced output. |
@@ -158,7 +158,7 @@ A table containing metadata about the chain. There will probably only ever be on
 * Primary Id: `id`
 
 | Column name    | Type         | Description                    |
-|----------------|--------------|--------------------------------|
+| -------------- | ------------ | ------------------------------ |
 | `id`           | integer (64) |                                |
 | `network_name` | string       | The network name.              |
 | `start_time`   | timestamp    | The start time of the network. |
@@ -171,7 +171,7 @@ Aggregation of data within an epoch.
 * Primary Id: `id`
 
 | Column name           | Type         | Description                                                                                       |
-|-----------------------|--------------|---------------------------------------------------------------------------------------------------|
+| --------------------- | ------------ | ------------------------------------------------------------------------------------------------- |
 | `id`                  | integer (64) |                                                                                                   |
 | `blk_count`           | integer (32) | The number of blocks in this epoch.                                                               |
 | `end_time`            | timestamp    | The epoch end time.                                                                               |
@@ -192,7 +192,7 @@ The treasury and rewards fields will be correct for the whole epoch, but all oth
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                               |
-|-------------|--------------|---------------------------------------------------------------------------|
+| ----------- | ------------ | ------------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                           |
 | `deposits`  | numeric      | The amount  in the obligation pot coming from stake key and pool deposits |
 | `epoch_no`  | integer (32) | The epoch number where this AdaPots snapshot was taken.                   |
@@ -211,7 +211,7 @@ An on-chain reference to off-chain pool metadata.
 * Primary Id: `id`
 
 | Column name        | Type         | Description                                                                      |
-|--------------------|--------------|----------------------------------------------------------------------------------|
+| ------------------ | ------------ | -------------------------------------------------------------------------------- |
 | `id`               | integer (64) |                                                                                  |
 | `hash`             | varchar      | The expected hash for the off-chain data.                                        |
 | `url`              | varchar      | The URL for the location of the off-chain data.                                  |
@@ -225,7 +225,7 @@ An on-chain pool update.
 * Primary Id: `id`
 
 | Column name        | Type         | Description                                                                |
-|--------------------|--------------|----------------------------------------------------------------------------|
+| ------------------ | ------------ | -------------------------------------------------------------------------- |
 | `id`               | integer (64) |                                                                            |
 | `active_epoch_no`  | integer (64) | The epoch number where this update becomes active.                         |
 | `cert_index`       | integer (32) | The index of this pool update within the certificates of this transaction. |
@@ -245,7 +245,7 @@ A table containing pool owners.
 * Primary Id: `id`
 
 | Column name      | Type         | Description                                                      |
-|------------------|--------------|------------------------------------------------------------------|
+| ---------------- | ------------ | ---------------------------------------------------------------- |
 | `id`             | integer (64) |                                                                  |
 | `pool_update_id` | integer (64) | The PoolUpdate table index for the pool.                         |
 | `addr_id`        | integer (64) | The StakeAddress table index for the pool owner's stake address. |
@@ -257,7 +257,7 @@ A table containing information about pools retiring.
 * Primary Id: `id`
 
 | Column name       | Type         | Description                                                                     |
-|-------------------|--------------|---------------------------------------------------------------------------------|
+| ----------------- | ------------ | ------------------------------------------------------------------------------- |
 | `id`              | integer (64) |                                                                                 |
 | `cert_index`      | integer (32) | The index of this pool retirement within the certificates of this transaction.  |
 | `retiring_epoch`  | integer (32) | The epoch where this pool retires.                                              |
@@ -271,7 +271,7 @@ A table containing information about pools relay.
 * Primary Id: `id`
 
 | Column name    | Type         | Description                                                |
-|----------------|--------------|------------------------------------------------------------|
+| -------------- | ------------ | ---------------------------------------------------------- |
 | `id`           | integer (64) |                                                            |
 | `dns_name`     | string       | The DNS name of the relay (NULLable).                      |
 | `dns_srv_name` | string       | The DNS service name of the relay (NULLable).              |
@@ -287,7 +287,7 @@ A table containing stake address registrations.
 * Primary Id: `id`
 
 | Column name  | Type         | Description                                                                       |
-|--------------|--------------|-----------------------------------------------------------------------------------|
+| ------------ | ------------ | --------------------------------------------------------------------------------- |
 | `id`         | integer (64) |                                                                                   |
 | `cert_index` | integer (32) | The index of this stake registration within the certificates of this transaction. |
 | `epoch_no`   | integer (32) | The epoch in which the registration took place.                                   |
@@ -301,7 +301,7 @@ A table containing stake address deregistrations.
 * Primary Id: `id`
 
 | Column name   | Type         | Description                                                                         |
-|---------------|--------------|-------------------------------------------------------------------------------------|
+| ------------- | ------------ | ----------------------------------------------------------------------------------- |
 | `id`          | integer (64) |                                                                                     |
 | `cert_index`  | integer (32) | The index of this stake deregistration within the certificates of this transaction. |
 | `epoch_no`    | integer (32) | The epoch in which the deregistration took place.                                   |
@@ -316,7 +316,7 @@ A table containing delegations from a stake address to a stake pool.
 * Primary Id: `id`
 
 | Column name       | Type         | Description                                                               |
-|-------------------|--------------|---------------------------------------------------------------------------|
+| ----------------- | ------------ | ------------------------------------------------------------------------- |
 | `id`              | integer (64) |                                                                           |
 | `active_epoch_no` | integer (64) | The epoch number where this delegation becomes active.                    |
 | `cert_index`      | integer (32) | The index of this delegation within the certificates of this transaction. |
@@ -333,7 +333,7 @@ A table for metadata attached to a transaction.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                             |
-|-------------|--------------|-------------------------------------------------------------------------|
+| ----------- | ------------ | ----------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                         |
 | `bytes`     | bytea        | The raw bytes of the payload.                                           |
 | `json`      | text         | The JSON payload if it can be decoded as JSON.                          |
@@ -347,21 +347,18 @@ A table for hash metadata attached to a transaction.
 * Primary Id: `id`
 
 | Column name | Type         | Description                          |
-|-------------|--------------|--------------------------------------|
+| ----------- | ------------ | ------------------------------------ |
 | `id`        | integer (64) |                                      |
 | `hash`      | string       | The hash of metadata of transaction. |
 
 ### `reward`
 
-A table for earned staking rewards. After 13.2 release it includes only 3 types of rewards: member, leader and refund,
-since the other 2 types have moved to a separate table instant_reward. The rewards are inserted incrementally and this
-procedure is finalised when the spendable epoch comes. Before the epoch comes, some entries may be missing.
-The `reward.id` field has been removed and it only appears on docs due to a bug.
+A table for earned staking rewards.
 
 * Primary Id: `id`
 
 | Column name       | Type         | Description                                                                                                                                        |
-|-------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`              | integer (64) |                                                                                                                                                    |
 | `amount`          | numeric      | The reward amount.                                                                                                                                 |
 | `earned_epoch`    | integer (64) | The epoch in which the reward was earned. For `pool` and `leader` rewards spendable in epoch `N`, this will be `N - 2`, `refund` N.                |
@@ -377,7 +374,7 @@ A table for withdrawals from a reward account.
 * Primary Id: `id`
 
 | Column name   | Type         | Description                                                                         |
-|---------------|--------------|-------------------------------------------------------------------------------------|
+| ------------- | ------------ | ----------------------------------------------------------------------------------- |
 | `id`          | integer (64) |                                                                                     |
 | `amount`      | numeric      | The withdrawal amount.                                                              |
 | `addr_id`     | integer (64) | The StakeAddress table index for the stake address for which the withdrawal is for. |
@@ -386,13 +383,12 @@ A table for withdrawals from a reward account.
 
 ### `epoch_stake`
 
-A table containing the epoch stake distribution for each epoch. This is inserted incrementally in the first blocks of
-the epoch. The stake distribution is extracted from the `set` snapshot of the ledger.
+A table containing the epoch stake distribution for each epoch.
 
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                                   |
-|-------------|--------------|-------------------------------------------------------------------------------|
+| ----------- | ------------ | ----------------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                               |
 | `amount`    | numeric      | The amount being staked.                                                      |
 | `epoch_no`  | integer (32) | The epoch number.                                                             |
@@ -401,14 +397,12 @@ the epoch. The stake distribution is extracted from the `set` snapshot of the le
 
 ### `treasury`
 
-A table for payments from the treasury to a StakeAddress. Note: Before protocol version 5.0 (Alonzo) if more than one
-payment was made to a stake address in a single epoch, only the last payment was kept and earlier ones removed. For
-protocol version 5.0 and later, they are summed and produce a single reward with type `treasury`.
+A table for payments from the treasury to a StakeAddress.
 
 * Primary Id: `id`
 
 | Column name  | Type         | Description                                                                        |
-|--------------|--------------|------------------------------------------------------------------------------------|
+| ------------ | ------------ | ---------------------------------------------------------------------------------- |
 | `id`         | integer (64) |                                                                                    |
 | `amount`     | numeric      | The payment amount.                                                                |
 | `cert_index` | integer (32) | The index of this payment certificate within the certificates of this transaction. |
@@ -417,14 +411,12 @@ protocol version 5.0 and later, they are summed and produce a single reward with
 
 ### `reserve`
 
-A table for payments from the reserves to a StakeAddress. Note: Before protocol version 5.0 (Alonzo) if more than one
-payment was made to a stake address in a single epoch, only the last payment was kept and earlier ones removed. For
-protocol version 5.0 and later, they are summed and produce a single reward with type `reserves`
+A table for payments from the reserves to a StakeAddress.
 
 * Primary Id: `id`
 
 | Column name  | Type         | Description                                                                        |
-|--------------|--------------|------------------------------------------------------------------------------------|
+| ------------ | ------------ | ---------------------------------------------------------------------------------- |
 | `id`         | integer (64) |                                                                                    |
 | `amount`     | numeric      | The payment amount.                                                                |
 | `cert_index` | integer (32) | The index of this payment certificate within the certificates of this transaction. |
@@ -438,7 +430,7 @@ A table containing transfers between the reserves pot and the treasury pot.
 * Primary Id: `id`
 
 | Column name  | Type         | Description                                                                         |
-|--------------|--------------|-------------------------------------------------------------------------------------|
+| ------------ | ------------ | ----------------------------------------------------------------------------------- |
 | `id`         | integer (64) |                                                                                     |
 | `cert_index` | integer (32) | The index of this transfer certificate within the certificates of this transaction. |
 | `reserves`   | numeric      | The amount the reserves balance changes by.                                         |
@@ -452,7 +444,7 @@ A table containing the time required to fully sync an epoch.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                                                                                                |
-|-------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `id`        | integer (64) |                                                                                                                                            |
 | `no`        | integer (64) | The epoch number for this sync time.                                                                                                       |
 | `seconds`   | integer (64) | The time (in seconds) required to sync this epoch (may be NULL for an epoch that was already partially synced when `db-sync` was started). |
@@ -465,7 +457,7 @@ A table containing all information the unique policy/name pairs along with a CIP
 * Primary Id: `id`
 
 | Column name   | Type         | Description                               |
-|---------------|--------------|-------------------------------------------|
+| ------------- | ------------ | ----------------------------------------- |
 | `id`          | integer (64) |                                           |
 | `fingerprint` | string       | The CIP14 fingerprint for the MultiAsset. |
 | `name`        | bytea        | The MultiAsset name.                      |
@@ -482,7 +474,7 @@ A table containing Multi-Asset mint events.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                               |
-|-------------|--------------|---------------------------------------------------------------------------|
+| ----------- | ------------ | ------------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                           |
 | `quantity`  | numeric      | The amount of the Multi Asset to mint (can be negative to "burn" assets). |
 | `ident`     | integer (64) | The MultiAsset table index specifying the asset.                          |
@@ -495,7 +487,7 @@ A table containing Multi-Asset transaction outputs.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                                         |
-|-------------|--------------|-------------------------------------------------------------------------------------|
+| ----------- | ------------ | ----------------------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                                     |
 | `quantity`  | numeric      | The Multi Asset transaction output amount (denominated in the Multi Asset).         |
 | `ident`     | integer (64) | The MultiAsset table index specifying the asset.                                    |
@@ -508,7 +500,7 @@ A table containing redeemers. A redeemer is provided for all items that are vali
 * Primary Id: `id`
 
 | Column name        | Type         | Description                                                                                                                          |
-|--------------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `id`               | integer (64) |                                                                                                                                      |
 | `fee`              | numeric      | The budget in fees to run a script. The fees depend on the ExUnits and the current prices. Is null when --disable-ledger is enabled. |
 | `index`            | word31type   | The index of the redeemer pointer in the transaction.                                                                                |
@@ -527,7 +519,7 @@ transactions.
 * Primary Id: `id`
 
 | Column name       | Type         | Description                                                                      |
-|-------------------|--------------|----------------------------------------------------------------------------------|
+| ----------------- | ------------ | -------------------------------------------------------------------------------- |
 | `id`              | integer (64) |                                                                                  |
 | `bytes`           | bytea        | CBOR encoded plutus script data, null for other script types                     |
 | `hash`            | string       | The Hash of the Script.                                                          |
@@ -544,7 +536,7 @@ A table containing Plutus Datum, found in witnesses or inlined in outputs
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                                      |
-|-------------|--------------|----------------------------------------------------------------------------------|
+| ----------- | ------------ | -------------------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                                  |
 | `bytes`     | bytea        | The actual data in CBOR format                                                   |
 | `hash`      | string       | The Hash of the Datum                                                            |
@@ -559,7 +551,7 @@ datum table.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                                                      |
-|-------------|--------------|----------------------------------------------------------------------------------|
+| ----------- | ------------ | -------------------------------------------------------------------------------- |
 | `id`        | integer (64) |                                                                                  |
 | `bytes`     | bytea        | The actual data in CBOR format                                                   |
 | `hash`      | string       | The Hash of the Plutus Data                                                      |
@@ -573,7 +565,7 @@ A table containing transaction extra key witness hashes.
 * Primary Id: `id`
 
 | Column name | Type         | Description                               |
-|-------------|--------------|-------------------------------------------|
+| ----------- | ------------ | ----------------------------------------- |
 | `id`        | integer (64) |                                           |
 | `hash`      | string       | The hash of the witness.                  |
 | `tx_id`     | integer (64) | The id of the tx this witness belongs to. |
@@ -585,7 +577,7 @@ A table containing block chain parameter change proposals.
 * Primary Id: `id`
 
 | Column name                        | Type         | Description                                                                                          |
-|------------------------------------|--------------|------------------------------------------------------------------------------------------------------|
+| ---------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
 | `id`                               | integer (64) |                                                                                                      |
 | `coins_per_utxo_size`              | numeric      | For Alonzo this is the cost per UTxO word. For Babbage and later per UTxO byte.                      |
 | `collateral_percent`               | integer (32) | The percentage of the txfee which must be provided as collateral when including non-native scripts.  |
@@ -649,7 +641,7 @@ The accepted protocol parameters for an epoch.
 * Primary Id: `id`
 
 | Column name                        | Type         | Description                                                                                         |
-|------------------------------------|--------------|-----------------------------------------------------------------------------------------------------|
+| ---------------------------------- | ------------ | --------------------------------------------------------------------------------------------------- |
 | `id`                               | integer (64) |                                                                                                     |
 | `coins_per_utxo_size`              | numeric      | For Alonzo this is the cost per UTxO word. For Babbage and later per UTxO byte.                     |
 | `collateral_percent`               | integer (32) | The percentage of the txfee which must be provided as collateral when including non-native scripts. |
@@ -713,7 +705,7 @@ CostModel for EpochParam and ParamProposal.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                               |
-|-------------|--------------|-----------------------------------------------------------|
+| ----------- | ------------ | --------------------------------------------------------- |
 | `id`        | integer (64) |                                                           |
 | `costs`     | text         | The actual costs formatted as json.                       |
 | `hash`      | string       | The hash of cost model. It ensures uniqueness of entries. |
@@ -725,7 +717,7 @@ A table containing a managed list of reserved ticker names.
 * Primary Id: `id`
 
 | Column name | Type         | Description                                 |
-|-------------|--------------|---------------------------------------------|
+| ----------- | ------------ | ------------------------------------------- |
 | `id`        | integer (64) |                                             |
 | `name`      | string       | The ticker name.                            |
 | `pool_hash` | string       | The hash of the pool that owns this ticker. |
@@ -737,7 +729,7 @@ A table containing pools that have been delisted.
 * Primary Id: `id`
 
 | Column name | Type         | Description   |
-|-------------|--------------|---------------|
+| ----------- | ------------ | ------------- |
 | `id`        | integer (64) |               |
 | `hash_raw`  | string       | The pool hash |
 
@@ -748,7 +740,7 @@ A table for unconsume transaction inputs.
 * Primary Id: `id`
 
 | Column name    | Type         | Description                                                                            |
-|----------------|--------------|----------------------------------------------------------------------------------------|
+| -------------- | ------------ | -------------------------------------------------------------------------------------- |
 | `id`           | integer (64) |                                                                                        |
 | `tx_in_id`     | integer (64) | The Tx table index of the transaction that contains this transaction input.            |
 | `tx_out_index` | smallint     | The index within the transaction outputs.                                              |
@@ -761,15 +753,15 @@ A table for transaction witnesses.
 
 * Primary Id: `id`
 
-| Column name      | Type         | Description                            |
-|------------------|--------------|----------------------------------------|
-| `id`             | integer (64) |                                        |
-| `tx_id`          | integer (64) | The Tx table index of the transaction. |
-| `key`            | string       | Key used for signing the transaction.                |
-| `signature`      | string       | The signature of the transaction.      |
+| Column name      | Type         | Description                             |
+| ---------------- | ------------ | --------------------------------------- |
+| `id`             | integer (64) |                                         |
+| `tx_id`          | integer (64) | The Tx table index of the transaction.  |
+| `key`            | string       | Key used for signing the transaction.   |
+| `signature`      | string       | The signature of the transaction.       |
 | `index_arr`      | integer[]    | Array containing the transaction index. |
-| `index_arr_size` | integer (32) | Size of index array.                   |
-| `type`           | string       | Type of transaction witnesses.         |
+| `index_arr_size` | integer (32) | Size of index array.                    |
+| `type`           | string       | Type of transaction witnesses.          |
 
 ### `tx_bootstrap_witnesses`
 
@@ -778,7 +770,7 @@ A table for transaction bootstrap witnesses.
 * Primary Id: `id`
 
 | Column name  | Type         | Description                            |
-|--------------|--------------|----------------------------------------|
+| ------------ | ------------ | -------------------------------------- |
 | `id`         | integer (64) |                                        |
 | `tx_id`      | integer (64) | The Tx table index of the transaction. |
 | `public_key` | string       | Public key of the transaction.         |
@@ -793,7 +785,7 @@ A table for rollback history.
 * Primary Id: `id`
 
 | Column name     | Type         | Description         |
-|-----------------|--------------|---------------------|
+| --------------- | ------------ | ------------------- |
 | `id`            | integer (64) |                     |
 | `block_hash`    | string       | The hash of block.  |
 | `block_no`      | integer (64) | The number of hash. |
@@ -807,7 +799,7 @@ The pool offchain (ie not on chain) for a stake pool.
 * Primary Id: `id`
 
 | Column name   | Type         | Description                                             |
-|---------------|--------------|---------------------------------------------------------|
+| ------------- | ------------ | ------------------------------------------------------- |
 | `id`          | integer (64) |                                                         |
 | `bytes`       | bytea        | The raw bytes of the payload.                           |
 | `hash`        | string       | The hash identifier of the pool.                        |
@@ -826,7 +818,7 @@ A table containing pool offchain data fetch errors.
 * Primary Id: `id`
 
 | Column name   | Type         | Description                                                             |
-|---------------|--------------|-------------------------------------------------------------------------|
+| ------------- | ------------ | ----------------------------------------------------------------------- |
 | `id`          | integer (64) |                                                                         |
 | `fetch_error` | string       | The text of the error.                                                  |
 | `fetch_time`  | timestamp    | The UTC time stamp of the error.                                        |
@@ -841,7 +833,7 @@ A table for transaction collateral outputs.
 * Primary Id: `id`
 
 | Column name           | Type         | Description                                                                                                                                          |
-|-----------------------|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                  | integer (64) |                                                                                                                                                      |
 | `address`             | string       | The human readable encoding of the output address. Will be Base58 for Byron era addresses and Bech32 for Shelley era.                                |
 | `address_has_script`  | boolean      | Flag which shows if this address is locked by a script.                                                                                              |
@@ -855,3 +847,208 @@ A table for transaction collateral outputs.
 | `reference_script_id` | integer (64) | The reference script of the output, if it has one.                                                                                                   |
 | `stake_address_id`    | integer (64) | The StakeAddress table index for the stake address part of the Shelley address. (NULL for Byron addresses).                                          |
 | `tx_id`               | integer (64) | The Tx table index of the transaction that contains this transaction output.                                                                         |
+
+### `committee_deregistration`
+
+A table for every committee key de-registration.
+
+* Primary Id: {`tx_hash`, `cert_index`}
+
+| Column name       | Type         | Description                                                                               |
+| ----------------- | ------------ | ----------------------------------------------------------------------------------------- |
+| `tx_hash`         | string       | Hash of the tx that includes this certificate.                                            |
+| `cert_index`      | integer (32) | The index of this deregistration within the certificates of this transaction.             |
+| `anchor_url`      | string       | URL that links to documents or additional information about deregistering a committee key |
+| `anchor_hash`     | string       | Hash of anchor_url                                                                        |
+| `cold_key`        | string       | The deregistered cold key.                                                                |
+| `cred_type`       | string       | Credential type used in deregistration (ADDR_KEYHASH, SCRIPTHASH).                        |
+| `epoch`           | integer (32) | The epoch number at the time of deregistration.                                           |
+| `slot`            | integer (64) | The slot number at the time of deregistration.                                            |
+| `block`           | integer (64) | Block number in the blockchain at the time of deregistration.                             |
+| `block_time`      | integer (64) | Time of the block containing the deregistration transaction.                              |
+| `update_datetime` | timestamp    | The update time of record                                                                 |
+
+### `committee_registration`
+
+A table for every committee key registration.
+
+* Primary Id: {`tx_hash`, `cert_index`}
+
+| Column name       | Type         | Description                                                                 |
+| ----------------- | ------------ | --------------------------------------------------------------------------- |
+| `tx_hash`         | string       | Hash of the tx that includes this certificate.                              |
+| `cert_index`      | integer (32) | The index of this registration within the certificates of this transaction. |
+| `cold_key`        | string       | The deregistered cold key.                                                  |
+| `hot_key`         | string       | The deregistered hot key.                                                   |
+| `cred_type`       | string       | Credential type used in registration (ADDR_KEYHASH, SCRIPTHASH).            |
+| `epoch`           | integer (32) | The epoch number at the time of registration.                               |
+| `slot`            | integer (64) | The slot number at the time of registration.                                |
+| `block`           | integer (64) | Block number in the blockchain at the time of registration.                 |
+| `block_time`      | integer (64) | Time of the block containing the registration transaction.                  |
+| `update_datetime` | timestamp    | The update time of record                                                   |
+
+### `committee_member`
+
+A table for members of the committee. A committee can have multiple members.
+
+* Primary Id: {`hash`, `slot`}
+
+| Column name       | Type         | Description                                    |
+| ----------------- | ------------ | ---------------------------------------------- |
+| `hash`            | string       | The committee hash.                            |
+| `cred_type`       | string       | Type of credential (ADDR_KEYHASH, SCRIPTHASH). |
+| `start_epoch`     | integer (32) | The epoch this member start.                   |
+| `expired_epoch`   | integer (32) | The epoch this member expires.                 |
+| `slot`            | integer (64) | Slot number.                                   |
+| `update_datetime` | timestamp    | The update time of record                      |
+
+### `constitution`
+
+A table for constitutiona attached to a GovActionProposal.
+
+* Primary Id: `active_epoch`
+
+| Column name       | Type         | Description                                                                           |
+| ----------------- | ------------ | ------------------------------------------------------------------------------------- |
+| `active_epoch`    | integer (64) | The epoch this constitutiona attached.                                                |
+| `anchor_url`      | string       | URL of the document or information source containing the details of the constitution. |
+| `anchor_hash`     | string (64)  | Hash of anchor_url.                                                                   |
+| `script`          | string       | The Script Hash.                                                                      |
+| `slot`            | integer (64) | Slot number.                                                                          |
+| `update_datetime` | timestamp    | The update time of record.                                                            |
+
+### `cursor_`
+
+A table for information about the current location of a process or service when processing the blockchain.
+
+* Primary Id: `active_epoch`
+
+| Column name       | Type         | Description                                                                                       |
+| ----------------- | ------------ | ------------------------------------------------------------------------------------------------- |
+| `id`              | integer (32) |                                                                                                   |
+| `block_hash`      | string       | The hash of block.                                                                                |
+| `slot`            | integer (64) | Number of slot.                                                                                   |
+| `block_number`    | integer (64) | Number of block.                                                                                  |
+| `era`             | integer (32) | Type of era (BYRON_EBB(0),BYRON(1),SHELLEY(2),ALLEGRA(3),MARY(4),ALONZO(5),BABBAGE(6),CONWAY(7)). |
+| `prev_block_hash` | string       | The hash of previous block.                                                                       |
+| `create_datetime` | timestamp    | The create time of record.                                                                        |
+| `update_datetime` | timestamp    | The update time of record.                                                                        |
+
+### `delegation_vote`
+
+A table containing delegations from a stake address to a stake pool.
+
+* Primary Id: {`tx_hash`, `cert_index`}
+
+| Column name       | Type         | Description                                                                         |
+| ----------------- | ------------ | ----------------------------------------------------------------------------------- |
+| `tx_hash`         | string       | Hash of the tx that includes this certificate.                                      |
+| `cert_index`      | integer (32) | The index of this transfer certificate within the certificates of this transaction. |
+| `address`         | string       | The stake address.                                                                  |
+| `drep_hash`       | string       | The Drep hash for the pool being delegated to.                                      |
+| `drep_id`         | string       | Drep index for the pool being delegated to.                                         |
+| `drep_type`       | string       | The Drep type (ADDR_KEYHASH, SCRIPTHASH, ABSTAIN,NO_CONFIDENCE).                    |
+| `epoch`           | integer (32) | The epoch number at the time of delegation vote.                                    |
+| `credential`      | string       | The Certification information related to votes.                                     |
+| `cred_type`       | string       | The credential type (ADDR_KEYHASH, SCRIPTHASH).                                     |
+| `slot`            | integer (64) | Number of slot.                                                                     |
+| `block`           | integer (64) | Number of block.                                                                    |
+| `block_time`      | integer (64) | Time when the block containing the transaction was created..                        |
+| `update_datetime` | timestamp    | The update time of record                                                           |
+
+### `drep_registration`
+
+A table for DRep registrations, deregistrations or updates.
+
+* Primary Id: {`tx_hash`, `cert_index`}
+
+| Column name       | Type         | Description                                                                 |
+| ----------------- | ------------ | --------------------------------------------------------------------------- |
+| `tx_hash`         | string       | Hash of the tx                                                              |
+| `cert_index`      | integer (32) | The index of this registration within the certificates of this transaction. |
+| `type`            | varchar(50)  | Type of DREP registration (e.g., stake pool registration, withdrawal)       |
+| `deposit`         | integer (64) | Amount of ADA deposited for specific registration types                     |
+| `drep_hash`       | varchar(56)  | Drep hash for the pool being delegated to                                   |
+| `drep_id`         | varchar(255) | Unique identifier for  a delegated representative (Bech32)                  |
+| `anchor_url`      | varchar      | URL for additional information about the registration                       |
+| `anchor_hash`     | varchar(64)  | Hash of the off-chain data pointed to by anchor_url                         |
+| `cred_type`       | varchar(40)  | Type of credential used for registration (ADDR_KEYHASH, SCRIPTHASH)         |
+| `epoch`           | integer (32) | Epoch number                                                                |
+| `slot`            | integer (64) | Slot number                                                                 |
+| `block`           | integer (64) | Block number                                                                |
+| `block_time`      | integer (64) | Block time                                                                  |
+| `update_datetime` | timestamp    | Date and time the record was last updated                                   |
+
+### `era`
+
+A table for era information
+
+* Byron(1), Shelley(2), Allegra(3), Mary(4), Alonzo(5), Babbage(6), Conway(7);
+
+* Primary Id: `era`
+
+| **Column name** | **Type**     | **Description**                              |
+| :-------------- | :----------- | :------------------------------------------- |
+| **era**         | integer (32) | Era identifier                               |
+| start_slot      | integer (64) | Slot number at which the era begins          |
+| block           | integer (64) | Block number that marks the start of the era |
+| block_hash      | string       | Hash of the block that starts the era        |
+
+### `flyway_schema_history`
+
+A table for the execution history of Flyway schema migrations.
+
+| Column name    | Type         | Description                                                                                       |
+| :------------- | :----------- | :------------------------------------------------------------------------------------------------ |
+| installed_rank | integer (32) | Index the order of the records in the table, determining the order in which changes were applied. |
+| version        | string       | The version of the change applied                                                                 |
+| description    | string       | Brief description of the applied change                                                           |
+| type           | string       | Type of change                                                                                    |
+| script         | string       | The name of the script file containing the applied changes                                        |
+| checksum       | integer (32) | Checksum value of the script file, helps detect changes in the script file                        |
+| installed_by   | string       | The name of the user or process to which the change was applied                                   |
+| installed_on   | timestamp    | Time when the change was applied                                                                  |
+| execution_time | integer (32) | File execution time                                                                               |
+| success        | bool         | Status of change                                                                                  |
+
+## `gov_action_proposal`
+
+* Primary Id: {`tx_hash`, `idx`}
+
+| **Column name** | **Type**     | **Description**                                                                                                                 |
+| --------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| **tx_hash**     | string       | The hash of the tx that includes this certificate                                                                               |
+| **idx**         | integer (32) | The index of this proposal procedure within its transaction                                                                     |
+| deposit         | integer (64) | The deposit amount payed for this proposal (in lovelace)                                                                        |
+| return_address  | string       | The StakeAddress index of the reward address to receive the deposit when it is repaid                                           |
+| anchor_url      | string       | URL for additional information about the proposal                                                                               |
+| anchor_hash     | string       | Hash of the off-chain data pointed to by anchor_url                                                                             |
+| type            | string       | Can be one of ParameterChange, HardForkInitiation, TreasuryWithdrawals, NoConfidence, NewCommittee, NewConstitution, InfoAction |
+| details         | jsonb        | JSON document describing the content of  governance action                                                                      |
+| epoch           | integer (32) | Epoch number                                                                                                                    |
+| slot            | integer (64) | Slot number                                                                                                                     |
+| block           | integer (64) | Block number                                                                                                                    |
+| block_time      | integer (64) | Block time                                                                                                                      |
+| update_datetime | timestamp    | Date and time the record was last updated                                                                                       |
+
+## `voting_procedure`
+
+* Primary Id: {`tx_hash`, `voter_hash`, `gov_action_tx_hash`, `gov_action_index`}
+
+| **Column name**        | **Type**     | **Description**                                                         |
+| ---------------------- | ------------ | ----------------------------------------------------------------------- |
+| **tx_hash**            | string       | Transaction hash of the tx that includes this VotingProcedure           |
+| **voter_hash**         | string       | Hash identifying the voter (not null, part of primary key)              |
+| **gov_action_tx_hash** | string       | Transaction hash of the governance action                               |
+| **gov_action_index**   | integer (32) | The index of this proposal procedure within its transaction             |
+| id                     | uuid         | Unique identifier                                                       |
+| idx                    | integer (32) | The index of this VotingProcedure within this transaction               |
+| voter_type             | string       | The role of the voter. Can be one of ConstitutionalCommittee, DRep, SPO |
+| vote                   | string       | The Vote. Can be one of Yes, No, Abstain                                |
+| anchor_url             | string       | URL for additional information about the vote                           |
+| anchor_hash            | string       | Hash of the off-chain data pointed to by anchor_url                     |
+| epoch                  | integer (32) | Epoch number                                                            |
+| slot                   | integer (64) | Slot number                                                             |
+| block                  | integer (64) | Block number                                                            |
+| block_time             | integer (64) | Block time                                                              |
+| update_datetime        | timestamp    | Date and time the record was last updated                               |
