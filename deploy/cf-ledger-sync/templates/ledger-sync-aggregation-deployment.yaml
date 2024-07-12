@@ -138,6 +138,8 @@ spec:
               value: "true"
             - name: STORE_ADMIN_APIENABLED
               value: "true"
+            - name: UTXO_PRUNING_ENABLED
+              value: "false"
 
 #            - name: STORE_EXECUTOR_BLOCKS_BATCH_SIZE
 #              value: {{ .Values.aggregation.store.executor.blocks_batch_size | default 100 | quote }}
