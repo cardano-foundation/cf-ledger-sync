@@ -1035,6 +1035,8 @@ A table contains information about proposed government actions.
 
 ### `voting_procedure`
 
+A table for voting procedures, aka GovVote. A Vote can be Yes No or Abstain.
+
 * Primary Id: {`tx_hash`, `voter_hash`, `gov_action_tx_hash`, `gov_action_index`}
 
 | **Column name**        | **Type**     | **Description**                                                         |
@@ -1058,6 +1060,10 @@ A table contains information about proposed government actions.
 ## Utxo store
 ### `address_utxo`
 
+A table for unspent transaction outputs.
+
+* Primary Id: {`tx_hash`, `output_index`,}
+
 | **Column name**  | **Type**     | **Description**                                                              |
 |:-----------------|:-------------|:-----------------------------------------------------------------------------|
 | **tx_hash**      | string       | The hash identifier of the transaction that contains this transaction output |
@@ -1069,6 +1075,10 @@ A table contains information about proposed government actions.
 | amounts          | jsonb        | Object containing the amount of each multi-asset coin in the UTXO.           |
 
 ### `tx_input`
+
+A table for tx inputs which reference outputs from previous transactions.
+
+* Primary Id: {`tx_hash`, `output_index`,}
 
 | **Column name**     | **Type**     | **Description**                                                     |
 |:--------------------|:-------------|:--------------------------------------------------------------------|
@@ -1083,6 +1093,10 @@ A table contains information about proposed government actions.
 
 ### `address`
 
+A table information about address
+
+* Primary Id: `id`
+
 | **Column name**    | **Type**  | **Description**                                       |
 |:-------------------|:----------|:------------------------------------------------------|
 | **id**             | bigserial | Unique identifier for the address (auto-incrementing) |
@@ -1096,6 +1110,10 @@ A table contains information about proposed government actions.
 ## Account aggregation
 
 ### `address_balance`
+
+A table for balance of address
+
+* Primary Id: {`address`, `unit`, `slot`}
 
 | **Column Name** | **Data Type** | **Description**                                           |
 |-----------------|---------------|-----------------------------------------------------------|
@@ -1114,6 +1132,10 @@ A table contains information about proposed government actions.
 
 ### `stake_address_balance`
 
+A table for balance of stake address
+
+* Primary Id: {`address`, `slot`}
+
 | **Column Name**  | **Data Type** | **Description**                                             |
 |------------------|---------------|-------------------------------------------------------------|
 | **address**      | string        | Bech32 encoded stake address                                |
@@ -1127,6 +1149,10 @@ A table contains information about proposed government actions.
 | update_datetime  | timestamp     | Date and time the record was last updated                   |
 
 ### `address_tx_amount`
+
+A table for tracking and analyzing transactions at specific addresses.
+
+* Primary Id: {`address`, `unit`, `tx_hash`}
 
 | **Column Name** | **Data Type** | **Description**                                                        |
 |-----------------|---------------|------------------------------------------------------------------------|
@@ -1142,6 +1168,10 @@ A table contains information about proposed government actions.
 | epoch           | integer (32)  | Epoch number when the transaction occurred                             |
 
 ### `account_config`
+
+A table information about account config
+
+* Primary Id: `config_id`
 
 | **Column Name** | **Data Type** | **Description**                                                |
 |-----------------|---------------|----------------------------------------------------------------|
