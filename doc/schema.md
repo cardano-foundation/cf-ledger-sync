@@ -1093,7 +1093,7 @@ A table for tx inputs which reference outputs from previous transactions.
 
 ### `address`
 
-A table information about address
+A table for information about address
 
 * Primary Id: `id`
 
@@ -1150,7 +1150,7 @@ A table for balance of stake address
 
 ### `address_tx_amount`
 
-A table for tracking and analyzing transactions at specific addresses.
+A table for the change in the balance of an address at a specific transaction.
 
 * Primary Id: {`address`, `unit`, `tx_hash`}
 
@@ -1169,7 +1169,7 @@ A table for tracking and analyzing transactions at specific addresses.
 
 ### `account_config`
 
-A table information about account config
+A table containing information about account config
 
 * Primary Id: `config_id`
 
