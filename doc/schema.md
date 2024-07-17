@@ -919,7 +919,7 @@ A table for constitutiona attached to a GovActionProposal.
 
 ### `cursor_`
 
-A table for information about the current location of a process or service when processing the blockchain.
+Table to track the current block position during synchronization.
 
 * Primary Id: `active_epoch`
 
@@ -927,8 +927,8 @@ A table for information about the current location of a process or service when 
 | ----------------- | ------------ | ------------------------------------------------------------------------------------------------- |
 | `id`              | integer (32) |                                                                                                   |
 | `block_hash`      | string       | The hash of block.                                                                                |
-| `slot`            | integer (64) | Number of slot.                                                                                   |
-| `block_number`    | integer (64) | Number of block.                                                                                  |
+| `slot`            | integer (64) | Slot number.                                                                                   |
+| `block_number`    | integer (64) | Block number                                                                                  |
 | `era`             | integer (32) | Type of era (BYRON_EBB(0),BYRON(1),SHELLEY(2),ALLEGRA(3),MARY(4),ALONZO(5),BABBAGE(6),CONWAY(7)). |
 | `prev_block_hash` | string       | The hash of previous block.                                                                       |
 | `create_datetime` | timestamp    | The create time of record.                                                                        |
@@ -951,8 +951,8 @@ A table containing delegations from a stake address to a stake pool.
 | `epoch`           | integer (32) | The epoch number at the time of delegation vote.                                    |
 | `credential`      | string       | The Certification information related to votes.                                     |
 | `cred_type`       | string       | The credential type (ADDR_KEYHASH, SCRIPTHASH).                                     |
-| `slot`            | integer (64) | Number of slot.                                                                     |
-| `block`           | integer (64) | Number of block.                                                                    |
+| `slot`            | integer (64) | Slot number.                                                                     |
+| `block`           | integer (64) | Block number.                                                                    |
 | `block_time`      | integer (64) | Time when the block containing the transaction was created..                        |
 | `update_datetime` | timestamp    | The update time of record                                                           |
 
@@ -1018,11 +1018,11 @@ A table contains information about proposed government actions.
 * Primary Id: {`tx_hash`, `idx`}
 
 | **Column name** | **Type**     | **Description**                                                                                                                 |
-|-----------------|--------------|---------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | **tx_hash**     | string       | The hash of the tx that includes this certificate                                                                               |
 | **idx**         | integer (32) | The index of this proposal procedure within its transaction                                                                     |
 | deposit         | integer (64) | The deposit amount payed for this proposal (in lovelace)                                                                        |
-| return_address  | string       | The StakeAddress index of the reward address to receive the deposit when it is repaid                                           |
+| return_address  | string       | The reward address that receive the deposit when it is repaid                                                                   |
 | anchor_url      | string       | URL for additional information about the proposal                                                                               |
 | anchor_hash     | string       | Hash of the off-chain data pointed to by anchor_url                                                                             |
 | type            | string       | Can be one of ParameterChange, HardForkInitiation, TreasuryWithdrawals, NoConfidence, NewCommittee, NewConstitution, InfoAction |
@@ -1040,7 +1040,7 @@ A table for voting procedures, aka GovVote. A Vote can be Yes No or Abstain.
 * Primary Id: {`tx_hash`, `voter_hash`, `gov_action_tx_hash`, `gov_action_index`}
 
 | **Column name**        | **Type**     | **Description**                                                         |
-|------------------------|--------------|-------------------------------------------------------------------------|
+| ---------------------- | ------------ | ----------------------------------------------------------------------- |
 | **tx_hash**            | string       | Transaction hash of the tx that includes this VotingProcedure           |
 | **voter_hash**         | string       | Hash identifying the voter (not null, part of primary key)              |
 | **gov_action_tx_hash** | string       | Transaction hash of the governance action                               |
@@ -1060,12 +1060,12 @@ A table for voting procedures, aka GovVote. A Vote can be Yes No or Abstain.
 ## Utxo store
 ### `address_utxo`
 
-A table for unspent transaction outputs.
+A table for transaction outputs.
 
 * Primary Id: {`tx_hash`, `output_index`,}
 
 | **Column name**  | **Type**     | **Description**                                                              |
-|:-----------------|:-------------|:-----------------------------------------------------------------------------|
+| :--------------- | :----------- | :--------------------------------------------------------------------------- |
 | **tx_hash**      | string       | The hash identifier of the transaction that contains this transaction output |
 | **output_index** | smallint     | The index of this transaction output with the transaction                    |
 | slot             | integer (64) | Slot number                                                                  |
@@ -1081,10 +1081,10 @@ A table for tx inputs which reference outputs from previous transactions.
 * Primary Id: {`tx_hash`, `output_index`,}
 
 | **Column name**     | **Type**     | **Description**                                                     |
-|:--------------------|:-------------|:--------------------------------------------------------------------|
+| :------------------ | :----------- | :------------------------------------------------------------------ |
 | **tx_hash**         | string       | The hash identifier of the transaction                              |
 | **output_index**    | smallint     | The index within the transaction outputs                            |
-| spend_at_slot       | integer (64) | Slot number in which the UTXO was spent                             |
+| spent_at_slot       | integer (64) | Slot number in which the UTXO was spent                             |
 | spent_at_block      | integer (64) | Block number in which the UTXO was spent                            |
 | spent_at_block_hash | string       | Unique identifier for the block containing the spending transaction |
 | spent_block_time    | integer (64) | Unix timestamp of the block containing the spending transaction     |
@@ -1098,7 +1098,7 @@ A table information about address
 * Primary Id: `id`
 
 | **Column name**    | **Type**  | **Description**                                       |
-|:-------------------|:----------|:------------------------------------------------------|
+| :----------------- | :-------- | :---------------------------------------------------- |
 | **id**             | bigserial | Unique identifier for the address (auto-incrementing) |
 | address            | string    | Bech32 address in the Cardano blockchain.             |
 | addr_full          | text      | Full address information (might include more details) |
@@ -1116,7 +1116,7 @@ A table for balance of address
 * Primary Id: {`address`, `unit`, `slot`}
 
 | **Column Name** | **Data Type** | **Description**                                           |
-|-----------------|---------------|-----------------------------------------------------------|
+| --------------- | ------------- | --------------------------------------------------------- |
 | **address**     | string        | Bech32 encoded address                                    |
 | **unit**        | string        | The unit for the quantity (e.g., lovelace for ADA)        |
 | **slot**        | integer (64)  | Slot number                                               |
@@ -1137,7 +1137,7 @@ A table for balance of stake address
 * Primary Id: {`address`, `slot`}
 
 | **Column Name**  | **Data Type** | **Description**                                             |
-|------------------|---------------|-------------------------------------------------------------|
+| ---------------- | ------------- | ----------------------------------------------------------- |
 | **address**      | string        | Bech32 encoded stake address                                |
 | **slot**         | integer (64)  | Slot number                                                 |
 | quantity         | numeric       | Numeric representation of the lovelace                      |
@@ -1155,7 +1155,7 @@ A table for tracking and analyzing transactions at specific addresses.
 * Primary Id: {`address`, `unit`, `tx_hash`}
 
 | **Column Name** | **Data Type** | **Description**                                                        |
-|-----------------|---------------|------------------------------------------------------------------------|
+| --------------- | ------------- | ---------------------------------------------------------------------- |
 | **address**     | string        | Bech32 encoded address                                                 |
 | **unit**        | string        | Optional unit for the quantity (e.g., lovelace for ADA)                |
 | **tx_hash**     | string        | The hash identifier of the transaction                                 |
@@ -1174,7 +1174,7 @@ A table information about account config
 * Primary Id: `config_id`
 
 | **Column Name** | **Data Type** | **Description**                                                |
-|-----------------|---------------|----------------------------------------------------------------|
+| --------------- | ------------- | -------------------------------------------------------------- |
 | **config_id**   | string        | Unique identifier for the account configuration                |
 | status          | string        | Current status of the account configuration (BALANCE_SNAPSHOT) |
 | slot            | integer (64)  | Slot number                                                    |
