@@ -1057,56 +1057,6 @@ A table for voting procedures, aka GovVote. A Vote can be Yes No or Abstain.
 | block_time             | integer (64) | Block time                                                              |
 | update_datetime        | timestamp    | Date and time the record was last updated                               |
 
-## Utxo store
-### `address_utxo`
-
-A table for transaction outputs.
-
-* Primary Id: {`tx_hash`, `output_index`,}
-
-| **Column name**  | **Type**     | **Description**                                                              |
-| :--------------- | :----------- | :--------------------------------------------------------------------------- |
-| **tx_hash**      | string       | The hash identifier of the transaction that contains this transaction output |
-| **output_index** | smallint     | The index of this transaction output with the transaction                    |
-| slot             | integer (64) | Slot number                                                                  |
-| block_hash       | string       | Hash of the block                                                            |
-| epoch            | integer (32) | Epoch number                                                                 |
-| lovelace_amount  | integer (64) | The output value (in Lovelace) of the transaction output                     |
-| amounts          | jsonb        | Object containing the amount of each multi-asset coin in the UTXO.           |
-
-### `tx_input`
-
-A table for tx inputs which reference outputs from previous transactions.
-
-* Primary Id: {`tx_hash`, `output_index`,}
-
-| **Column name**     | **Type**     | **Description**                                                     |
-| :------------------ | :----------- | :------------------------------------------------------------------ |
-| **tx_hash**         | string       | The hash identifier of the transaction                              |
-| **output_index**    | smallint     | The index within the transaction outputs                            |
-| spent_at_slot       | integer (64) | Slot number in which the UTXO was spent                             |
-| spent_at_block      | integer (64) | Block number in which the UTXO was spent                            |
-| spent_at_block_hash | string       | Unique identifier for the block containing the spending transaction |
-| spent_block_time    | integer (64) | Unix timestamp of the block containing the spending transaction     |
-| spent_epoch         | integer (32) | Epoch number when the UTXO was spent                                |
-| spent_tx_hash       | string       | Unique identifier for the spending transaction                      |
-
-### `address`
-
-A table for information about address
-
-* Primary Id: `id`
-
-| **Column name**    | **Type**  | **Description**                                       |
-| :----------------- | :-------- | :---------------------------------------------------- |
-| **id**             | bigserial | Unique identifier for the address (auto-incrementing) |
-| address            | string    | Bech32 address in the Cardano blockchain.             |
-| addr_full          | text      | Full address information (might include more details) |
-| payment_credential | string    | Bech32 payment credential for the address             |
-| stake_address      | string    | Bech32 stake address associated with the address      |
-| stake_credential   | string    | Bech32 stake credential associated with the address   |
-| update_datetime    | timestamp | Timestamp of the last update to this record.          |
-
 ## Account aggregation
 
 ### `address_balance`
@@ -1180,3 +1130,52 @@ A table containing information about account config
 | slot            | integer (64)  | Slot number                                                    |
 | block           | integer (64)  | Block number                                                   |
 | block_hash      | string        | Hash of the block                                              |
+
+### `address_utxo`
+
+A table for transaction outputs (Used for account balance calculator).
+
+* Primary Id: {`tx_hash`, `output_index`,}
+
+| **Column name**  | **Type**     | **Description**                                                              |
+| :--------------- | :----------- | :--------------------------------------------------------------------------- |
+| **tx_hash**      | string       | The hash identifier of the transaction that contains this transaction output |
+| **output_index** | smallint     | The index of this transaction output with the transaction                    |
+| slot             | integer (64) | Slot number                                                                  |
+| block_hash       | string       | Hash of the block                                                            |
+| epoch            | integer (32) | Epoch number                                                                 |
+| lovelace_amount  | integer (64) | The output value (in Lovelace) of the transaction output                     |
+| amounts          | jsonb        | Object containing the amount of each multi-asset coin in the UTXO.           |
+
+### `tx_input`
+
+A table for tx inputs which reference outputs from previous transactions (Used for account balance calculator).
+
+* Primary Id: {`tx_hash`, `output_index`,}
+
+| **Column name**     | **Type**     | **Description**                                                     |
+| :------------------ | :----------- | :------------------------------------------------------------------ |
+| **tx_hash**         | string       | The hash identifier of the transaction                              |
+| **output_index**    | smallint     | The index within the transaction outputs                            |
+| spent_at_slot       | integer (64) | Slot number in which the UTXO was spent                             |
+| spent_at_block      | integer (64) | Block number in which the UTXO was spent                            |
+| spent_at_block_hash | string       | Unique identifier for the block containing the spending transaction |
+| spent_block_time    | integer (64) | Unix timestamp of the block containing the spending transaction     |
+| spent_epoch         | integer (32) | Epoch number when the UTXO was spent                                |
+| spent_tx_hash       | string       | Unique identifier for the spending transaction                      |
+
+### `address`
+
+A table for information about address
+
+* Primary Id: `id`
+
+| **Column name**    | **Type**  | **Description**                                       |
+| :----------------- | :-------- | :---------------------------------------------------- |
+| **id**             | bigserial | Unique identifier for the address (auto-incrementing) |
+| address            | string    | Bech32 address in the Cardano blockchain.             |
+| addr_full          | text      | Full address information (might include more details) |
+| payment_credential | string    | Bech32 payment credential for the address             |
+| stake_address      | string    | Bech32 stake address associated with the address      |
+| stake_credential   | string    | Bech32 stake credential associated with the address   |
+| update_datetime    | timestamp | Timestamp of the last update to this record.          |
