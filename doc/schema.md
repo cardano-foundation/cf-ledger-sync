@@ -1,6 +1,6 @@
 # Schema Documentation for ledger-sync
 
-## I. Main App
+# I. Main App
 
 ### `pool_hash`
 
@@ -1059,7 +1059,7 @@ A table for voting procedures, aka GovVote. A Vote can be Yes No or Abstain.
 | block_time             | integer (64) | Block time                                                              |
 | update_datetime        | timestamp    | Date and time the record was last updated                               |
 
-## II. Aggregation App
+# II. Aggregation App
 
 ### `address_balance`
 
