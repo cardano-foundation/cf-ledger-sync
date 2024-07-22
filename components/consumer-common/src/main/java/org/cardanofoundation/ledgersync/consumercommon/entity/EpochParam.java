@@ -214,13 +214,13 @@ public class EpochParam extends BaseEntity {
   @Column(name = "dvt_p_p_economic_group")
   private Double dvtPPEconomicGroup;
 
-  @Column(name = "pvt_p_p_technical_group")
+  @Column(name = "dvt_p_p_technical_group")
   private Double dvtPPTechnicalGroup;
 
-  @Column(name = "pvt_p_p_gov_group")
+  @Column(name = "dvt_p_p_gov_group")
   private Double dvtPPGovGroup;
 
-  @Column(name = "pvt_treasury_withdrawal")
+  @Column(name = "dvt_treasury_withdrawal")
   private Double dvtTreasuryWithdrawal;
 
   @Column(name = "committee_min_size")
@@ -254,9 +254,10 @@ public class EpochParam extends BaseEntity {
   private BigInteger drepActivity;
 
   @Column(name = "min_fee_ref_script_cost_per_byte")
-  @Word64Type
-  @Digits(integer = 20, fraction = 0)
-  private BigInteger minFeeRefScriptCostPerByte;
+  private Double minFeeRefScriptCostPerByte;
+
+  @Column(name = "cc_threshold")
+  private Double ccThreshold;
 
   @Override
   public boolean equals(Object o) {
@@ -289,6 +290,6 @@ public class EpochParam extends BaseEntity {
         dvtHardForkInitiation, dvtPPNetworkGroup, dvtPPEconomicGroup,
         dvtPPTechnicalGroup, dvtPPGovGroup, dvtTreasuryWithdrawal,
         committeeMinSize, committeeMaxTermLength, govActionLifetime,
-        govActionDeposit, drepDeposit, drepActivity, minFeeRefScriptCostPerByte);
+        govActionDeposit, drepDeposit, drepActivity, minFeeRefScriptCostPerByte, ccThreshold);
   }
 }

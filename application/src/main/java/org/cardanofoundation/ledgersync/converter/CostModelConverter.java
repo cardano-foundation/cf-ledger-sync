@@ -21,6 +21,7 @@ public class CostModelConverter {
 
     public static final String PLUTUS_V1 = "PlutusV1";
     public static final String PLUTUS_V2 = "PlutusV2";
+    public static final String PLUTUS_V3 = "PlutusV3";
 
     public static String getCostModelHashFromGenesis(java.util.Map genesisMap) {
         Map mapItem = new Map();

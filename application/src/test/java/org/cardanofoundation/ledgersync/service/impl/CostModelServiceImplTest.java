@@ -2,8 +2,8 @@ package org.cardanofoundation.ledgersync.service.impl;
 
 import com.bloxbean.cardano.yaci.core.model.ProtocolParamUpdate;
 import com.bloxbean.cardano.yaci.core.model.Update;
-import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.aggregate.AggregatedTx;
+import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.repository.CostModelRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,39 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class CostModelServiceImplTest {
-
-    @Test
-    void getGenesisCostModelDoNotSave() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
-        CostModel costModel = Mockito.mock(CostModel.class);
-        CostModel costModelFound = Mockito.mock(CostModel.class);
-        Optional<CostModel> costModelOption = Optional.of(costModelFound);
-
-        Mockito.when(costModel.getHash()).thenReturn("thx00");
-        Mockito.when(costModelRepository.findByHash("thx00")).thenReturn(costModelOption);
-        CostModelServiceImpl costModelService = new CostModelServiceImpl(costModelRepository);
-
-        costModelService.setGenesisCostModel(costModel);
-        Mockito.verify(costModelRepository, Mockito.times(0)).save(Mockito.any());
-        assertEquals(costModelFound, costModelService.getGenesisCostModel());
-    }
-
-    @Test
-    void getGenesisCostModelSave() {
-        CostModelRepository costModelRepository = Mockito.mock(CostModelRepository.class);
-        CostModel costModel = Mockito.mock(CostModel.class);
-        Optional<CostModel> costModelOption = Optional.ofNullable(null);
-
-        Mockito.when(costModel.getHash()).thenReturn("thx00");
-        Mockito.when(costModelRepository.findByHash("thx00")).thenReturn(costModelOption);
-        CostModelServiceImpl costModelService = new CostModelServiceImpl(costModelRepository);
-
-        costModelService.setGenesisCostModel(costModel);
-        Mockito.verify(costModelRepository, Mockito.times(1)).save(costModel);
-        //Genesis cost = null?
-        assertNull(costModelService.getGenesisCostModel());
-    }
-
 
     @Test
     void handleCostModelNoUpdates() {

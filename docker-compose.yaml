@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  cf-ledger-sync:
+    restart: unless-stopped
+     image: ${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}
+    environment:
+      - NETWORK=${NETWORK:-preprod}
+      - DB_DIALECT=${DB_DIALECT:-org.hibernate.dialect.PostgreSQLDialect}
+      - STORE_CARDANO_HOST=${STORE_CARDANO_HOST:-preprod-node.world.dev.cardano.org}
+      - STORE_CARDANO_PORT=${STORE_CARDANO_PORT:-3001}
+      - STORE_CARDANO_PROTOCOL_MAGIC=${STORE_CARDANO_PROTOCOL_MAGIC:-1}
+      - BLOCKS_BATCH_SIZE=${BLOCKS_BATCH_SIZE:-100}
+      - COMMIT_THRESHOLD=${COMMIT_THRESHOLD:-3000}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-dbuser}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-dbpass}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-cardano}?currentSchema=${POSTGRES_SCHEMA:-public}
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres:
+        condition: service_started
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-14.10-alpine}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-dbuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dbpass}
+      - POSTGRES_DB=${POSTGRES_DB:-cardano}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres-data:

@@ -4,6 +4,7 @@ import com.bloxbean.cardano.yaci.core.model.ProtocolParamUpdate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.consumercommon.entity.ParamProposal;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
@@ -78,7 +79,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
 
                     var extraEntropyTuple = protocolParamUpdate.getExtraEntropy();
                     String entropy = null;
-                    if (extraEntropyTuple != null) {
+                    if (extraEntropyTuple != null && !StringUtils.isEmpty(extraEntropyTuple._2)) {
                         entropy = extraEntropyTuple._2;
                     }
 
@@ -155,7 +156,7 @@ public class ParamProposalServiceImpl implements ParamProposalService {
                     var govActionDeposit = protocolParamUpdate.getGovActionDeposit();
                     var drepDeposit = protocolParamUpdate.getDrepDeposit();
                     var drepActivity = toBigInteger(protocolParamUpdate.getDrepActivity());
-                    var minFeeRefScriptCostPerByte = toBigInteger(protocolParamUpdate.getMinFeeRefScriptCostPerByte());
+                    var minFeeRefScriptCostPerByte = toDouble(protocolParamUpdate.getMinFeeRefScriptCostPerByte());
 
                     return ParamProposal.builder()
                             .key(entrySet.getKey())

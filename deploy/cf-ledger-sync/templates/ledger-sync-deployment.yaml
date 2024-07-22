@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "cf-ledger-sync.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.indexer.replicaCount }}
   strategy:
     type: Recreate
   selector:
@@ -34,8 +34,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.indexer.image.repository }}:{{ .Values.indexer.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.indexer.image.pullPolicy }}
           env:
             - name: NETWORK
               value: {{ .Values.network | default "preprod" }}
@@ -77,35 +77,49 @@ spec:
               value: {{ .Values.blocks.commitThreshold | default "3000" | quote }}
 
             ## Postgres
+            {{- with .Values.indexer.postgres }}
             - name: POSTGRES_HOST
+              {{- if .host }}
+              value: {{ .host }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_HOST
+                  name: {{ .secretName }}
+                  key: {{ .hostKey }}
+              {{- end }}
             - name: POSTGRES_PORT
+              {{- if .port }}
+              value: {{ .port | quote }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_PORT
+                  name: {{ .secretName }}
+                  key: {{ .portKey }}
+              {{- end }}
             - name: POSTGRES_DB
+              {{- if .db }}
+              value: {{ .db }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_DB
+                  name: {{ .secretName }}
+                  key: {{ .dbKey }}
+              {{- end }}
             - name: SCHEMA
-              value: {{ .Values.dbSchema | default "public" }}
+              value: {{ .dbSchema | default "aggregation" }}
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?currentSchema=$(SCHEMA)
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_USER
+                  name: {{ .secretName }}
+                  key: {{ .userKey }}
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
-                  key: POSTGRES_PASSWORD
+                  name: {{ .secretName }}
+                  key: {{ .passwordKey }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -131,3 +145,5 @@ spec:
             timeoutSeconds: 1
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+  strategy:
+    type: Recreate

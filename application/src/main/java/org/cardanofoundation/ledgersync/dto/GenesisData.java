@@ -20,7 +20,8 @@ public class GenesisData {
     List<Tx> txs;
     List<TxOut> txOuts;
     List<SlotLeader> slotLeaders;
-    CostModel costModel;
+    CostModel alonzoCostModel;
+    CostModel conwayCostModel;
     EpochParam shelley;
     EpochParam alonzo;
     EpochParam babbage;
