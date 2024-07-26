@@ -23,6 +23,7 @@ import org.cardanofoundation.ledgersync.service.*;
 import org.cardanofoundation.ledgersync.service.impl.BlockDataServiceImpl;
 import org.cardanofoundation.ledgersync.service.impl.block.ByronMainAggregatorServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -121,9 +123,12 @@ public class GenesisDataServiceImpl implements GenesisDataService {
     private final static String COMMITTEE = "committee";
     private final static String MEMBERS = "members";
     private final static String THRESHOLD = "threshold";
+    private final static String CC_THRESHOLD_NUMERATOR = "numerator";
+    private final static String CC_THRESHOLD_DENOMINATOR = "denominator";
 
     private final static String PLUTUS_V_3_COST_MODEL = "plutusV3CostModel";
     private final static String MIN_FEE_REF_SCRIPT_COST_PER_BYTE = "minFeeRefScriptCostPerByte";
+    private final DefaultErrorViewResolver conventionErrorViewResolver;
 
     @Value("${genesis.byron}")
     String genesisByron;
@@ -402,7 +407,14 @@ public class GenesisDataServiceImpl implements GenesisDataService {
                     .drepActivity(convertObjecToBigInteger(genesisConwayJsonMap.get(D_REP_ACTIVITY)))
                     .build();
 
-            if (committee.get(THRESHOLD) != null) {
+            if (committee.get(THRESHOLD) instanceof Map) {
+                final var ccThreshold = (Map<String, Object>) committee.get(THRESHOLD);
+                BigDecimal numerator = convertObjectToBigDecimal(ccThreshold.get(CC_THRESHOLD_NUMERATOR));
+                BigDecimal denominator = convertObjectToBigDecimal(ccThreshold.get(CC_THRESHOLD_DENOMINATOR));
+                BigDecimal ccThresholdValue = numerator.divide(denominator, 2, RoundingMode.HALF_UP);
+
+                genesisConwayProtocols.setCcThreshold(ccThresholdValue.doubleValue());
+            } else {
                 genesisConwayProtocols.setCcThreshold(convertObjectToBigDecimal(committee.get(THRESHOLD)).doubleValue());
             }
 
