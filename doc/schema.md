@@ -923,7 +923,7 @@ A table for constitutiona attached to a GovActionProposal.
 
 Table to track the current block position during synchronization.
 
-* Primary Id: `active_epoch`
+* Primary Id: `id`
 
 | Column name       | Type         | Description                                                                                       |
 | ----------------- | ------------ | ------------------------------------------------------------------------------------------------- |
