@@ -5,10 +5,12 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.EpochParam;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository("lsEpochParamRepository")
 public interface EpochParamRepository extends JpaRepository<EpochParam, Long> {
 
     @Query(value = "SELECT ep from EpochParam ep"

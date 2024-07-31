@@ -9,6 +9,7 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.RollbackHistory;
 import org.cardanofoundation.ledgersync.consumercommon.entity.Tx;
 import org.cardanofoundation.ledgersync.repository.*;
 import org.cardanofoundation.ledgersync.service.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,6 +31,7 @@ public class RollbackServiceImpl implements RollbackService {
     FailedTxOutRepository failedTxOutRepository;
     MaTxMintRepository maTxMintRepository;
     MultiAssetTxOutRepository multiAssetTxOutRepository;
+    @Qualifier("lsEpochParamRepository")
     EpochParamRepository epochParamRepository;
     ParamProposalRepository paramProposalRepository;
     PoolMetadataRefRepository poolMetadataRefRepository;

@@ -18,6 +18,7 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.CostModel;
 import org.cardanofoundation.ledgersync.repository.CostModelRepository;
 import org.cardanofoundation.ledgersync.service.CostModelService;
 import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CostModelServiceImpl implements CostModelService {
 
+    @Qualifier("lsCostModelRepository")
     final CostModelRepository costModelRepository;
 
     @Override
