@@ -16,6 +16,7 @@ import org.cardanofoundation.ledgersync.service.EpochParamService;
 import org.cardanofoundation.ledgersync.service.GenesisDataService;
 import org.cardanofoundation.ledgersync.service.impl.plutus.PlutusKey;
 import org.cardanofoundation.ledgersync.util.EpochParamUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +34,10 @@ public class EpochParamServiceImpl implements EpochParamService {
 
     final BlockRepository blockRepository;
     final ParamProposalRepository paramProposalRepository;
+    @Qualifier("lsEpochParamRepository")
     final EpochParamRepository epochParamRepository;
     final EpochRepository epochRepository;
+    @Qualifier("lsCostModelRepository")
     final CostModelRepository costModelRepository;
 //    final CostModelService costModelService;
     final GenesisDataService genesisDataService;

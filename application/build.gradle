@@ -21,6 +21,7 @@ dependencies {
 
     implementation(libs.yaci.store.starter)
     implementation(libs.yaci.store.governance.starter)
+    implementation(libs.yaci.store.epoch.starter)
 
     implementation(libs.cardano.client.lib)
 

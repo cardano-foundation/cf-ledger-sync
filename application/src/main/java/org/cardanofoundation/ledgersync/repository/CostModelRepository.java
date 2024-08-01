@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository
+@Repository("lsCostModelRepository")
 public interface CostModelRepository extends JpaRepository<CostModel, Long> {
 
     @Query("SELECT MAX(c.id) FROM CostModel c")
