@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+// custom protocol params proposal storage to ignore protocol params proposal reading in epoch store
 public class ProtocolParamsProposalStorageReaderImpl implements ProtocolParamsProposalStorageReader {
     @Override
     public List<ProtocolParamsProposal> getProtocolParamsProposals(int page, int count, Order order) {
