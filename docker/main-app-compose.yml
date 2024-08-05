@@ -8,6 +8,9 @@ services:
     #      context: .
     #      dockerfile: Dockerfile
     #      target: ledger-sync
+    env_file:
+      - .env
+      - application.properties
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://ledger-sync-postgres:5432/ledger_sync?currentSchema=ledger_sync}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-cardano-master}
@@ -25,11 +28,13 @@ services:
       - EVENT_TIME_THRESHOLD_IN_SECOND=${EVENT_TIME_THRESHOLD_IN_SECOND:-600}
       - BLOCK_TIME_CHECK_ENABLED=${BLOCK_TIME_CHECK_ENABLED:-true}
       - BLOCK_TIME_THRESHOLD_IN_SECOND=${BLOCK_TIME_THRESHOLD_IN_SECOND:-180}
+      - STORE_CARDANO_N2C_HOST=${STORE_CARDANO_N2C_HOST}
+      - STORE_CARDANO_N2C_PORT=${STORE_CARDANO_N2C_PORT}
     ports:
       - ${LEDGER_SYNC_MAIN_PORT:-8080}:8080
     volumes:
       - $PWD/logs:/app/logs/
-
+      - ./application.properties:/app/config/application.properties
     logging:
       driver: "json-file"
       options:
