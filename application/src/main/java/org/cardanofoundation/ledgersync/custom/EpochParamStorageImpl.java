@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
+// custom epoch param storage to ignore epoch param data writing in epoch store
 public class EpochParamStorageImpl implements EpochParamStorage {
     @Override
     public void save(EpochParam epochParam) {

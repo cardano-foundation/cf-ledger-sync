@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   cf-ledger-sync-streamer:
-    image: pro.registry.gitlab.metadata.dev.cf-deployments.org/base-infrastructure/docker-registry/cf-ledger-sync-streamer:162724a
+    image: cardanofoundation/cf-ledger-sync-streamer:0.1.0
     container_name: ledger-sync-streamer
     environment:
       - STORE_CARDANO_HOST=preprod-node.world.dev.cardano.org
