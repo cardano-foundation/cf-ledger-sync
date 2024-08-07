@@ -40,39 +40,39 @@ spec:
             - name: JDK_JAVA_OPTIONS
               value: "-Xms1G -Xmx12G"
 
-              {{- if .Values.localCardanoNode.enabled }}
-              {{- if .Values.localCardanoNode.socatEnabled }}
-            - name: STORE_CARDANO_N2C_HOST
-              value: "cardano-node"
-            - name: STORE_CARDANO_N2C_PORT
-              value: {{ .Values.localCardanoNode.socatPort | quote }}
-              {{- else }}
+            {{- if .Values.localCardanoNode.enabled }}
             - name: STORE_CARDANO_HOST
               value: "cardano-node"
             - name: STORE_CARDANO_PORT
               value: "3001"
-              {{- end }}
-
-              {{ if eq .Values.localCardanoNode.network "preview" }}
-            - name: STORE_CARDANO_PROTOCOL_MAGIC
-              value: "2"
-              {{- else if eq .Values.localCardanoNode.network "preprod" }}
-            - name: STORE_CARDANO_PROTOCOL_MAGIC
-              value: "1"
-              {{- else if eq .Values.localCardanoNode.network "mainnet" }}
-            - name: STORE_CARDANO_PROTOCOL_MAGIC
-              value: "764824073"
-              {{- else if eq .Values.localCardanoNode.network "sanchonet" }}
-            - name: STORE_CARDANO_PROTOCOL_MAGIC
-              value: "4"
-              {{- end }}
             {{- else }}
             - name: STORE_CARDANO_HOST
               value: {{ .Values.storeCardanoHost | default "preprod-node.world.dev.cardano.org" }}
             - name: STORE_CARDANO_PORT
               value: {{ .Values.storeCardanoPort | default "30000" | quote }}
+            {{- end }}
+
+            {{- if .Values.localCardanoNode.socatEnabled }}
+            - name: STORE_CARDANO_N2C_HOST
+              value: "cardano-node"
+            - name: STORE_CARDANO_N2C_PORT
+              value: {{ .Values.localCardanoNode.socatPort | quote }}
+            - name: STORE_CARDANO_N2C_ERA
+              value: Babbage
+            {{- end }}
+
+            {{- if eq .Values.localCardanoNode.network "preview" }}
             - name: STORE_CARDANO_PROTOCOL_MAGIC
-              value: {{ .Values.storeCardanoProtocolMagic | default "1" | quote }}
+              value: "2"
+            {{- else if eq .Values.localCardanoNode.network "preprod" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "1"
+            {{- else if eq .Values.localCardanoNode.network "mainnet" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "764824073"
+            {{- else if eq .Values.localCardanoNode.network "sanchonet" }}
+            - name: STORE_CARDANO_PROTOCOL_MAGIC
+              value: "4"
             {{- end }}
 
             ## Postgres
