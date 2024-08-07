@@ -49,6 +49,20 @@ spec:
               name: cardano-node-db
             - mountPath: /ipc
               name: cardano-node-ipc
+        {{- if .socatEnabled }}
+        - name: socat-tcp-server
+          image: alpine/socat
+          env:
+            - name: PORT
+              value: {{ .socatPort | quote }}
+          command: ["sh", "-c", "socat TCP-LISTEN:${PORT},fork,reuseaddr UNIX-CONNECT:/ipc/node.socket,ignoreeof"]
+          volumeMounts:
+            - mountPath: /ipc
+              name: cardano-node-ipc
+          ports:
+            - name: socat
+              containerPort: {{ .socatPort }}
+          {{- end }}
       restartPolicy: Always
       volumes:
         - name: cardano-node-db

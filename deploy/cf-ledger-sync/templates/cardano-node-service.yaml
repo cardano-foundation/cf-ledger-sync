@@ -11,6 +11,11 @@ spec:
     - name: "3001"
       port: 3001
       targetPort: 3001
+    {{- if .socatEnabled }}
+    - name: socat
+      port: {{ .socatPort }}
+      targetPort: socat
+    {{- end }}
   selector:
     app: cardano-node
 {{ end }}
