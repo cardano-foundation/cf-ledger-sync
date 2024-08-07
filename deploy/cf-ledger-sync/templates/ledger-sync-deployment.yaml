@@ -45,25 +45,24 @@ spec:
               value: {{ .Values.dbDialect | default "org.hibernate.dialect.PostgreSQLDialect" }}
 
             {{- if .Values.localCardanoNode.enabled }}
-              {{- if .Values.localCardanoNode.socatEnabled }}
+            - name: STORE_CARDANO_HOST
+              value: "cardano-node"
+            - name: STORE_CARDANO_PORT
+              value: "3001"
+            {{- else }}
+            - name: STORE_CARDANO_HOST
+              value: {{ .Values.storeCardanoHost | default "preprod-node.world.dev.cardano.org" }}
+            - name: STORE_CARDANO_PORT
+              value: {{ .Values.storeCardanoPort | default "30000" | quote }}
+            {{- end }}
+
+            {{- if .Values.localCardanoNode.socatEnabled }}
             - name: STORE_CARDANO_N2C_HOST
               value: "cardano-node"
             - name: STORE_CARDANO_N2C_PORT
               value: {{ .Values.localCardanoNode.socatPort | quote }}
             - name: STORE_CARDANO_N2C_ERA
               value: Babbage
-              {{- else }}
-            - name: STORE_CARDANO_HOST
-              value: "cardano-node"
-            - name: STORE_CARDANO_PORT
-              value: "3001"
-              {{- end }}
-
-            {{- else }}
-            - name: STORE_CARDANO_HOST
-              value: {{ .Values.storeCardanoHost | default "preprod-node.world.dev.cardano.org" }}
-            - name: STORE_CARDANO_PORT
-              value: {{ .Values.storeCardanoPort | default "30000" | quote }}
             {{- end }}
 
             {{- if eq .Values.localCardanoNode.network "preview" }}
@@ -79,7 +78,6 @@ spec:
             - name: STORE_CARDANO_PROTOCOL_MAGIC
               value: "4"
             {{- end }}
-
 
             ## Batching
             - name: BLOCKS_BATCH_SIZE
