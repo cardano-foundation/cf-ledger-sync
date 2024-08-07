@@ -49,7 +49,7 @@ spec:
             - name: STORE_CARDANO_N2C_HOST
               value: "cardano-node"
             - name: STORE_CARDANO_N2C_PORT
-              value: {{ .Value.localCardanoNode.socatPort | quote }}
+              value: {{ .Values.localCardanoNode.socatPort | quote }}
               {{- else }}
             - name: STORE_CARDANO_HOST
               value: "cardano-node"
