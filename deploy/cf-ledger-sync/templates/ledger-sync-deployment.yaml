@@ -50,6 +50,8 @@ spec:
               value: "cardano-node"
             - name: STORE_CARDANO_N2C_PORT
               value: {{ .Values.localCardanoNode.socatPort | quote }}
+            - name: STORE_CARDANO_N2C_ERA
+              value: Babbage
               {{- else }}
             - name: STORE_CARDANO_HOST
               value: "cardano-node"
