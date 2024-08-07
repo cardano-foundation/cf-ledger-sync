@@ -3,7 +3,6 @@ replicaCount: 1
 tolerations: null
 affinity: null
 
-useLocalCardanoNode: false
 localCardanoNode:
   enabled: false
   socatEnabled: false
