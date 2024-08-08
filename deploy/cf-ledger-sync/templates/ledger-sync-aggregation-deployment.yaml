@@ -172,6 +172,8 @@ spec:
               value: {{ .Values.indexer.hikari.maximumPoolSize | default "48" | quote }}
             - name: HIKARI_CONNECTION_TIMEOUT
               value: {{ .Values.indexer.hikari.connectionTimeout | default "50000" | quote }}
+            - name: SPRING_DATASOURCE_HIKARI_CONNECTIONTIMEOUT
+              value: {{ .Values.indexer.hikari.connectionTimeout | default "600000" | quote }}
             - name: HIKARI_IDLE_TIMEOUT
               value: {{ .Values.indexer.hikari.idleTimeout | default "300000" | quote }}
             - name: HIKARI_MAX_LIFETIME
