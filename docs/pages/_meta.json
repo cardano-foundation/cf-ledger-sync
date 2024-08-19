@@ -1,0 +1,14 @@
+{
+  "index": "Overview",
+  "design": "Design",
+  "build_run": "Build & Run",
+  "docker": "Docker",
+  "schema": "Schema",
+  "applications": {
+    "title": "Applications"
+  },
+  "about": {
+    "title": "About",
+    "type": "page"
+  }
+}
