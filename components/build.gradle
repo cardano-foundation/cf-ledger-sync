@@ -1,3 +1,0 @@
-subprojects {
-    apply from: "../../publish-common.gradle"
-}
