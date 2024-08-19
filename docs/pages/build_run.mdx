@@ -1,0 +1,32 @@
+# How to Run
+
+## Pre-requisites
+- Java 21
+- Cardano Node or connect to a remote Cardano node
+- PostgreSQL DB
+
+## Build Jar
+
+```bash
+./gradlew clean build -x test
+```
+
+## Update databse details
+
+1. Edit ``config/application.properties`` to add datasource url, username & password.
+
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/<db>
+
+spring.datasource.username=user
+
+spring.datasource.password=
+
+```
+
+2. Run
+
+```bash
+java -jar application/build/libs/ledger-sync-application-<version>-SNAPSHOT.jar
+```
+

@@ -1,0 +1,28 @@
+{
+  "name": "cf-ledger-sync-docs",
+  "version": "0.0.1",
+  "description": "Ledger Sync Docs site",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cardano-foundation/cf-ledger-sync.git"
+  },
+  "homepage": "https://github.com/cardano-foundation/cf-ledger-sync#readme",
+  "dependencies": {
+    "next": "^14.1.1",
+    "nextra": "latest",
+    "nextra-theme-docs": "latest",
+    "pnpm": "^9.0.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.10",
+    "typescript": "^4.9.3"
+  }
+}
