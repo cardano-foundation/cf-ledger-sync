@@ -25,6 +25,7 @@ const config: DocsThemeConfig = {
             <meta property="og:description" content="Ledger Sync is a Java-based application designed to provide efficient access to Cardano blockchain data"/>
         </>
     )
+    primaryHue: 49deg
 }
 
 export default config
