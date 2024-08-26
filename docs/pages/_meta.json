@@ -1,9 +1,9 @@
 {
   "index": "Overview",
   "design": "Design",
-  "build_run": "Build & Run",
-  "docker": "Docker",
+  "docker": "Run with Docker Compose",
   "schema": "Schema",
+  "build_run": "Build & Run",
   "applications": {
     "title": "Applications"
   },

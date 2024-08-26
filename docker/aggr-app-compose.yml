@@ -4,21 +4,10 @@ services:
   ledger-sync-aggregation:
     image: cardanofoundation/cf-ledger-sync-aggregation:0.1.0
     container_name: ledger-sync-aggregation-${NETWORK:-mainnet}
-    #    build:
-    #      context: .
-    #      dockerfile: Dockerfile
-    #      target: aggregation
     env_file:
       - .env
       - application.properties
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://ledger-sync-postgres:5432/ledger_sync?currentSchema=aggregation}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-cardano-master}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-dbpass}
-      - STORE_CARDANO_HOST=${STORE_CARDANO_HOST:-relays-new.cardano-mainnet.iohk.io}
-      - STORE_CARDANO_PORT=${STORE_CARDANO_PORT:-3001}
-      - STORE_CARDANO_PROTOCOLMAGIC=${STORE_CARDANO_PROTOCOLMAGIC:-764824073}
-      - NETWORK=${NETWORK:-mainnet}
       - HEALTH_CHECK_ENABLED=${HEALTH_CHECK_ENABLED:-true}
       - EVENT_TIME_THRESHOLD_IN_SECOND=${EVENT_TIME_THRESHOLD_IN_SECOND:-600}
       - BLOCK_TIME_CHECK_ENABLED=${BLOCK_TIME_CHECK_ENABLED:-true}
