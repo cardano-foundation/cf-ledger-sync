@@ -1059,6 +1059,23 @@ A table for voting procedures, aka GovVote. A Vote can be Yes No or Abstain.
 | block_time             | integer (64) | Block time                                                              |
 | update_datetime        | timestamp    | Date and time the record was last updated                               |
 
+### `committee`
+
+A table for new committee information
+
+* Primary Id: `epoch`
+
+| Column name           | Type         | Description                                                                      |
+|-----------------------|--------------|----------------------------------------------------------------------------------|
+| gov_action_tx_hash    | string (64)  | Transaction hash of the corresponding governance action proposal                 |
+| gov_action_index      | integer(32)  | The index of the corresponding governance action proposal within its transaction |
+| threshold_numerator   | integer (64) | Threshold numerator                                                              |
+| threshold_denominator | integer (64) | Threshold denominator                                                            |
+| threshold             | double       | Threshold value                                                                  |
+| epoch                 | integer (32) | Epoch number                                                                     |
+| slot                  | integer (64) | Slot number                                                                      |
+| update_datetime       | timestamp    | Date and time the record was last updated                                        |
+
 # II. Aggregation App
 
 ### `address_balance`
