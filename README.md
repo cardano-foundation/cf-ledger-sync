@@ -1,79 +1,45 @@
+<div align="center">
+
 [![Clean, Build](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/build.yml/badge.svg)](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/build.yml)
+[![License](https://img.shields.io:/github/license/cardano-foundation/cf-ledger-sync?color=blue&label=license)](https://github.com/cardano-foundation/cf-ledger-sync/blob/master/LICENSE)
+
+</div>
 
 This repository contains the following applications:
 
-1. **Ledger Sync:** This is the main indexer application that reads data from the Cardano blockchain and writes to a PostgreSQL database.
+1. **Ledger Sync:** The main indexer application that reads data from the Cardano blockchain and writes to a PostgreSQL database.
 
-2. **Ledger Sync - Scheduler App:** This is an optional application for scheduling jobs in Ledger Sync. By default, specific Ledger Sync schedule jobs are executed as part of the main Ledger Sync application, but you can also run them independently with this application. 
+2. **Ledger Sync - Scheduler App:** An optional application for scheduling jobs in Ledger Sync. By default, specific Ledger Sync scheduled jobs are executed as part of the main Ledger Sync application, but you can also run them independently using this application.
 
-3. **Ledger Sync - Streaming App:** This app reads data from a Cardano node and publishes blockchain data to messaging middleware like Kafka or RabbitMQ. It publishes blockchain data in the form of events. There are various types of events that can be published by the streaming app, but you can configure which events you want to publish. This is useful when you want to listen to blockchain events but build your own storage layer.
+3. **Ledger Sync - Streaming App:** This app reads data from a Cardano node and publishes blockchain data to messaging middleware like Kafka or RabbitMQ. It publishes blockchain data in the form of events. Various types of events can be published by the streaming app, and you can configure which events you want to publish. This is useful if you want to listen to blockchain events but build your own storage layer.
 
-For more details about Streaming App, please check [here](https://github.com/cardano-foundation/cf-ledger-sync/tree/main/streamer-app)
+For more details about the Streaming App, please check [here](https://cardano-foundation.github.io/cf-ledger-sync/applications/streamer_app).
 
-# Ledger Sync
+# Documentation
 
-## Pre-requisites
+Check out [**Ledger Sync documentation site**](https://cardano-foundation.github.io/cf-ledger-sync/) for more information.
+
+# Building from source
+
+## Prerequisites
+
 - Java 21
-- Cardano Node or connect to a remote Cardano node
-- PostgreSQL DB
+- Cardano Node or connection to a remote Cardano node
+- PostgreSQL database
 
-## Build Jar
-
-```bash
-./gradlew clean build -x test
-```
-
-## Update databse details
-
-1. Edit ``config/application.properties`` to add datasource url, username & password.
-
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/<db>
-
-spring.datasource.username=user
-
-spring.datasource.password=
-
-```
-
-2. Run
-
-```bash
-java -jar application/build/libs/ledger-sync-application-<version>-SNAPSHOT.jar
-```
-
-## Docker Build & Run
-
-Build the jar file first
+## Build JAR
 
 ```bash
 ./gradlew clean build -x test
-```
-
-Build docker image
-
-
-```shell
-docker build  --target ledger-sync -t cardanofoundation/ledger-sync:<version> .
-```
-
-### Docker Run
-
-Copy env.example to env
-
-Edit ``env`` file with database and network details
-
-```shell
-docker run -p 8080:8080 --env-file env cardanofoundation/ledger-sync:<version>
 ```
 
 ## Contributing to Ledger Sync
 
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
-- Reporting a bug 
-- Discussing the current state of the code 
-- Submitting a fix 
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
 - Proposing new features
 
-Please check details [here](CONTRIBUTING.md)
+Please check the details [here](CONTRIBUTING.md).
