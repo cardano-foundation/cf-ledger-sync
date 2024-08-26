@@ -5,6 +5,8 @@ const withNextra = require('nextra')({
 
 module.exports = {
     ...withNextra(),
+    basePath: '/cf-ledger-sync',
+    assetPrefix: '/cf-ledger-sync/',
     images: {
         unoptimized: true,
     },
