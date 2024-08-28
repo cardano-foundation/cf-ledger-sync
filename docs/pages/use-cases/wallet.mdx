@@ -149,6 +149,8 @@ WHERE
 <summary>
 Expected results format
 </summary>
+
+
 ```sql
      tx_hash                                                     | tx_out_index |    value       | datum_hash | script_hash
 -----------------------------------------------------------------+--------------+----------------+------------+------------ 
@@ -302,6 +304,8 @@ GROUP BY
 <summary>
 Expected results format
 </summary>
+
+
 ```sql
      ada_amount	  | direction |  fee    |                         tx_hash                                  |      time_stamp       |   block   |  slot
 ------------------+-----------+---------+------------------------------------------------------------------+-----------------------+-----------+------------
@@ -377,6 +381,7 @@ SELECT tw."key" AS Transaction_Signatories
 <summary>
 Expected results format
 </summary>
+
 ```sql
      transaction_signatories
 ----------------------------------------------------------------
@@ -468,6 +473,7 @@ ORDER BY tx_detail.direction ASC
 <summary>
 Expected results format
 </summary>
+
 ```sql
 direction  | address 			  |  stake_address	             | ada_amount    | asset_name | quantity |  time_stamp  | transaction_fee| block  | slot    |  utxo	
 -----------+------------------------------+----------------------------------+---------------+------------+----------+--------------+----------------+--------+---------+---------------
@@ -554,6 +560,7 @@ GROUP BY ma.fingerprint, ma.name
 <summary>
 Expected results format
 </summary>
+
 ```sql
      fingerprint                              |       name      |    quantity
 ----------------------------------------------+-----------------+--------------- 
@@ -661,6 +668,7 @@ SELECT
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      scripthash                                          |      totalsupply       |        createddate |datum_hash | numtx
@@ -741,6 +749,7 @@ LIMIT 1
 <summary>
 Expected results format
 </summary>
+
 ```json
 {
    "698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d":{
@@ -850,6 +859,7 @@ LEFT JOIN (
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      id   |      pool_name	            |  pool_ticker |      creation_date 
@@ -958,6 +968,7 @@ select ph.id ,
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      id   |      pool_name	            |  pool_ticker |      creation_date 
@@ -1026,6 +1037,7 @@ WHERE  ph."view" = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      id   |  pool_name |  pool_ticker |            pool_id                                       |       pool_hash                                               | fixed_cost  |margin | declared_pledge | lifetime_blocks | stake_account 
@@ -1065,6 +1077,7 @@ WHERE
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      owner_account
@@ -1111,6 +1124,7 @@ WHERE sa.id IN (
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      stakeaddressid   |  delegator_address                                      
@@ -1142,6 +1156,7 @@ SELECT ph.view , bk.hash as block_hash, bk.epoch_no, ROW_NUMBER() OVER (ORDER BY
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
      view                                                |      block_hash		                                    |  epoch_no |  epoch_no 
@@ -1277,6 +1292,7 @@ LEFT JOIN (	SELECT voter_hash, max(epoch) AS epoch, max(slot)
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
 drepid   | drephash| tx_id    | cert_index | type        | deposit | credential_type | anchor_url      | anchor_hash | drep_status | registration_date | epoch | block | slot   | number_of_delegators
@@ -1383,6 +1399,7 @@ SELECT 	gap.tx_hash AS tx_id,
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
 tx_id      | index| deposit        | returned_address     | anchor_url                                | anchor_hash | type                   | details                | epoch | slot       | block     | time_stamp      | yes_vote | no_vote | abstain_vote
@@ -1511,6 +1528,7 @@ SELECT tx_detail.* FROM (
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
 direction           |  txhash            |  address              | stake_address              |ada_amount|asset_name|quantity|time_stamp	 |tx_fee |block     | slot      |epoch|utxo
@@ -1670,6 +1688,7 @@ This query retrieves information about the inputs and outputs associated with ou
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
 collateral | address      											     |value       |index
@@ -1733,6 +1752,7 @@ Our final query aims to retrieve details about the outputs (UTXOs) that were **s
 <summary>
 Expected results format
 </summary>
+
 ```sql
 
 address 												| txhash      		|value       |index
