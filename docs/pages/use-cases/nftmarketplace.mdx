@@ -178,9 +178,9 @@ Expected results format
 </summary>
 
 ```sql
-asset_name	 |  encoded_name             |  asset_metadata                               | 	owner_address	
+asset_name   |  encoded_name             |  asset_metadata                               | 	owner_address	
 -------------+---------------------------+-----------------------------------------------+-------------------------
-SpaceBud964  | 	5370616365427564393634   | 	{"d5e6bf0500378d4f0da4e8dde6be.....  }       | 	2021-03-24 01:18:08.000
+SpaceBud964  | 	5370616365427564393634   | 	{"d5e6bf0500378d4f0da4e8dde6be.....  }   | 2021-03-24 01:18:08.000
 
 
 (Note: results trimmed for readability)             
@@ -247,14 +247,14 @@ Expected results format
 
 ```sql
 
-policy	 												 |  name        |  quantity          
+policy	 						 |  name        |  quantity          
 ---------------------------------------------------------+--------------+--------------
 64c11b97a1bc395f5cd3a6f2f594292510ae483af77151d1d6136edc | SNEKWRANGLER | 4,500,000,000  
-52225d8259c95ec7d1727c8a591398846718eaa8fae533a1b8d2b9d6 | 	EL			| 1,000,000,000
-1da3b63de574c7a103de734d8b1215b5ff5e3863d9fdecff8e09810c | 	FAM			| 439,678,272
-ad5281e310da442d8d00ef3f7809cd0a1c035cf5039c0d90f236b7bc | 	FAM			| 439,000,000
-daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | 	CRAZYMARY	| 250,000,000
-		....											 |   ...		|   ...
+52225d8259c95ec7d1727c8a591398846718eaa8fae533a1b8d2b9d6 | 	EL	| 1,000,000,000
+1da3b63de574c7a103de734d8b1215b5ff5e3863d9fdecff8e09810c | 	FAM	| 439,678,272
+ad5281e310da442d8d00ef3f7809cd0a1c035cf5039c0d90f236b7bc | 	FAM	| 439,000,000
+daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | CRAZYMARY	| 250,000,000
+	.... 					         |   ...        |   ...
 
 (Note: results trimmed for readability)             
 ```
@@ -307,43 +307,43 @@ The required data includes:
 
 ```sql
         SELECT 
-		    ep.epoch_no AS epoch,
-		    ep.min_fee_a,
-		    ep.min_fee_b,
-		    ep.max_block_size,
-		    ep.max_tx_size,
-		    ep.max_bh_size as max_block_header_size,
-		    ep.key_deposit,
-		    ep.pool_deposit,
-		    ep.max_epoch as e_max,
-		    ep.optimal_pool_count as n_opt,
-		    ep.influence as a0,
-		    ep.monetary_expand_rate as rho,
-		    ep.treasury_growth_rate as tau,
-		    ep.decentralisation as decentralisation_param,
-		    ep.extra_entropy,
-		    ep.protocol_major AS protocol_major_ver,
-		    ep.protocol_minor AS protocol_minor_ver,
-		    ep.min_utxo_value AS min_utxo,
-		    ep.min_pool_cost,
-		    ep.nonce,
-		    cm.costs AS cost_models,
-		    ep.price_mem,
-		    ep.price_step,
-		    ep.max_tx_ex_mem,
-		    ep.max_tx_ex_steps,
-		    ep.max_block_ex_mem,
-		    ep.max_block_ex_steps,
-		    ep.max_val_size,
-		    ep.collateral_percent,
-		    ep.max_collateral_inputs,
-		    ep.coins_per_utxo_size,
-		    ep.coins_per_utxo_size as coins_per_utxo_word
-		FROM 
-		    epoch_param ep
-		LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id
-		ORDER BY epoch_no DESC
-		LIMIT 1
+		ep.epoch_no AS epoch,
+		ep.min_fee_a,
+		ep.min_fee_b,
+		ep.max_block_size,
+		ep.max_tx_size,
+		ep.max_bh_size as max_block_header_size,
+		ep.key_deposit,
+		ep.pool_deposit,
+		ep.max_epoch as e_max,
+		ep.optimal_pool_count as n_opt,
+		ep.influence as a0,
+		ep.monetary_expand_rate as rho,
+		ep.treasury_growth_rate as tau,
+		ep.decentralisation as decentralisation_param,
+		ep.extra_entropy,
+		ep.protocol_major AS protocol_major_ver,
+		ep.protocol_minor AS protocol_minor_ver,
+		ep.min_utxo_value AS min_utxo,
+		ep.min_pool_cost,
+		ep.nonce,
+		cm.costs AS cost_models,
+		ep.price_mem,
+		ep.price_step,
+		ep.max_tx_ex_mem,
+		ep.max_tx_ex_steps,
+		ep.max_block_ex_mem,
+		ep.max_block_ex_steps,
+		ep.max_val_size,
+		ep.collateral_percent,
+		ep.max_collateral_inputs,
+		ep.coins_per_utxo_size,
+		ep.coins_per_utxo_size as coins_per_utxo_word
+	FROM 
+		epoch_param ep
+	LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id
+	ORDER BY epoch_no DESC
+	LIMIT 1
 
 ```
 
@@ -398,12 +398,12 @@ Expected results format
 
 ```sql
 
-txhash	 		|  tx_out_index |  value      | address      
+txhash	 	|  tx_out_index |  value      | address      
 ----------------+---------------+-------------+----------------------
-8cab5...f367073 | 	2 			| 	6,058,505 | addr1qyv...vgsyxh7q9
-8cab5...f367073 | 	0			|   1,159,390 | addr1qyv...vgsyxh7q9
-5ab5b...d7ba36 	| 	2			|   3,062,150 | addr1qyv...vgsyxh7q9
-5ab5b...d7ba36  | 	1			|   1,159,390 | addr1qyv...vgsyxh7q9
+8cab5...f367073 | 	2 	|   6,058,505 | addr1qyv...vgsyxh7q9
+8cab5...f367073 | 	0	|   1,159,390 | addr1qyv...vgsyxh7q9
+5ab5b...d7ba36 	| 	2	|   3,062,150 | addr1qyv...vgsyxh7q9
+5ab5b...d7ba36  | 	1	|   1,159,390 | addr1qyv...vgsyxh7q9
 
 
 (Note: results trimmed for readability)             
@@ -577,18 +577,18 @@ Expected results format
 
 ```sql
 
-policy	    											 | name	 					| fingerprint								   | quantity
+policy	    						 | name	 	| fingerprint				      | quantity
 ---------------------------------------------------------+--------------------------+----------------------------------------------+--------------
-64c11b97a1bc395f5cd3a6f2f594292510ae483af77151d1d6136edc | 	SNEKWRANGLER 			| asset13vuukdg8klkf6px6zt6jq2rqzs0l3gyvjyzhql | 4,500,000,000
-52225d8259c95ec7d1727c8a591398846718eaa8fae533a1b8d2b9d6 | 	EL					    | asset1flkp5ddlknrdakpw72hmxwkkp0qkfuhlzzn5gw | 1,000,000,000
-1da3b63de574c7a103de734d8b1215b5ff5e3863d9fdecff8e09810c | 	FAM						| asset1rs7t52lrfxrpz9p8f8egtwdlx4d33mqk62pyuu | 439,678,272
-ad5281e310da442d8d00ef3f7809cd0a1c035cf5039c0d90f236b7bc | 	FAM						| asset1x77jxgfrnn00650gsdtxpuea3k2a6xslaf6key | 439,000,000
-daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | 	CRAZYMARY				| asset1uxza25kph43w2w6mstuspzmy47rvu4ks898q72 | 250,000,000
-577f0b1342f8f8f4aed3388b80a8535812950c7a892495c0ecdf0f1e | 	\u0000\u0014�\u0010FLDT	| asset1gayaljphz3tepway6u6ruuty9cee2pj7wch408 | 180,000,000
-05e1f8298560c85f03248a7b3e5322f12e27e4cdc1378a4f3bc51083 | 	ReebokaHoskinson		| asset18efh7djgsyat7m8j43etsusxhkv94940adss5k | 150,000,000
-efa0e694d5915f52b00a0d01135efdb85a0bdde7009bbcf68ea12a3d | 	TV						| asset1lr06zsp4qzxv2emchq2j2mfwhqxzgtmxywrrvn | 50,000,000
-e79497f972acb83461608d3f48281a406ee1e9f64ed168868145141e | 	StakePool247			| asset1946tqd3qe3hq3mxtzg4gkxqupnys0v9tr8v0zt | 25,000,000
-15452b831185cdc3a18d27fea3fd30c9f765349352e523725c02b8f0 | 	SWS						| asset1968r7exh3296rls9axexyhqu3lk2c23mn5zjhz | 16,900,000
+64c11b97a1bc395f5cd3a6f2f594292510ae483af77151d1d6136edc | SNEKWRANGLER | asset13vuukdg8klkf6px6zt6jq2rqzs0l3gyvjyzhql | 4,500,000,000
+52225d8259c95ec7d1727c8a591398846718eaa8fae533a1b8d2b9d6 | 	EL	| asset1flkp5ddlknrdakpw72hmxwkkp0qkfuhlzzn5gw | 1,000,000,000
+1da3b63de574c7a103de734d8b1215b5ff5e3863d9fdecff8e09810c | 	FAM	| asset1rs7t52lrfxrpz9p8f8egtwdlx4d33mqk62pyuu | 439,678,272
+ad5281e310da442d8d00ef3f7809cd0a1c035cf5039c0d90f236b7bc | 	FAM	| asset1x77jxgfrnn00650gsdtxpuea3k2a6xslaf6key | 439,000,000
+daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | CRAZYMARY	| asset1uxza25kph43w2w6mstuspzmy47rvu4ks898q72 | 250,000,000
+577f0b1342f8f8f4aed3388b80a8535812950c7a892495c0ecdf0f1e | \u0...10FLDT	| asset1gayaljphz3tepway6u6ruuty9cee2pj7wch408 | 180,000,000
+05e1f8298560c85f03248a7b3e5322f12e27e4cdc1378a4f3bc51083 | Re..Hoskinson| asset18efh7djgsyat7m8j43etsusxhkv94940adss5k | 150,000,000
+efa0e694d5915f52b00a0d01135efdb85a0bdde7009bbcf68ea12a3d | 	TV	| asset1lr06zsp4qzxv2emchq2j2mfwhqxzgtmxywrrvn | 50,000,000
+e79497f972acb83461608d3f48281a406ee1e9f64ed168868145141e | StakePool247 | asset1946tqd3qe3hq3mxtzg4gkxqupnys0v9tr8v0zt | 25,000,000
+15452b831185cdc3a18d27fea3fd30c9f765349352e523725c02b8f0 | 	SWS	| asset1968r7exh3296rls9axexyhqu3lk2c23mn5zjhz | 16,900,000
            
 ```
 </details>
