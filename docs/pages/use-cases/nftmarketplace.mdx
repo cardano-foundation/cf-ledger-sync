@@ -44,29 +44,30 @@ From the policy ID `d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc` , 
  
 ```sql
 SELECT 
-			ma."policy" AS collection_policy,
-			count(*) AS number_of_assets,
-			(SELECT 
-				count(DISTINCT tx.id) AS transaction_count_24h
-				FROM tx
-				JOIN block b ON b.id = tx.block_id 
-				JOIN tx_out to2 ON to2.tx_id = tx.id 
-				JOIN ma_tx_out mto ON to2.id = mto.tx_out_id
-				JOIN multi_asset ma ON mto.ident = ma.id
-				WHERE 
-				    ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
-				    AND b."time" > (now() at time zone 'utc') - INTERVAL '24 hours'
+	ma."policy" AS collection_policy,
+	count(*) AS number_of_assets,
+		(SELECT 
+		        count(DISTINCT tx.id) AS transaction_count_24h
+			FROM tx
+			JOIN block b ON b.id = tx.block_id 
+			JOIN tx_out to2 ON to2.tx_id = tx.id 
+			JOIN ma_tx_out mto ON to2.id = mto.tx_out_id
+			JOIN multi_asset ma ON mto.ident = ma.id
+			WHERE 
+		             ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+			     AND b."time" > (now() at time zone 'utc') - INTERVAL '24 hours'
 			) AS number_of_tx_in_24h
-		    FROM 
-		        multi_asset ma
-		    WHERE 
-		        ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
-		    GROUP BY ma."policy"
+		 FROM 
+		       multi_asset ma
+		 WHERE 
+		       ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+		 GROUP BY ma."policy"
 ```
 <details>
 <summary>
 Expected results format
 </summary>
+
 ```sql
 collection_policy                                        | number_of_assets | number_of_tx_in_24h
 ---------------------------------------------------------+------------------+----------------------
@@ -90,8 +91,6 @@ The subquery is used to calculate the number of transactions involving assets fr
 The `WHERE ma.policy = '...' AND b."time" > (now() at time zone 'utc') - INTERVAL '1 days'` clause filters the results to only include transactions involving assets from the specified collection that occurred within the last 24 hours.
 `SELECT count(DISTINCT tx.id) AS transaction_count_24h` counts the number of distinct transaction IDs in the filtered result set and labels it as `transaction_count_24h`.
 
-
-
 ### 2.2 Asset details
 
 This next query lists all assets/NFTs belonging to the Spacebudz collection with their respective:
@@ -112,6 +111,7 @@ SELECT
 <summary>
 Expected results format
 </summary>
+
 ```sql
 asset_name	 |  encoded_name             |  asset_id                                     | 	creation_date
 -------------+---------------------------+-----------------------------------------------+-------------------------
@@ -176,6 +176,7 @@ WHERE
 <summary>
 Expected results format
 </summary>
+
 ```sql
 asset_name	 |  encoded_name             |  asset_metadata                               | 	owner_address	
 -------------+---------------------------+-----------------------------------------------+-------------------------
@@ -221,22 +222,22 @@ The query returns the following details:
 
 ```sql
 SELECT
-			ma.policy AS policy,
-		    ma.name AS name,
-		    sum(mto.quantity) AS quantity
-		FROM
-		    ma_tx_out mto
-		JOIN multi_asset ma 
-			ON ma.id = mto.ident 
-		JOIN tx_out 
-			ON mto.tx_out_id = tx_out.id
-		LEFT JOIN tx_in ti 
-			ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
-		WHERE
-		    tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
-		    AND ti.tx_out_id is null
-		GROUP BY ma.policy, ma.name
-		ORDER BY quantity DESC
+		ma.policy AS policy,
+         	ma.name AS name,
+		sum(mto.quantity) AS quantity
+	FROM
+		ma_tx_out mto
+	JOIN multi_asset ma 
+		ON ma.id = mto.ident 
+	JOIN tx_out 
+		ON mto.tx_out_id = tx_out.id
+	LEFT JOIN tx_in ti 
+		ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
+	WHERE
+		tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
+		AND ti.tx_out_id is null
+	GROUP BY ma.policy, ma.name
+	ORDER BY quantity DESC
 ```
 
 <details>
@@ -337,7 +338,7 @@ The required data includes:
 		    ep.collateral_percent,
 		    ep.max_collateral_inputs,
 		    ep.coins_per_utxo_size,
-		  	ep.coins_per_utxo_size as coins_per_utxo_word
+		    ep.coins_per_utxo_size as coins_per_utxo_word
 		FROM 
 		    epoch_param ep
 		LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id
@@ -377,16 +378,16 @@ For this query, we are concerned with this address `addr1qyvl8lmwpfq7pahuadpjwul
 
 ```sql
         SELECT 
-			tx.hash AS txhash,
-			to2."index" AS tx_out_index,
-			to2.value AS value,
-			to2.address 
-		FROM tx_out to2 
-		LEFT JOIN tx_in ti ON ti.tx_out_id = to2.tx_id AND ti.tx_out_index = to2."index"
-		JOIN tx ON tx.id = to2.tx_id 
-		WHERE 
-			ti.id IS NULL
-			AND to2.address = 'addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9'
+		tx.hash AS txhash,
+		to2."index" AS tx_out_index,
+		to2.value AS value,
+		to2.address 
+	FROM tx_out to2 
+	LEFT JOIN tx_in ti ON ti.tx_out_id = to2.tx_id AND ti.tx_out_index = to2."index"
+	JOIN tx ON tx.id = to2.tx_id 
+	WHERE 
+		ti.id IS NULL
+		AND to2.address = 'addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9'
 
 ```
 
@@ -437,16 +438,16 @@ This connects each transaction output `to2` to its corresponding transaction `tx
 ```sql
 
         SELECT
-		    block.slot_no,
-		    block.block_no,
-		    block.epoch_no,
-		    block.time
-		FROM
-		    block
-		WHERE block.slot_no IS NOT NULL
-		ORDER BY
-		    block.slot_no DESC
-		LIMIT 1;
+	    block.slot_no,
+	    block.block_no,
+	    block.epoch_no,
+	    block.time
+	FROM
+	    block
+	WHERE block.slot_no IS NOT NULL
+	ORDER BY
+	    block.slot_no DESC
+	LIMIT 1;
 
 ```
 
@@ -457,9 +458,9 @@ Expected results format
 
 ```sql
 
-slot_no	    | block_no	 | epoch_no	| time
+slot_no	    | block_no	 | epoch_no | time
 ------------+------------+----------+------------------------
-132,711,492	| 10,734,560 |   504	| 2024-08-21 22:03:03.000
+132,711,492 | 10,734,560 |   504    | 2024-08-21 22:03:03.000
            
 ```
 </details>
@@ -550,24 +551,24 @@ We will query this address `addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7ef
 
 ```sql
 SELECT
-			ma.policy AS policy,
-		    ma.name AS name,
-		    ma.fingerprint AS fingerprint,
-		    sum(mto.quantity) AS quantity
-		FROM
-		    ma_tx_out mto
-		JOIN multi_asset ma 
-			ON ma.id = mto.ident 
-		JOIN tx_out 
-			ON mto.tx_out_id = tx_out.id
-		LEFT JOIN tx_in ti 
-			ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
-		WHERE
-		    tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
-		    AND ti.tx_out_id is null
-		GROUP BY ma.policy, ma.name, ma.fingerprint
-		ORDER BY quantity DESC
-		LIMIT 10
+	    ma.policy AS policy,
+	    ma.name AS name,
+	    ma.fingerprint AS fingerprint,
+	    sum(mto.quantity) AS quantity
+	FROM
+	    ma_tx_out mto
+	JOIN multi_asset ma 
+	    ON ma.id = mto.ident 
+	    JOIN tx_out 
+		ON mto.tx_out_id = tx_out.id
+	LEFT JOIN tx_in ti 
+		ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
+	WHERE
+	    tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
+	    AND ti.tx_out_id is null
+	GROUP BY ma.policy, ma.name, ma.fingerprint
+	ORDER BY quantity DESC
+	LIMIT 10
 ```
 <details>
 <summary>
