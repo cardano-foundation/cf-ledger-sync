@@ -10,22 +10,22 @@ The query returns the following details:
 
 ```sql
 SELECT
-			ma.policy AS policy,
-		    ma.name AS name,
-		    sum(mto.quantity) AS quantity
-		FROM
-		    ma_tx_out mto
-		JOIN multi_asset ma 
-			ON ma.id = mto.ident 
-		JOIN tx_out 
-			ON mto.tx_out_id = tx_out.id
-		LEFT JOIN tx_in ti 
-			ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
-		WHERE
-		    tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
-		    AND ti.tx_out_id is null
-		GROUP BY ma.policy, ma.name
-		ORDER BY quantity DESC
+		ma.policy AS policy,
+		ma.name AS name,
+		sum(mto.quantity) AS quantity
+	FROM
+      	        ma_tx_out mto
+	JOIN multi_asset ma 
+		ON ma.id = mto.ident 
+	JOIN tx_out 
+		ON mto.tx_out_id = tx_out.id
+	LEFT JOIN tx_in ti 
+		ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
+	WHERE
+   	        tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
+	   AND ti.tx_out_id is null
+	GROUP BY ma.policy, ma.name
+	ORDER BY quantity DESC
 ```
 
 <details>
