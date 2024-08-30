@@ -1,0 +1,115 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 5. Query the Asset/ NFT collection details belonging to a wallet address
+
+To keep things simple, we will use the same address as before: 
+
+`addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`
+
+🔎 You can also verify the details on [Cardano Blockchain Explorer](https://preprod.beta.explorer.cardano.org/en/address/addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t) 🎯
+
+For this example, we are querying this specific token `asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm`. We want to retrieve the following details: a) Script hash, b) Total supply, c)creation date, d) Number of holders, e) Number of transactions in the past week.
+
+```sql
+SELECT
+		ma.policy AS scriptHash,
+		ma.supply AS totalSupply,
+		ma.time AS createdDate,
+		num_of_holders.numHolder,
+		num_of_tx.numTx
+	FROM
+		preprod.multi_asset ma
+	LEFT JOIN (
+				SELECT ma.fingerprint AS fingerprint, COUNT(DISTINCT tx.id) AS numTx
+				FROM tx
+				LEFT JOIN tx_out txo ON tx.id = txo.tx_id 
+				JOIN block b ON b.id = tx.block_id 
+				JOIN ma_tx_out mto ON txo.id = mto.tx_out_id
+				JOIN multi_asset ma ON mto.ident = ma.id
+				WHERE
+				   ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
+				   AND b.time > (now() at time zone 'utc') - INTERVAL '7 days'
+				GROUP BY ma.fingerprint
+				) AS num_of_tx ON num_of_tx.fingerprint = ma.fingerprint
+	LEFT JOIN (
+				SELECT ma.fingerprint AS fingerprint, COUNT(DISTINCT(sa.id)) AS numHolder
+				FROM ma_tx_out mto
+				LEFT JOIN tx_out to2 ON mto.tx_out_id = to2.id
+				LEFT JOIN tx_in ti ON ti.tx_out_index = to2."index"
+									AND ti.tx_out_id = to2.tx_id
+				JOIN multi_asset ma ON ma.id = mto.ident
+				LEFT JOIN stake_address sa ON sa.id = to2.stake_address_id
+				WHERE
+					ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
+					AND ti.id IS NULL
+					AND sa.id IS NOT NULL
+				GROUP BY ma.fingerprint
+				) AS num_of_holders ON num_of_holders.fingerprint = ma.fingerprint
+	WHERE
+		ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     scripthash                                          |      totalsupply       |        createddate |datum_hash | numtx
+---------------------------------------------------------+------------------------+--------------------+-----------+------- 
+698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d | 45,000,000,000,000,000 | 2022-12-12 18:28:01|  1,046    |  33           
+    
+(1 rows)
+```
+
+</details>
+
+🔎 We can always cross check our results on any Cardano Explorer, such as [cexplorer](https://preprod.cexplorer.io/policy/698a6ea0ca99f315034072af31eaac6ec11fe8558d3f48e9775aab9d#data) 🎯
+
+🧐 Let's breakdown the query line by line:
+
+<Steps>
+
+### Data Sources
+
+The query traverses multiple tables to find the requested details:
+
+- `multi_asset` (alias ma) table stores information about the asset itself.
+- `tx`, ie. transaction data.
+- `tx_out` Transaction output data, where assets end up after a transaction.
+- `block` refers to blockchain block data. Transactions are grouped into blocks.
+- `ma_tx_out` table links multi-asset entries to transaction outputs.
+- `stake_address` table stores information about wallet addresses.
+
+### Main Query (SELECT...FROM)
+
+- The query starts by selecting the desired columns from the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table.
+- It filters for the target asset using it's unique fingerprint `asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm`
+
+### First Subquery (LEFT JOIN...num_of_tx)
+
+- This subquery calculates the number of transactions within the past 7 days for our specific asset.
+- It joins transaction data with block data to filter by time.
+- It groups the results by the asset's fingerprint and counts distinct transaction IDs.
+
+### Second Subquery (LEFT JOIN...num_of_holders)
+
+- This subquery calculates the number of distinct holders of the asset.
+- It queries transaction outputs `tx_out` and the links to multi-assets.
+- It filters out transaction outputs that are inputs to other transactions.
+- It counts distinct stake addresses associated with the remaining outputs, where each address represents a holder.
+
+### Joining Subqueries
+
+- The main query uses a `LEFT JOIN` to combine the results of the two subqueries back to the main [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table.
+- The LEFT JOIN ensures that the main query returns a row even if the subqueries don't find matching data (in that case, `num_of_tx` and `num_of_holders` would be NULL).
+
+### Conclusion
+
+- A fingerprint is a unique identifier used to distinguish different assets on the Cardano blockchain.
+- The `LEFT JOIN` type of join ensures you get results even if there's no matching data in the joined tables.
+- Subqueries are used to calculate more complex values like transaction counts and holder counts that can't be directly derived from a single table.
+
+</Steps>
+
