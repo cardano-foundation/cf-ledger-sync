@@ -20,31 +20,31 @@ SELECT
 	FROM
 		preprod.multi_asset ma
 	LEFT JOIN (
-				SELECT ma.fingerprint AS fingerprint, COUNT(DISTINCT tx.id) AS numTx
-				FROM tx
-				LEFT JOIN tx_out txo ON tx.id = txo.tx_id 
-				JOIN block b ON b.id = tx.block_id 
-				JOIN ma_tx_out mto ON txo.id = mto.tx_out_id
-				JOIN multi_asset ma ON mto.ident = ma.id
-				WHERE
-				   ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
-				   AND b.time > (now() at time zone 'utc') - INTERVAL '7 days'
-				GROUP BY ma.fingerprint
-				) AS num_of_tx ON num_of_tx.fingerprint = ma.fingerprint
+			SELECT ma.fingerprint AS fingerprint, COUNT(DISTINCT tx.id) AS numTx
+			FROM tx
+			LEFT JOIN tx_out txo ON tx.id = txo.tx_id 
+			JOIN block b ON b.id = tx.block_id 
+			JOIN ma_tx_out mto ON txo.id = mto.tx_out_id
+			JOIN multi_asset ma ON mto.ident = ma.id
+			WHERE
+			   ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
+			   AND b.time > (now() at time zone 'utc') - INTERVAL '7 days'
+			GROUP BY ma.fingerprint
+			) AS num_of_tx ON num_of_tx.fingerprint = ma.fingerprint
 	LEFT JOIN (
-				SELECT ma.fingerprint AS fingerprint, COUNT(DISTINCT(sa.id)) AS numHolder
-				FROM ma_tx_out mto
-				LEFT JOIN tx_out to2 ON mto.tx_out_id = to2.id
-				LEFT JOIN tx_in ti ON ti.tx_out_index = to2."index"
-									AND ti.tx_out_id = to2.tx_id
-				JOIN multi_asset ma ON ma.id = mto.ident
-				LEFT JOIN stake_address sa ON sa.id = to2.stake_address_id
-				WHERE
-					ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
-					AND ti.id IS NULL
-					AND sa.id IS NOT NULL
-				GROUP BY ma.fingerprint
-				) AS num_of_holders ON num_of_holders.fingerprint = ma.fingerprint
+			SELECT ma.fingerprint AS fingerprint, COUNT(DISTINCT(sa.id)) AS numHolder
+			FROM ma_tx_out mto
+			LEFT JOIN tx_out to2 ON mto.tx_out_id = to2.id
+			LEFT JOIN tx_in ti ON ti.tx_out_index = to2."index"
+				AND ti.tx_out_id = to2.tx_id
+			JOIN multi_asset ma ON ma.id = mto.ident
+			LEFT JOIN stake_address sa ON sa.id = to2.stake_address_id
+			WHERE
+				ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
+				AND ti.id IS NULL
+				AND sa.id IS NOT NULL
+			GROUP BY ma.fingerprint
+			) AS num_of_holders ON num_of_holders.fingerprint = ma.fingerprint
 	WHERE
 		ma.fingerprint = 'asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm'
 ```
