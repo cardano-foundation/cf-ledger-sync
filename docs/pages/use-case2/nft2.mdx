@@ -16,24 +16,24 @@ From the policy ID `d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc` , 
  
 ```sql
 SELECT 
-			ma."policy" AS collection_policy,
-			count(*) AS number_of_assets,
-			(SELECT 
-				count(DISTINCT tx.id) AS transaction_count_24h
-				FROM tx
-				JOIN block b ON b.id = tx.block_id 
-				JOIN tx_out to2 ON to2.tx_id = tx.id 
-				JOIN ma_tx_out mto ON to2.id = mto.tx_out_id
-				JOIN multi_asset ma ON mto.ident = ma.id
-				WHERE 
-				    ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
-				    AND b."time" > (now() at time zone 'utc') - INTERVAL '24 hours'
+		ma."policy" AS collection_policy,
+		count(*) AS number_of_assets,
+		(SELECT 
+			count(DISTINCT tx.id) AS transaction_count_24h
+			FROM tx
+			JOIN block b ON b.id = tx.block_id 
+			JOIN tx_out to2 ON to2.tx_id = tx.id 
+			JOIN ma_tx_out mto ON to2.id = mto.tx_out_id
+			JOIN multi_asset ma ON mto.ident = ma.id
+		WHERE
+			ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+			    AND b."time" > (now() at time zone 'utc') - INTERVAL '24 hours'
 			) AS number_of_tx_in_24h
-		    FROM 
+		FROM 
 		        multi_asset ma
-		    WHERE 
+		WHERE 
 		        ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
-		    GROUP BY ma."policy"
+		GROUP BY ma."policy"
 ```
 <details>
 <summary>
@@ -74,12 +74,12 @@ This next query lists all assets/NFTs belonging to the Spacebudz collection with
 
 ```sql
 SELECT
-			ma.name_view AS asset_name,
-			encode(ma.name, 'hex') AS encoded_name,
-			ma.fingerprint AS Asset_ID,
-			ma."time" AS creation_date
-		FROM multi_asset ma 
-		WHERE ma."policy" = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+		ma.name_view AS asset_name,
+		encode(ma.name, 'hex') AS encoded_name,
+		ma.fingerprint AS Asset_ID,
+		ma."time" AS creation_date
+	FROM multi_asset ma 
+	WHERE ma."policy" = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
 ```
 <details>
 <summary>
@@ -87,11 +87,11 @@ Expected results format
 </summary>
 
 ```sql
-asset_name	 |  encoded_name             |  asset_id                                     | 	creation_date
+asset_name   |  encoded_name             |  asset_id                                     | creation_date
 -------------+---------------------------+-----------------------------------------------+-------------------------
-SpaceBud9007 | 	537061636542756439303037 | 	asset1qqcka5xwrzx40t7gaf2l4qd0k8latxqpkpq28h | 	2021-03-24 01:18:08.000
-SpaceBud5511 | 	537061636542756435353131 | 	asset1x0pkcc6vf2v5ezhhj4hd9mls3pwwufvxy66rwp | 	2021-03-24 01:22:10.000
-  ....       | 	....                     | 	......                                       | 	...
+SpaceBud9007 | 	537061636542756439303037 | asset1qqcka5xwrzx40t7gaf2l4qd0k8latxqpkpq28h  | 2021-03-24 01:18:08.000
+SpaceBud5511 | 	537061636542756435353131 | asset1x0pkcc6vf2v5ezhhj4hd9mls3pwwufvxy66rwp  | 2021-03-24 01:22:10.000
+  ....       | 	....                     | 	......                                   | 	...
 
 (Note: results trimmed for readability)             
 ```
@@ -152,9 +152,9 @@ Expected results format
 </summary>
 
 ```sql
-asset_name	 |  encoded_name             |  asset_metadata                               | 	owner_address	
+asset_name   |  encoded_name             |  asset_metadata                               | owner_address	
 -------------+---------------------------+-----------------------------------------------+-------------------------
-SpaceBud964  | 	5370616365427564393634   | 	{"d5e6bf0500378d4f0da4e8dde6be.....  }       | 	2021-03-24 01:18:08.000
+SpaceBud964  | 	5370616365427564393634   | 	{"d5e6bf0500378d4f0da4e8dde6be.....  }   | 2021-03-24 01:18:08.000
 
 
 (Note: results trimmed for readability)             
