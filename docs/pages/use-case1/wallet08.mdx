@@ -1,0 +1,157 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 8. Query Stake Pool detailed information 
+
+This query retrieves detailed information about a specific staking pool, including its name, ticker, identifier, hash, fixed cost, margin, declared pledge, total lifetime blocks produced, and associated stake account address. To keep things simple, we will use pool ID `pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4`
+
+```sql
+SELECT 
+
+	ph.id ,
+	po.pool_name as pool_name,
+	po.ticker_name as pool_ticker,
+	ph.view as pool_id,
+	ph.hash_raw AS pool_hash,
+	pu.fixed_cost AS fixed_cost,
+	pu.margin AS margin,
+	pu.pledge AS declared_pledge,
+	ltb.lifetime_blocks as lifetime_blocks,
+	sa.view AS stake_account
+
+FROM
+	pool_hash ph
+
+LEFT JOIN pool_offline_data po on
+	ph.id = po.pool_id
+	and (po.id is null
+		or po.id = (SELECT max(po2.id)
+					FROM pool_offline_data po2
+					WHERE po2.pool_id = ph.id))
+
+LEFT JOIN pool_update pu on
+	ph.id = pu.hash_id
+
+	and pu.id = (SELECT max(pu2.id)
+					FROM pool_update pu2
+					WHERE pu2.hash_id = ph.id)
+
+
+LEFT JOIN stake_address sa ON pu.reward_addr_id = sa.id
+
+LEFT JOIN (	SELECT ph.id AS poolId, count(bk.id) AS lifetime_blocks
+       	FROM pool_hash ph
+	        JOIN slot_leader sl ON sl.pool_hash_id = ph.id
+	        JOIN block bk ON bk.slot_leader_id = sl.id
+	        GROUP BY ph.id	
+			) as ltb
+	on ltb.poolId = ph.id
+
+WHERE  ph."view" = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     id   |  pool_name |  pool_ticker |            pool_id                                       |       pool_hash                                               | fixed_cost  |margin | declared_pledge | lifetime_blocks | stake_account 
+----------+------------+--------------+----------------------------------------------------------+---------------------------------------------------------------+-------------+-------+-----------------+-----------------+------------------------------------------------------------------
+    463   |  clrPool   |   CLRPL      | pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4 | 929ff8aa67e4e88c66bd6dab59945681f0d64ed1eed1c1c38d3d7d87      | 170,000,000 |  0.1  |  100,000        |                 | stake_test1uz48zjhv772tacqt93qp0f4425ly0mc44rrgerqhsca4azctyp6hw 
+
+(1 rows)
+```
+
+</details>
+
+### 8.1 Query explained 
+
+In this query we retrieve data from tables [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash), [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data), [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update), [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) for `Pool name`, `Pool Ticker`, `Pool ID`, `Pool Hash`, `Fixed cost`, `Margin`, `Declared pledge`. `Lifetime blocks` data is the total number of blocks that a stake pool has successfully validated since its creation (joining [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block), [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader), [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash)). Stake account data is retrieved from the [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) table with `id` mapping to `reward_addr_id` from the [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) table.
+
+### 8.2 Find out who owned the stake pool 
+
+If you would like to know then the Stake Pool owner account, you could run the following query:
+
+```sql
+SELECT
+	sa."view" AS owner_account
+FROM
+	pool_hash ph
+JOIN pool_update pu ON
+	ph.id = pu.hash_id
+	AND pu.id = (SELECT MAX(pu2.id) FROM pool_update pu2 WHERE ph.id = pu2.hash_id)
+JOIN pool_owner po ON
+	pu.id = po.pool_update_id
+JOIN stake_address sa ON
+	po.addr_id = sa.id
+WHERE
+	ph."view" = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     owner_account
+--------------------------------------------------------------------
+  stake_test1uz48zjhv772tacqt93qp0f4425ly0mc44rrgerqhsca4azctyp6hw
+  stake_test1uz00vukcxsleerg97cpa8fk69pryjsa0f0l57gjl60f78ussjymak
+
+(2 rows)
+```
+
+</details>
+
+
+### 8.3 List of delegators 
+
+If you are trying to obtain a list of delegators for a specific pool, then you could run the following query:
+
+```sql
+SELECT
+	sa.id AS stakeAddressId,
+	sa.view AS delegator_address
+FROM stake_address sa
+WHERE sa.id IN (
+	SELECT dg1.addr_id
+	FROM delegation dg1
+	JOIN pool_hash ph ON dg1.pool_hash_id = ph.id
+	WHERE ph.view = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'
+	AND NOT EXISTS (
+		SELECT TRUE
+		FROM delegation dg2
+		WHERE dg2.addr_id = dg1.addr_id
+		AND dg2.tx_id > dg1.tx_id
+	)
+	AND NOT EXISTS (
+		SELECT TRUE
+		FROM stake_deregistration sd
+		WHERE sd.addr_id = dg1.addr_id
+		AND sd.tx_id > dg1.tx_id
+	)
+)
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     stakeaddressid   |  delegator_address                                      
+----------------------+-----------------------------------------------------------
+     10,497	     	    | stake_test1uzhl7a0df7v82xlm8yt06h9zjqlkmu636grf8g63h6e0q0sxt5gz4 
+     145,345          | stake_test1uz48zjhv772tacqt93qp0f4425ly0mc44rrgerqhsca4azctyp6hw
+
+(2 rows)
+```
+
+</details>
+
+The query finds delegators who are currently associated with the given pool and have not moved their delegation or deregistered after their most recent record of delegation to that pool. This helps in identifying active delegators who have not changed their stake status recently.
+
