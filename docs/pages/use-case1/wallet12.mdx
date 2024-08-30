@@ -24,7 +24,7 @@ Let's start by retrieving the transaction details:
 - UTXOs used
 
 ```sql
-SELECT tx_detail.* FROM (
+		SELECT tx_detail.* FROM (
 			SELECT 
 				'destination_address' AS direction,
 				tx.hash AS txhash,
