@@ -39,10 +39,10 @@ Expected results format
 
 ```sql
 
-     id   |      pool_name	          |  pool_ticker |      creation_date 
+     id   |      pool_name	      |  pool_ticker |      creation_date 
 ----------+---------------------------+--------------+-------------------------- 
-     4    |      ANGEL stake pool	    |     ANGEL    |  2022-10-20 21:21:59.000
-     .    |      ................	    |     .....    |  .................
+     4    |      ANGEL stake pool     |     ANGEL    |  2022-10-20 21:21:59.000
+     .    |      ................     |     .....    |  .................
            
 (Note: full results trimmed for readability)
 ```
@@ -132,12 +132,12 @@ select ph.id ,
 	LEFT JOIN tx ON tx.id = pu.registered_tx_id 
 	LEFT JOIN block b ON tx.block_id = b.id 
 	WHERE ph.id NOT IN (SELECT pr.hash_id
-				        FROM pool_retire pr
-				        LEFT JOIN pool_update pu on	pr.hash_id = pu.hash_id
-				        LEFT JOIN pool_hash ph ON ph.id = pr.hash_id
-				        GROUP BY pr.hash_id, pu.cert_index, pr.cert_index
-				        HAVING (max(pu.registered_tx_id) < max(pr.announced_tx_id))
-				        	OR ((max(pu.registered_tx_id) = max(pr.announced_tx_id)) AND (max(pu.cert_index) < max(pr.cert_index)))
+				FROM pool_retire pr
+			        LEFT JOIN pool_update pu on	pr.hash_id = pu.hash_id
+			        LEFT JOIN pool_hash ph ON ph.id = pr.hash_id
+			        GROUP BY pr.hash_id, pu.cert_index, pr.cert_index
+			        HAVING (max(pu.registered_tx_id) < max(pr.announced_tx_id))
+				OR ((max(pu.registered_tx_id) = max(pr.announced_tx_id)) AND (max(pu.cert_index) < max(pr.cert_index)))
 				    	)
 ```
 
@@ -148,11 +148,11 @@ Expected results format
 
 ```sql
 
-     id   |      pool_name	          |  pool_ticker |      creation_date 
+     id   |      pool_name	      |  pool_ticker |      creation_date 
 ----------+---------------------------+--------------+-------------------------- 
-     5    |      CanadaStakes    	    |     CAN1     |  2022-10-20 21:30:58.000
-     6    |      SION stake pool	    |     SION     |  2022-10-20 21:35:52.000
-     .    |      ................	    |     .....    |  .................
+     5    |      CanadaStakes         |     CAN1     |  2022-10-20 21:30:58.000
+     6    |      SION stake pool      |     SION     |  2022-10-20 21:35:52.000
+     .    |      ................     |     .....    |  .................
            
 (Note: full results trimmed for readability)
 ```
