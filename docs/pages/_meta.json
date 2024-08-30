@@ -7,8 +7,11 @@
   "applications": {
     "title": "Applications"
   },
-  "use-cases": {
-    "title": "Use Cases"
+  "use-case1": {
+    "title": "Use Case: Wallet Queries"
+  },
+   "use-case2": {
+    "title": "Use Case: NFT Marketplace"
   },
   "about": {
     "title": "About",
