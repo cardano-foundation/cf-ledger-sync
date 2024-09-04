@@ -1,0 +1,72 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 9. Query a stake pool's lifetime blocks
+
+The "Lifetime Blocks" of a stake pool refers to the total number of blocks that the stake pool has successfully produced over its entire operational history. This metric provides insight into the pool's performance and reliability, reflecting its ability to contribute to the Cardano blockchain by creating blocks. Here is how you can fetch this information. 
+
+
+```sql
+SELECT ph.view , bk.hash as block_hash, bk.epoch_no, ROW_NUMBER() OVER (ORDER BY bk.epoch_no)
+            FROM pool_hash ph
+            JOIN slot_leader sl ON sl.pool_hash_id = ph.id
+            JOIN block bk ON bk.slot_leader_id = sl.id
+            WHERE ph.view = 'pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38'
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     view                                                |      block_hash		                                     |  epoch_no |  epoch_no 
+---------------------------------------------------------+-------------------------------------------------------------------+-----------+---------- 
+pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38 |  0244d69ef4149a38b4e717c64ff31af199b4e48d187766a7ef2163ac980ddb49 |   121     |   1              
+pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38 |  79bada15eb17f192e3bca7d57d8137d57f724f5ea937581bfdecae6af5ba6701 |   121	 |   2
+pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38 |  47fc8af17dd11b0d8ea83ce61548f8309df11585a4ef2de622a2538b84350d6a |   121	 |   3
+	...................				 |  			..................			     |   ...     |   ..
+
+(Note: full results trimmed for readability)
+```
+
+</details>
+
+In this SQL query, we retrieve information about blocks associated with a specific pool hash by joining multiple tables. Let's take a closer look at what the query does. 🔎  
+
+<Steps>
+
+### 'SELECT'ing the right info
+
+`SELECT` clause retrieves the following data:
+
+- `ph.view` selects the unique identifier, or 'view', of the stake pool.
+- `bk.hash as block_hash` selects the unique hash identifier of each block.
+- `bk.epoch_no` selects the epoch number in which the block was created.
+- `ROW_NUMBER() OVER (ORDER BY bk.epoch_no)` assigns a sequential row number to each block, starting from 1, and then ordered chronologically by epoch number. This tracks the order in which the stake pool created blocks over time.
+
+### FROM pool_hash ph
+- Looks in the table [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash), which stores information about stake pools, and assigns it the alias `ph`.
+
+### JOIN slot_leader sl ON sl.pool_hash_id = ph.id
+Joins the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table with the [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) table. The connection is made based on the matching `id` from [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) and `pool_hash_id` from [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader). The [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) table provides us with information about which stake pool was selected to lead a particular slot and potentially create a block.
+
+### JOIN block bk ON bk.slot_leader_id = sl.id
+Joins the result of the previous join with the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table. The connection is based on matching the `id` from [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) with `slot_leader_id` from [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block). The block table stores detailed information about each block on the blockchain.
+
+### WHERE ph.view = 'pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38'
+This `WHERE' clause restricts the results to only show blocks created by the stake pool with the specific view id we give the query. 
+
+### Conclusion
+
+The query returns a result set containing:
+- The stake pool's view id.
+- The unique hash of each block created by the stake pool.
+- The epoch number of each block.
+- A row number indicating the chronological order of block creation.
+
+🔎  Remember you can always verify any result using the [Cardano Explorer](https://preprod.beta.explorer.cardano.org/en/pool/pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38?tab=epochs&page=1&size=50) 🎯 
+
+![lifetimeblocks](/images/lifetime_blocks_of_stake_pool.png)
+
+</Steps>
