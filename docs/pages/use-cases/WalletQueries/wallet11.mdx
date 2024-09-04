@@ -1,0 +1,111 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 11. List of "Active Governance Proposals" and number of votes
+
+The next step is to view the list of "Active Governance Proposals." This query shows current proposals and the number of votes each has received. This information helps you understand ongoing governance activities and community support for each proposal. Again, we will use the *Sanchonet* network for this query. 
+
+Specifically, our query will provide us with a list of “Active“ Governance proposals and associate details:
+
+- Proposal tx_id
+- Index
+- Deposit
+- Returned address
+- Anchor URL (if available)
+- Anchor hash (if available)
+- Type (one of the [7 governance actions](https://docs.sanchogov.tools/how-to-use-the-govtool/using-govtool/governance-actions))
+- Details
+- Epoch
+- Slot
+- Block
+- timestamp 
+- Number of yes/no/abstain 
+
+```sql
+SELECT 	gap.tx_hash AS tx_id,
+		gap.idx AS "index",
+		gap.deposit AS deposit,
+		gap.return_address AS returned_address,
+		gap.anchor_url AS anchor_url,
+		gap.anchor_hash AS anchor_hash,
+		gap."type" AS "type",
+		gap.details AS details,
+		gap.epoch AS epoch,
+		gap.slot AS slot,
+		gap.block AS block,
+		gap.update_datetime AS time_stamp,
+		(CASE WHEN voting.yes_vote IS NULL THEN 0 ELSE voting.yes_vote END) AS yes_vote,
+		(CASE WHEN voting.no_vote IS NULL THEN 0 ELSE voting.no_vote END) AS no_vote,
+		(CASE WHEN voting.abstain_vote IS NULL THEN 0 ELSE voting.abstain_vote END) AS abstain_vote
+			FROM gov_action_proposal gap
+			LEFT JOIN (SELECT 	listVote.gov_action_tx_hash AS gov_action_tx_hash,
+						listVote.gov_action_index AS gov_action_index,
+						sum(CASE WHEN listVote.vote = 'YES' THEN 1 ELSE 0 END) AS yes_vote,
+						sum(CASE WHEN listVote.vote = 'NO' THEN 1 ELSE 0 END) AS no_vote,
+						sum(CASE WHEN listVote.vote = 'ABSTAIN' THEN 1 ELSE 0 END) AS abstain_vote
+				FROM (	SELECT voter_hash, gov_action_tx_hash, gov_action_index, vote, 
+						ROW_NUMBER() OVER (PARTITION BY voter_hash, gov_action_tx_hash, gov_action_index ORDER BY slot DESC) AS rank_slot
+				FROM voting_procedure vp 
+						) AS listVote
+				WHERE rank_slot = 1			
+			        GROUP BY listVote.gov_action_tx_hash, listVote.gov_action_index
+				) AS voting ON voting.gov_action_tx_hash = gap.tx_hash AND voting.gov_action_index = gap.idx
+			WHERE 
+				COALESCE(gap.epoch, 0) 
+				+ 
+				(SELECT COALESCE(ep.gov_action_lifetime, 0) FROM epoch_param ep
+					ORDER BY ep.epoch_no DESC LIMIT 1)
+				>= 
+				(SELECT COALESCE(ep.epoch_no, 0) FROM epoch_param ep
+				    ORDER BY ep.epoch_no DESC LIMIT 1)
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+tx_id      | index| deposit        | returned_address     | anchor_url                                | anchor_hash | type                   | details                | epoch | slot       | block     | time_stamp      | yes_vote | no_vote | abstain_vote
+-----------+------+----------------+----------------------+-------------------------------------------+-------------+------------------------+------------------------+-------+------------+-----------+-----------------+----------+---------+------------- 
+b71b...e3a | 0    | 100,000,000,000| stake_test1up...2r5a | https://thc-room335.com/poolMetaData.json | 6dd6...755  | INFO_ACTION            | {"type": "INFO_ACTION"}| 406   | 35,115,090 | 1,754,277 |2024-08-07 10:07 |     0    |    0    |       0
+
+
+(Note: full results trimmed for readability)
+```
+
+</details>
+
+
+
+🔎  Here's a breakdown of what the query does:
+
+<Steps>
+
+### Proposal Information Retrieval 
+
+The primary focus of the query is to fetch data from the [gov_action_proposal](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#gov_action_proposal) table (alias `gap`). This returns details like:
+
+- `tx_hash` ...the unique transaction identifier associated with the proposal.
+- `idx` ...an index within the transaction.
+- `deposit`, `return_address`, `anchor_url`, `anchor_hash` ...proposal-specific metadata.
+- `type`, `details`...the nature of the proposal and additional descriptive text.
+- `epoch`, `slot`, `block`...information about when the proposal was made.
+- `update_datetime` ...the last time this record was modified in the database.
+
+### Voting Data Aggregation
+
+The subquery aliased as `voting` calculates the `yes_vote`, `no_vote`, and `abstain_vote` counts for each proposal. It does this by checking the [voting_procedure](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#voting_procedure) table, filtering for the latest vote from each voter on each proposal `(using ROW_NUMBER() and rank_slot = 1)`. It then groups the results by gov_action_tx_hash and gov_action_index to get totals per proposal.
+
+### Joining Proposal and Voting Data
+
+A `LEFT JOIN` combines the proposal information with the calculated vote counts. This ensures that even proposals without any votes are included in the output, with their vote counts shown as 0.
+
+### Filtering Active Proposals
+
+The `WHERE` clause filters the results to only include proposals that are still considered "active" based on:
+- The proposal's epoch, when it was made.
+- The latest `gov_action_lifetime` parameter from the [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param) table, ie. how long proposals remain active.
+- The latest `epoch_no` from the [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param) table, ie. the current epoch.
+
+</Steps>
