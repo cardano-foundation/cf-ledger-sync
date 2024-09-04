@@ -1,0 +1,127 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 10. List the current dReps
+
+Another important feature Cardano Blockchain implements is Governnace. This query provides a list of dReps currently registered on the system and additional information including:
+
+- dRep ID
+- tx_id of the registration
+- cert index
+- type 
+- deposit
+- hash of the pool which we it is delegating to
+- credential type
+- anchor URL (if available)
+- anchor hash (if available)
+- dRep status (active / inactive)
+- Registration date 
+- epoch
+- block
+- slot
+- number of delegators (not sure if is possible to get this inf as of now)
+
+This information helps you understand who is voting on proposals and shaping the future of the Cardano ecosystem. Note that we are using the *Sanchonet* network for this query (it is the same database schema as before). 
+
+```sql
+select
+    dr.drep_id AS drepId,
+    dr.drep_hash AS drepHash,
+    dr.tx_hash AS tx_id,
+    dr.cert_index AS cert_index,
+    dr."type" AS "type",
+    dr.deposit AS deposit,
+    dr.cred_type AS credential_type,
+    dr.anchor_url AS anchor_url,
+    dr.anchor_hash AS anchor_hash,
+    CASE
+	    WHEN COALESCE(vp.epoch, 0)
+	    	+ (SELECT COALESCE(ep.drep_activity, 0) FROM epoch_param ep ORDER BY ep.epoch_no DESC LIMIT 1) 
+	    	< (SELECT COALESCE(ep.epoch_no, 0) FROM epoch_param ep ORDER BY ep.epoch_no DESC LIMIT 1)
+	    	THEN 'INACTIVE'
+	    WHEN dr."type" = 'UNREG_DREP_CERT'
+	    	THEN 'RETIRED'
+	    ELSE 'ACTIVE'
+	END AS dRep_status,
+    to_timestamp(sub2.block_time) at TIME zone 'UTC' as registration_date,
+    dr.epoch AS epoch,
+	dr.block AS block,
+	dr.slot AS slot,
+    coalesce (sub3.delegators_count, 0) as number_of_delegators
+FROM drep_registration dr
+JOIN (SELECT
+	        max(slot) AS max_slot,
+	        dr.drep_hash
+	  FROM drep_registration dr
+	  GROUP BY dr.drep_hash    
+	 ) AS sub1 
+ON  dr.drep_hash = sub1.drep_hash
+    and dr.slot = sub1.max_slot
+JOIN (	SELECT
+	        max(block_time) as block_time ,
+	        dr.drep_hash
+	    FROM drep_registration dr
+	    WHERE dr."type" = 'REG_DREP_CERT'
+	    GROUP BY dr.drep_hash
+		) AS sub2
+ON dr.drep_hash = sub2.drep_hash
+LEFT JOIN ( SELECT
+		        count(DISTINCT(d.address)) as delegators_count,
+		        d.drep_hash
+		    FROM delegation_vote d
+		    WHERE d.drep_hash is not null
+		    GROUP BY drep_hash
+			) AS sub3
+ON dr.drep_hash = sub3.drep_hash
+LEFT JOIN (	SELECT voter_hash, max(epoch) AS epoch, max(slot) 
+			FROM voting_procedure 
+			GROUP BY voter_hash
+			) vp ON vp.voter_hash = dr.drep_hash
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+drepid   | drephash| tx_id    | cert_index | type        | deposit | credential_type | anchor_url      | anchor_hash | drep_status | registration_date | epoch | block | slot   | number_of_delegators
+---------+---------+----------+------------+-------------+---------+-----------------+-----------------+-------------+-------------+-------------------+-------+-------+--------+--------------------- 
+drep1..n | 0ae..d50| 3fd..7a20| 6          |REG_DREP_CERT|500000000| ADDR_KEYHASH    | https://bit..2HL|  1..111     |    INACTIVE |  2024-08-01 16:56 | 413   |1784176|35742397| 0
+
+
+(Note: full results trimmed for readability)
+```
+
+</details>
+
+Let's take a closer look at what the query does. 🔎  
+
+<Steps>
+
+### Main `SELECT` Clause
+
+`SELECT`s various columns from the [drep_registration](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#drep_registration) table (alias `dr`) such as `drep_id`, `drep_hash`, `tx_id`, `cert_index`, `type`, `deposit`, `cred_type`, `anchor_url`, `anchor_hash`, `epoch`, `block`, and `slot`.
+
+### `CASE` Statement for `dRep_status`
+
+Calculates the `dRep_status` based on the following logic:
+- `INACTIVE`...If the sum of `vp.epoch` (from the [voting_procedure](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#voting_procedure) table) and the latest `drep_activity` from [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param) is less than the latest `epoch_n` from [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param). This likely indicates the dRep hasn't been active in recent epochs.
+- `RETIRED` If the type in [drep_registration](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#drep_registration) is `UNREG_DREP_CERT`, meaning the dRep has been unregistered.
+- `ACTIVE`... otherwise, the dRep is considered active.
+
+### `registration_date` Calculation
+
+Converts the `block_time` (from the [drep_registration](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#drep_registration) table) to a timestamp with UTC timezone.
+The subquery `sub2` fetches the maximum `block_time` for each `drep_hash` where the `type` is 'REG_DREP_CERT' (registration certificate).
+
+### `number_of_delegators` Calculation
+
+Uses a `LEFT JOIN` with a subquery `sub3` to count the number of distinct delegators `address` associated with each `drep_hash` in the [delegation_vote](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#delegation_vote) table. `COALESCE` ensures that if there are no delegators, the count is shown as 0.
+
+### Joins and Subqueries
+
+`JOIN with sub1` ensures only the latest registration entry for each `drep_hash` is considered (based on the maximum slot).
+`LEFT JOIN` with `sub3` and `vp` brings in the delegators count and latest voting epoch information for each dRep.
+
+</Steps>
