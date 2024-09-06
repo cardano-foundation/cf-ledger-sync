@@ -144,7 +144,9 @@ This FROM statement starts by looking at [tx_out](https://github.com/cardano-fou
 
 `JOIN block ON block.id = tx.block_id` joins the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table to get block-related information (timestamp, block number, slot number).
 
-`WHERE tx_out.address = '...'` filters results to only include transactions where the specified address is an output. `GROUP BY tx_hash, ...` groups the results by transaction hash and other fields to avoid duplicate rows.
+`WHERE tx_out.address = '...'` filters results to only include transactions where the specified address is an output. 
+
+`GROUP BY tx_hash, ...` groups the results by transaction hash and other fields to avoid duplicate rows.
 
 `UNION` combines the results of the first part with the second part.
 
@@ -315,7 +317,7 @@ Other joins and `WHERE` clause are similar to the first subquery.
 
 ### Summary
 
-This query gives you a detailed breakdown of what went into and came out of the Cardano transaction we are interested in.
+This query gives you a detailed breakdown of the inputs and outputs of the Cardano transaction we are interested in.
 
 Next, we will run a query to fetch a breakdown list of all the native tokens (both fungible tokens and NFTs) held in the wallet. This will provide a detailed view of your various assets, allowing you to see each token or NFT along with its name and quantity.
 </Steps>
