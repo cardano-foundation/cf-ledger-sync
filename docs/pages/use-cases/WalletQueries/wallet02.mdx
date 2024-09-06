@@ -1,6 +1,6 @@
 import { Callout, Code, Tabs, Steps } from "nextra/components"
 
-##  2. List of all respective UTXOs that compose a balance
+##  2. List a balance's UTXOs 
 
 The goal of this query is to identify all Unspent Transaction Outputs (UTXOs) associated with one specific Cardano address. In simpler terms, it's like checking the individual coins and tokens in the wallet that haven't been spent yet.
 
@@ -59,23 +59,21 @@ Specifically, we are looking for:
 
 - `tx_out txo` table with information about transaction outputs.
 - `tx_in ti` table with information about transaction inputs. We join these tables so we can check if a UTXO has been spent, i.e., used as an input.
--  This `tx` table holds general transaction information.
+-  This [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table holds general transaction information.
 - `datum d` & `script s` tables hold optional extra data about the UTXO. We use LEFT JOIN because not all UTXOs will have datum or scripts attached.
-
 
 ### Filters
 - Filters results for our specific address
 `txo.address = addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`
 - `ti.id IS NULL` is an important condition as it ensures we only get unspent UTXOs, i.e. UTXOs that haven't been used as inputs yet.
 
-### How the query works
-- The query starts by looking at all transaction outputs `tx_out`.
+### Summary
+- The query starts by looking at all transaction outputs from the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table.
 - It verifies each output belongs to our specific address.
-- It looks for matches in the `tx_in` table to see if the output has been used as an input.
+- It looks for matches in the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to see if the output has been used as an input.
 - If no match is found, `ti.id IS NULL`, then it's an unspent UTXO.
-- Finally, it fetches any additoinal information about the optional datum and script, if they exist, and presents the results.
+- Finally, it fetches any additional information about the optional datum and script, if they exist, and presents the results.
 
-### Conclusion
 Now that you know your balance, you might want to see where it came from. To do this, we'll create a query to fetch the transaction history associated with this address and display it in a list, including additional details for each transaction.
 
 </Steps>
