@@ -79,7 +79,7 @@ epoch | min_fee_a | min_fee_b | max_block_size | max_tx_size | max_block_header_
 ```
 </details>
 
-🔎 Looking a little closer, this query reads data from database, without modifying the blockchain itself. It retrieves information about the most recent epoch.
+🔎 Looking a little closer, this query reads data from database, without modifying the blockchain itself. It retrieves information about the protocol parameters for the most recent epoch.
 
 `SELECT` lists the specific columns to retrieve from the database tables.
 
@@ -91,7 +91,7 @@ epoch | min_fee_a | min_fee_b | max_block_size | max_tx_size | max_block_header_
 
 ### 4.2 UTXOs associated with specific address 
 
-For this query, we are concerned with this address `addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9`
+Let's use address `addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9` as an example for this query.
 
 ```sql
         SELECT 
@@ -182,7 +182,7 @@ slot_no	    | block_no	 | epoch_no | time
 ```
 </details>
 
-🔎 Zooming in, this query retrieves information about the most recent block on the Cardano blockchain.
+🔎 Zooming in, this query retrieves information about the chain-tip. In other words, we are looking for the identifier of the most recently processed block on the network.
 
 `SELECT block.slot_no, block.block_no, block.epoch_no, block.time` specifies which columns we want to retrieve from the database. It is looking for:
 
