@@ -1,6 +1,6 @@
 import { Callout, Code, Tabs, Steps } from "nextra/components"
 
-## 9. Query a stake pool's lifetime blocks
+## 9. Stake pool lifetime blocks
 
 The "Lifetime Blocks" of a stake pool refers to the total number of blocks that the stake pool has successfully produced over its entire operational history. This metric provides insight into the pool's performance and reliability, reflecting its ability to contribute to the Cardano blockchain by creating blocks. Here is how you can fetch this information. 
 
@@ -57,7 +57,7 @@ Joins the result of the previous join with the [block](https://github.com/cardan
 ### WHERE ph.view = 'pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38'
 This `WHERE' clause restricts the results to only show blocks created by the stake pool with the specific view id we give the query. 
 
-### Conclusion
+### Summary
 
 The query returns a result set containing:
 - The stake pool's view id.
