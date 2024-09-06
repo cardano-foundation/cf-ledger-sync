@@ -12,7 +12,8 @@ For consistency, we will query the same preprod address as before:
 
 ### 3.1 Transaction details
 
-First, we want to query the following transaction details: 
+First, let's determine which transaction details we want to collect:
+
 - amount of ADA transferred
 - if the transaction is incoming/outgoing
 - transaction fee 
@@ -24,7 +25,7 @@ First, we want to query the following transaction details:
 ```sql
 -- Transactions where the address is the output
 SELECT
-	COALESCE(sum(tx_out.value),	0) - COALESCE(inp.inp_value, 0) AS ADA_amount,
+	COALESCE(sum(tx_out.value), 0) - COALESCE(inp.inp_value, 0) AS ADA_amount,
 	'outgoing' AS direction,
 	tx.fee AS fee,
 	tx.hash AS tx_hash,
