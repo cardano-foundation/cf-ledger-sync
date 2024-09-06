@@ -165,7 +165,7 @@ This FROM statement starts by looking at [tx_out](https://github.com/cardano-fou
 
 Next we will run a query to get the transaction signatories. :writing_hand:
 
-We will query the transaction hash `3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7` as it has more than one signer keys.
+For that, we will be using the transaction hash `3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7` as it has more than one signer keys.
 
 ```sql
 SELECT tw."key" AS Transaction_Signatories
@@ -200,7 +200,7 @@ Expected results format
 `LEFT JOIN tx_witnesses tw ON tx.id = tw.tx_id` performs a LEFT JOIN with the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
 `LEFT JOIN tx_witnesses tw ON tx.id = tw.tx_id` performs a LEFT JOIN with the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
 
-The join condition `tx.id = tw.tx_id` connects rows from both tables where the `id` in the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table matches the `tx_id` in the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
+The `JOIN` condition `tx.id = tw.tx_id` connects rows from both tables where the `id` in the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table matches the `tx_id` in the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
 
 `LEFT JOIN` ensures that all rows from the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table are included in the result, even if there's no corresponding match in the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table. In such cases, the columns from [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) will have NULL values.
 
