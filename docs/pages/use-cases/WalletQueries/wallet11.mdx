@@ -2,9 +2,7 @@ import { Callout, Code, Tabs, Steps } from "nextra/components"
 
 ## 11. List of "Active Governance Proposals" and number of votes
 
-The next step is to view the list of "Active Governance Proposals." This query shows current proposals and the number of votes each has received. This information helps you understand ongoing governance activities and community support for each proposal. Again, we will use the *Sanchonet* network for this query. 
-
-Specifically, our query will provide us with a list of “Active“ Governance proposals and associate details:
+To better understand ongoing governance activities in the Cardano ecosystem and gauge community support for each proposal, let's fetch a list of active governance proposals along with relevant details, such as:
 
 - Proposal tx_id
 - Index
@@ -19,6 +17,8 @@ Specifically, our query will provide us with a list of “Active“ Governance p
 - Block
 - timestamp 
 - Number of yes/no/abstain 
+
+Note: Again, we will use the Sanchonet network for this query.
 
 ```sql
 SELECT 	gap.tx_hash AS tx_id,
