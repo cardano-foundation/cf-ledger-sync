@@ -1,6 +1,6 @@
 import { Callout, Code, Tabs, Steps } from "nextra/components"
 
-## 6. Query Token metadata information
+## 6. Query Token metadata
 
 In this SQL query, we retrieve the JSON metadata associated with a specific asset by joining multiple tables and applying filters.
 
@@ -84,10 +84,10 @@ LIMIT 1
 
 The results are ordered by `mtm.id` in descending order, which means the most recent entry comes first. The `LIMIT 1` clause ensures that only the most recent entry is returned.
 
-### Conclusion
+### Summary 
 The query retrieves the JSON metadata for a specific asset by:
 
-- Joining the [ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint), [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata), and [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) tables from Cardano's database schema.
+- Joining the [ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint), [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata), and [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) tables from Ledger Sync's database schema.
 - Filtering by the asset's fingerprint and extract the JSON metadata associated with the minting transaction, specifically the metadata related to the NFT standard (721). This metadata contains details about the NFT's name, image, policy ID, etc.
 - Ordering by the most recent minting transaction and limiting the result to one.
 
