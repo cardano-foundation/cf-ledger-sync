@@ -105,7 +105,7 @@ The query traverses multiple tables to find the requested details:
 - The main query uses a `LEFT JOIN` to combine the results of the two subqueries back to the main [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table.
 - The LEFT JOIN ensures that the main query returns a row even if the subqueries don't find matching data (in that case, `num_of_tx` and `num_of_holders` would be NULL).
 
-### Conclusion
+### Summary 
 
 - A fingerprint is a unique identifier used to distinguish different assets on the Cardano blockchain.
 - The `LEFT JOIN` type of join ensures you get results even if there's no matching data in the joined tables.
