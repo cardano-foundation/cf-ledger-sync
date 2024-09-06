@@ -65,9 +65,35 @@ Expected results format
 
 </details>
 
-### 8.1 Query explained 
+### 8.1 Gather various stake pool data
 
-In this query we retrieve data from tables [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash), [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data), [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update), [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) for `Pool name`, `Pool Ticker`, `Pool ID`, `Pool Hash`, `Fixed cost`, `Margin`, `Declared pledge`. `Lifetime blocks` data is the total number of blocks that a stake pool has successfully validated since its creation (joining [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block), [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader), [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash)). Stake account data is retrieved from the [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) table with `id` mapping to `reward_addr_id` from the [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) table.
+This query gathers data such as pool metadata, stake addresses, and block minting history from various tables. 
+
+🔎 Here's a breakdown of what the query does:
+
+The `SELECT ...` clause specifies the columns to be included in our results: 
+- `ph.id`, the id of the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table
+- `po.pool_name AS pool_name` is the pool's name, retrieved from the [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) table
+- `po.ticker_name AS pool_ticker`...the pool's ticker symbol.
+- `ph.view AS pool_id`...the human-readable pool id.
+- `ph.hash_raw AS pool_hash`...the pool's hash value.
+- `pu.fixed_cost`...the pool's fixed cost, from [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update)
+- `pu.margin`...the pool's margin, also from [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update)
+- `pu.pledge AS declared_pledge`...the pool's declared pledge amount.
+- `ltb.lifetime_blocks`... the total number of blocks minted by the pool (calculated in the subquery).
+- `sa.view AS stake_account`...the stake address associated with the pool's rewards
+
+The `FROM pool_hash ph` clause specifies that we are selecting data from the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash)table, aliased as `ph`. This table likely stores core pool identification information.
+
+`LEFT JOIN pool_offline_data po ON ...` performs a left `JOIN` with the [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) table. It matches rows based on `pool_id` and ensures that if multiple entries exist for the same pool, only the latest one is selected (using a subquery to find the maximum id).
+
+`LEFT JOIN pool_update pu ON ...` is another `LEFT JOIN`, this time with [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update). It matches on `hash_id` and again selects the latest update for the pool using a similar subquery approach.
+
+`LEFT JOIN stake_address sa ON ...` is another `LEFT JOIN` which connects to the [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) table to retrieve the stake address linked to the pool's rewards.
+
+`LEFT JOIN (...) AS ltb ON ...` incorporates a subquery aliased as `ltb`. This subquery calculates the total number of blocks minted by the pool by joining [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash), [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) and [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) tables and counting the relevant blocks. The result is then joined back to the main query based on `poolId`.
+
+`WHERE ph."view" = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'` filters the results to include only the data for the specific pool we are interested in.
 
 ### 8.2 Find out who owned the stake pool 
 
@@ -105,6 +131,25 @@ Expected results format
 ```
 
 </details>
+
+
+🔎 Lets dig a little deeper to gain a better understanding.
+
+The opening `SELECT sa."view" AS owner_account` clause specifies what data the query should return. It selects the view column from the [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) table (aliased as `sa`) and labels it as `owner_account` in the results.
+
+`FROM pool_hash ph` clause means we are inspectig the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table, giving it the alias `ph`. This table  stores core information about stake pools, including their unique hashes.
+
+`JOIN pool_update pu ON ph.id = pu.hash_id` performs an INNER JOIN with the [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) table (aliased as `pu`).
+The join condition is `ph.id = pu.hash_id`, meaning it connects rows from [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) and [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) where their ids match. This links pool information with its update history.
+
+`AND pu.id = (SELECT MAX(pu2.id) FROM pool_update pu2 WHERE ph.id = pu2.hash_id)` is a subquery within the `JOIN` condition. It ensures that only the latest update for each pool is considered. It finds the maximum id from the [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) table (using the alias `pu2`) for the given `ph.id` and then uses that maximum id to filter the [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) table in the main query.
+
+`JOIN pool_owner po ON pu.id = po.pool_update_id` is another `INNER JOIN` with the [pool_owner](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_owner) table. It connects based on `pu.id = po.pool_update_id`, associating the latest pool update with its owner information. 
+
+`JOIN stake_address sa ON po.addr_id = sa.id` The final `INNER JOIN` connects to the [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) table. The condition `po.addr_id = sa.id` links the pool owner's information with the actual stake address details.
+
+`WHERE ph."view" = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'` filters the results to include only the data related to the specific pool we provided.
+
 
 
 ### 8.3 List of delegators 
@@ -153,4 +198,25 @@ Expected results format
 
 </details>
 
-The query finds delegators who are currently associated with the given pool and have not moved their delegation or deregistered after their most recent record of delegation to that pool. This helps in identifying active delegators who have not changed their stake status recently.
+🔎 Looking closer, lets dissect each line:
+
+`SELECT sa.id AS stakeAddressId, sa.view AS delegator_address` selects the `id` column (labelling it as `stakeAddressId`) and the `view` column (labellting it as `delegator_address`) from the stake_address table (alias `sa`). The `view` column likely represents the human-readable format of the stake address.
+
+`FROM stake_address sa` means we are looking in the stake_address table.
+
+`WHERE sa.id IN (...)` is where we filter by checking if the `id` from the stake_address table exists within the results of the subquery that follows.
+
+The subquery starts with `SELECT dg1.addr_id` ...selecting the `addr_id` (stake address id) from the delegation table (alias `dg1`).
+
+`FROM delegation dg1 JOIN pool_hash ph ON dg1.pool_hash_id = ph.id` joins the delegation table with the pool_hash table based on the `pool_hash_id` matching in both tables. This connects delegation records with the associated pool information.
+
+`WHERE ph.view = 'pool1j20l32n8un5gce4adk44n9zks8cdvnk3amgursud847cwnpgeg4'` filters the joined results to include only delegations to the specific pool we provided.
+
+`AND NOT EXISTS (SELECT TRUE FROM delegation dg2 WHERE dg2.addr_id = dg1.addr_id AND dg2.tx_id > dg1.tx_id)` ensures that we only consider the latest delegation for each stake address. It checks if there's any other delegation record `dg2` for the same `addr_id` but with a higher `tx_id` (ie. a later transaction). If such a record exists, it excludes the current delegation `dg1` from the results.
+
+Similarly, the `AND NOT EXISTS (SELECT TRUE FROM stake_deregistration sd WHERE sd.addr_id = dg1.addr_id AND sd.tx_id > dg1.tx_id)` clause checks if there's a stake deregistration record `sd` for the same `addr_id` with a higher `tx_id`. If so, it means the stake address has been deregistered after the delegation, so it's excluded from the results.
+
+#### Summary
+
+Our first query, 3.1, inspects several tables to return various data on our specific stake pool. Query 3.2 traverses through several tables to pinpoint the owner's stake address for a particular pool. Finally, 3.3 queries the Ledger Sync database schema to return a list of current delegators for the stake pool address we provide.
+
