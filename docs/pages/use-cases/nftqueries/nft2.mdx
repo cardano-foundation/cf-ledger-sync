@@ -8,7 +8,9 @@ Now we will get more granular by quering for the data for a specif NFT collectio
 
 ### 2.1 Query the policy id
 
-From the policy ID `d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc` , we will fetch:
+The policy ID is the unique identifier associated with a specific minting policy. The policy outlines the rules that govern the minting (and potentially the burning) of native assets on Cardano. Each minting policy has its own distinct Policy ID, generated from the policy script itself. This ensures that tokens minted under different policies are easily distinguishable, even if they have the same name or other various attributes. Once a native asset is minted, it is inextricably linked to its corresponding Policy ID. This connection is crucial for tracking the origin and legitimacy of tokens on Cardano.
+
+So for this query, from the policy ID `d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc`, we will fetch:
 
 - The total number of assets in the collection.
 - The number of transactions involving assets from the collection within the last 24 hours.
@@ -68,7 +70,8 @@ The `WHERE ma.policy = '...' AND b."time" > (now() at time zone 'utc') - INTERVA
 ### 2.2 Asset details
 
 This next query lists all assets/NFTs belonging to the Spacebudz collection with their respective:
-- asset name + encoded name
+- asset name 
+- encoded name
 - Asset ID
 - minting (creation) date
 
@@ -100,7 +103,7 @@ SpaceBud5511 | 	537061636542756435353131 | asset1x0pkcc6vf2v5ezhhj4hd9mls3pwwufv
 
 🔎 Let's take a closer look at each part of the query. 
 
-`FROM multi_asset ma` indicates that the query is targeting the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, which stores information about assets (including NFTs) on Cardano. `WHERE ma."policy" = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'` filters the results to only include assets that belong to the specific collection identified by the given policy ID.
+`FROM multi_asset ma` indicates that the query is targeting the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, which stores information about assets (including NFTs) on Cardano. `WHERE ma."policy" = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'` filters the results to only include assets that belong to the specific collection (Policy ID) we are interested in.
 
 `SELECT:
 ma.name_view AS asset_name` retrieves the human-readable name of the asset and labels it as `asset_name`.
@@ -112,7 +115,8 @@ ma.name_view AS asset_name` retrieves the human-readable name of the asset and l
 ### 2.3 Querying a specific NFT
 
 Our last query fetches the following data about a specific NFT:
-- asset name + encoded name
+- asset name 
+- encoded name
 - asset metadata 
 - owner (wallet address)
 - mint date
