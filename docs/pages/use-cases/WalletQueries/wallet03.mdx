@@ -9,7 +9,7 @@ For consistency, we will query the same preprod address as before:
 
 ![preprod](/images/preprod.png)
 
-We will break the query up into three parts to fetch the results we need.
+We will break the query up into three parts to fetch the information we need for the overall query.
 
 ### 3.1 Transaction details
 
@@ -206,11 +206,11 @@ The `JOIN` condition `tx.id = tw.tx_id` connects rows from both tables where the
 
 `WHERE tx.hash = '3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7'` is a filtering condition restricting the output to only those rows where the hash column in the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table matches the provided specific hash value.
 
-### 3.3 Retrieve Transaction signatories
+### 3.3 Retrieve Native Asset details
 
 While reviewing the above transactions, you might notice that some include more than just ADA, they also include *[Cardano Native Assets](https://developers.cardano.org/docs/get-started/cardano-cli/native-assets/)*.
 
-Next we will run a query get the details of a specific transaction which includes a native asset. We will query the transaction hash `3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7` because this transaction has native assets, in addtion to ada.
+Next we will run a query get the details of a specific transaction which includes a native asset. We will use the transaction hash `3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7` because this transaction has native assets, in addtion to ada.
 
 ```sql
 
@@ -313,7 +313,9 @@ Other joins and `WHERE` clause are similar to the first subquery.
 `SELECT tx_detail.* FROM (...) AS tx_detail` selects all columns from the combined results of the subqueries.
 `ORDER BY tx_detail.direction ASC` orders the results, showing outputs first, then inputs.
 
-In summary, this query gives you a detailed breakdown of what went into and came out of the Cardano transaction we are interested in.
+### Summary
+
+This query gives you a detailed breakdown of what went into and came out of the Cardano transaction we are interested in.
 
 Next, we will run a query to fetch a breakdown list of all the native tokens (both fungible tokens and NFTs) held in the wallet. This will provide a detailed view of your various assets, allowing you to see each token or NFT along with its name and quantity.
 </Steps>
