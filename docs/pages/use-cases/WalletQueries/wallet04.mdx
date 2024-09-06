@@ -2,7 +2,7 @@ import { Callout, Code, Tabs, Steps } from "nextra/components"
 
 ## 4. List all tokens in a wallet
 
-Some assets, particularly NFTs, may include additional information detailed in their metadata. For instance, in-game NFTs can have attributes such as power, speed, and strength encoded in this metadata. This information follows the standards set by various Cardano Improvement Proposals such as [CIP-25](https://cips.cardano.org/cip/CIP-25), which define how metadata should be structured for assets on the Cardano blockchain. 
+Some assets, particularly NFTs, may include additional information detailed in their metadata. For instance, in-game NFTs can have attributes such as power, speed, and strength encoded in this metadata. This information follows the standards set by various Cardano Improvement Proposals, such as [CIP-25](https://cips.cardano.org/cip/CIP-25), which define how metadata should be structured for assets on the Cardano blockchain. 
 
 <Callout type="info" emoji="💡">
 Metadata standards for Cardano are covered in CIPs (Cardano Improvement Proposals) [25](https://cips.cardano.org/cip/CIP-25), [26](https://cips.cardano.org/cip/CIP-0026), [60](https://cips.cardano.org/cip/CIP-0060) and [68](https://cips.cardano.org/cip/CIP-0068)
@@ -18,7 +18,7 @@ To retrieve the metadata, you can use the following query:
 
 ```sql
 SELECT
-	ma.fingerprint,
+	  ma.fingerprint,
     ma.name AS name,
     sum(mto.quantity) AS quantity
 FROM
@@ -59,7 +59,7 @@ asset1zutmprtn8te56av95m09sxj305rxm7yps3e3vr  | tBigTokenName09 |     20
 
 </details>
 
-At a high level, we are listing all the distinct tokens (fungible tokens) and NFTs (non-fungible tokens) present in our specific Cardano wallet address, along with their respective quantities. This is essential for wallet applications to display a user's asset holdings accurately. We are chcking unspent Multi-Asset transaction output from the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table for our specific address. 🔎 Let's break it down line by line:
+At a high level, we are listing all the distinct tokens (fungible tokens) and NFTs (non-fungible tokens) present in our specific Cardano wallet address, along with their respective quantities. This is essential for wallet applications to display a user's asset holdings accurately. We are checking unspent Multi-Asset transaction output from the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table for our specific address. 🔎 Let's break it down line by line:
 
 <Steps>
 ### SELECT the right information:
