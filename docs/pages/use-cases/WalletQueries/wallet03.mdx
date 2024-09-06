@@ -9,6 +9,7 @@ For consistency, we will query the same preprod address as before:
 
 ![preprod](/images/preprod.png)
 
+We will break the query up into three parts to fetch the results we need.
 
 ### 3.1 Transaction details
 
@@ -117,7 +118,7 @@ Expected results format
 The overall aim is to track the flow of ADA for our specific address. It categorizes transactions as 'outgoing' or 'incoming' and provides details like the amount, fee, timestamp, and block information. 
 
 <Callout type="info" emoji="💡">
-- When we say "outgoing", this is the address that is in the output of that transaction, and possibly the input as well.
+- When we say "outgoing", this is the address that is in the output of that transaction, and possibly the input as well (if they are receiving any change back).
 - When we say "incoming", this is the address in the input part of that transaction, and not in the output part.
 </Callout>
 
