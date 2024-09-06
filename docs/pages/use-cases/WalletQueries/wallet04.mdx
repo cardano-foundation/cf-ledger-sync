@@ -18,7 +18,7 @@ To retrieve the metadata, you can use the following query:
 
 ```sql
 SELECT
-	  ma.fingerprint,
+ma.fingerprint,
     ma.name AS name,
     sum(mto.quantity) AS quantity
 FROM
@@ -72,7 +72,7 @@ At a high level, we are listing all the distinct tokens (fungible tokens) and NF
 
 - `ma_tx_out mto` table stores information about multi-asset quantities within transaction outputs.
 - `multi_asset ma` table stores the metadata for each multi-asset.
-- `tx_out` table stores general transaction output information.
+-  The [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table stores general transaction output information.
 - `tx_in ti` table stores transaction input information. We use this to check if a UTXO is spent.
 
 ### Filters
