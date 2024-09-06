@@ -98,7 +98,7 @@ The query selects the desired columns from the [pool_hash](https://github.com/ca
 
 The main query joins with the `ltb` subquery to include the calculated `lifetime_blocks` for each pool.
 
-### Conclusion 
+### Summary 
 
 - LEFT JOINs ensure that all pool hashes are included in the results, even if they don't have corresponding data in the [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) or [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) tables.
 - The nested subquery is essential for calculating the `lifetime_blocks` metric, which requires aggregating data across multiple tables.
@@ -159,4 +159,4 @@ Expected results format
 
 </details>
 
-The next query will provide users with detailed information about specific stake pools. This will help them make informed decisions when selecting a pool to delegate their ADA. 
+The next query will provide users with detailed information about specific stake pools. This will help them make informed decisions when selecting a specific pool to delegate their ADA. 
