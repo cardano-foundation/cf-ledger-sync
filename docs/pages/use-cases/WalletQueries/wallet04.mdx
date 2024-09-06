@@ -18,7 +18,7 @@ To retrieve the metadata, you can use the following query:
 
 ```sql
 SELECT
-ma.fingerprint,
+     ma.fingerprint,
     ma.name AS name,
     sum(mto.quantity) AS quantity
 FROM
@@ -85,9 +85,9 @@ At a high level, we are listing all the distinct tokens (fungible tokens) and NF
 - `GROUP BY ma.fingerprint, ma.name` clause groups the results by the unique fingerprint and name of each token/NFT, enabling us to calculate the total quantity held.
 - `SUM(mto.quantity)` calculates the total quantity of each token/NFT by summing up the quantities found in all relevant UTXOs.
 
-### Conclusion
+### Summary 
 
-- The query looks at all transaction outputs `tx_out` containing multi-assets.
+- The query looks at all transaction outputs containing multi-assets.
 - It checks if the outputs belong to the specified wallet address and are unspent.
 - It retrieves the fingerprint and name of the multi-asset from the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table.
 - It groups the results by fingerprint and name, summing up the quantities to get the total amount of each token/NFT held at our wallet address.
