@@ -1,12 +1,20 @@
 import { Callout, Code, Tabs, Steps } from "nextra/components"
 
-## 1. Query the total ADA balance in a wallet address 
+## 1. Find the ADA balance in a wallet address 
 
 Let's start with something simple but essential: **viewing your portfolio**. Specifically, we'll look at how to display the total balance of ADA holdings associated with a wallet address.
 
 <Callout type="warning" emoji="⚠️">
 Before we dive in, ensure that you have installed and configured Ledger Sync on your chosen network. Allow it to fully synchronize, and once the database is synced, you can start performing SQL queries using your preferred tool.
 </Callout>
+
+The following networks are available:
+
+- [Private Testnet](https://book.world.dev.cardano.org/env-private.html)
+- [Sanchonet Testnet](https://book.world.dev.cardano.org/env-sanchonet.html)
+- [Preview Testnet](https://book.world.dev.cardano.org/env-preview.html)
+- [Pre-production Testnet](https://book.world.dev.cardano.org/env-preprod.html)
+- [Production (Mainnet)](https://book.world.dev.cardano.org/env-mainnet.html)
 
 For most of our examples, we will query the same preprod address, which takes the following format:
 `addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`
@@ -52,7 +60,7 @@ Expected results format
 There are few ways to obtain this information. In this SQL query, we calculate the balance of a specific address by subtracting the the total funds spent from the total funds received. In UTXO terms, we are subtracting the total value of spent outputs from the total value of received outputs. 
 
 <Callout emoji="✍️">
- Note: Cardano (like Bitcoin) leverages the Unspent Transaction Output (UTXO) model to keep track of user state/balances. This is a different to the account-based model employed by Ethereum. Cardano implements an innovative Extended Unspent Transaction Output (EUTxO) model. If you are new to Cardano, or need a recap, the [EUTxO crash course](https://aiken-lang.org/fundamentals/eutxo) from the *Aiken* team is essential reading.  
+ Note: Cardano (like Bitcoin) leverages the Unspent Transaction Output (UTXO) model to keep track of user state/balances. This is different to the account-based model employed by Ethereum. Cardano implements an innovative Extended Unspent Transaction Output (EUTxO) model. If you are new to Cardano, or need a recap, the [EUTxO crash course](https://aiken-lang.org/fundamentals/eutxo) from the *Aiken* team is essential reading.  
 </Callout>
 
 
@@ -92,13 +100,13 @@ WHERE to2.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67je
 ```
 
 This second subquery `sum2` calculates the total value of all outputs (in lovelace) from the specified address that have been spent. It does this by joining the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) (alias `ti`) and [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) (alias `to2`) tables to find the corresponding spent outputs. 
-The join condition ensures we only count outputs that were used as inputs in other transactions (i.e., spent funds). `WHERE to2.address` filters the results to only include transactions for our address and the result is also aliased as `value`.
+The `JOIN` condition ensures we only count outputs that were used as inputs in other transactions (i.e., spent funds). `WHERE to2.address` filters the results to only include transactions for our address and the result is also aliased as `value`.
 
-### Conclusion:
+### Summary:
 This query effectively provides the current balance of the specified address by querying the database for:
-- The total lovelace this has address received? (sum1)
-- The total lovelace this address sent? (sum2)
-- What's the difference between the two? (result)
+- The total lovelace this has address received (sum1)
+- The total lovelace this address sent (sum2)
+- What's the difference between the two (result)
 
 Another way to check the balance is by summing up all the [UTXOs](https://docs.cardano.org/about-cardano/learn/eutxo-explainer/) associated with the wallet address.
 
