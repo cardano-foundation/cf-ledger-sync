@@ -65,7 +65,7 @@ We are looking (SELECT'ing) from the following tables:
 
 [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata) (tm): This table holds additional metadata associated with transactions, and for this query, we are filtering on metadata with the key '721'.
 
-`LEFT JOIN ma_tx_mint ON ...` joins the asset information ([multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset)) with its minting transactions ([ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint)). The LEFT JOIN ensures that even assets that have not been minted are included in the result, but their `total_supply` will be NULL.
+`LEFT JOIN ma_tx_mint ON ...` joins the asset information ([multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset)) with its minting transactions ([ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint)). The `LEFT JOIN` ensures that even assets that have not been minted are included in the result, but their `total_supply` will be `NULL`.
 
 `LEFT JOIN (SELECT ... FROM tx_metadata) AS tm ON ...` is a subquery that filters `tx_metadata` to only include rows where the metadata key is `721`.  The result of this subquery is then joined with the previous result, effectively filtering out assets that are not associated with transactions containing this specific metadata.
 
