@@ -8,7 +8,7 @@ Now we will get more granular by quering for the data for a specif NFT collectio
 
 ### 2.1 Query the policy id
 
-The policy ID is the unique identifier associated with a specific minting policy. The policy outlines the rules that govern the minting (and potentially the burning) of native assets on Cardano. Each minting policy has its own distinct Policy ID, generated from the policy script itself. This ensures that tokens minted under different policies are easily distinguishable, even if they have the same name or other various attributes. Once a native asset is minted, it is inextricably linked to its corresponding Policy ID. This connection is crucial for tracking the origin and legitimacy of tokens on Cardano.
+The policy ID is the unique identifier associated with a specific minting policy. The policy outlines the rules that govern the minting (and potentially the burning) of native assets on Cardano. Each minting policy has its own distinct policy ID, generated from the policy script itself. This ensures that tokens minted under different policies are easily distinguishable, even if they have the same name or other various attributes. Once a native asset is minted, it is inextricably linked to its corresponding policy ID. This connection is crucial for tracking the origin and legitimacy of tokens on Cardano.
 
 So for this query, from the policy ID `d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc`, we will fetch:
 
@@ -54,7 +54,7 @@ d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc |    10,000        | 75
 🔎 Let's take a closer look at each part of the query. 
 
 `FROM multi_asset ma` specifies that the query will be looking at the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, which stores information about assets on the Cardano blockchain.
-`WHERE ma.policy = '...'` This filters the results to only include assets that belong to the collection identified by the  policy ID we provided.
+`WHERE ma.policy = '...'` This filters the results to only include assets that belong to the collection identified by the policy ID we provided.
 `GROUP BY ma."policy"`  groups the results by the policy ID, ensuring that we get a single row summarizing the information for the entire collection.
 
 Within the `SELECT` clause, `ma."policy" AS collection_policy` selects the policy ID of the collection and labels it as collection_policy. `count(*) AS number_of_assets`counts the number of rows (i.e., assets) in the filtered result set and labels it as `number_of_assets`.
