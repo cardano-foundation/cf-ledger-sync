@@ -1,0 +1,73 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 3. View all assets that are listed for sale
+
+For this query, we want to list all assets that are listed for sale at an address. In other words, list all the assets locked in a specific smart contract address eg. `addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx` 
+
+The query returns the following details:
+- asset name 
+- policy ID
+- quantity 
+
+```sql
+SELECT
+		ma.policy AS policy,
+		ma.name AS name,
+		sum(mto.quantity) AS quantity
+	FROM
+      	        ma_tx_out mto
+	JOIN multi_asset ma 
+		ON ma.id = mto.ident 
+	JOIN tx_out 
+		ON mto.tx_out_id = tx_out.id
+	LEFT JOIN tx_in ti 
+		ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
+	WHERE
+   	        tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
+	   AND ti.tx_out_id is null
+	GROUP BY ma.policy, ma.name
+	ORDER BY quantity DESC
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+policy	 					 	 |  name        |  quantity          
+---------------------------------------------------------+--------------+--------------
+64c11b97a1bc395f5cd3a6f2f594292510ae483af77151d1d6136edc | SNEKWRANGLER | 4,500,000,000  
+52225d8259c95ec7d1727c8a591398846718eaa8fae533a1b8d2b9d6 | 	EL	| 1,000,000,000
+1da3b63de574c7a103de734d8b1215b5ff5e3863d9fdecff8e09810c | 	FAM	| 439,678,272
+ad5281e310da442d8d00ef3f7809cd0a1c035cf5039c0d90f236b7bc | 	FAM	| 439,000,000
+daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | CRAZYMARY	| 250,000,000
+		....					 |   ...	|   ...
+
+(Note: results trimmed for readability)             
+```
+</details>
+
+🔎 Let's zoom in to understand at each part of the query. 
+
+`FROM ma_tx_out mto` looking at the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table, which tracks the association between multi-assets and transaction outputs.
+
+`JOIN multi_asset ma ON ma.id = mto.ident` joins the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table with the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table to get details about the assets themselves, such as their policy id and name.
+
+`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get information about the transaction outputs where these assets reside, including the address that owns them.
+
+`LEFT JOIN tx_in ti ON ...:` attempts a left join with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to identify any transaction inputs that might have spent these transaction outputs.
+
+`WHERE tx_out.address = '...' AND ti.tx_out_id IS NULL` filters the results to only include assets held by the specified address.
+
+The condition `ti.tx_out_id IS NULL` ensures that we only consider transaction outputs that haven't been spent yet.
+
+`GROUP BY ma.policy, ma.name` groups the results by the policy id and name of the assets, effectively aggregating multiple entries for the same asset (if they exist in different transaction outputs).
+
+The `SELECT ma.policy AS policy, ma.name AS name, sum(mto.quantity) AS quantity` retrieves the following For each group (i.e., each unique asset): 
+- The policy ID.
+- The asset name.
+- The total quantity of that asset held by the Address
+
+`ORDER BY quantity DESC` sorts the results in descending order based on the quantity of each asset held.

@@ -1,0 +1,114 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 1. Find the ADA balance of a wallet
+
+Let's start with something simple but essential: **viewing your portfolio**. Specifically, we'll look at how to display the total balance of ADA holdings associated with a wallet address.
+
+<Callout type="warning" emoji="⚠️">
+Before we dive in, ensure that you have installed and configured Ledger Sync on your chosen network. Allow it to fully synchronize, and once the database is synced, you can start performing SQL queries using your preferred tool.
+</Callout>
+
+The following networks are available:
+
+- [Private Testnet](https://book.world.dev.cardano.org/env-private.html)
+- [Sanchonet Testnet](https://book.world.dev.cardano.org/env-sanchonet.html) ...see also [Sancho.network](https://sancho.network/)
+- [Preview Testnet](https://book.world.dev.cardano.org/env-preview.html)
+- [Pre-production Testnet](https://book.world.dev.cardano.org/env-preprod.html)
+- [Production (Mainnet)](https://book.world.dev.cardano.org/env-mainnet.html)
+
+For most of our examples, we will query the same preprod address, which takes the following format:
+`addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`
+
+<Callout type="info" emoji="💡">
+- You can get test tokens for pre-production and preview testnets using this [faucet](https://developers.cardano.org/docs/get-started/cardano-cli/get-started/)
+- For SanchoNet tokens, go to the [SanchoNet faucet](https://sancho.network/faucet).
+</Callout>
+
+```sql 
+SELECT
+    (coalesce(sum1.value,0) - coalesce(sum2.value,0)) as result
+FROM
+    (SELECT
+        SUM(to1.value) as value
+    FROM tx_out to1
+    WHERE
+        to1.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t'
+    ) as sum1,
+    
+    (SELECT
+        SUM(to2.value) as value
+    FROM tx_in ti
+    JOIN tx_out to2 ON
+        ti.tx_out_id = to2.tx_id
+        AND ti.tx_out_index = to2."index"
+    WHERE
+        to2.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t'
+    ) as sum2;
+```
+<details>
+<summary>
+Expected results format
+</summary>
+  
+```sql
+4645032877132
+```
+
+</details>
+
+
+There are few ways to obtain this information. In this SQL query, we calculate the balance of a specific address by subtracting the the total funds spent from the total funds received. In UTXO terms, we are subtracting the total value of spent outputs from the total value of received outputs. 
+
+<Callout emoji="✍️">
+ Note: Cardano (like Bitcoin) leverages the Unspent Transaction Output (UTXO) model to keep track of user state/balances. This is different to the account-based model employed by Ethereum. Cardano implements an innovative Extended Unspent Transaction Output (EUTxO) model. If you are new to Cardano, or need a recap, the [EUTxO crash course](https://aiken-lang.org/fundamentals/eutxo) from the *Aiken* team is essential reading.  
+</Callout>
+
+
+🔎 Here's a breakdown of what the query does:
+
+<Steps>
+
+### Calculate the Balance between the following two sub-queries:
+
+```sql
+SELECT (COALESCE(sum1.value, 0) - COALESCE(sum2.value, 0)) as result 
+FROM (subquery1) AS sum1, (subquery2) AS sum2
+```
+
+The main clause calculates the difference between the total received value `sum1.value` and the total spent value `sum2.value`. The `COALESCE` function is used to ensure that if either `sum1.value` or `sum2.value` is NULL, it is treated as '0'. The result is aliased as `result`. The `FROM` clause contains two nested subqueries, which are outlined next.
+
+### Calculate Total Received Value:
+
+```sql
+SELECT SUM(to1.value) as value
+FROM tx_out to1
+WHERE to1.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t'
+```
+
+This first subquery `sum1` calculates the total value of all outputs sent (in lovelace) to the specified address `addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`. 
+The `FROM tx_out to1` clause specifies the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table as the source and gives it the alias `to1` for easier reference. The `WHERE to1.address` clause filters the results to only include transactions for our address.
+
+### Calculate Total Spent Value:
+
+```sql
+SELECT SUM(to2.value) as value
+FROM tx_in ti
+JOIN tx_out to2 ON
+    ti.tx_out_id = to2.tx_id
+    AND ti.tx_out_index = to2."index"
+WHERE to2.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t'
+```
+
+This second subquery `sum2` calculates the total value of all outputs (in lovelace) from the specified address that have been spent. It does this by joining the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) (alias `ti`) and [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) (alias `to2`) tables to find the corresponding spent outputs. 
+The `JOIN` condition ensures we only count outputs that were used as inputs in other transactions (i.e., spent funds). `WHERE to2.address` filters the results to only include transactions for our address and the result is also aliased as `value`.
+
+### Summary:
+This query effectively provides the current balance of the specified address by querying the database for:
+- The total lovelace this has address received (sum1)
+- The total lovelace this address sent (sum2)
+- The difference between the two (result)
+
+Another way to check the balance is by summing up all the [UTXOs](https://docs.cardano.org/about-cardano/learn/eutxo-explainer/) associated with the wallet address.
+
+</Steps>
+

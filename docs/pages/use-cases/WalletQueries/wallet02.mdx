@@ -1,0 +1,79 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+##  2. List a balance's UTXOs 
+
+The goal of this query is to identify all Unspent Transaction Outputs (UTXOs) associated with one specific Cardano address. In simpler terms, it's like checking the individual coins and tokens in the wallet that haven't been spent yet.
+
+```sql
+SELECT
+	tx.hash AS tx_hash,
+	txo."index" AS tx_out_index,
+	d.hash AS datum_hash,
+	s.hash AS script_hash
+FROM tx_out txo
+LEFT JOIN tx_in ti 
+	ON ti.tx_out_index = txo."index" AND ti.tx_out_id = txo.tx_id 
+JOIN tx
+	ON tx.id = txo.tx_id
+LEFT JOIN datum d ON d.id = txo.inline_datum_id  
+LEFT JOIN script s ON s.id = txo.reference_script_id  
+WHERE
+    txo.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t'
+    AND ti.id IS NULL
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+     tx_hash                                                     | tx_out_index |    value       | datum_hash | script_hash
+-----------------------------------------------------------------+--------------+----------------+------------+------------ 
+74042d7fa5340a525d6c3f77f446d45efc6830332672e7acbf4241256f65b42f |     0        |  3228190       |            |           
+74042d7fa5340a525d6c3f77f446d45efc6830332672e7acbf4241256f65b42f |     1        |  4605029648942 |            |            
+aa138cb7581757deff37d320f9d6c7a1632607cb76a4615cbc0c1b517a15fb18 |     0        |  40000000000	 |            |                 
+(3 rows)
+```
+
+</details>
+
+<Callout type="info" emoji="💡">
+It's important to understand how UTxOs are referenced on Cardano. As shown below, a UTxO consists of the reference to the transaction that created it (TxId), and its index (TxIx) on the host transaction. A UTxO is associated with an asset value, an address which dictates its spending conditions and other metadata. A transaction can take multiple inputs (consuming multiple UTxOs) and produce multiple outputs (new UTxOs to be used by future transactions).
+![txidindex](/images/txid.png)
+</Callout>
+
+🔎 Let's breakdown how this query works. 
+
+<Steps>
+
+### 'SELECT'ing the information, ie. retrieving the UTXOS:
+
+Specifically, we are looking for:
+- `tx.hash` The unique id (hash) of the transaction.
+- `txo."index"` The index (position) of the UTXO within the transaction.
+- `d.hash` The hash of any associated datum (think of this as optional additional data attached to the UTXO).
+- `s.hash` (Optional) The hash of any associated script (an optional script detailing the conditions for spending the UTXO).
+
+### Table JOINs
+
+- `tx_out txo` table with information about transaction outputs.
+- `tx_in ti` table with information about transaction inputs. We join these tables so we can check if a UTXO has been spent, i.e., used as an input.
+-  This [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table holds general transaction information.
+- `datum d` & `script s` tables hold optional extra data about the UTXO. We use LEFT JOIN because not all UTXOs will have datum or scripts attached.
+
+### Filters
+- Filters results for our specific address
+`txo.address = addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`
+- `ti.id IS NULL` is an important condition as it ensures we only get unspent UTXOs, i.e. UTXOs that haven't been used as inputs yet.
+
+### Summary
+- The query starts by looking at all transaction outputs from the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table.
+- It verifies each output belongs to our specific address.
+- It looks for matches in the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to see if the output has been used as an input.
+- If no match is found, `ti.id IS NULL`, then it's an unspent UTXO.
+- Finally, it fetches any additional information about the optional datum and script, if they exist, and presents the results.
+
+Now that you know your balance, you might want to see where it came from. To do this, we'll create a query to fetch the transaction history associated with this address and display it in a list, including additional details for each transaction.
+
+</Steps>

@@ -1,0 +1,190 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 2. Viewing NFT collection details
+
+Now we will get more granular by quering for the data for a specif NFT collection. We'll search for details on *Spacebudz*, which made history by being the very first NFT collection minted on Cardano in March 2021.
+
+![Spacebudz](/images/spacebudz.png)
+
+### 2.1 Query the policy id
+
+The policy ID is the unique identifier associated with a specific minting policy. The policy outlines the rules that govern the minting (and potentially the burning) of native assets on Cardano. Each minting policy has its own distinct policy ID, generated from the policy script itself. This ensures that tokens minted under different policies are easily distinguishable, even if they have the same name or other various attributes. Once a native asset is minted, it is inextricably linked to its corresponding policy ID. This connection is crucial for tracking the origin and legitimacy of tokens on Cardano.
+
+So for this query, from the policy ID `d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc`, we will fetch:
+
+- The total number of assets in the collection.
+- The number of transactions involving assets from the collection within the last 24 hours.
+
+ 
+```sql
+SELECT 
+		ma."policy" AS collection_policy,
+		count(*) AS number_of_assets,
+		(SELECT 
+			count(DISTINCT tx.id) AS transaction_count_24h
+			FROM tx
+			JOIN block b ON b.id = tx.block_id 
+			JOIN tx_out to2 ON to2.tx_id = tx.id 
+			JOIN ma_tx_out mto ON to2.id = mto.tx_out_id
+			JOIN multi_asset ma ON mto.ident = ma.id
+		WHERE
+			ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+			    AND b."time" > (now() at time zone 'utc') - INTERVAL '24 hours'
+			) AS number_of_tx_in_24h
+		FROM 
+		        multi_asset ma
+		WHERE 
+		        ma.policy = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+		GROUP BY ma."policy"
+```
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+collection_policy                                        | number_of_assets | number_of_tx_in_24h
+---------------------------------------------------------+------------------+----------------------
+d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc |    10,000        | 75 
+             
+```
+
+</details>
+
+🔎 Let's take a closer look at each part of the query. 
+
+`FROM multi_asset ma` specifies that the query will be looking at the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, which stores information about assets on the Cardano blockchain.
+`WHERE ma.policy = '...'` This filters the results to only include assets that belong to the collection identified by the policy ID we provided.
+`GROUP BY ma."policy"`  groups the results by the policy ID, ensuring that we get a single row summarizing the information for the entire collection.
+
+Within the `SELECT` clause, `ma."policy" AS collection_policy` selects the policy ID of the collection and labels it as collection_policy. `count(*) AS number_of_assets`counts the number of rows (i.e., assets) in the filtered result set and labels it as `number_of_assets`.
+
+The subquery is used to calculate the number of transactions involving assets from this collection within the last 24 hours.
+`FROM tx JOIN block b ON b.id = tx.block_id JOIN tx_out to2 ON to2.tx_id = tx.id JOIN ma_tx_out mto ON to2.id = mto.tx_out_id JOIN multi_asset ma ON mto.ident = ma.id` joins several tables to link transactions ([tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx)), blocks ([block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block)), transaction outputs ([tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out)), and multi-asset information ([multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset)) together.
+
+The `WHERE ma.policy = '...' AND b."time" > (now() at time zone 'utc') - INTERVAL '1 days'` clause filters the results to only include transactions involving assets from the specified collection that occurred within the last 24 hours.
+`SELECT count(DISTINCT tx.id) AS transaction_count_24h` counts the number of distinct transaction IDs in the filtered result set and labels it as `transaction_count_24h`.
+
+
+
+### 2.2 Asset details
+
+This next query lists all assets/NFTs belonging to the Spacebudz collection with their respective:
+- asset name 
+- encoded name
+- Asset ID
+- minting (creation) date
+
+```sql
+SELECT
+		ma.name_view AS asset_name,
+		encode(ma.name, 'hex') AS encoded_name,
+		ma.fingerprint AS Asset_ID,
+		ma."time" AS creation_date
+	FROM multi_asset ma 
+	WHERE ma."policy" = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'
+```
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+asset_name   |  encoded_name             |  asset_id                                     | creation_date
+-------------+---------------------------+-----------------------------------------------+-------------------------
+SpaceBud9007 | 	537061636542756439303037 | asset1qqcka5xwrzx40t7gaf2l4qd0k8latxqpkpq28h  | 2021-03-24 01:18:08.000
+SpaceBud5511 | 	537061636542756435353131 | asset1x0pkcc6vf2v5ezhhj4hd9mls3pwwufvxy66rwp  | 2021-03-24 01:22:10.000
+  ....       | 	....                     | 	......                                   | 	...
+
+(Note: results trimmed for readability)             
+```
+
+</details>
+
+🔎 Let's take a closer look at each part of the query. 
+
+`FROM multi_asset ma` indicates that the query is targeting the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, which stores information about assets (including NFTs) on Cardano. `WHERE ma."policy" = 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc'` filters the results to only include assets that belong to the specific collection (Policy ID) we are interested in.
+
+`SELECT:
+ma.name_view AS asset_name` retrieves the human-readable name of the asset and labels it as `asset_name`.
+
+`encode(ma.name, 'hex') AS encoded_name` takes the raw asset name data `ma.name`, encodes it into a hexadecimal string representation, and labels it as `encoded_name`. `ma.fingerprint AS Asset_ID` selects the unique fingerprint (identifier) of the asset and labels it as `Asset_ID`. 
+
+`ma."time" AS creation_date` retrieves the timestamp when the asset was created and labels it as `creation_date`.
+
+### 2.3 Querying a specific NFT
+
+Our last query fetches the following data about a specific NFT:
+- asset name 
+- encoded name
+- asset metadata 
+- owner (wallet address)
+- mint date
+
+```sql
+
+SELECT 
+	ma.name_view AS asset_name,
+	encode(ma.name, 'hex') AS encoded_name,
+	(SELECT tm.json FROM tx
+               JOIN ma_tx_mint mtm ON mtm.tx_id = tx.id 
+               JOIN tx_metadata tm ON tm.tx_id = tx.id
+               JOIN multi_asset ma ON ma.id = mtm.ident
+               WHERE ma.fingerprint = 'asset14y0ky8jeh009wcmyxcfnfakpgkuq0jcr8d5nxr' 
+               		AND tm.key = 721
+               ORDER BY mtm.id DESC LIMIT 1) AS asset_metatdata,
+    tx_out.address AS owner_address,
+    ma."time" AS mint_date
+FROM 
+    ma_tx_out mto
+JOIN 
+    multi_asset ma ON mto.ident = ma.id
+JOIN 
+    tx_out ON mto.tx_out_id = tx_out.id
+LEFT JOIN 
+    tx_in ti ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out.INDEX
+LEFT JOIN 
+	tx_metadata tm ON tm.tx_id = tx_out.tx_id
+WHERE 
+    ma.fingerprint = 'asset14y0ky8jeh009wcmyxcfnfakpgkuq0jcr8d5nxr'
+    AND ti.tx_out_id IS NULL
+
+```
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+asset_name   |  encoded_name             |  asset_metadata                               | owner_address	
+-------------+---------------------------+-----------------------------------------------+-------------------------
+SpaceBud964  | 	5370616365427564393634   | 	{"d5e6bf0500378d4f0da4e8dde6be.....  }   | 2021-03-24 01:18:08.000
+
+
+(Note: results trimmed for readability)             
+```
+</details>
+
+🔎 Let's take a closer look at each part of the query. 
+
+The results returned include:
+
+- **Asset Name**, ie. the human-readable name of the asset `ma.name_view`.
+- **Encoded Name**... a hexadecimal representation of the asset's name `encode(ma.name, 'hex')`.
+- **Metadata** associated with the asset, specifically looking for key `721` which is often used for NFT metadata `tm.json`. It selects the most recent metadata entry.
+- **Owner Address**, the current address holding this asset `tx_out.address`.
+- **Mint Date**, ie. the date and time when the asset was created `ma."time"`.
+
+
+`FROM ma_tx_out mto` starts by looking at the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, which tracks the association between native assets (tokens/NFTs) and transaction outputs.
+
+`JOIN multi_asset ma ON mto.ident = ma.id` joins with the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table to get details about the asset itself, like its name and creation time.
+
+`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get information about the transaction output where this asset currently resides, including the owner's address.
+
+`LEFT JOIN tx_in ti ON ...` attempts to join with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to find any transaction inputs that spend this specific transaction output.
+`LEFT JOIN tx_metadata tm ON tm.tx_id = tx_out.tx_id` optionally joins with the [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata) table to fetch any metadata associated with the transaction that created the output holding the asset.
+
+`WHERE ma.fingerprint = '...' AND ti.tx_out_id IS NULL` filters results to only include the asset with the specified fingerprint. The `ti.tx_out_id IS NULL` condition ensures that we only select the transaction output where the asset currently resides (i.e. it hasn't been spent in another transaction).
+
+The subquery within the `SELECT` clause fetches the metadata associated with the asset's minting transaction

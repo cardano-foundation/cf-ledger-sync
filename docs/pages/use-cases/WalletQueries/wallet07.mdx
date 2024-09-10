@@ -1,0 +1,162 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 7. Query Active Stake Pools
+
+[Staking](https://cardano.org/stake-pool-delegation/) is a big part of the Cardano ecosystem. To get started, the first step is to identify the active stake pools. Our next SQL query retrieves information about Cardano staking pools, focusing on the pool's ID, name, pool hash, ticker symbols, number of lifetime blocks and creation date. 🔎 Let's take a look at the query which gathers information about these Pools:
+
+```sql
+SELECT ph.id,
+    po.pool_name as pool_name,
+    po.ticker_name as pool_ticker,
+    pu.margin as margin,
+    ltb.lifetime_blocks as lifetime_blocks
+FROM
+    pool_hash ph
+LEFT JOIN pool_offline_data po ON
+    ph.id = po.pool_id
+    AND (po.id IS NULL
+        OR po.id = (SELECT MAX(po2.id)
+                    FROM pool_offline_data po2
+                    WHERE po2.pool_id = ph.id))
+LEFT JOIN pool_update pu ON
+    ph.id = pu.hash_id
+    AND pu.id = (SELECT MAX(pu2.id)
+                 FROM pool_update pu2
+                 WHERE pu2.hash_id = ph.id)
+LEFT JOIN (
+    SELECT ph.id AS poolId, COUNT(bk.id) AS lifetime_blocks
+    FROM pool_hash ph
+    JOIN slot_leader sl ON sl.pool_hash_id = ph.id
+    JOIN block bk ON bk.slot_leader_id = sl.id
+    GROUP BY ph.id
+) AS ltb ON ltb.poolId = ph.id;
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     id   |      pool_name	      |  pool_ticker |      creation_date 
+----------+---------------------------+--------------+-------------------------- 
+     4    |      ANGEL stake pool     |     ANGEL    |  2022-10-20 21:21:59.000
+     .    |      ................     |     .....    |  .................
+           
+(Note: full results trimmed for readability)
+```
+
+</details>
+
+
+🔎 Here's a breakdown of what the query does:
+
+<Steps>
+### Select Specific Columns
+
+In order to gather information about staking pools, the query focuses on:
+
+- Pool ID `ph.id`, the unique identifier for each staking pool.
+- Pool Name `pool_name`, the human-readable name of the pool.
+- Ticker `pool_ticker`, an abbreviation of the pool.
+- Margin `margin`, the percentage of rewards the pool operator keeps as a fee.
+- Lifetime Blocks `lifetime_blocks`, the total number of blocks this pool has successfully minted throughout its existence.
+
+### Tables Involved
+
+The query traverses several tables (aliases are in brackets):
+
+- [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) (ph) stores the unique hash identifiers for each pool.
+- [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) (po) contains additional information about the pool, such as its name and ticker.
+- [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) (pu) tracks updates to pool parameters, including the margin.
+- [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) (sl) records which pool was the leader for each slot.
+- [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) (bk) stores data about each block produced on the blockchain.
+
+### Main Query (SELECT...FROM)
+
+The query selects the desired columns from the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table.
+
+### LEFT JOIN with pool_offline_data
+
+- This join adds information from the [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) table.
+- The `ON` condition ensures it only joins the most recent entry for each pool (if any exist).
+- The `OR po.id IS NULL` handles the case where a pool doesn't have any offline data.
+
+### LEFT JOIN with pool_update
+
+- This join adds information from the [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) table.
+- The `ON` condition ensures it only joins the most recent update for each pool (if any exist).
+
+### Subquery (ltb)
+
+- This nested query calculates the `lifetime_blocks` for each pool.
+- It joins [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash), [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader), and [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) tables to track which blocks were minted by each pool.
+- It groups the results by `pool_hash.id` and counts the number of blocks.
+
+### LEFT JOIN with Subquery (ltb)
+
+The main query joins with the `ltb` subquery to include the calculated `lifetime_blocks` for each pool.
+
+### Summary 
+
+- LEFT JOINs ensure that all pool hashes are included in the results, even if they don't have corresponding data in the [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) or [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) tables.
+- The nested subquery is essential for calculating the `lifetime_blocks` metric, which requires aggregating data across multiple tables.
+- MAX(id) conditions in the `ON` clauses are used to select only the most recent entries from the [[pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) and [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) tables for each pool.
+
+</Steps>
+
+### 7.2 List Active Stake Pools
+
+In this addtional query, we include a `WHERE` condition to remove the retired pools:
+
+```sql
+select ph.id ,
+		COALESCE(po.pool_name, ph."view") as pool_name,
+		po.ticker_name as pool_ticker,
+		b."time" AS creation_date,
+		ROW_NUMBER() OVER (ORDER BY ph.id ASC) 
+	FROM
+		pool_hash ph
+	LEFT JOIN pool_offline_data po on
+		ph.id = po.pool_id
+		and (po.id is null
+			or po.id = (SELECT max(po2.id)
+						FROM pool_offline_data po2
+						WHERE po2.pool_id = ph.id))
+	LEFT JOIN pool_update pu on
+		ph.id = pu.hash_id
+		and pu.id = (SELECT	min(pu2.id)
+						FROM pool_update pu2
+						WHERE pu2.hash_id = ph.id)
+	LEFT JOIN tx ON tx.id = pu.registered_tx_id 
+	LEFT JOIN block b ON tx.block_id = b.id 
+	WHERE ph.id NOT IN (SELECT pr.hash_id
+				FROM pool_retire pr
+			        LEFT JOIN pool_update pu on	pr.hash_id = pu.hash_id
+			        LEFT JOIN pool_hash ph ON ph.id = pr.hash_id
+			        GROUP BY pr.hash_id, pu.cert_index, pr.cert_index
+			        HAVING (max(pu.registered_tx_id) < max(pr.announced_tx_id))
+				OR ((max(pu.registered_tx_id) = max(pr.announced_tx_id)) AND (max(pu.cert_index) < max(pr.cert_index)))
+				    	)
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     id   |      pool_name	      |  pool_ticker |      creation_date 
+----------+---------------------------+--------------+-------------------------- 
+     5    |      CanadaStakes         |     CAN1     |  2022-10-20 21:30:58.000
+     6    |      SION stake pool      |     SION     |  2022-10-20 21:35:52.000
+     .    |      ................     |     .....    |  .................
+           
+(Note: full results trimmed for readability)
+```
+
+</details>
+
+The next query will provide users with detailed information about specific stake pools. This will help them make informed decisions when selecting a specific pool to delegate their ADA. 

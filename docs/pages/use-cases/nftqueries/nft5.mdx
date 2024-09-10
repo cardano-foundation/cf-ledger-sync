@@ -1,0 +1,142 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 5. Selling an NFT
+
+Selling, or listing, an NFT on a marketplace (often referred to as creating an "ask", where you offer assets in exchange for ADA) involves utilizing smart contracts. These contracts facilitate secure agreements between parties who may not necessarily trust each other.
+
+For this exercise, we'll assume you're already familiar with the concept of smart contracts and understand how they operate. If not, consider reviewing resources such as the [Cardano Developer Portal](https://developers.cardano.org/docs/smart-contracts/) and the Aiken [EUTxO crash course](https://aiken-lang.org/fundamentals/eutxo) to name but a few. 
+
+The first step in listing an NFT for sale is to create the necessary smart contracts. An example of such a contract can be found in the GitHub repositories of [JPG.Store](https://github.com/jpg-store/).
+
+In our example, we will use the smart contract components for the following information: 
+
+- **Datum**: Contains information such as the owner's public key hash (pkh), the assets being sold, and payout details (e.g., asset cost, artist royalties, marketplace service fees).
+
+- **Redeemer**: Specifies what actions a user can take with the locked asset, such as “listing”,  “buying or accept“, “canceling”, or “update listing”.
+
+- **Validator**: It ensures that the signer is the rightful owner, that payouts are correctly configured, and that the appropriate redeemer tag is present so transaction can be successfully processed.
+
+These are on-chain components, where datum and redeemer information are stored  in the Ledger Sync database in CBOR and JSON format in the following tables: [datum](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#datum), [redeemer_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#redeemer_data), and also  referenced on [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) and [failed_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#failed_tx_out). 
+
+<Callout type="info" emoji="ℹ️">
+Note: In case if you would like to decode the Datum, you can use [Datum Inspector - Cardanoscan](https://cardanoscan.io/datumInspector)
+</Callout>
+
+Before proceeding, ensure that you have created the script address for user to interact with the smart contract. 
+
+At this stage, you probably have already implemented wallet connection functionality (e.g., via [CIP-30](https://cips.cardano.org/cip/CIP-30) or in another way), allowing your application to interact with users' wallets. 
+
+On the Marketplace application, when a user clicks on "Sell", the application backend will build a transaction that matches the requirements of the smart contract. This includes:
+
+1. Setting the datum with details like the owner of the public key hash, the asset being sold, and all required payouts: asset cost, royalties for the artist, and marketplace service fees. This information is necessary to lock the NFT in the smart contract address, making sure that all requirements are met (based on the smart contract created).
+
+2. Including the redeemer code, in our example “listing” 
+
+3. Providing the necessary transaction UTXOs and address inputs and outputs.
+
+To successfully build the transaction, you'll need the following data, typically stored in the Ledger Sync database:
+
+- **Protocol Parameters**: Define blockchain settings necessary for calculating transaction fees and other critical parameters.
+- **UTXOs**: The Unspent Transaction Outputs associated with the wallet that will fund the transaction.
+- **Slot/Block Tip**: The current slot or block tip to ensure the transaction is valid within the blockchain context.
+
+Once the required data is gathered, the transaction can be built, signed through the user's wallet, and submitted on-chain. After submission, the validator (code running on-chain) will confirm that all conditions are met, and if so, the NFT will be transferred and locked at the smart contract address. 
+
+Then, to view assets currently for sale on your marketplace, simply query the smart contract address created for the marketplace.
+
+For example, you can check all assets on listings on the JPG.Store marketplace by visiting [this address](https://cardanoscan.io/address/addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx) on a Cardano Explorer. 
+
+**Sources:**
+
+- [JPG.Store Contract V2](https://github.com/jpg-store/contract-v2)
+- [JPG.Store Contract V3](https://github.com/jpg-store/contracts-v3/blob/main/validators/ask.ak)
+- [JPG.Store Next-Gen Smart Contract Update](https://medium.com/@jpgstorenft/unveiling-the-next-gen-smart-contract-update-for-jpg-store-2f883c913979)
+
+In previous queries, we've already retrieved:
+- Protocol parameters 
+- UTXOs associated to the address below 
+- Chain Tip 
+
+Now we will retrieve all assets locked on a contract address and their respective: 
+
+- Asset Name
+- Asset policy ID
+- Asset Fingerprint
+- Amount
+
+We will query this address `addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx`
+
+```sql
+SELECT
+		    ma.policy AS policy,
+		    ma.name AS name,
+		    ma.fingerprint AS fingerprint,
+		    sum(mto.quantity) AS quantity
+		FROM
+		    ma_tx_out mto
+		JOIN multi_asset ma 
+			ON ma.id = mto.ident 
+		JOIN tx_out 
+			ON mto.tx_out_id = tx_out.id
+		LEFT JOIN tx_in ti 
+			ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"
+		WHERE
+		    tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx'
+		    AND ti.tx_out_id is null
+		GROUP BY ma.policy, ma.name, ma.fingerprint
+		ORDER BY quantity DESC
+		LIMIT 10
+```
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+policy	    			                         | name                     | fingerprint    		                   | quantity
+---------------------------------------------------------+--------------------------+----------------------------------------------+--------------
+64c11b97a1bc395f5cd3a6f2f594292510ae483af77151d1d6136edc | 	SNEKWRANGLER 	    | asset13vuukdg8klkf6px6zt6jq2rqzs0l3gyvjyzhql | 4,500,000,000
+52225d8259c95ec7d1727c8a591398846718eaa8fae533a1b8d2b9d6 | 	EL		    | asset1flkp5ddlknrdakpw72hmxwkkp0qkfuhlzzn5gw | 1,000,000,000
+1da3b63de574c7a103de734d8b1215b5ff5e3863d9fdecff8e09810c | 	FAM	            | asset1rs7t52lrfxrpz9p8f8egtwdlx4d33mqk62pyuu | 439,678,272
+ad5281e310da442d8d00ef3f7809cd0a1c035cf5039c0d90f236b7bc | 	FAM   		    | asset1x77jxgfrnn00650gsdtxpuea3k2a6xslaf6key | 439,000,000
+daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | 	CRAZYMARY	    | asset1uxza25kph43w2w6mstuspzmy47rvu4ks898q72 | 250,000,000
+577f0b1342f8f8f4aed3388b80a8535812950c7a892495c0ecdf0f1e | \u0000\u0014�\u0010FLDT  | asset1gayaljphz3tepway6u6ruuty9cee2pj7wch408 | 180,000,000
+05e1f8298560c85f03248a7b3e5322f12e27e4cdc1378a4f3bc51083 | 	ReebokaHoskinson    | asset18efh7djgsyat7m8j43etsusxhkv94940adss5k | 150,000,000
+efa0e694d5915f52b00a0d01135efdb85a0bdde7009bbcf68ea12a3d | 	TV	            | asset1lr06zsp4qzxv2emchq2j2mfwhqxzgtmxywrrvn | 50,000,000
+e79497f972acb83461608d3f48281a406ee1e9f64ed168868145141e | 	StakePool247        | asset1946tqd3qe3hq3mxtzg4gkxqupnys0v9tr8v0zt | 25,000,000
+15452b831185cdc3a18d27fea3fd30c9f765349352e523725c02b8f0 | 	SWS		    | asset1968r7exh3296rls9axexyhqu3lk2c23mn5zjhz | 16,900,000
+           
+```
+</details>
+
+<Callout type="info" emoji="ℹ️">
+Note that some results may display differently in some explorers compared to Ledger Sync results. This is because the 'decimal' parameter of each token may be set differently so a query may return the full data without dividing by decimal, while others divide by a decimal. This parameter is stored in the metadata registry. For the Ledger Sync database, the parameter is set to display the full data.
+</Callout>
+
+
+🔎 Looking closer, this query retrieves the top 10 native assets held by our specific address.
+
+`SELECT ma.policy, ma.name, ma.fingerprint, sum(mto.quantity) AS quantity` specifies the columns to be retrieved:
+- `ma.policy` is the policy ID associated with the asset.
+- `ma.name` is the name of the asset.
+- `ma.fingerprint` is the unique fingerprint of the asset.
+- `sum(mto.quantity) AS quantity` calculates the total quantity of each asset held by the address.
+
+`FROM ma_tx_out mto` selects data from the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table, which stores information about asset transaction outputs.
+
+`JOIN multi_asset ma ON ma.id = mto.ident` joins the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table with the multi_asset table based on matching `id` and `ident` values. This links the transaction output information with the details of the asset itself.
+
+`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins the result with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get the transaction output details associated with the asset outputs.
+
+`LEFT JOIN tx_in ti ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"` performs a left join with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to identify which transaction outputs have been spent (used as inputs in other transactions).
+
+`WHERE tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx' AND ti.tx_out_id is null` filters the results to only include:
+- Transaction outputs belonging to the specified  address.
+- Transaction outputs that have not been spent (i.e., `ti.tx_out_id` is null). This ensures we're only looking at the unspent assets (the ones the address currently holds).
+
+`GROUP BY ma.policy, ma.name, ma.fingerprint` groups the results by the policy, name, and fingerprint of the asset, allowing us to calculate the total quantity of each unique asset held.
+
+`ORDER BY quantity DESC` sorts the results in descending order based on the calculated quantity. This puts the assets with the highest quantities at the top.
+
+`LIMIT 10` limits the output to the top 10 results.

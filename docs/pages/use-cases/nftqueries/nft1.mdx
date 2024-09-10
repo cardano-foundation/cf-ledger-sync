@@ -1,0 +1,76 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 1. View Collections
+
+NFT stands for non-fungible token. It is intended to be a unique token as in one and only one ever will be minted and no other token is then comparably equivalent to it. For this first query, we aim to find mint transactions with the label 721 in the metadata of the token. The 721 tag refers to the original standard for NFTs on Cardano as defined in [CIP-25](https://cips.cardano.org/cip/CIP-25).
+
+Our query will return NFTs (label 721) collections in Cardano with their respective:
+
+- asset collection name,
+- policy ID
+- total supply
+- creation date
+
+<Callout type="info" emoji="ℹ️">
+Remember you can also query the blockchain for this data using an explorer such as [cexplorer](https://cexplorer.io/collection)
+
+</Callout>
+
+
+```sql
+SELECT
+	ma."policy" AS policy_id,
+	min(ma.time) AS creation_time,
+	sum(mtm.quantity)  AS total_supply
+FROM 
+   	multi_asset ma
+LEFT JOIN 
+    	ma_tx_mint mtm ON ma.id = mtm.ident
+LEFT JOIN 
+	(SELECT tm.tx_id AS txid FROM tx_metadata tm 
+		WHERE tm."key" = 721
+		) AS tm ON tm.txid = mtm.tx_id
+GROUP BY ma."policy"
+LIMIT 200
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+policy_id                                                | creation_time             | total_supply		
+---------------------------------------------------------+---------------------------+-------------
+00000002df633853f6a47465c9496721d2d5b1291b8398016c0e87ae | 2021-03-01 21:47:37.000   | 1
+0000002c60240315c2371636214cf686e08a391742bff8f8b8ed56be | 2023-06-22 00:28:48.000   | 2
+000000adf8fcbdf03a5c154123aff674edf287fb13532a343b617fb2 | 2021-06-25 01:20:11.000   | 1
+000006126365b110b339bd39c5b5c0fc89eb146cc186ba8c90a3c9ca | 2021-07-22 00:00:26.000   | 48
+000020225c7dbf1e33be4961727348c002f0ffaf115e538f54201986 | 2022-04-04 21:22:31.000   | 21
+        ....                                             |  ....                     | ....
+
+(Note: results trimmed for readability) 
+             
+```
+
+</details>
+
+🔎 Let's take a closer look at each part of the query. 
+
+We are looking (SELECT'ing) from the following tables:
+
+[multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) (ma): This table stores information about all the different tokens or assets on Cardano. Each asset is uniquely identified by a combination of policy (the policy ID under which the asset was minted) and id (a unique identifier within that policy).
+
+[ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint) (mtm): This table tracks the minting (creation) transactions of assets. It links to the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table using `ident`, and also stores information about the quantity minted in each transaction.
+
+[tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata) (tm): This table holds additional metadata associated with transactions, and for this query, we are filtering on metadata with the key '721'.
+
+`LEFT JOIN ma_tx_mint ON ...` joins the asset information ([multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset)) with its minting transactions ([ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint)). The `LEFT JOIN` ensures that even assets that have not been minted are included in the result, but their `total_supply` will be `NULL`.
+
+`LEFT JOIN (SELECT ... FROM tx_metadata) AS tm ON ...` is a subquery that filters `tx_metadata` to only include rows where the metadata key is `721`.  The result of this subquery is then joined with the previous result, effectively filtering out assets that are not associated with transactions containing this specific metadata.
+
+`GROUP BY ma."policy"` groups the results by the policy (policy ID), meaning it will calculate the total_supply and find the earliest creation_time for each unique policy.
+
+The `SELECT ...` clause selects the `policy_id`, the earliest `creation_time` for that policy, and the `total_supply` (sum of quantities minted across all transactions for that policy).
+
+`LIMIT 200` limits the output to the first 200 policies.

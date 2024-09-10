@@ -1,0 +1,200 @@
+import { Callout, Code, Tabs, Steps } from "nextra/components"
+
+## 4. Minting an NFT
+
+For this query, we assume that the user and backend server have already generated the policyId, policy script, and the metadata necessary for minting NFTs, following [CIP-25](https://cips.cardano.org/cip/CIP-25) and [CIP-68](https://cips.cardano.org/cip/CIP-68) standards. In this example, we will focus on CIP-25. 
+
+<Callout type="info" emoji="ℹ️">
+Example of how to create a CIP-68 NFT can be found on GitHub, see [Nicholas Maselli's CIP-68 Showcase](https://github.com/NicholasMaselli/CIP-68Showcase)
+</Callout>
+ 
+Before proceeding, it’s important to understand the requirements for minting an NFT. Although the overall steps are documented on the [Cardano Developer Portal](https://developers.cardano.org/docs/native-tokens/minting-nfts/), it’s crucial to note that many of these steps are performed off-chain, typically by the application backend.
+
+To successfully mint an NFT, the backend must query specific data from the database to construct the transaction. 
+
+The required data includes:
+
+- Protocol Parameters: These define various blockchain settings necessary for calculating transaction fees and other parameters.
+
+- UTXOs: The Unspent Transaction Outputs associated with the wallet that will fund the minting transaction.
+
+- Slot/Block Tip: The current slot or block tip to ensure the transaction is valid within the blockchain context.
+
+### 4.1 Protocol parameters
+
+```sql
+        SELECT 
+		    ep.epoch_no AS epoch,
+		    ep.min_fee_a,
+		    ep.min_fee_b,
+		    ep.max_block_size,
+		    ep.max_tx_size,
+		    ep.max_bh_size as max_block_header_size,
+		    ep.key_deposit,
+		    ep.pool_deposit,
+		    ep.max_epoch as e_max,
+		    ep.optimal_pool_count as n_opt,
+		    ep.influence as a0,
+		    ep.monetary_expand_rate as rho,
+		    ep.treasury_growth_rate as tau,
+		    ep.decentralisation as decentralisation_param,
+		    ep.extra_entropy,
+		    ep.protocol_major AS protocol_major_ver,
+		    ep.protocol_minor AS protocol_minor_ver,
+		    ep.min_utxo_value AS min_utxo,
+		    ep.min_pool_cost,
+		    ep.nonce,
+		    cm.costs AS cost_models,
+		    ep.price_mem,
+		    ep.price_step,
+		    ep.max_tx_ex_mem,
+		    ep.max_tx_ex_steps,
+		    ep.max_block_ex_mem,
+		    ep.max_block_ex_steps,
+		    ep.max_val_size,
+		    ep.collateral_percent,
+		    ep.max_collateral_inputs,
+		    ep.coins_per_utxo_size,
+		  	ep.coins_per_utxo_size as coins_per_utxo_word
+		FROM 
+		    epoch_param ep
+		LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id
+		ORDER BY epoch_no DESC
+		LIMIT 1
+
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+epoch | min_fee_a | min_fee_b | max_block_size | max_tx_size | max_block_header_size | key_deposit | .....
+------+-----------+-----------+----------------+-------------+-----------------------+-------------+------
+505   | 44        | 155,381   | 90,112	       | 16,384	     | 1,100	             | 2,000,000   | ....
+
+(Note: results trimmed for readability)             
+```
+</details>
+
+🔎 Looking a little closer, this query reads data from database, without modifying the blockchain itself. It retrieves information about the protocol parameters for the most recent epoch.
+
+`SELECT` lists the specific columns to retrieve from the database tables.
+
+`FROM epoch_param ep` specifies the main table to query, [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param).
+
+`LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id` joins data from the [cost_model](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#cost_model) table based on matching id values.
+`ORDER BY epoch_no DESC` sorts the results by `epoch_no` in descending order, ie. most recent epoch first.
+`LIMIT 1` restricts the output to only the first row, ie. the most recent epoch's data.
+
+### 4.2 UTXOs associated with specific address 
+
+Let's use address `addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9` as an example for this query.
+
+```sql
+        SELECT 
+			tx.hash AS txhash,
+			to2."index" AS tx_out_index,
+			to2.value AS value,
+			to2.address 
+		FROM tx_out to2 
+		LEFT JOIN tx_in ti ON ti.tx_out_id = to2.tx_id AND ti.tx_out_index = to2."index"
+		JOIN tx ON tx.id = to2.tx_id 
+		WHERE 
+			ti.id IS NULL
+			AND to2.address = 'addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9'
+
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+txhash	 	|  tx_out_index |  value      | address      
+----------------+---------------+-------------+----------------------
+8cab5...f367073 | 	2 	| 6,058,505   | addr1qyv...vgsyxh7q9
+8cab5...f367073 | 	0	|   1,159,390 | addr1qyv...vgsyxh7q9
+5ab5b...d7ba36 	| 	2	|   3,062,150 | addr1qyv...vgsyxh7q9
+5ab5b...d7ba36  | 	1	|   1,159,390 | addr1qyv...vgsyxh7q9
+
+
+(Note: results trimmed for readability)             
+```
+</details>
+
+🔎 Looking a little closer, this query returns all unspent transaction outputs (UTXOs) associated with provided address.
+
+`FROM tx_out to2` starts by selecting all transaction outputs from the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table and assigns them the alias `to2`.
+`LEFT JOIN tx_in ti ON ti.tx_out_id = to2.tx_id AND ti.tx_out_index = to2."index"` performs a `LEFT JOIN` with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table which stores transaction inputs.
+
+The join condition matches `tx_out_id` and `tx_out_index` from [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) to the corresponding `tx_id` and index from [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out).
+
+A `LEFT JOIN` ensures that all rows from [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) are included, even if there's no matching row in [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in).
+
+`JOIN tx ON tx.id = to2.tx_id` performs an `INNER JOIN` with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table, which stores transactions.
+
+This connects each transaction output `to2` to its corresponding transaction `tx` based on the `tx_id`.
+
+`WHERE ti.id IS NULL` is the crucial part for identifying unspent outputs. It filters the results to only include rows where there's NO matching entry in [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in). In other words, these are outputs that haven't been used as inputs in any other transaction yet, hence they are "unspent".
+
+`AND to2.address = 'addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9'` further filters the results to only show UTXOs belonging to our specific address.
+
+`SELECT tx.hash AS txhash, to2."index" AS tx_out_index, to2.value AS value, to2.address` selects the following columns from the filtered results:
+- `tx.hash` ..the transaction hash where the UTXO was created.
+- `to2."index"` ...the index of the UTXO within the transaction.
+- `to2.value` ...the ADA value (or other asset values) associated with the UTXO.
+- `to2.address` ...the address that owns the UTXO
+
+### 4.3 Chain Tip 
+
+```sql
+
+        SELECT
+		    block.slot_no,
+		    block.block_no,
+		    block.epoch_no,
+		    block.time
+		FROM
+		    block
+		WHERE block.slot_no IS NOT NULL
+		ORDER BY
+		    block.slot_no DESC
+		LIMIT 1;
+
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+slot_no	    | block_no	 | epoch_no | time
+------------+------------+----------+------------------------
+132,711,492 | 10,734,560 |   504    | 2024-08-21 22:03:03.000
+           
+```
+</details>
+
+🔎 Zooming in, this query retrieves information about the chain-tip. In other words, we are looking for the identifier of the most recently processed block on the network.
+
+`SELECT block.slot_no, block.block_no, block.epoch_no, block.time` specifies which columns we want to retrieve from the database. It is looking for:
+
+- `block.slot_no` ...the slot number in which the block was created.
+- `block.block_no` ...the block number within its epoch.
+- `block.epoch_no` ...the epoch number in which the block was created.
+- `block.time` ...the timestamp when the block was created.
+
+`FROM block` ...this tells the database that we want to get this information from a table called `block`.
+
+`WHERE block.slot_no IS NOT NULL` is a filter ensuring that we only get rows (blocks) where the `slot_no` is not empty or null.
+
+`ORDER BY block.slot_no DESC` sorts the results in descending order based on the `slot_no`. This means the block with the highest slot number (the most recent one) will be at the top.
+
+`LIMIT 1` limits the output to only one row. Combined with the sorting, this ensures we only get the most recent block.
