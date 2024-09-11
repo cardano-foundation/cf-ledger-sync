@@ -7,7 +7,9 @@
   "applications": {
     "title": "Applications"
   },
-  "use-cases": "Use Cases",
+  "use-cases":{
+    "title": " "Use Cases"
+  },
   "about": {
     "title": "About",
     "type": "page"
