@@ -8,6 +8,7 @@ The goal of this query is to identify all Unspent Transaction Outputs (UTXOs) as
 SELECT
 	tx.hash AS tx_hash,
 	txo."index" AS tx_out_index,
+	txo.value AS value,
 	d.hash AS datum_hash,
 	s.hash AS script_hash
 FROM tx_out txo
@@ -52,6 +53,7 @@ It's important to understand how UTxOs are referenced on Cardano. As shown below
 Specifically, we are looking for:
 - `tx.hash` The unique id (hash) of the transaction.
 - `txo."index"` The index (position) of the UTXO within the transaction.
+- `txo.value` selects the value associated with the transaction output, ie. the amount of ADA and any tokens held in that output.
 - `d.hash` The hash of any associated datum (think of this as optional additional data attached to the UTXO).
 - `s.hash` (Optional) The hash of any associated script (an optional script detailing the conditions for spending the UTXO).
 
