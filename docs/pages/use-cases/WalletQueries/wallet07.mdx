@@ -71,30 +71,30 @@ The query gathers the following data to include in the results:
 
 The query traverses several tables (aliases are in brackets):
 
-- [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) (ph) stores the unique hash identifiers for each pool.
-- [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) (po) contains additional information about the pool, such as its name and ticker.
-- [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) (pu) tracks updates or changes made to stake pools. It's joined to find the initial registration transaction of a pool `pu.registered_tx_id`.
-- [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) stores transaction data. 
-- [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) (b) stores information about blocks, including their timestamps `b.time`, which are used to determine the pool's creation date.
+- [pool_hash](/../../schema.md#pool_hash) (ph) stores the unique hash identifiers for each pool.
+- [pool_offline_data](/../../schema.md#pool_offline_data) (po) contains additional information about the pool, such as its name and ticker.
+- [pool_update](/../../schema.md#pool_update) (pu) tracks updates or changes made to stake pools. It's joined to find the initial registration transaction of a pool `pu.registered_tx_id`.
+- [tx](/../../schema.md#tx) stores transaction data. 
+- [block](/../../schema.md#block) (b) stores information about blocks, including their timestamps `b.time`, which are used to determine the pool's creation date.
 
 ### Query Explained
 
-`FROM pool_hash ph` selects all rows from the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table.
+`FROM pool_hash ph` selects all rows from the [pool_hash](/../../schema.md#pool_hash) table.
 
-`LEFT JOIN pool_offline_data po on ph.id = po.pool_id and ...` performs a `LEFT JOIN` with [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) to get the pool's name and ticker. The `ON` clause ensures we get the most recent metadata for each pool:
+`LEFT JOIN pool_offline_data po on ph.id = po.pool_id and ...` performs a `LEFT JOIN` with [pool_offline_data](/../../schema.md#pool_offline_data) to get the pool's name and ticker. The `ON` clause ensures we get the most recent metadata for each pool:
  - `ph.id = po.pool_id` matches rows based on the pool ID.
- - `(po.id is null or po.id = (SELECT max(po2.id) ...))` is a subquery which selects the maximum `id` from [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) for the same `pool_id`.
+ - `(po.id is null or po.id = (SELECT max(po2.id) ...))` is a subquery which selects the maximum `id` from [pool_offline_data](/../../schema.md#pool_offline_data) for the same `pool_id`.
 The `OR` condition ensures that if there's no metadata for a pool, it's still included in the result (because of the 
 `LEFT JOIN`), but if there is metadata, the latest one is included.
 
-`LEFT JOIN pool_update pu on ph.id = pu.hash_id and ...` performs another `LEFT JOIN` with [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) to get the pool's registration transaction ID. Again, the `ON` clause ensures we get the earliest update for each pool:
+`LEFT JOIN pool_update pu on ph.id = pu.hash_id and ...` performs another `LEFT JOIN` with [pool_update](/../../schema.md#pool_update) to get the pool's registration transaction ID. Again, the `ON` clause ensures we get the earliest update for each pool:
  - `ph.id = pu.hash_id` matches rows based on the pool ID.
- - `pu.id = (SELECT min(pu2.id) ...)` is a subquery which selects the minimum `id` from [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) for the same `hash_id`
+ - `pu.id = (SELECT min(pu2.id) ...)` is a subquery which selects the minimum `id` from [pool_update](/../../schema.md#pool_update) for the same `hash_id`
 This allows us find the first update, which is the registration.
 
-`LEFT JOIN tx ON tx.id = pu.registered_tx_id` joins with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table to get the transaction details associated with the pool's registration. `LEFT JOIN block b ON tx.block_id = b.id` joins with the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table to get the block where the registration transaction was included.
+`LEFT JOIN tx ON tx.id = pu.registered_tx_id` joins with the [tx](/../../schema.md#tx) table to get the transaction details associated with the pool's registration. `LEFT JOIN block b ON tx.block_id = b.id` joins with the [block](/../../schema.md#block) table to get the block where the registration transaction was included.
 
-`SELECT ph.id, COALESCE(po.pool_name, ph."view") as pool_name, ...` selects the pool ID and uses `COALESCE` to get the pool name, prioritizing the one from [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data). It selects the ticker name and the block's timestamp (as `creation_date`)
+`SELECT ph.id, COALESCE(po.pool_name, ph."view") as pool_name, ...` selects the pool ID and uses `COALESCE` to get the pool name, prioritizing the one from [pool_offline_data](/../../schema.md#pool_offline_data). It selects the ticker name and the block's timestamp (as `creation_date`)
 
 
 
@@ -177,8 +177,8 @@ Similar to our first part, we want to retrieve data for the following columns:
 
 Similar to the first part, we are interested in the following tables:  (aliases are in brackets):
 
-- [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) aliased to (ph), [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) aliased to (po), [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) aliased to (pu),  [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) and [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) aliased to (b) 
-- In addition, we query the [pool_retire](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_retire) (pr) which holds information about stake pools that have been retired or de-registered.
+- [pool_hash](/../../schema.md#pool_hash) aliased to (ph), [pool_offline_data](/../../schema.md#pool_offline_data) aliased to (po), [pool_update](/../../schema.md#pool_update) aliased to (pu),  [tx](/../../schema.md#tx) and [block](/../../schema.md#block) aliased to (b) 
+- In addition, we query the [pool_retire](/../../schema.md#pool_retire) (pr) which holds information about stake pools that have been retired or de-registered.
 
 ### `WHERE` clause
 
@@ -186,9 +186,9 @@ Our query here is similar to the first one above, with the addition of the `WHER
 
 `WHERE ph.id NOT IN (SELECT ...)` is important for filtering out retired stake pools. The subquery identifies retired pools by comparing the registration and retirement transactions and their certificate indices within those transactions. It ensures that only active pools are included in the final result
 
-`COALESCE(po.pool_name, ph."view") as pool_name` uses `COALESCE` to prioritize the `pool_name` from [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data). If it's null, it falls back to the view from [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash). This ensures we have a name for each pool.
+`COALESCE(po.pool_name, ph."view") as pool_name` uses `COALESCE` to prioritize the `pool_name` from [pool_offline_data](/../../schema.md#pool_offline_data). If it's null, it falls back to the view from [pool_hash](/../../schema.md#pool_hash). This ensures we have a name for each pool.
 
-`b."time" AS creation_date` retrieves the time from the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table (associated with the pool's registration transaction) and labels it as `creation_date`.
+`b."time" AS creation_date` retrieves the time from the [block](/../../schema.md#block) table (associated with the pool's registration transaction) and labels it as `creation_date`.
 
 `ROW_NUMBER() OVER (ORDER BY ph.id ASC)` assigns a sequential row number to each result row, ordered by the pool hash ID in ascending order. This can be useful for pagination or displaying results in a numbered list.
 
