@@ -68,7 +68,7 @@ GROUP BY
 UNION
 
 
--- Transactions where the address is the output and not an input
+-- Transactions where the address is the input and not an output
 SELECT
     sum(tx_out.value) AS ADA_amount,
 	'incoming' AS direction,
