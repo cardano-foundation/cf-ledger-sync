@@ -114,7 +114,7 @@ To find the information we need, the query focuses on two perspectives:
 
 ### Destination Addresses, the first `SELECT`
 
-It fetches details about the outputs [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) of the transaction. It then links to other tables to fetch further information such as:
+It fetches details about the outputs [tx_out](/../../schema.md#tx_out) of the transaction. It then links to other tables to fetch further information such as:
     - Stake address associated with the output
     - Asset names and quantities 
     - Block, slot, and epoch details of the transaction
@@ -122,7 +122,7 @@ It fetches details about the outputs [tx_out](https://github.com/cardano-foundat
 
 ### Source Addresses, the second `SELECT`
 
-This `SELECT` statement looks back to the inputs [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) of the transaction. It traces the chain of transactions to find the original outputs [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) that were spent as inputs in this transaction. It retrieves similar information as the first `SELECT`, but additionally includes the 'utxo' (unspent transaction output) hash which represents the specific output that was spent.
+This `SELECT` statement looks back to the inputs [tx_in](/../../schema.md#tx_in) of the transaction. It traces the chain of transactions to find the original outputs [tx_out](/../../schema.md#tx_out) that were spent as inputs in this transaction. It retrieves similar information as the first `SELECT`, but additionally includes the 'utxo' (unspent transaction output) hash which represents the specific output that was spent.
 
 ### Result returned
 
@@ -263,17 +263,17 @@ output     | addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfuc
 
 ### First `SELECT`
 
-The `FROM unconsume_tx_in cti` clause starts by looking at unspent transaction outputs (UTXOs) that have been used as inputs in some other transaction. The `INNER JOIN tx_out txOut ...` joins with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get details about these UTXOs, ie. address, value, index within the transaction. 
+The `FROM unconsume_tx_in cti` clause starts by looking at unspent transaction outputs (UTXOs) that have been used as inputs in some other transaction. The `INNER JOIN tx_out txOut ...` joins with the [tx_out](/../../schema.md#tx_out) table to get details about these UTXOs, ie. address, value, index within the transaction. 
 
-The `LEFT JOIN tx ON ...` attempts to join with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table to see if there's a transaction where this UTXO was used as an input.
+The `LEFT JOIN tx ON ...` attempts to join with the [tx](/../../schema.md#tx) table to see if there's a transaction where this UTXO was used as an input.
 
-The `JOIN tx txin ON ...` clause also joins with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table again (alias `txin`) to get details about the transaction where this UTXO was originally created as an output.
+The `JOIN tx txin ON ...` clause also joins with the [tx](/../../schema.md#tx) table again (alias `txin`) to get details about the transaction where this UTXO was originally created as an output.
 
 The `WHERE tx.hash = ...` clause filters the results to only include UTXOs that were used as inputs in the specific transaction we specified. The `'input' AS collateral` clause labels these results as 'input' in the `collateral` column.
 
 ### Second `SELECT`
 
-The `FROM failed_tx_out failedTxOut` looks at outputs from transactions that failed. The `INNER JOIN tx ON ...` clause joins with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table to get details about the failed transaction.
+The `FROM failed_tx_out failedTxOut` looks at outputs from transactions that failed. The `INNER JOIN tx ON ...` clause joins with the [tx](/../../schema.md#tx) table to get details about the failed transaction.
 
 The `WHERE tx.hash = ...` clause filters the results to only include outputs from the specific failed transaction we're interested in. The `'output' AS collateral` clause labels these results as 'output' in the `collateral` column.
 
@@ -328,13 +328,13 @@ addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83
 
 ### Query structure
 
-The `FROM reference_tx_in r` starts by looking at the [reference_tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#reference_tx_in) table, which stores information about transaction inputs and the UTXOs they reference.
+The `FROM reference_tx_in r` starts by looking at the [reference_tx_in](/../../schema.md#reference_tx_in) table, which stores information about transaction inputs and the UTXOs they reference.
 
-`JOIN tx_out txOut ON ...`  joins with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get details about these UTXOs, ie. address, value, index within the transaction. 
+`JOIN tx_out txOut ON ...`  joins with the [tx_out](/../../schema.md#tx_out) table to get details about these UTXOs, ie. address, value, index within the transaction. 
 
-`JOIN tx ON txOut.tx_id = tx.id` joins with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table to get information about the transaction where these UTXOs were created as outputs.
+`JOIN tx ON txOut.tx_id = tx.id` joins with the [tx](/../../schema.md#tx) table to get information about the transaction where these UTXOs were created as outputs.
 
-`JOIN tx txin ON txin.id = r.tx_in_id` joins with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table again (aliase `txin`) to get details about the transaction where these UTXOs were spent as inputs.
+`JOIN tx txin ON txin.id = r.tx_in_id` joins with the [tx](/../../schema.md#tx) table again (aliase `txin`) to get details about the transaction where these UTXOs were spent as inputs.
 
 The `WHERE txin.hash = ...` clause filters the results to only include UTXOs that were spent as inputs in the specific transaction we're interested in.
 

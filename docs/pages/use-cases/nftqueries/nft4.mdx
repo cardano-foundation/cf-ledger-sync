@@ -83,9 +83,9 @@ epoch | min_fee_a | min_fee_b | max_block_size | max_tx_size | max_block_header_
 
 `SELECT` lists the specific columns to retrieve from the database tables.
 
-`FROM epoch_param ep` specifies the main table to query, [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param).
+`FROM epoch_param ep` specifies the main table to query, [epoch_param](/../../schema.md#epoch_param).
 
-`LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id` joins data from the [cost_model](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#cost_model) table based on matching id values.
+`LEFT JOIN cost_model cm ON cm.id = ep.cost_model_id` joins data from the [cost_model](/../../schema.md#cost_model) table based on matching id values.
 `ORDER BY epoch_no DESC` sorts the results by `epoch_no` in descending order, ie. most recent epoch first.
 `LIMIT 1` restricts the output to only the first row, ie. the most recent epoch's data.
 
@@ -129,18 +129,18 @@ txhash	 		|  tx_out_index |  value      | address
 
 🔎 Looking a little closer, this query returns all unspent transaction outputs (UTXOs) associated with provided address.
 
-`FROM tx_out to2` starts by selecting all transaction outputs from the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table and assigns them the alias `to2`.
-`LEFT JOIN tx_in ti ON ti.tx_out_id = to2.tx_id AND ti.tx_out_index = to2."index"` performs a `LEFT JOIN` with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table which stores transaction inputs.
+`FROM tx_out to2` starts by selecting all transaction outputs from the [tx_out](/../../schema.md#tx_out) table and assigns them the alias `to2`.
+`LEFT JOIN tx_in ti ON ti.tx_out_id = to2.tx_id AND ti.tx_out_index = to2."index"` performs a `LEFT JOIN` with the [tx_in](/../../schema.md#tx_in) table which stores transaction inputs.
 
-The join condition matches `tx_out_id` and `tx_out_index` from [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) to the corresponding `tx_id` and index from [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out).
+The join condition matches `tx_out_id` and `tx_out_index` from [tx_in](/../../schema.md#tx_in) to the corresponding `tx_id` and index from [tx_out](/../../schema.md#tx_out).
 
-A `LEFT JOIN` ensures that all rows from [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) are included, even if there's no matching row in [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in).
+A `LEFT JOIN` ensures that all rows from [tx_out](/../../schema.md#tx_out) are included, even if there's no matching row in [tx_in](/../../schema.md#tx_in).
 
-`JOIN tx ON tx.id = to2.tx_id` performs an `INNER JOIN` with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table, which stores transactions.
+`JOIN tx ON tx.id = to2.tx_id` performs an `INNER JOIN` with the [tx](/../../schema.md#tx) table, which stores transactions.
 
 This connects each transaction output `to2` to its corresponding transaction `tx` based on the `tx_id`.
 
-`WHERE ti.id IS NULL` is the crucial part for identifying unspent outputs. It filters the results to only include rows where there's NO matching entry in [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in). In other words, these are outputs that haven't been used as inputs in any other transaction yet, hence they are "unspent".
+`WHERE ti.id IS NULL` is the crucial part for identifying unspent outputs. It filters the results to only include rows where there's NO matching entry in [tx_in](/../../schema.md#tx_in). In other words, these are outputs that haven't been used as inputs in any other transaction yet, hence they are "unspent".
 
 `AND to2.address = 'addr1qyvl8lmwpfq7pahuadpjwul9xlj7c0atr5hvu4r3cjsjlfua276aqezvwjsfucvq76welxmytfyt7ug5835wntzzdvgsyxh7q9'` further filters the results to only show UTXOs belonging to our specific address.
 
