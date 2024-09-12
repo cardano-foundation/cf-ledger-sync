@@ -2,7 +2,108 @@ import { Callout, Code, Tabs, Steps } from "nextra/components"
 
 ## 7. Query Active Stake Pools
 
-[Staking](https://cardano.org/stake-pool-delegation/) is a big part of the Cardano ecosystem. To get started, the first step is to identify the active stake pools. Our next SQL query retrieves information about active Cardano staking pools, retrievign the pool's ID, name and creation date. 
+[Staking](https://cardano.org/stake-pool-delegation/) is a big part of the Cardano ecosystem. The more healthy stake pools in operation, the more secure and resilient the network becomes. 
+
+### 7.1 Query all Stake Pools
+
+To get started, the first step is to identify all stake pools. This SQL query retrieves information about active Cardano staking pools, retrieving the pool's ID, name and creation date. 
+
+```sql
+select ph.id ,
+		po.pool_name as pool_name,
+		po.ticker_name as pool_ticker,
+		b."time" AS creation_date
+	FROM
+		pool_hash ph
+	LEFT JOIN pool_offline_data po on
+		ph.id = po.pool_id
+		and (po.id is null
+			or po.id = (SELECT max(po2.id)
+						FROM pool_offline_data po2
+						WHERE po2.pool_id = ph.id))
+	LEFT JOIN pool_update pu on
+		ph.id = pu.hash_id
+		and pu.id = (SELECT	min(pu2.id)
+						FROM pool_update pu2
+						WHERE pu2.hash_id = ph.id)
+	LEFT JOIN tx ON tx.id = pu.registered_tx_id 
+	LEFT JOIN block b ON tx.block_id = b.id 
+```
+
+<details>
+<summary>
+Expected results format
+</summary>
+
+```sql
+
+     id   |      pool_name	      	  |  pool_ticker |      creation_date  		 
+----------+---------------------------+--------------+-------------------------
+     1    |       				      |     	     |  2022-06-21 00:00:40.000 
+	 2    |         			      |              |  2022-06-21 00:00:40.000 
+	 3	  |     	     			  |              |  2022-06-21 00:00:40.000 
+	 4	  |    ANGEL stake pool		  |	    ANGEL	 |  2022-10-20 21:21:59.000 
+     5    |      CanadaStakes	      |     CAN1     |  2022-10-20 21:30:58.000		
+	 6	  |    SION stake pool		  |	    SION	 |  2022-10-20 21:35:52.000 
+     7    | PANL Stake Pool(Pre-Prod) |     PANL     |  2022-10-20 22:24:32.000	
+     8    |    intertree Flight	      |     INTRT    |  2022-10-20 23:20:38.000
+     .    |      ................     |     .....    |  ................. 	
+	 	 	  
+(Note: full results trimmed for readability)
+```
+
+</details>
+
+🔎 Lets examing the inner workings of this query:
+
+<Steps>
+
+### Select Specific Columns
+
+The query gathers the following data to include in the results:
+
+- Pool ID `ph.id`, the unique identifier for each staking pool
+- Pool Name `pool_name`, the human-readable name of the pool
+- Ticker `pool_ticker`, an abbreviation of the pool
+- `creation_date`, the date the pool was created
+
+### Tables Involved
+
+The query traverses several tables (aliases are in brackets):
+
+- [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) (ph) stores the unique hash identifiers for each pool.
+- [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) (po) contains additional information about the pool, such as its name and ticker.
+- [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) (pu) tracks updates or changes made to stake pools. It's joined to find the initial registration transaction of a pool `pu.registered_tx_id`.
+- [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) stores transaction data. 
+- [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) (b) stores information about blocks, including their timestamps `b.time`, which are used to determine the pool's creation date.
+
+### Query Explained
+
+`FROM pool_hash ph` selects all rows from the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table.
+
+`LEFT JOIN pool_offline_data po on ph.id = po.pool_id and ...` performs a `LEFT JOIN` with [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) to get the pool's name and ticker. The `ON` clause ensures we get the most recent metadata for each pool:
+ - `ph.id = po.pool_id` matches rows based on the pool ID.
+ - `(po.id is null or po.id = (SELECT max(po2.id) ...))` is a subquery which selects the maximum `id` from [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) for the same `pool_id`.
+The `OR` condition ensures that if there's no metadata for a pool, it's still included in the result (because of the 
+`LEFT JOIN`), but if there is metadata, the latest one is included.
+
+`LEFT JOIN pool_update pu on ph.id = pu.hash_id and ...` performs another `LEFT JOIN` with [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) to get the pool's registration transaction ID. Again, the `ON` clause ensures we get the earliest update for each pool:
+ - `ph.id = pu.hash_id` matches rows based on the pool ID.
+ - `pu.id = (SELECT min(pu2.id) ...)` is a subquery which selects the minimum `id` from [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) for the same `hash_id`
+This allows us find the first update, which is the registration.
+
+`LEFT JOIN tx ON tx.id = pu.registered_tx_id` joins with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table to get the transaction details associated with the pool's registration. `LEFT JOIN block b ON tx.block_id = b.id` joins with the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table to get the block where the registration transaction was included.
+
+`SELECT ph.id, COALESCE(po.pool_name, ph."view") as pool_name, ...` selects the pool ID and uses `COALESCE` to get the pool name, prioritizing the one from [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data). It selects the ticker name and the block's timestamp (as `creation_date`)
+
+
+
+</Steps>
+
+
+### 7.2 Query Active Stake Pools
+
+For this second part, we only want data from **active** stake pools. For each active pool, we are retrieving the pool ID, name and creation date. 
 
 <Callout type="info" emoji="💡">
 [Cardanoscan](https://cardanoscan.io/pools) shows active stake pools by default. There is a toggle button to 'Show Inactive Pools' 🔎 
@@ -46,13 +147,13 @@ Expected results format
 
 ```sql
 
-     id   |      pool_name	      	  |  pool_ticker |      creation_date 
-----------+---------------------------+--------------+-------------------------- 
-     4    |      ANGEL stake pool     |     ANGEL    |  2022-10-20 21:21:59.000
-	 5    |      CanadaStakes	      |     CAN1     |  2022-10-20 21:30:58.000
-	 6	  |     SION stake pool	      |     SION     |  2022-10-20 21:35:52.000
-	 7	  |  PANL Stake Pool(Pre-Prod)|	    PANL	 |  2022-10-20 22:24:32.000
-     .    |      ................     |     .....    |  .................
+     id   |      pool_name	      	  |  pool_ticker |      creation_date  		| row_number  
+----------+---------------------------+--------------+--------------------------+------------ 
+     4    |      ANGEL stake pool     |     ANGEL    |  2022-10-20 21:21:59.000 | 	1
+	 5    |      CanadaStakes	      |     CAN1     |  2022-10-20 21:30:58.000 | 	2
+	 6	  |     SION stake pool	      |     SION     |  2022-10-20 21:35:52.000 | 	3
+	 7	  |  PANL Stake Pool(Pre-Prod)|	    PANL	 |  2022-10-20 22:24:32.000 | 	4
+     .    |      ................     |     .....    |  ................. 		|	. 
            
 (Note: full results trimmed for readability)
 ```
@@ -65,7 +166,7 @@ Expected results format
 <Steps>
 ### Select Specific Columns
 
-In order to gather information about staking pools, the query focuses on:
+Similar to our first part, we want to retrieve data for the following columns:
 
 - Pool ID `ph.id`, the unique identifier for each staking pool
 - Pool Name `pool_name`, the human-readable name of the pool
@@ -74,14 +175,10 @@ In order to gather information about staking pools, the query focuses on:
 
 ### Tables Involved
 
-The query traverses several tables (aliases are in brackets):
+Similar to the first part, we are interested in the following tables:  (aliases are in brackets):
 
-- [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) (ph) stores the unique hash identifiers for each pool.
-- [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) (po) contains additional information about the pool, such as its name and ticker.
-- [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) (pu) tracks updates or changes made to stake pools. It's joined to find the initial registration transaction of a pool `pu.registered_tx_id`.
-- [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) stores transaction data. 
-- [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) (b) stores information about blocks, including their timestamps `b.time`, which are used to determine the pool's creation date.
-- [pool_retire](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_retire) (pr) holds information about stake pools that have been retired or de-registered.
+- [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) aliased to (ph), [pool_offline_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_offline_data) aliased to (po), [pool_update](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_update) aliased to (pu),  [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) and [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) aliased to (b) 
+- In addition, we query the [pool_retire](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_retire) (pr) which holds information about stake pools that have been retired or de-registered.
 
 ### Joins and Subqueries
 
