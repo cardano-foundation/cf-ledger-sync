@@ -16,7 +16,7 @@ In our example, we will use the smart contract components for the following info
 
 - **Validator**: It ensures that the signer is the rightful owner, that payouts are correctly configured, and that the appropriate redeemer tag is present so transaction can be successfully processed.
 
-These are on-chain components, where datum and redeemer information are stored  in the Ledger Sync database in CBOR and JSON format in the following tables: [datum](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#datum), [redeemer_data](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#redeemer_data), and also  referenced on [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) and [failed_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#failed_tx_out). 
+These are on-chain components, where datum and redeemer information are stored  in the Ledger Sync database in CBOR and JSON format in the following tables: [datum](/../../schema.md#datum), [redeemer_data](/../../schema.md#redeemer_data), and also  referenced on [tx_out](/../../schema.md#tx_out) and [failed_tx_out](/../../schema.md#failed_tx_out). 
 
 <Callout type="info" emoji="ℹ️">
 Note: In case if you would like to decode the Datum, you can use [Datum Inspector - Cardanoscan](https://cardanoscan.io/datumInspector)
@@ -123,13 +123,13 @@ Note that some results may display differently in some explorers compared to Led
 - `ma.fingerprint` is the unique fingerprint of the asset.
 - `sum(mto.quantity) AS quantity` calculates the total quantity of each asset held by the address.
 
-`FROM ma_tx_out mto` selects data from the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table, which stores information about asset transaction outputs.
+`FROM ma_tx_out mto` selects data from the [ma_tx_out](/../../schema.md#ma_tx_out) table, which stores information about asset transaction outputs.
 
-`JOIN multi_asset ma ON ma.id = mto.ident` joins the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table with the multi_asset table based on matching `id` and `ident` values. This links the transaction output information with the details of the asset itself.
+`JOIN multi_asset ma ON ma.id = mto.ident` joins the [ma_tx_out](/../../schema.md#ma_tx_out) table with the multi_asset table based on matching `id` and `ident` values. This links the transaction output information with the details of the asset itself.
 
-`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins the result with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get the transaction output details associated with the asset outputs.
+`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins the result with the [tx_out](/../../schema.md#tx_out) table to get the transaction output details associated with the asset outputs.
 
-`LEFT JOIN tx_in ti ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"` performs a left join with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to identify which transaction outputs have been spent (used as inputs in other transactions).
+`LEFT JOIN tx_in ti ON ti.tx_out_id = tx_out.tx_id AND ti.tx_out_index = tx_out."index"` performs a left join with the [tx_in](/../../schema.md#tx_in) table to identify which transaction outputs have been spent (used as inputs in other transactions).
 
 `WHERE tx_out.address = 'addr1x8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7efvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8ekstg4qrx' AND ti.tx_out_id is null` filters the results to only include:
 - Transaction outputs belonging to the specified  address.
