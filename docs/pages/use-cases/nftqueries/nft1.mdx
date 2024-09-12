@@ -59,13 +59,13 @@ policy_id                                                | creation_time        
 
 We are looking (SELECT'ing) from the following tables:
 
-[multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) (ma): This table stores information about all the different tokens or assets on Cardano. Each asset is uniquely identified by a combination of policy (the policy ID under which the asset was minted) and id (a unique identifier within that policy).
+[multi_asset](../../schema.md#multi_asset) (ma): This table stores information about all the different tokens or assets on Cardano. Each asset is uniquely identified by a combination of policy (the policy ID under which the asset was minted) and id (a unique identifier within that policy).
 
-[ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint) (mtm): This table tracks the minting (creation) transactions of assets. It links to the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table using `ident`, and also stores information about the quantity minted in each transaction.
+[ma_tx_mint](../../schema.md#ma_tx_mint) (mtm): This table tracks the minting (creation) transactions of assets. It links to the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table using `ident`, and also stores information about the quantity minted in each transaction.
 
-[tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata) (tm): This table holds additional metadata associated with transactions, and for this query, we are filtering on metadata with the key '721'.
+[tx_metadata](../../schema.md#tx_metadata) (tm): This table holds additional metadata associated with transactions, and for this query, we are filtering on metadata with the key '721'.
 
-`LEFT JOIN ma_tx_mint ON ...` joins the asset information ([multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset)) with its minting transactions ([ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint)). The `LEFT JOIN` ensures that even assets that have not been minted are included in the result, but their `total_supply` will be `NULL`.
+`LEFT JOIN ma_tx_mint ON ...` joins the asset information ([multi_asset](../../schema.md#multi_asset)) with its minting transactions ([ma_tx_mint](../../schema.md#ma_tx_mint)). The `LEFT JOIN` ensures that even assets that have not been minted are included in the result, but their `total_supply` will be `NULL`.
 
 `LEFT JOIN (SELECT ... FROM tx_metadata) AS tm ON ...` is a subquery that filters `tx_metadata` to only include rows where the metadata key is `721`.  The result of this subquery is then joined with the previous result, effectively filtering out assets that are not associated with transactions containing this specific metadata.
 
