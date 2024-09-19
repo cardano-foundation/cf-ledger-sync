@@ -28,7 +28,7 @@ We decided to build **off_chain data** tables with the main purpose of storing o
 
 4. **Plan for retrying fetching failed data**: The fetch error data will be retried every day for 30 days (***this number may need further discussion***)
 
-5. **Other related information**: fetch error reason, valid at slot
+5. **Other related information**: fetch error reason, valid at slot, count retries with fetch error fields
 
 ### off_chain_voting_data table
 
@@ -42,6 +42,7 @@ The **off_chain_voting_data table** processes data retrieved from the **voting_p
 | `is_valid`            | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`       | `bigint`      | The slot number when anchor url was fetched and valid         |
 | `fetch_error`         | `text`        | The text of the error. (null if is_valid is true)             |
+| `retry_count`         | `integer`     | The number of retries.                                        |
 
 ### off_chain_gov_action table
 
@@ -56,6 +57,7 @@ The **off_chain_gov_action table** processes data retrieved from the **gov_actio
 | `is_valid`           | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`      | `bigint`      | The slot number when anchor url was fetched and valid         |
 | `fetch_error`        | `text`        | The text of the error. (null if is_valid is true)             |
+| `retry_count`        | `integer`     | The number of retries.                                        |
 
 ### off_chain_drep_registration table
 
@@ -70,6 +72,7 @@ The **off_chain_drep_registration table** processes data retrieved from the **dr
 | `is_valid`            | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`       | `bigint`      | The slot number when anchor url was fetched and valid         |
 | `fetch_error`         | `text`        | The text of the error. (null if is_valid is true)             |
+| `retry_count`         | `integer`     | The number of retries.                                        |
 
 ### off_chain_constitution table
 
@@ -83,6 +86,7 @@ The **off_chain_constitution table** processes data retrieved from the **constit
 | `is_valid`                  | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`             | `bigint`      | The slot number when anchor url was fetched and valid         |
 | `fetch_error`               | `text`        | The text of the error. (null if is_valid is true)             |
+| `retry_count`               | `integer`     | The number of retries.                                        |
 
 ### off_chain_committee_deregistration table
 
@@ -97,6 +101,7 @@ The **off_chain_committee_deregistration table** processes data retrieved from t
 | `is_valid`                   | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`              | `bigint`      | The slot number when anchor url was fetched and valid         |
 | `fetch_error`                | `text`        | The text of the error. (null if is_valid is true)             |
+| `retry_count`                | `integer`     | The number of retries.                                        |
 
 ## Consequences
 
