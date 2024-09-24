@@ -28,7 +28,7 @@ We decided to build **off_chain data** tables with the main purpose of storing o
 
 4. **Plan for retrying fetching failed data**: The fetch error data will be retried every day for 30 days (***this number may need further discussion***)
 
-5. **Other related information**: fetch error reason, valid at slot, count retries with fetch error fields
+5. **Vote data fetch error information**: Each record has information about the url that failed to fetch and the hash along with the error reason and number of retries
 
 ### off_chain_voting_data table
 
@@ -41,8 +41,6 @@ The **off_chain_voting_data table** processes data retrieved from the **voting_p
 | `content`             | `jsonb`       | The payload as JSON.                                          |
 | `is_valid`            | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`       | `bigint`      | The slot number when anchor url was fetched and valid         |
-| `fetch_error`         | `text`        | The text of the error. (null if is_valid is VALID)            |
-| `retry_count`         | `integer`     | The number of retries.                                        |
 
 ### off_chain_gov_action table
 
@@ -56,8 +54,6 @@ The **off_chain_gov_action table** processes data retrieved from the **gov_actio
 | `content`            | `jsonb`       | The payload as JSON.                                          |
 | `is_valid`           | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`      | `bigint`      | The slot number when anchor url was fetched and valid         |
-| `fetch_error`        | `text`        | The text of the error. (null if is_valid is VALID)            |
-| `retry_count`        | `integer`     | The number of retries.                                        |
 
 ### off_chain_drep_registration table
 
@@ -71,8 +67,6 @@ The **off_chain_drep_registration table** processes data retrieved from the **dr
 | `content`             | `jsonb`       | The payload as JSON.                                          |
 | `is_valid`            | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`       | `bigint`      | The slot number when anchor url was fetched and valid         |
-| `fetch_error`         | `text`        | The text of the error. (null if is_valid is VALID)            |
-| `retry_count`         | `integer`     | The number of retries.                                        |
 
 ### off_chain_constitution table
 
@@ -85,8 +79,6 @@ The **off_chain_constitution table** processes data retrieved from the **constit
 | `content`                   | `jsonb`       | The payload as JSON.                                          |
 | `is_valid`                  | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`             | `bigint`      | The slot number when anchor url was fetched and valid         |
-| `fetch_error`               | `text`        | The text of the error. (null if is_valid is VALID)            |
-| `retry_count`               | `integer`     | The number of retries.                                        |
 
 ### off_chain_committee_deregistration table
 
@@ -100,8 +92,18 @@ The **off_chain_committee_deregistration table** processes data retrieved from t
 | `content`                    | `jsonb`       | The payload as JSON.                                          |
 | `is_valid`                   | `varchar(50)` | The validity status of the vote (VALID, HASH_MISMATCH, null). |
 | `valid_at_slot`              | `bigint`      | The slot number when anchor url was fetched and valid         |
-| `fetch_error`                | `text`        | The text of the error. (null if is_valid is VALID)            |
-| `retry_count`                | `integer`     | The number of retries.                                        |
+
+### off_chain_vote_fetch_error table
+
+The **off_chain_vote_fetch_error table** processes data retrieved from the above tables
+
+| Field         | Data type      | Description                                   |
+| ------------- | -------------- | --------------------------------------------- |
+| `anchor_url`  | `varchar(255)` | The committee_deregistration tx_hash field    |
+| `anchor_hash` | `varchar(64)`  | The committee_deregistration cert_index field |
+| `fetch_error` | `varchar(255)` | The text of the error.                        |
+| `fetch_time`  | `timestamp`    |                                               |
+| `retry_count` | `integer`      | The number of retries.                        |
 
 ## Consequences
 
