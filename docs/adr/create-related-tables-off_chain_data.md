@@ -97,13 +97,14 @@ The **off_chain_committee_deregistration table** processes data retrieved from t
 
 The **off_chain_vote_fetch_error table** processes data retrieved from the above tables
 
-| Field         | Data type      | Description                                   |
-| ------------- | -------------- | --------------------------------------------- |
-| `anchor_url`  | `varchar(255)` | The committee_deregistration tx_hash field    |
-| `anchor_hash` | `varchar(64)`  | The committee_deregistration cert_index field |
-| `fetch_error` | `varchar(255)` | The text of the error.                        |
-| `fetch_time`  | `timestamp`    |                                               |
-| `retry_count` | `integer`      | The number of retries.                        |
+| Field         | Data type      | Description                                                                                             |
+| ------------- | -------------- | ------------------------------------------------------------------------------------------------------- |
+| `anchor_url`  | `varchar(255)` | The committee_deregistration tx_hash field                                                              |
+| `anchor_hash` | `varchar(64)`  | The committee_deregistration cert_index field                                                           |
+| `type_vote`   | `varchar(64)`  | Type of the vote (VOTING, GOV_ACTION, DREP_REGISTRATION, CONSTITUTION, COMMITTEE_DEREGISTRATION, OTHER) |
+| `fetch_error` | `varchar(255)` | The text of the error.                                                                                  |
+| `fetch_time`  | `timestamp`    |                                                                                                         |
+| `retry_count` | `integer`      | The number of retries.                                                                                  |
 
 ## Consequences
 
