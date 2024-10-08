@@ -47,7 +47,7 @@ jobs:
             sed -i "s|^version.*|version = ${GRADLE_PROPERTIES_VERSION}|" gradle.properties
 
             # if it's a snapshot version, push to our private registry only, else tag as 'latest' as well
-            if [ "${TAG_NAME}" ~= ".*-SNAPSHOT$" ]
+            if [[ "${TAG_NAME}" =~ .*-SNAPSHOT$ ]]
             then
               EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME}"
               echo "DOCKER_REGISTRIES=${PRIVATE_DOCKER_REGISTRY_URL}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
