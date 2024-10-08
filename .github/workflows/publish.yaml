@@ -38,9 +38,6 @@ jobs:
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
-          fail_on_unmatched_files: true
-          body_path: release-notes.md
           prerelease: true
           files: |
             application/build/libs/ledger-sync-application-*.jar
