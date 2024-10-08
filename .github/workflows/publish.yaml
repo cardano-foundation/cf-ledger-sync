@@ -12,6 +12,7 @@ env:
   PRIVATE_MVN_REGISTRY_URL: ${{ secrets.GITLAB_MAVEN_REGISTRY_URL }}
   PRIVATE_MVN_REGISTRY_USER: ${{ secrets.GITLAB_PKG_REGISTRY_USER }}
   PRIVATE_MVN_REGISTRY_PASS: ${{ secrets.GITLAB_PKG_REGISTRY_TOKEN }}
+  DOCKER_PUSH: false
 
 jobs:
   publish:
@@ -24,119 +25,87 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.COMMIT_PAT_TOKEN }}
-      - name: Set up JDK 21
-        uses: actions/setup-java@v2
+
+      - name: ⛮ cf-gha-baseline
+        uses: cardano-foundation/cf-gha-workflows/./actions/cf-gha-baseline@main
         with:
-          java-version: '21'
-          distribution: 'liberica'
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew build -PskipSigning=true --stacktrace
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRIVATE_DOCKER_REGISTRY_URL: ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}
+          PRIVATE_DOCKER_REGISTRY_USER: ${{ env.PRIVATE_DOCKER_REGISTRY_USER }}
+          PRIVATE_DOCKER_REGISTRY_PASS: ${{ env.PRIVATE_DOCKER_REGISTRY_PASS }}
+          HUB_DOCKER_COM_USER: ${{ secrets.HUB_DOCKER_COM_USER }}
+          HUB_DOCKER_COM_PASS: ${{ secrets.HUB_DOCKER_COM_PASS }}
+          DOCKER_REGISTRIES: "${{ secrets.DOCKER_REGISTRIES }}"
+
+      - name: Set extra environment and metadata
+        id: metadata
+        run: |
+          # if a tag triggered the build, use the tag to set the version in gradle.properties
+          if [ "${GITHUB_REF_TYPE}" == "tag" ]
+          then
+            GRADLE_PROPERTIES_VERSION=${TAG_NAME##v}
+            sed -i "s|^version.*|version = ${GRADLE_PROPERTIES_VERSION}|" gradle.properties
+
+            # if it's a snapshot version, push to our private registry only, else tag as 'latest' as well
+            if [ "${TAG_NAME}" ~= ".*-SNAPSHOT$" ]
+            then
+              EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME}"
+              echo "DOCKER_REGISTRIES=${PRIVATE_DOCKER_REGISTRY_URL}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+            else
+              EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME} latest"
+              echo "DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+            fi
+
+            NEXT_SNAPSHOT_VERSION=$(echo $GRADLE_PROPERTIES_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+            echo "NEXT_SNAPSHOT_VERSION=${NEXT_SNAPSHOT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          fi
+
+          GRADLE_PROPERTIES_VERSION=$(grep version gradle.properties | awk '{print $NF}')
+          echo "GRADLE_PROPERTIES_VERSION=${GRADLE_PROPERTIES_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+          echo "EARTHLY_DOCKER_IMAGES_EXTRA_TAGS=${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+
+      - name: 🌍 earthly - gradle build
+        run: |
+          earthly +gradle-build
+
+      - name: 🌍 earthly - docker build and push
+        run: |
+          if [ "${GITHUB_REF_TYPE}" == "tag" ]
+          then
+            earthly +docker-publish \
+              --RELEASE_TAG=${GRADLE_PROPERTIES_VERSION} \
+              --PUSH=${DOCKER_PUSH} \
+              --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
+              --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
+          else
+            earthly +docker-publish \
+              --PUSH=${DOCKER_PUSH} \
+              --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
+              --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
+          fi
+
       - name: Create Github release and upload jar files
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
           files: |
-            application/build/libs/ledger-sync-application-*.jar
-            streamer-app/build/libs/ledger-sync-streamer-app-*.jar
-            aggregation-app/build/libs/ledger-sync-aggregation-app-*.jar            
+            release/*
 
-      - name: Set extra environment and metadata
-        id: metadata
+      - name: Bump versions
+        if: github.ref_type == 'tag'
         run: |
-          GIT_SHORT_COMMIT=${GITHUB_SHA::7}
-          DOCKER_IMAGE_NAME=$(basename ${GITHUB_REPOSITORY})
-
-          # if a tag triggered the version, use the tag to set the version in gradle.properties
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]
+          # Bump version only if tag's commit belongs to main branch
+          if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
           then
-            TRIGGERING_TAG=${GITHUB_REF#refs/tags/v}
-            DOCKER_IMAGES_EXTRA_TAGS="${TRIGGERING_TAG} latest"
-            echo "TRIGGERING_TAG=${TRIGGERING_TAG}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-            echo "DOCKER_IMAGES_EXTRA_TAGS=${DOCKER_IMAGES_EXTRA_TAGS}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-            sed -i "s|^version.*|version = ${TRIGGERING_TAG}|" gradle.properties
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git fetch --all --tags
+            sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
+            git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
+
+            sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}}|" docker-compose.yaml
+            git commit docker-compose.yaml -m "chore(docker-compose): Bump image version to ${ARTIFACT_VERSION} (automated commit by gha run id $GITHUB_RUN_ID)"
+            TAG_BRANCH=main
+            git push origin HEAD:${TAG_BRANCH}
           fi
-          ARTIFACT_VERSION=$(grep version gradle.properties | awk '{print $NF}')
-          NEW_ARTIFACT_SNAPSHOT_VERSION=$(echo $ARTIFACT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-
-          echo "ARTIFACT_VERSION=${ARTIFACT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-          echo "NEW_ARTIFACT_SNAPSHOT_VERSION=${NEW_ARTIFACT_SNAPSHOT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-          echo "GIT_SHORT_COMMIT=${GIT_SHORT_COMMIT}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-          echo "GITHUB_RUN_ID=${GITHUB_RUN_ID}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-
-          echo "DOCKER_IMAGES_EXTRA_TAGS=${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT} ${ARTIFACT_VERSION}-${GIT_SHORT_COMMIT}-${GITHUB_RUN_ID} ${DOCKER_IMAGES_EXTRA_TAGS}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Docker Login (private registry)
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.PRIVATE_DOCKER_REGISTRY_URL }}
-          username: ${{ env.PRIVATE_DOCKER_REGISTRY_USER }}
-          password: ${{ env.PRIVATE_DOCKER_REGISTRY_PASS }}
-
-      - name: Docker Login (hub.docker.com)
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.HUB_DOCKER_COM_USER }}
-          password: ${{ secrets.HUB_DOCKER_COM_PASS }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - uses: earthly/actions-setup@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          version: "0.8.6"
-
-      - name: 🌍 earthly (docker+mavn build and push)
-        env:
-          EARTHLY_BUILD_ARGS: DOCKER_IMAGES_EXTRA_TAGS=${{ steps.metadata.outputs.DOCKER_IMAGES_EXTRA_TAGS }},DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}
-        run: |
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]
-          then
-            earthly +docker-publish --RELEASE_TAG=${ARTIFACT_VERSION}
-          else
-            earthly +docker-publish
-          fi
-
-#      - name: Preprare release notes
-#        if: github.ref_type == 'tag'
-#        id: release_notes
-#        run: |
-#          cat > release-notes.md <<EOF
-#          # PLACEHODLER
-#          EOF
-
-#      - name: Create Github release
-#        if: github.ref_type == 'tag'
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          draft: true
-#          fail_on_unmatched_files: true
-#          body_path: release-notes.md
-##          files: |
-##            build/*
-
-#      - name: Bump versions
-#        if: github.ref_type == 'tag'
-#        run: |
-#          git config --global user.name 'github-actions[bot]'
-#          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-#          git fetch --all --tags
-#
-#          sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
-#          git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
-#
-#          sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}}|" docker-compose.yaml
-#          git commit docker-compose.yaml -m "chore(docker-compose): Bump image version to ${ARTIFACT_VERSION} (automated commit by gha run id $GITHUB_RUN_ID)"
-#
-#
-#          # Commit to main if it contains the tag, otherwise to whatever first branch contains the tag
-#          if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
-#          then
-#            TAG_BRANCH=main
-#          else
-#            TAG_BRANCH=$(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | head -n1 | sed 's|.*refs/remotes/origin/\(.*\)|\1|')
-#          fi
-#          git push origin HEAD:${TAG_BRANCH}
