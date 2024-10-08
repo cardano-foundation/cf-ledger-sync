@@ -101,23 +101,23 @@ jobs:
             earthly +docker-publish
           fi
 
-      - name: Preprare release notes
-        if: github.ref_type == 'tag'
-        id: release_notes
-        run: |
-          cat > release-notes.md <<EOF
-          # PLACEHODLER
-          EOF
+#      - name: Preprare release notes
+#        if: github.ref_type == 'tag'
+#        id: release_notes
+#        run: |
+#          cat > release-notes.md <<EOF
+#          # PLACEHODLER
+#          EOF
 
-      - name: Create Github release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: true
-          fail_on_unmatched_files: true
-          body_path: release-notes.md
-#          files: |
-#            build/*
+#      - name: Create Github release
+#        if: github.ref_type == 'tag'
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          draft: true
+#          fail_on_unmatched_files: true
+#          body_path: release-notes.md
+##          files: |
+##            build/*
 
       - name: Bump versions
         if: github.ref_type == 'tag'
