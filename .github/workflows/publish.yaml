@@ -119,25 +119,25 @@ jobs:
 ##          files: |
 ##            build/*
 
-      - name: Bump versions
-        if: github.ref_type == 'tag'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git fetch --all --tags
-
-          sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
-          git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
-
-          sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}}|" docker-compose.yaml
-          git commit docker-compose.yaml -m "chore(docker-compose): Bump image version to ${ARTIFACT_VERSION} (automated commit by gha run id $GITHUB_RUN_ID)"
-
-
-          # Commit to main if it contains the tag, otherwise to whatever first branch contains the tag
-          if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
-          then
-            TAG_BRANCH=main
-          else
-            TAG_BRANCH=$(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | head -n1 | sed 's|.*refs/remotes/origin/\(.*\)|\1|')
-          fi
-          git push origin HEAD:${TAG_BRANCH}
+#      - name: Bump versions
+#        if: github.ref_type == 'tag'
+#        run: |
+#          git config --global user.name 'github-actions[bot]'
+#          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+#          git fetch --all --tags
+#
+#          sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
+#          git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
+#
+#          sed -i "s|image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:latest}| image: \${CF_LEDGER_SYNC_DOCKER_IMAGE:-cardanofoundation/cf-ledger-sync:${ARTIFACT_VERSION}}|" docker-compose.yaml
+#          git commit docker-compose.yaml -m "chore(docker-compose): Bump image version to ${ARTIFACT_VERSION} (automated commit by gha run id $GITHUB_RUN_ID)"
+#
+#
+#          # Commit to main if it contains the tag, otherwise to whatever first branch contains the tag
+#          if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
+#          then
+#            TAG_BRANCH=main
+#          else
+#            TAG_BRANCH=$(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | head -n1 | sed 's|.*refs/remotes/origin/\(.*\)|\1|')
+#          fi
+#          git push origin HEAD:${TAG_BRANCH}
