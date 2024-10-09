@@ -7,7 +7,6 @@ ARG --global DOCKER_IMAGES_TARGETS="ledger-sync aggregation streamer scheduler"
 ARG --global DOCKER_IMAGE_PREFIX="cf-ledger-sync"
 ARG --global DOCKER_IMAGES_EXTRA_TAGS=""
 ARG --global DOCKER_REGISTRIES=""
-ARG --global RELEASE_TAG=""
 ARG --global PUSH=false
 
 ARG --global GRADLE_BUILD_ARGS="clean build -PskipSigning=true --stacktrace"
@@ -36,9 +35,7 @@ gradle-build:
   FROM DOCKERFILE \
     --build-arg GRADLE_BUILD_ARGS="${GRADLE_BUILD_ARGS}" \
     -f Dockerfile --target build .
-  IF [ -z "$RELEASE_TAG" ]
-    ARG RELEASE_TAG=$(grep version gradle.properties | awk '{print $NF}')
-  END
+  ARG RELEASE_TAG=$(grep version gradle.properties | awk '{print $NF}')
   LET APP_JAR_PATH=""
   LET APP_JAR_NAME=""
   RUN mkdir -p /release
@@ -63,9 +60,9 @@ ledger-sync:
       --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}
   END
   DO functions+DOCKER_TAG_N_PUSH \
-     --PUSH=$PUSH \
-     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX} \
-     --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS} ${RELEASE_TAG}"
+    --PUSH=$PUSH \
+    --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX} \
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 aggregation:
   ARG EARTHLY_TARGET_NAME
@@ -77,7 +74,7 @@ aggregation:
   DO functions+DOCKER_TAG_N_PUSH \
     --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME} \
-    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS} ${RELEASE_TAG}"
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 streamer:
   ARG EARTHLY_TARGET_NAME
@@ -89,7 +86,7 @@ streamer:
   DO functions+DOCKER_TAG_N_PUSH \
     --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME} \
-    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS} ${RELEASE_TAG}"
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 scheduler:
   ARG EARTHLY_TARGET_NAME
@@ -101,7 +98,7 @@ scheduler:
   DO functions+DOCKER_TAG_N_PUSH \
     --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME} \
-    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS} ${RELEASE_TAG}"
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 docker-compose-up:
   LOCALLY

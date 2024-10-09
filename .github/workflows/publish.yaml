@@ -54,9 +54,13 @@ jobs:
                   exit 1
                 fi
 
+                # Add 'latest' tag to the list of tags to push
                 EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME} latest"
+
+                # Set target docker registries to every registry in the secret
                 echo "DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
+                # Set the next snapshot version that will be auto-commited to the main branch
                 NEXT_SNAPSHOT_VERSION=$(echo $GRADLE_PROPERTIES_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
                 echo "NEXT_SNAPSHOT_VERSION=${NEXT_SNAPSHOT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
               fi
@@ -67,6 +71,8 @@ jobs:
                 echo "[!] gradle.properties version is not a SNAPSHOT version. Please fix it and relaunch this job."
                 exit 1
               fi
+              # Set target docker registries to only use the private registry
+              echo "DOCKER_REGISTRIES=${PRIVATE_DOCKER_REGISTRY_URL}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
               EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${GRADLE_PROPERTIES_VERSION}"
             ;;
           esac
@@ -80,19 +86,10 @@ jobs:
 
       - name: 🌍 earthly - docker build and push
         run: |
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]
-          then
-            earthly +docker-publish \
-              --RELEASE_TAG=${GRADLE_PROPERTIES_VERSION} \
-              --PUSH=${DOCKER_PUSH} \
-              --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
-              --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
-          else
-            earthly +docker-publish \
-              --PUSH=${DOCKER_PUSH} \
-              --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
-              --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
-          fi
+          earthly +docker-publish \
+            --PUSH=${DOCKER_PUSH} \
+            --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
+            --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
 
       - name: Create Github release and upload jar files
         if: github.ref_type == 'tag'
