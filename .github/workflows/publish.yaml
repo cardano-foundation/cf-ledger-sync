@@ -2,7 +2,8 @@ name: Publish artifacts and create Github releases
 on:
   push:
     tags:
-      - 'v*'
+      - '[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
 
 env:
   PRIVATE_DOCKER_REGISTRY_URL: ${{ secrets.GITLAB_DOCKER_REGISTRY_URL }}
@@ -40,27 +41,36 @@ jobs:
       - name: Set extra environment and metadata
         id: metadata
         run: |
-          # if a tag triggered the build, use the tag to set the version in gradle.properties
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]
-          then
-            GRADLE_PROPERTIES_VERSION=${TAG_NAME##v}
-            sed -i "s|^version.*|version = ${GRADLE_PROPERTIES_VERSION}|" gradle.properties
-
-            # if it's a snapshot version, push to our private registry only, else tag as 'latest' as well
-            if [[ "${TAG_NAME}" =~ .*-SNAPSHOT$ ]]
-            then
-              EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME}"
-              echo "DOCKER_REGISTRIES=${PRIVATE_DOCKER_REGISTRY_URL}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-            else
-              EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME} latest"
-              echo "DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-            fi
-
-            NEXT_SNAPSHOT_VERSION=$(echo $GRADLE_PROPERTIES_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-            echo "NEXT_SNAPSHOT_VERSION=${NEXT_SNAPSHOT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
-          fi
-
           GRADLE_PROPERTIES_VERSION=$(grep version gradle.properties | awk '{print $NF}')
+
+          # if a tag triggered the build, use the tag to set the version in gradle.properties
+          case "${GITHUB_EVENT_NAME}")
+            push)
+              if [ "${TRIGGERING_REF}}" == "tag" ]
+              then
+                # fail if tag differs from what's set for gradle
+                if [ "${TAG_NAME}" != "${GRADLE_PROPERTIES_VERSION}" ]
+                  echo "[!] Tag name doesn't match gradle.properties version. Please commit the proper version and retag."
+                  exit 1
+                fi
+
+                EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${TAG_NAME} latest"
+                echo "DOCKER_REGISTRIES=${{ secrets.DOCKER_REGISTRIES }}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+
+                NEXT_SNAPSHOT_VERSION=$(echo $GRADLE_PROPERTIES_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+                echo "NEXT_SNAPSHOT_VERSION=${NEXT_SNAPSHOT_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
+              fi
+            ;;
+            workflow_dispatch)
+              if [[ "${GRADLE_PROPERTIES_VERSION}" =~ .*-SNAPSHOT$ ]]
+              then
+                echo "[!] gradle.properties version is not a SNAPSHOT version. Please fix it and relaunch this job."
+                exit 1
+              fi
+              EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${GRADLE_PROPERTIES_VERSION}"
+            ;;
+          esac
+
           echo "GRADLE_PROPERTIES_VERSION=${GRADLE_PROPERTIES_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
           echo "EARTHLY_DOCKER_IMAGES_EXTRA_TAGS=${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
 
