@@ -44,6 +44,8 @@ jobs:
         run: |
           GRADLE_PROPERTIES_VERSION=$(grep version gradle.properties | awk '{print $NF}')
 
+          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+
           # if a tag triggered the build, use the tag to set the version in gradle.properties
           case "${GITHUB_EVENT_NAME}" in
             push)
@@ -77,6 +79,9 @@ jobs:
               echo "DOCKER_REGISTRIES=${PRIVATE_DOCKER_REGISTRY_URL}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
               EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${GRADLE_PROPERTIES_VERSION}"
             ;;
+            *)
+              echo "[!] Unsupported event name for this workflow: ${GITHUB_EVENT_NAME}"
+              exit 1
           esac
 
           echo "GRADLE_PROPERTIES_VERSION=${GRADLE_PROPERTIES_VERSION}" | tee -a "$GITHUB_ENV" | tee -a "$GITHUB_OUTPUT"
