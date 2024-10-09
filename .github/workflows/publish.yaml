@@ -74,7 +74,7 @@ jobs:
               fi
             ;;
             workflow_dispatch)
-              if [[ "${GRADLE_PROPERTIES_VERSION}" =~ .*-SNAPSHOT$ ]]
+              if ! [[ "${GRADLE_PROPERTIES_VERSION}" =~ .*-SNAPSHOT$ ]]
               then
                 echo "[!] gradle.properties version is not a SNAPSHOT version. Please fix it and relaunch this job."
                 exit 1
@@ -84,7 +84,7 @@ jobs:
               EARTHLY_DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS} ${GRADLE_PROPERTIES_VERSION}"
             ;;
             *)
-              echo "[!] Unsupported event name for this workflow: ${GITHUB_EVENT_NAME}"
+              echo "[!] Unsupported event name for this workflow: ${GITHUB_EVENT_NAME}. Please check with the workflow maintainer :)"
               exit 1
           esac
 
