@@ -2,7 +2,7 @@ name: Publish artifacts and create Github releases
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+*'
+      - '[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
 env:
@@ -44,12 +44,13 @@ jobs:
           GRADLE_PROPERTIES_VERSION=$(grep version gradle.properties | awk '{print $NF}')
 
           # if a tag triggered the build, use the tag to set the version in gradle.properties
-          case "${GITHUB_EVENT_NAME}")
+          case "${GITHUB_EVENT_NAME}" in
             push)
-              if [ "${TRIGGERING_REF}}" == "tag" ]
+              if [ "${TRIGGERING_REF}" == "tag" ]
               then
                 # fail if tag differs from what's set for gradle
                 if [ "${TAG_NAME}" != "${GRADLE_PROPERTIES_VERSION}" ]
+                then
                   echo "[!] Tag name doesn't match gradle.properties version. Please commit the proper version and retag."
                   exit 1
                 fi
