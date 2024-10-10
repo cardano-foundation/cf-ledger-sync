@@ -100,7 +100,7 @@ jobs:
           earthly +docker-publish \
             --PUSH=${DOCKER_PUSH} \
             --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
-            --DOCKER_IMAGES_LABELS=${DOCKER_METADATA_OUTPUT_LABELS} \
+            --DOCKER_IMAGES_LABELS="${DOCKER_METADATA_OUTPUT_LABELS}" \
             --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
 
       - name: Create Github release and upload jar files
