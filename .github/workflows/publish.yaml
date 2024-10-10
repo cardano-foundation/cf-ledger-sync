@@ -114,12 +114,13 @@ jobs:
       - name: Bump versions
         if: github.ref_type == 'tag'
         run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch --all --tags
+
           # Bump version only if tag's commit belongs to main branch
           if [ $(git for-each-ref | grep ^${GIT_SHORT_COMMIT} | grep refs.remotes.origin | sed 's|.*refs/remotes/origin/\(.*\)|\1|' | grep -c ^main$) -gt 0 ]
           then
-            git config --global user.name 'github-actions[bot]'
-            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-            git fetch --all --tags
             sed -i "s|^version.*|version = ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT|" gradle.properties
             git commit gradle.properties -m "chore(gradle): Bump version to ${NEW_ARTIFACT_SNAPSHOT_VERSION}-SNAPSHOT (automated commit by gha run id $GITHUB_RUN_ID)"
 
