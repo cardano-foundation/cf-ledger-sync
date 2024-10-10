@@ -99,7 +99,7 @@ jobs:
         run: |
           earthly +docker-publish \
             --PUSH=${DOCKER_PUSH} \
-            --DOCKER_REGISTRIES="${DOCKER_REGISTRIES}" \
+            --DOCKER_REGISTRIES="${DOCKER_REGISTRIES},ghcr.io/${{ github.repository }}" \
             --DOCKER_IMAGES_LABELS="${DOCKER_METADATA_OUTPUT_LABELS_COMMA_SEPARATED}" \
             --DOCKER_IMAGES_EXTRA_TAGS="${EARTHLY_DOCKER_IMAGES_EXTRA_TAGS}"
 
