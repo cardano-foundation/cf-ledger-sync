@@ -1,7 +1,8 @@
 FROM eclipse-temurin:21-jdk AS build
+ARG GRADLE_BUILD_ARGS=clean build -x test
 WORKDIR /app
 COPY . /app
-RUN ./gradlew clean build -x test
+RUN ./gradlew ${GRADLE_BUILD_ARGS}
 
 FROM eclipse-temurin:21-jdk AS ledger-sync
 WORKDIR /app

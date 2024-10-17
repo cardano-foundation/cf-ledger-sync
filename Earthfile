@@ -1,99 +1,104 @@
 VERSION 0.8
 
-ARG --global ALL_BUILD_TARGETS="ledger-sync aggregation streamer scheduler"
+IMPORT --allow-privileged github.com/cardano-foundation/cf-gha-workflows/./earthfiles/functions:main AS functions
+
+ARG --global DOCKER_IMAGES_TARGETS="ledger-sync aggregation streamer scheduler"
 
 ARG --global DOCKER_IMAGE_PREFIX="cf-ledger-sync"
 ARG --global DOCKER_IMAGES_EXTRA_TAGS=""
-ARG --global DOCKER_REGISTRIES="hub.docker.com"
-ARG --global HUB_DOCKER_COM_ORG=cardanofoundation
+ARG --global DOCKER_REGISTRIES=""
+ARG --global PUSH=false
+
+ARG --global GRADLE_BUILD_ARGS="clean build -PskipSigning=true --stacktrace"
 
 all:
+  WAIT
+    BUILD +gradle-build
+  END
   LOCALLY
-  ARG RELEASE_TAG
-  FOR image_target IN $ALL_BUILD_TARGETS
-    BUILD +${image_target} --RELEASE_TAG=${RELEASE_TAG}
+  FOR image_target IN $DOCKER_IMAGES_TARGETS
+    BUILD +$image_target --PUSH=$PUSH
   END
 
 docker-publish:
-  ARG EARTHLY_GIT_SHORT_HASH
-  ARG RELEASE_TAG
-  WAIT
-    BUILD +all --RELEASE_TAG=${RELEASE_TAG}
-  END
-  LOCALLY
-  LET IMAGE_NAME = ""
-  FOR registry IN $DOCKER_REGISTRIES
-    FOR image_target IN $ALL_BUILD_TARGETS
-      IF [ "$image_target" = "ledger-sync" ]
-        SET IMAGE_NAME = ${DOCKER_IMAGE_PREFIX}
-      ELSE
-        SET IMAGE_NAME = ${DOCKER_IMAGE_PREFIX}-${image_target}
-      END
-      IF [ ! -z "$DOCKER_IMAGES_EXTRA_TAGS" ]
-        FOR image_tag IN $DOCKER_IMAGES_EXTRA_TAGS
-          IF [ "$registry" = "hub.docker.com" ]
-            RUN docker tag ${IMAGE_NAME}:latest ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
-            RUN docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${image_tag}
-          ELSE
-            RUN docker tag ${IMAGE_NAME}:latest ${registry}/${IMAGE_NAME}:${image_tag}
-            RUN docker push ${registry}/${IMAGE_NAME}:${image_tag}
-          END
-        END
-      END
-      IF [ "$registry" = "hub.docker.com" ]
-        RUN docker tag ${IMAGE_NAME}:latest ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-        RUN docker push ${HUB_DOCKER_COM_ORG}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-      ELSE
-        RUN docker tag ${IMAGE_NAME}:latest ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-        RUN docker push ${registry}/${IMAGE_NAME}:${EARTHLY_GIT_SHORT_HASH}
-      END
-    END
-  END
+  BUILD +all --PUSH=$PUSH
 
 TEMPLATED_DOCKERFILE_BUILD:
   FUNCTION
   ARG DOCKERFILE_TARGET
   ARG DOCKER_IMAGE_NAME
-  ARG RELEASE_TAG
-  FROM DOCKERFILE -f Dockerfile --target ${DOCKERFILE_TARGET} .
+  FROM DOCKERFILE --build-arg GRADLE_BUILD_ARGS=${GRADLE_BUILD_ARGS} -f Dockerfile --target ${DOCKERFILE_TARGET} .
   SAVE IMAGE ${DOCKER_IMAGE_NAME}:latest
-  IF [ ! -z "$RELEASE_TAG" ]
-    RUN mv /app/*jar /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.jar
-    RUN md5sum /app/*jar > /app/${DOCKERFILE_TARGET}-${RELEASE_TAG}.jar.md5sum
+
+
+gradle-build:
+  FROM DOCKERFILE \
+    --build-arg GRADLE_BUILD_ARGS="${GRADLE_BUILD_ARGS}" \
+    -f Dockerfile --target build .
+  ARG RELEASE_TAG=$(grep version gradle.properties | awk '{print $NF}')
+  LET APP_JAR_PATH=""
+  LET APP_JAR_NAME=""
+  RUN mkdir -p /release
+  FOR target IN $DOCKER_IMAGES_TARGETS
+    IF [ $target = "ledger-sync" ]
+      SET APP_JAR_PATH="/app/application/build/libs"
+      SET APP_JAR_NAME=${DOCKER_IMAGE_PREFIX}-${RELEASE_TAG}.jar
+    ELSE
+      SET APP_JAR_PATH="/app/${target}-app/build/libs"
+      SET APP_JAR_NAME=${DOCKER_IMAGE_PREFIX}-${target}-${RELEASE_TAG}.jar
+    END
+    RUN mv ${APP_JAR_PATH}/*jar /release/${APP_JAR_NAME}
+    RUN md5sum /release/${APP_JAR_NAME} > /release/${APP_JAR_NAME}.md5sum
   END
-  SAVE ARTIFACT /app/* AS LOCAL build/
+  SAVE ARTIFACT /release/* AS LOCAL release/
 
 ledger-sync:
   ARG EARTHLY_TARGET_NAME
-  ARG RELEASE_TAG
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+  WAIT
+    DO +TEMPLATED_DOCKERFILE_BUILD \
+      --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+      --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}
+  END
+  DO functions+DOCKER_TAG_N_PUSH \
+    --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX} \
-    --RELEASE_TAG=${RELEASE_TAG}
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 aggregation:
   ARG EARTHLY_TARGET_NAME
-  ARG RELEASE_TAG
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+  WAIT
+    DO +TEMPLATED_DOCKERFILE_BUILD \
+      --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+      --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}
+  END
+  DO functions+DOCKER_TAG_N_PUSH \
+    --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME} \
-    --RELEASE_TAG=${RELEASE_TAG}
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 streamer:
   ARG EARTHLY_TARGET_NAME
-  ARG RELEASE_TAG
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+  WAIT
+    DO +TEMPLATED_DOCKERFILE_BUILD \
+      --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+      --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}
+  END
+  DO functions+DOCKER_TAG_N_PUSH \
+    --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME} \
-    --RELEASE_TAG=${RELEASE_TAG}
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 scheduler:
   ARG EARTHLY_TARGET_NAME
-  ARG RELEASE_TAG
-  DO +TEMPLATED_DOCKERFILE_BUILD \
-    --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+  WAIT
+    DO +TEMPLATED_DOCKERFILE_BUILD \
+      --DOCKERFILE_TARGET=${EARTHLY_TARGET_NAME} \
+      --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME}
+  END
+  DO functions+DOCKER_TAG_N_PUSH \
+    --PUSH=$PUSH \
     --DOCKER_IMAGE_NAME=${DOCKER_IMAGE_PREFIX}-${EARTHLY_TARGET_NAME} \
-    --RELEASE_TAG=${RELEASE_TAG}
+    --DOCKER_IMAGES_EXTRA_TAGS="${DOCKER_IMAGES_EXTRA_TAGS}"
 
 docker-compose-up:
   LOCALLY
