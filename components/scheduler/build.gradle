@@ -4,6 +4,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation(libs.cardano.client.lib)
+    implementation(libs.yaci.store.governance.starter)
 
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
