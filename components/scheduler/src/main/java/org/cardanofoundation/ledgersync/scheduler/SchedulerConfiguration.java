@@ -1,7 +1,10 @@
 package org.cardanofoundation.ledgersync.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cardanofoundation.ledgersync.scheduler.jobs.OffChainDataScheduler;
 import org.cardanofoundation.ledgersync.scheduler.jobs.PoolOfflineDataScheduler;
+import org.cardanofoundation.ledgersync.scheduler.service.OffChainDataStoringService;
+import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.PoolOfflineDataFetchingService;
 import org.cardanofoundation.ledgersync.scheduler.service.PoolOfflineDataStoringService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +49,31 @@ public class SchedulerConfiguration {
     }
 
     @Bean
+    public OffChainDataScheduler offChainVotingDataScheduler(
+        OffChainDataStoringService offChainDataStoringService,
+        OffChainRetryDataErrorService offChainDataFetchingErrorService,
+        OffChainDataProperties offChainDataProperties) {
+        log.info("<<< Enable OffChainDataScheduler >>>");
+        log.info("OffChainDataScheduler: fixed delay time {} sec", offChainDataProperties.getFixedDelay());
+        return new OffChainDataScheduler(offChainDataStoringService, offChainDataFetchingErrorService, offChainDataProperties);
+    }
+
+    @Bean
     PoolOfflineDataProperties poolOfflineDataProperties() {
         PoolOfflineDataProperties poolOfflineDataProperties = new PoolOfflineDataProperties();
         poolOfflineDataProperties.setFixedDelay(properties.getPoolOfflineData().getFixedDelay());
         poolOfflineDataProperties.setInitialDelay(properties.getPoolOfflineData().getInitialDelay());
         return poolOfflineDataProperties;
+    }
+
+    @Bean
+    OffChainDataProperties offChainDataProperties() {
+        OffChainDataProperties offChainDataProperties = new OffChainDataProperties();
+        offChainDataProperties.setFixedDelay(properties.getOffChainData().getFixedDelay());
+        offChainDataProperties.setInitialDelay(properties.getOffChainData().getInitialDelay());
+        offChainDataProperties.setFixedDelayFetchError(properties.getOffChainData().getFixedDelayFetchError());
+        offChainDataProperties.setInitialDelayFetchError(properties.getOffChainData().getInitialDelayFetchError());
+        return offChainDataProperties;
     }
 
 }
