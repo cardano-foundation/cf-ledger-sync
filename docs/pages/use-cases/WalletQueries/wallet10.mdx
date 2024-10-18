@@ -103,23 +103,23 @@ Let's take a closer look at what the query does. 🔎
 
 ### Main `SELECT` Clause
 
-`SELECT`s various columns from the [drep_registration](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#drep_registration) table (alias `dr`) such as `drep_id`, `drep_hash`, `tx_id`, `cert_index`, `type`, `deposit`, `cred_type`, `anchor_url`, `anchor_hash`, `epoch`, `block`, and `slot`.
+`SELECT`s various columns from the [drep_registration](/../../schema.md#drep_registration) table (alias `dr`) such as `drep_id`, `drep_hash`, `tx_id`, `cert_index`, `type`, `deposit`, `cred_type`, `anchor_url`, `anchor_hash`, `epoch`, `block`, and `slot`.
 
 ### `CASE` Statement for `dRep_status`
 
 Calculates the `dRep_status` based on the following logic:
-- `INACTIVE`...If the sum of `vp.epoch` (from the [voting_procedure](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#voting_procedure) table) and the latest `drep_activity` from [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param) is less than the latest `epoch_n` from [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param). This likely indicates the dRep hasn't been active in recent epochs.
-- `RETIRED` If the type in [drep_registration](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#drep_registration) is `UNREG_DREP_CERT`, meaning the dRep has been unregistered.
+- `INACTIVE`...If the sum of `vp.epoch` (from the [voting_procedure](/../../schema.md#voting_procedure) table) and the latest `drep_activity` from [epoch_param](/../../schema.md#epoch_param) is less than the latest `epoch_n` from [epoch_param](/../../schema.md#epoch_param). This likely indicates the dRep hasn't been active in recent epochs.
+- `RETIRED` If the type in [drep_registration](/../../schema.md#drep_registration) is `UNREG_DREP_CERT`, meaning the dRep has been unregistered.
 - `ACTIVE`... otherwise, the dRep is considered active.
 
 ### `registration_date` Calculation
 
-Converts the `block_time` (from the [drep_registration](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#drep_registration) table) to a timestamp with UTC timezone.
+Converts the `block_time` (from the [drep_registration](/../../schema.md#drep_registration) table) to a timestamp with UTC timezone.
 The subquery `sub2` fetches the maximum `block_time` for each `drep_hash` where the `type` is 'REG_DREP_CERT' (registration certificate).
 
 ### `number_of_delegators` Calculation
 
-Uses a `LEFT JOIN` with a subquery `sub3` to count the number of distinct delegators `address` associated with each `drep_hash` in the [delegation_vote](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#delegation_vote) table. `COALESCE` ensures that if there are no delegators, the count is shown as 0.
+Uses a `LEFT JOIN` with a subquery `sub3` to count the number of distinct delegators `address` associated with each `drep_hash` in the [delegation_vote](/../../schema.md#delegation_vote) table. `COALESCE` ensures that if there are no delegators, the count is shown as 0.
 
 ### Joins and Subqueries
 

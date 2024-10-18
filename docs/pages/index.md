@@ -6,7 +6,7 @@ Released under an open-source licence, Ledger Sync aims to achieve the same data
 
 Ongoing developments include improving functionality, such as parallel processing during initial sync, scoping indexing, rewards data, governance off-chain data, granular pattern matching filtering, etc providing blueprints for various development scenarios, with the Foundation encouraging community engagement and contributions to further enhance Ledger Sync's capabilities.
 
-https://github.com/user-attachments/assets/1304ada3-2cf3-46b2-8de8-cb4293e791b4
+https://github.com/user-attachments/assets/684318b5-482d-4e7d-9908-cecfc49880bb
 
 ### Modules
 
@@ -17,27 +17,3 @@ https://github.com/user-attachments/assets/1304ada3-2cf3-46b2-8de8-cb4293e791b4
 3. **Ledger Sync - Streaming App:** This app reads data from a Cardano node and publishes blockchain data to messaging middleware like Kafka or RabbitMQ. It publishes blockchain data in the form of events. There are various types of events that can be published by the streaming app, but you can configure which events you want to publish. This is useful when you want to listen to blockchain events but build your own storage layer. For more details about Streaming App, please check here
 
 4. **Ledger Sync - Aggregation App:** This app delivers aggregated data (eg. address balance), facilitating easy analysis and interpretation. This data is collected separately from the main app and can be stored in a dedicated or in the same schema as the main app. This provides a flexibility for independently sync without impacting the main app sync. 
-
-## Building from source
-
-### Prerequisites
-- Java 21
-- Cardano Node or connection to a remote Cardano node
-- PostgreSQL database
-
-### Build JAR
-```bash
-git clone https://github.com/cardano-foundation/cf-ledger-sync
-cd cf-ledger-sync
-./gradlew clean build -x test
-```
-
-### Contributing to Ledger Sync
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
-
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-
-Please check the details [here](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/CONTRIBUTING.md).

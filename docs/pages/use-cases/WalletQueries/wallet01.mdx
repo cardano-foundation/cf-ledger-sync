@@ -86,7 +86,7 @@ WHERE to1.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67je
 ```
 
 This first subquery `sum1` calculates the total value of all outputs sent (in lovelace) to the specified address `addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t`. 
-The `FROM tx_out to1` clause specifies the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table as the source and gives it the alias `to1` for easier reference. The `WHERE to1.address` clause filters the results to only include transactions for our address.
+The `FROM tx_out to1` clause specifies the [tx_out](/../../schema.md#tx_out) table as the source and gives it the alias `to1` for easier reference. The `WHERE to1.address` clause filters the results to only include transactions for our address.
 
 ### Calculate Total Spent Value:
 
@@ -99,7 +99,7 @@ JOIN tx_out to2 ON
 WHERE to2.address = 'addr_test1qr70pedl22tnzswcfm39nqvsfan9jgtym2k0lgrftga8j67jel8q0vyag8770e8pu3rf6he70dtrexrsg6waj09cae0svmt57t'
 ```
 
-This second subquery `sum2` calculates the total value of all outputs (in lovelace) from the specified address that have been spent. It does this by joining the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) (alias `ti`) and [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) (alias `to2`) tables to find the corresponding spent outputs. 
+This second subquery `sum2` calculates the total value of all outputs (in lovelace) from the specified address that have been spent. It does this by joining the [tx_in](/../../schema.md#tx_in) (alias `ti`) and [tx_out](/../../schema.md#tx_out) (alias `to2`) tables to find the corresponding spent outputs. 
 The `JOIN` condition ensures we only count outputs that were used as inputs in other transactions (i.e., spent funds). `WHERE to2.address` filters the results to only include transactions for our address and the result is also aliased as `value`.
 
 ### Summary:
