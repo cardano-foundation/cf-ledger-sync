@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   ledger-sync-aggregation:
-    image: cardanofoundation/cf-ledger-sync-aggregation:0.1.0
+    image: cardanofoundation/cf-ledger-sync-aggregation:0.1.1
     container_name: ledger-sync-aggregation-${NETWORK:-mainnet}
     env_file:
       - .env
