@@ -1,0 +1,27 @@
+# Live Data from Cardano Node through N2C
+
+Ledger Sync main application can be configured to read live data from a Cardano node through the Node-to-Client (N2C) connection.
+This feature allows storing the current data directly from the Cardano node in the Ledger Sync database.
+
+The live data from the Cardano Node are stored in separate tables prefixed with `local_`.
+
+This support is only enabled if N2C settings are configured in the `application.properties` file or `.env` file (for Docker Compose setup).
+To configure N2C settings, you can refer to [N2C configuration section](docker#configuring-n2c-node-to-client---optional)
+
+## Live or Local Tables
+
+The live data from the Cardano Node are stored in separate tables prefixed with `local_`. The live data are stored with the current epoch
+number, so if the data is available for a previous epoch, it can be retrieved from the database.
+
+Currently, the following tables are supported to store live data from the Cardano Node:
+
+| Table Name                     | Description                                                                 |
+|--------------------------------|-----------------------------------------------------------------------------|
+| `local_epoch_param`            | Stores the current epoch parameters fetched from the Cardano node.         |
+| `local_constitution`           | Stores the current constitution fetched from the Cardano node.             |
+| `local_committee`              | Stores the current committee fetched from the Cardano node.                |
+| `local_committee_member`       | Stores the current committee members fetched from the Cardano node.        |
+| `local_drep_dist`              | Stores the current DRep distribution fetched from the Cardano node.        |
+| `local_gov_action_proposal_status` | Stores the current governance action proposal status fetched from the Cardano node. |
+| `local_hard_fork_initiation`   | Stores the current hard fork initiation fetched from the Cardano node.     |
+| `local_treasury_withdrawal`    | Stores the current treasury withdrawal fetched from the Cardano node.      |
