@@ -1,3 +1,11 @@
+<div align="center">
+
+[![Clean, Build](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/build.yml/badge.svg)](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/build.yml)
+[![CodeQL](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/codeql.yml/badge.svg)](https://github.com/cardano-foundation/cf-ledger-sync/actions/workflows/codeql.yml)
+[![License](https://img.shields.io:/github/license/cardano-foundation/cf-ledger-sync?color=blue&label=license)](https://github.com/cardano-foundation/cf-ledger-sync/blob/master/LICENSE)
+
+</div>
+
 ## Overview
 
 Ledger Sync is a Java application designed to provide efficient access to Cardano blockchain data.
