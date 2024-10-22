@@ -24,7 +24,11 @@ https://github.com/user-attachments/assets/1304ada3-2cf3-46b2-8de8-cb4293e791b4
 
 3. **Ledger Sync - Streaming App:** This app reads data from a Cardano node and publishes blockchain data to messaging middleware like Kafka or RabbitMQ. It publishes blockchain data in the form of events. There are various types of events that can be published by the streaming app, but you can configure which events you want to publish. This is useful when you want to listen to blockchain events but build your own storage layer. For more details about Streaming App, please check here
 
-4. **Ledger Sync - Aggregation App:** This app delivers aggregated data (eg. address balance), facilitating easy analysis and interpretation. This data is collected separately from the main app and can be stored in a dedicated or in the same schema as the main app. This provides a flexibility for independently sync without impacting the main app sync. 
+4. **Ledger Sync - Aggregation App:** This app delivers aggregated data (eg. address balance), facilitating easy analysis and interpretation. This data is collected separately from the main app and can be stored in a dedicated or in the same schema as the main app. This provides a flexibility for independently sync without impacting the main app sync.
+
+## Documentation
+
+Check out [**Ledger Sync documentation site**](https://cardano-foundation.github.io/cf-ledger-sync/) for more information.
 
 ## Building from source
 
