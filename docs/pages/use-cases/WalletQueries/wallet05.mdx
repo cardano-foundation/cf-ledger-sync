@@ -75,16 +75,16 @@ Expected results format
 
 The query traverses multiple tables to find the requested details:
 
--  [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) (alias ma) table stores information about the asset itself.
--  [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx), ie. transaction data.
--  [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out)stores transaction output data, where assets end up after a transaction.
--  [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) refers to blockchain block data. Transactions are grouped into blocks.
--  [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table links multi-asset entries to transaction outputs.
--  [stake_address](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#stake_address) table stores information about wallet addresses.
+-  [multi_asset](/../../schema.md#multi_asset) (alias ma) table stores information about the asset itself.
+-  [tx](/../../schema.md#tx), ie. transaction data.
+-  [tx_out](/../../schema.md#tx_out)stores transaction output data, where assets end up after a transaction.
+-  [block](/../../schema.md#block) refers to blockchain block data. Transactions are grouped into blocks.
+-  [ma_tx_out](/../../schema.md#ma_tx_out) table links multi-asset entries to transaction outputs.
+-  [stake_address](/../../schema.md#stake_address) table stores information about wallet addresses.
 
 ### Main Query (SELECT...FROM)
 
-- The query starts by selecting the desired columns from the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table.
+- The query starts by selecting the desired columns from the [multi_asset](/../../schema.md#multi_asset) table.
 - It filters for the target asset using it's unique fingerprint `asset1nvcwnq60jnm27efjm87xnhqt6alsv024tdyxjm`
 
 ### First Subquery (LEFT JOIN...num_of_tx)
@@ -102,7 +102,7 @@ The query traverses multiple tables to find the requested details:
 
 ### Joining Subqueries
 
-- The main query uses a `LEFT JOIN` to combine the results of the two subqueries back to the main [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table.
+- The main query uses a `LEFT JOIN` to combine the results of the two subqueries back to the main [multi_asset](/../../schema.md#multi_asset) table.
 - The LEFT JOIN ensures that the main query returns a row even if the subqueries don't find matching data (in that case, `num_of_tx` and `num_of_holders` would be NULL).
 
 ### Summary 

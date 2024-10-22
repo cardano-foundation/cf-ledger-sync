@@ -84,7 +84,7 @@ b71b...e3a | 0    | 100,000,000,000| stake_test1up...2r5a | https://thc-room335.
 
 ### Proposal Information Retrieval 
 
-The primary focus of the query is to fetch data from the [gov_action_proposal](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#gov_action_proposal) table (alias `gap`). This returns details like:
+The primary focus of the query is to fetch data from the [gov_action_proposal](/../../schema.md#gov_action_proposal) table (alias `gap`). This returns details like:
 
 - `tx_hash` ...the unique transaction identifier associated with the proposal.
 - `idx` ...an index within the transaction.
@@ -95,7 +95,7 @@ The primary focus of the query is to fetch data from the [gov_action_proposal](h
 
 ### Voting Data Aggregation
 
-The subquery aliased as `voting` calculates the `yes_vote`, `no_vote`, and `abstain_vote` counts for each proposal. It does this by checking the [voting_procedure](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#voting_procedure) table, filtering for the latest vote from each voter on each proposal `(using ROW_NUMBER() and rank_slot = 1)`. It then groups the results by gov_action_tx_hash and gov_action_index to get totals per proposal.
+The subquery aliased as `voting` calculates the `yes_vote`, `no_vote`, and `abstain_vote` counts for each proposal. It does this by checking the [voting_procedure](/../../schema.md#voting_procedure) table, filtering for the latest vote from each voter on each proposal `(using ROW_NUMBER() and rank_slot = 1)`. It then groups the results by gov_action_tx_hash and gov_action_index to get totals per proposal.
 
 ### Joining Proposal and Voting Data
 
@@ -105,7 +105,7 @@ A `LEFT JOIN` combines the proposal information with the calculated vote counts.
 
 The `WHERE` clause filters the results to only include proposals that are still considered "active" based on:
 - The proposal's epoch, when it was made.
-- The latest `gov_action_lifetime` parameter from the [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param) table, ie. how long proposals remain active.
-- The latest `epoch_no` from the [epoch_param](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#epoch_param) table, ie. the current epoch.
+- The latest `gov_action_lifetime` parameter from the [epoch_param](/../../schema.md#epoch_param) table, ie. how long proposals remain active.
+- The latest `epoch_no` from the [epoch_param](/../../schema.md#epoch_param) table, ie. the current epoch.
 
 </Steps>

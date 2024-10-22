@@ -61,7 +61,7 @@ Specifically, we are looking for:
 
 - `tx_out txo` table with information about transaction outputs.
 - `tx_in ti` table with information about transaction inputs. We join these tables so we can check if a UTXO has been spent, i.e., used as an input.
--  This [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table holds general transaction information.
+-  This [tx](/../../schema.md#tx) table holds general transaction information.
 - `datum d` & `script s` tables hold optional extra data about the UTXO. We use LEFT JOIN because not all UTXOs will have datum or scripts attached.
 
 ### Filters
@@ -70,9 +70,9 @@ Specifically, we are looking for:
 - `ti.id IS NULL` is an important condition as it ensures we only get unspent UTXOs, i.e. UTXOs that haven't been used as inputs yet.
 
 ### Summary
-- The query starts by looking at all transaction outputs from the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table.
+- The query starts by looking at all transaction outputs from the [tx_out](/../../schema.md#tx_out) table.
 - It verifies each output belongs to our specific address.
-- It looks for matches in the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to see if the output has been used as an input.
+- It looks for matches in the [tx_in](/../../schema.md#tx_in) table to see if the output has been used as an input.
 - If no match is found, `ti.id IS NULL`, then it's an unspent UTXO.
 - Finally, it fetches any additional information about the optional datum and script, if they exist, and presents the results.
 
