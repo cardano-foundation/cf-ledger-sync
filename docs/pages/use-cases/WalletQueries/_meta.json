@@ -1,0 +1,14 @@
+{
+    "wallet01": "Find the ADA balance of a wallet",
+    "wallet02": "List a balance's UTXOs",
+    "wallet03": "Review wallet transaction history",
+    "wallet04": "List all tokens in a wallet",
+    "wallet05": "Query collection details",
+    "wallet06": "Query Token metadata",
+    "wallet07": "Query Active Stake Pools",
+    "wallet08": "Query Stake Pool details",
+    "wallet09": "Stake pool lifetime blocks",
+    "wallet10": "List current dReps",
+    "wallet11": "Find Active Governance Proposals",
+    "wallet12": "Smart contract transaction data"
+}

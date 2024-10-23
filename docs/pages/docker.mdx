@@ -1,26 +1,174 @@
 import { Callout } from 'nextra/components'
 
-## Docker Build & Run
+# Running Ledger Sync with Docker Compose
 
-Build the jar file first
+This guide explains how to run the LedgerSync main indexer application using Docker Compose.
+You will find the necessary Docker Compose files in the [`docker`](https://github.com/cardano-foundation/cf-ledger-sync/tree/main/docker) directory of the repository.
 
-```bash
-./gradlew clean build -x test
-```
+## Prerequisites
 
-Build docker image
+- Ensure that Docker and Docker Compose are installed on your system.
 
+## Directory Structure
+
+The `docker` directory contains the following Docker Compose files:
+
+- `docker-compose-monolith.yml`: Combines both the LedgerSync application and PostgreSQL.
+- `main-app-compose.yml`: For running the LedgerSync application only, connecting to an external PostgreSQL database.
+- `postgres-compose.yml`: For configuring and running the PostgreSQL database.
+
+## Environment Variable Configuration
+
+You can configure the environment variables using one of the following methods:
+
+1. **.env file**: Place your environment variables in the `.env` file located in the `docker` directory.
+2. **application.properties file**: Update the `application.properties` file in the `docker` directory. This file is mounted as a volume in the Docker container, and the application reads the environment variables from it.
+
+> **Note**: If you set a variable in the `application.properties` file, ensure that the same variable is removed from the Docker Compose YAML file or `.env` file. The value from the `application.properties` file will be overridden if the variable is present in multiple places.
+
+### Variable Naming Convention
+
+- In `application.properties`, use `.` as a separator (e.g., `spring.datasource.url`).
+- In Docker Compose YAML files or the `.env` file, use `_` as a separator and uppercase letters (e.g., `SPRING_DATASOURCE_URL`).
+
+## 1. Running LedgerSync with PostgreSQL
+
+To run the Ledger Sync main indexer application with an integrated PostgreSQL database, use the `docker-compose-monolith.yml` file.
+This file includes configurations from both `main-app-compose.yml` and `postgres-compose.yml`.
+
+### Command
 
 ```shell
-docker build  --target ledger-sync -t cardanofoundation/ledger-sync:<version> .
+docker-compose -f docker-compose-monolith.yml up
 ```
 
-### Docker Run
+This command will start both the LedgerSync application and PostgreSQL database.
 
-Copy env.example to env
+## 2. Running LedgerSync with External PostgreSQL
 
-Edit ``env`` file with database and network details
+If you prefer to connect LedgerSync to an external PostgreSQL database, use the `main-app-compose.yml` file. You will need to configure the PostgreSQL connection details in the `.env` file or `application.properties` file.
+
+### Environment Variables
+
+- **In the `.env` file**:
 
 ```shell
-docker run -p 8080:8080 --env-file env cardanofoundation/ledger-sync:<version>
+SPRING_DATASOURCE_URL=jdbc:postgresql://<host>:<port>/<database>?currentSchema=<schema>
+SPRING_DATASOURCE_USERNAME=<username>
+SPRING_DATASOURCE_PASSWORD=<password>
 ```
+
+- **In the `application.properties` file**:
+
+```properties
+spring.datasource.url=jdbc:postgresql://<host>:<port>/<database>?currentSchema=<schema>
+spring.datasource.username=<username>
+spring.datasource.password=<password>
+```
+
+Make sure to remove these variables from the `.env` file or Docker Compose YAML if they are set in `application.properties`.
+
+### Command
+
+```shell
+docker-compose -f main-app-compose.yml up
+```
+
+This command will start the LedgerSync application and connect it to your external PostgreSQL database.
+
+## Changing the Network
+
+By default, LedgerSync is configured to connect to the Cardano mainnet. However, you can easily change the network to connect
+to other Cardano networks such as the preprod or preview or sanchonet by modifying the network-related environment variables.
+
+### Configuration Steps
+
+1. **Modify the `.env` file**:
+
+Update the network-related environment variables in the `.env` file. For example, to connect to the Cardano preprod:
+
+```shell
+NETWORK=preprod
+
+STORE_CARDANO_HOST=preprod-node.world.dev.cardano.org
+STORE_CARDANO_PORT=30000
+STORE_CARDANO_PROTOCOLMAGIC=1
+```
+
+2. **Update application.properties**:
+
+Alternatively, if you're using application.properties for configuration, update the relevant properties as follows:
+
+```
+network=preprod
+
+store.cardano.host=preprod-node.world.dev.cardano.org
+store.cardano.port=30000
+store.cardano.protocolMagic=1
+```
+
+**Note**: Valid networks :  mainnet, preprod, preview,sanchonet
+
+## Configuring N2C (Node-to-Client) - Optional
+
+LedgerSync supports fetching certain data directly from a connected Cardano node using Node-to-Client (N2C) settings.
+This data, such as protocol parameters, is stored in separate tables typically prefixed with `local_`.
+
+**For example**, the current protocol parameters fetched via N2C are stored in the `local_protocol_param` table.
+
+### Configuration Options
+
+You can configure N2C in one of the following ways, depending on whether you're connecting to a local Cardano node or a remote one.
+
+### 1. Connecting to a Local Cardano Node
+
+To fetch data from a locally running Cardano node, you need to point to the node's socket path.
+
+- **In the `.env` file**:
+
+```shell
+STORE_CARDANO_N2C_NODE_SOCKET_PATH=/home/Cardano/Setups/node/preview/data/node-ipc/node.socket
+  ```
+
+- **In `application.properties`**:
+
+```properties
+store.cardano.n2c-node-socket-path=/home/Cardano/Setups/node/preview/data/node-ipc/node.socket
+```
+
+### 2. Connecting to a Remote Cardano Node via Socat
+
+If you're connecting to a remote Cardano node and the N2C port has been exposed through `socat`, you can configure the N2C settings
+using the host and port of the remote node.
+
+- **In the `.env` file**:
+
+```shell
+STORE_CARDANO_N2C_HOST=<node_host>
+STORE_CARDANO_N2C_PORT=<socat_port>
+  ```
+
+- **In `application.properties`**:
+
+```properties
+store.cardano.n2c-host=<node_host>
+store.cardano.n2c-port=<socat_port>
+  ```
+
+> **Note**: Ensure that the relevant settings are only configured in one place (either `application.properties` or `.env`) to avoid conflicts. If you're using the `.env` file, make sure to comment out or remove the corresponding lines in `application.properties` and vice versa.
+
+
+## Environment Variables Reference
+
+Here is a reference table for some key environment variables:
+
+| **Environment Variable** <br/> `.env` or `docker compose yml` | **Property Name in `application.properties`** | **Description**                                               |
+|------------------------------------|------------------------------------------------|---------------------------------------------------------------|
+| `SPRING_DATASOURCE_URL`            | `spring.datasource.url`                        | URL for the PostgreSQL database connection.                   |
+| `SPRING_DATASOURCE_USERNAME`       | `spring.datasource.username`                   | Username for the PostgreSQL database.                         |
+| `SPRING_DATASOURCE_PASSWORD`       | `spring.datasource.password`                   | Password for the PostgreSQL database.                         |
+| `STORE_CARDANO_HOST`               | `store.cardano.host`                           | Cardano relay node host.                                       |
+| `STORE_CARDANO_PORT`               | `store.cardano.port`                           | Cardano relay node port.                                       |
+| `STORE_CARDANO_PROTOCOLMAGIC`      | `store.cardano.protocolMagic`                  | Protocol magic number for the Cardano network.                |
+| `NETWORK`                          | `network`                                      | Cardano network to connect to (mainnet, preprod, preview, sanchonet). |
+| `HEALTH_CHECK_ENABLED`             | `health.check.enabled`                         | Enables or disables health checks for the application.        |

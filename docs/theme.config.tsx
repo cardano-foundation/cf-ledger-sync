@@ -9,7 +9,7 @@ const config: DocsThemeConfig = {
   chat: {
     link: 'https://discord.gg/jw3yeYJw',
   },
-  docsRepositoryBase: 'https://github.com/cardano-foundation/cf-ledger-sync',
+  docsRepositoryBase: 'https://github.com/cardano-foundation/cf-ledger-sync/blob/main/',
   footer: {
     text: 'Ledger Sync project',
   },

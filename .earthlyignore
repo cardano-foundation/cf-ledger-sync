@@ -5,3 +5,5 @@ docker-compose*
 .gitignore
 LICENSE
 .vscode
+release
+Earthfile

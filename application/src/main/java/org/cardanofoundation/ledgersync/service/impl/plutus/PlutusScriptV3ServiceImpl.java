@@ -1,7 +1,8 @@
 package org.cardanofoundation.ledgersync.service.impl.plutus;
 
 import com.bloxbean.cardano.client.exception.CborSerializationException;
-import com.bloxbean.cardano.yaci.store.common.util.PlutusV3Script;
+
+import com.bloxbean.cardano.client.plutus.spec.PlutusV3Script;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
