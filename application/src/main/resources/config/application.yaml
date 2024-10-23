@@ -80,6 +80,7 @@ store:
 ledger-sync:
   scheduler:
     off-chain-data:
+      retry-count: ${OFF_CHAIN_RETRY_COUNT:10}
       fixed-delay: ${OFF_CHAIN_DATA_FIXED_DELAY:300}
       initial-delay: ${OFF_CHAIN_DATA_INIT_DELAY:20}
       fixed-delay-fetch-error: ${OFF_CHAIN_DATA_FIXED_DELAY_FETCH_ERROR:86400}

@@ -136,8 +136,7 @@ CREATE TABLE IF NOT EXISTS off_chain_fetch_error
     type_vote             varchar(64)      NOT NULL,
     fetch_error           varchar(2000)    NOT NULL,
     fetch_time            timestamp without time zone NOT NULL,
-    retry_count           integer default 0   NOT NULL,
-    valid_after_retry     boolean default false NOT NULL
+    retry_count           integer default 0   NOT NULL
 );
 ALTER TABLE ONLY off_chain_fetch_error
     ADD CONSTRAINT unique_off_chain_fetch_error UNIQUE (anchor_url, anchor_hash, type_vote);

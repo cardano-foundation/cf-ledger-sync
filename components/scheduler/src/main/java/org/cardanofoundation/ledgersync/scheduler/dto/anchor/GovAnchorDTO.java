@@ -15,8 +15,8 @@ public class GovAnchorDTO extends AnchorDTO {
     Long govActionIdx;
 
     public GovAnchorDTO(String anchorUrl, String anchorHash, Long slot, String govActionTxHash,
-        Long govActionIdx) {
-        super(anchorUrl, anchorHash, slot);
+        Long govActionIdx, Integer retryCount) {
+        super(anchorUrl, anchorHash, slot, retryCount);
         this.govActionIdx = govActionIdx;
         this.govActionTxHash = govActionTxHash;
     }

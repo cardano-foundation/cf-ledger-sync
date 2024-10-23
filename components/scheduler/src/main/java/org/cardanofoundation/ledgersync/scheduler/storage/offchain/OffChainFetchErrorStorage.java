@@ -12,5 +12,4 @@ public interface OffChainFetchErrorStorage extends JpaRepository<OffChainFetchEr
 
     List<OffChainFetchError> findByCpIdIn(Set<OffChainFetchErrorCpId> offChainFetchErrorCompoundId);
 
-    List<OffChainFetchError> findByRetryCountLessThanEqualAndValidAfterRetryFalse(Integer maxRetry);
 }

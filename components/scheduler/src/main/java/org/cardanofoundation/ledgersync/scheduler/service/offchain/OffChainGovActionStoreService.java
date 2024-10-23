@@ -1,6 +1,9 @@
 package org.cardanofoundation.ledgersync.scheduler.service.offchain;
 
+import com.bloxbean.cardano.yaci.store.governance.storage.impl.model.GovActionProposalEntity;
+import com.bloxbean.cardano.yaci.store.governance.storage.impl.model.GovActionProposalId;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.GovActionProposalAnchorCpId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorCpId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionCpId;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
@@ -23,6 +27,7 @@ import org.cardanofoundation.ledgersync.consumercommon.enumeration.TypeVote;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainGovFetchResultDTO;
+import org.cardanofoundation.ledgersync.scheduler.storage.governance.GovActionProposalRepo;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainGovActionStorage;
 import org.springframework.stereotype.Component;
@@ -36,9 +41,10 @@ public class OffChainGovActionStoreService extends
 
     private final OffChainFetchErrorStorage offChainFetchErrorStorage;
     private final OffChainGovActionStorage offChainGovActionStorage;
+    private final GovActionProposalRepo govActionProposalRepo;
 
     @Override
-    public OffChainGovAction extractSuccessOffChainData(OffChainGovFetchResultDTO offChainFetchResult) {
+    public OffChainGovAction extractOffChainData(OffChainGovFetchResultDTO offChainFetchResult, Integer maxRetry) {
         OffChainGovAction offChainGovActionData = new OffChainGovAction();
         OffChainGovActionCpId offChainGovActionCpId = new OffChainGovActionCpId(
             offChainFetchResult.getGovActionTxHash(), offChainFetchResult.getGovActionIdx());
@@ -47,13 +53,19 @@ public class OffChainGovActionStoreService extends
         offChainGovActionData.setGovActionTxHash(offChainFetchResult.getGovActionTxHash());
         offChainGovActionData.setGovActionIdx(offChainFetchResult.getGovActionIdx());
         offChainGovActionData.setContent(offChainFetchResult.getRawData());
-        offChainGovActionData.setCheckValid(offChainFetchResult.isValid() ? CheckValid.VALID : CheckValid.INVALID);
         offChainGovActionData.setValidAtSlot(offChainFetchResult.isValid() ? offChainFetchResult.getSlotNo() : null);
+
+        if (!offChainFetchResult.isValid() && (offChainFetchResult.getRetryCount() >= maxRetry - 1)) {
+            offChainGovActionData.setCheckValid(CheckValid.EXPIRED);
+        } else {
+            offChainGovActionData.setCheckValid(offChainFetchResult.isValid() ? CheckValid.VALID : CheckValid.INVALID);
+        }
+
         return offChainGovActionData;
     }
 
     @Override
-    public OffChainFetchError extractFetchError(OffChainFetchResultDTO offChainAnchorData) {
+    public OffChainFetchError extractFetchError(OffChainGovFetchResultDTO offChainAnchorData) {
         OffChainFetchError offChainVoteFetchError = new OffChainFetchError();
         OffChainFetchErrorCpId offChainVoteFetchErrorId =
             new OffChainFetchErrorCpId(
@@ -70,9 +82,8 @@ public class OffChainGovActionStoreService extends
     }
 
     @Override
-    public void insertFetchSuccessData(Collection<OffChainGovAction> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainGovAction> offChainAnchorData) {
 
-        // Remove all duplicates OffChainGovAction
         offChainAnchorData =
             offChainAnchorData.stream()
                 .filter(distinctByKey(OffChainGovAction::getCpId))
@@ -83,13 +94,46 @@ public class OffChainGovActionStoreService extends
                 .map(OffChainGovAction::getCpId)
                 .collect(Collectors.toSet());
 
-        Set<OffChainGovAction> existingOffChainVoteGovActionMap =
-            new HashSet<>(offChainGovActionStorage.findByCpIdIn(offChainGovActionIds));
+        Set<OffChainGovActionCpId> existingOffChainVoteGovActionMapCpId =
+            new HashSet<>(offChainGovActionStorage.findByCpIdIn(offChainGovActionIds))
+                .stream().map(OffChainGovAction::getCpId)
+                .collect(Collectors.toSet());
 
         List<OffChainGovAction> offChainGovActionDataToSave =
             offChainAnchorData.stream()
-                .filter(e -> !existingOffChainVoteGovActionMap.contains(e))
+                .filter(e -> !existingOffChainVoteGovActionMapCpId.contains(e.getCpId()))
                 .collect(Collectors.toList());
+
+        offChainGovActionStorage.saveAll(offChainGovActionDataToSave);
+    }
+
+    @Override
+    public void updateFetchData(Collection<OffChainGovAction> offChainAnchorData) {
+
+        offChainAnchorData =
+            offChainAnchorData.stream()
+                .filter(distinctByKey(OffChainGovAction::getCpId))
+                .collect(Collectors.toList());
+
+        Set<OffChainGovActionCpId> offChainGovActionIds =
+            offChainAnchorData.stream()
+                .map(OffChainGovAction::getCpId)
+                .collect(Collectors.toSet());
+
+        Map<OffChainGovActionCpId, OffChainGovAction> mapEntityByCpId = offChainAnchorData.stream()
+            .collect(Collectors.toMap(OffChainGovAction::getCpId, Function.identity()));
+
+        Set<OffChainGovAction> offChainGovActionDataToSave =
+            new HashSet<>(offChainGovActionStorage.findByCpIdIn(offChainGovActionIds));
+
+        offChainGovActionDataToSave.forEach(e -> {
+            OffChainGovAction oc = mapEntityByCpId.get(e.getCpId());
+            if (oc != null){
+                e.setContent(oc.getContent());
+                e.setCheckValid(oc.getCheckValid());
+                e.setValidAtSlot(oc.getValidAtSlot());
+            }
+        });
 
         offChainGovActionStorage.saveAll(offChainGovActionDataToSave);
     }
@@ -98,7 +142,6 @@ public class OffChainGovActionStoreService extends
     public void insertFetchFailData(Collection<OffChainFetchError> offChainFetchErrorData) {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-        // Remove all duplicates OffChainVoteFetchErrorId
         offChainFetchErrorData =
             offChainFetchErrorData.stream()
                 .filter(distinctByKey(OffChainFetchError::getCpId))

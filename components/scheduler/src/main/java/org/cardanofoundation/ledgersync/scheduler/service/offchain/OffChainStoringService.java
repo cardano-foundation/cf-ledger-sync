@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -57,11 +58,13 @@ public abstract class OffChainStoringService<S, F, O extends OffChainFetchResult
         offChainAnchorsFetchResult = new ConcurrentLinkedQueue<>();
     }
 
-    public abstract S extractSuccessOffChainData(O offChainAnchorData);
+    public abstract S extractOffChainData(O offChainAnchorData, Integer maxRetry);
 
-    public abstract F extractFetchError(OffChainFetchResultDTO offChainAnchorData);
+    public abstract F extractFetchError(O offChainAnchorData);
 
-    public abstract void insertFetchSuccessData(Collection<S> offChainAnchorData);
+    public abstract void insertFetchData(Collection<S> offChainAnchorData);
+
+    public abstract void updateFetchData(Collection<S> offChainAnchorData);
 
     public abstract void insertFetchFailData(Collection<F> offChainFetchErrorData);
 
@@ -74,9 +77,9 @@ public abstract class OffChainStoringService<S, F, O extends OffChainFetchResult
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public List<S> getOffChainAnchorsFetchSuccess() {
+    public List<S> getOffChainAnchorsFetch(Integer maxRetry) {
         return offChainAnchorsFetchResult.stream()
-            .map(this::extractSuccessOffChainData)
+            .map(e -> this.extractOffChainData(e, maxRetry))
             .toList();
     }
 
@@ -186,6 +189,7 @@ public abstract class OffChainStoringService<S, F, O extends OffChainFetchResult
                 .rawData(content)
                 .fetchFailError(error == null ? "Unknown error" : error)
                 .slotNo(anchor.getSlot())
+                .retryCount(anchor.getRetryCount())
                 .build();
 
         O ocFetchResult = addIdKey(data, anchor);
@@ -201,6 +205,7 @@ public abstract class OffChainStoringService<S, F, O extends OffChainFetchResult
                 .fetchFailError(null)
                 .rawData(responseBody)
                 .slotNo(anchor.getSlot())
+                .retryCount(anchor.getRetryCount())
                 .build();
 
         O ocFetchResult = addIdKey(data, anchor);

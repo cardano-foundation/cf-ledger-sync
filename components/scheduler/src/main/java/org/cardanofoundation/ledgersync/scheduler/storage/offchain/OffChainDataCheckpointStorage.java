@@ -14,7 +14,7 @@ public interface OffChainDataCheckpointStorage extends JpaRepository<OffChainDat
     @Query("""
             SELECT d FROM OffChainDataCheckpoint d
             WHERE d.type = :type
-            ORDER BY d.slotNo
-            DESC LIMIT 1""")
+            ORDER BY d.slotNo DESC
+            LIMIT 1""")
     Optional<OffChainDataCheckpoint> findFirstByType(@Param("type") OffChainCheckpointType type);
 }

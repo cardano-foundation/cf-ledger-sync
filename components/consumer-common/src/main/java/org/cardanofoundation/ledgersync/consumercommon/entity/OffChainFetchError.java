@@ -78,9 +78,6 @@ public class OffChainFetchError extends BaseEntity {
     @Column(name = "retry_count", nullable = false)
     private Integer retryCount;
 
-    @Column(name = "valid_after_retry", nullable = false)
-    private boolean validAfterRetry;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

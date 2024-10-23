@@ -10,5 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum CheckValid {
     INVALID,
-    VALID
+    VALID,
+    EXPIRED
 }

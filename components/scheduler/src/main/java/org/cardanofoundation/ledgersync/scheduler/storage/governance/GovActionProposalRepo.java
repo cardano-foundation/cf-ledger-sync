@@ -4,6 +4,7 @@ import com.bloxbean.cardano.yaci.store.governance.storage.impl.model.GovActionPr
 import com.bloxbean.cardano.yaci.store.governance.storage.impl.model.GovActionProposalId;
 import java.util.List;
 import java.util.Optional;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.GovActionProposalAnchorCpId;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +20,7 @@ public interface GovActionProposalRepo extends JpaRepository<GovActionProposalEn
     Optional<Long> maxSlotNo();
 
     @Query("""
-        SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO(gap.anchorUrl, gap.anchorHash, gap.slot, gap.txHash, gap.index)
+        SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO(gap.anchorUrl, gap.anchorHash, gap.slot, gap.txHash, gap.index, 0)
         FROM GovActionProposalEntity gap
         WHERE gap.slot > :fromSlot and gap.slot <= :toSlot
         AND gap.anchorUrl IS NOT NULL
