@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SchedulerProperties {
     private boolean enabled = true;
     private PoolOfflineData poolOfflineData = new PoolOfflineData();
+    private OffChainData offChainData = new OffChainData();
     private AsyncConfig asyncConfig = new AsyncConfig();
 
     @Getter
@@ -17,6 +18,15 @@ public class SchedulerProperties {
     public static final class PoolOfflineData {
         private long fixedDelay = 172800L;
         private long initialDelay = 20000L;
+    }
+
+    @Getter
+    @Setter
+    public static final class OffChainData {
+        private long fixedDelay = 300000L;
+        private long initialDelay = 20000L;
+        private long fixedDelayFetchError = 2000000L;
+        private long initialDelayFetchError = 2000000L;
     }
 
     @Getter
