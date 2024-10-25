@@ -10,7 +10,8 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainGovActionStoreService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action.GovActionExtractFetchService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action.GovActionStoringService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainGovActionStorage;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,9 @@ import org.springframework.stereotype.Service;
 public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataErrorService {
 
     static final Integer MAX_RETRY = 10;
-    final OffChainGovActionStoreService offChainGovActionStoreService;
+    final GovActionExtractFetchService offChainGovActionStoreService;
     final OffChainGovActionStorage offChainGovActionStorage;
+    final GovActionStoringService govActionStoringService;
 
     @Override
     public void retryOffChainErrorData() {
@@ -42,8 +44,8 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
         List<OffChainGovAction> offChainVoteGovActionDataList = offChainGovActionStoreService.getOffChainAnchorsFetch(
             MAX_RETRY);
 
-        offChainGovActionStoreService.updateFetchData(offChainVoteGovActionDataList);
-        offChainGovActionStoreService.insertFetchFailData(offChainVoteFetchErrors);
+        govActionStoringService.updateFetchData(offChainVoteGovActionDataList);
+        govActionStoringService.insertFetchFailData(offChainVoteFetchErrors);
 
         log.info("End retrying to fetch gov-action metadata, taken time: {} ms",
             System.currentTimeMillis() - startTime);

@@ -3,7 +3,7 @@ package org.cardanofoundation.ledgersync.scheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.cardanofoundation.ledgersync.scheduler.jobs.OffChainDataScheduler;
 import org.cardanofoundation.ledgersync.scheduler.jobs.PoolOfflineDataScheduler;
-import org.cardanofoundation.ledgersync.scheduler.service.OffChainDataStoringService;
+import org.cardanofoundation.ledgersync.scheduler.service.OffChainPersistService;
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.PoolOfflineDataFetchingService;
 import org.cardanofoundation.ledgersync.scheduler.service.PoolOfflineDataStoringService;
@@ -50,12 +50,12 @@ public class SchedulerConfiguration {
 
     @Bean
     public OffChainDataScheduler offChainVotingDataScheduler(
-        OffChainDataStoringService offChainDataStoringService,
+        OffChainPersistService offChainPersistService,
         OffChainRetryDataErrorService offChainDataFetchingErrorService,
         OffChainDataProperties offChainDataProperties) {
         log.info("<<< Enable OffChainDataScheduler >>>");
         log.info("OffChainDataScheduler: fixed delay time {} sec", offChainDataProperties.getFixedDelay());
-        return new OffChainDataScheduler(offChainDataStoringService, offChainDataFetchingErrorService, offChainDataProperties);
+        return new OffChainDataScheduler(offChainPersistService, offChainDataFetchingErrorService, offChainDataProperties);
     }
 
     @Bean

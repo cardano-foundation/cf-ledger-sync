@@ -18,7 +18,7 @@ public class OffChainFetchResultDTO {
     private boolean isValid;
     private String fetchFailError;
     private Long slotNo;
-    private Integer retryCount = 0;
+    private Integer retryCount;
 
     public OffChainFetchResultDTO(OffChainFetchResultDTO o){
         this.anchorHash = o.getAnchorHash();

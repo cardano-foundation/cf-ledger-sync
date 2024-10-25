@@ -19,13 +19,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.net.ssl.SSLException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -45,7 +47,7 @@ import reactor.netty.http.client.HttpClient;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-public abstract class OffChainStoringService<S, F, O extends OffChainFetchResultDTO, T extends AnchorDTO> {
+public abstract class OffChainFetchAbstractService<S, F, O extends OffChainFetchResultDTO, T extends AnchorDTO> {
 
     static final int TIMEOUT = 30000;
     static final int READ_TIMEOUT = 19000;
@@ -61,12 +63,6 @@ public abstract class OffChainStoringService<S, F, O extends OffChainFetchResult
     public abstract S extractOffChainData(O offChainAnchorData, Integer maxRetry);
 
     public abstract F extractFetchError(O offChainAnchorData);
-
-    public abstract void insertFetchData(Collection<S> offChainAnchorData);
-
-    public abstract void updateFetchData(Collection<S> offChainAnchorData);
-
-    public abstract void insertFetchFailData(Collection<F> offChainFetchErrorData);
 
     public abstract O addIdKey(OffChainFetchResultDTO offChainAnchorData, T anchor);
 
