@@ -3,8 +3,6 @@ package org.cardanofoundation.ledgersync.consumercommon.entity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.util.Objects;
@@ -20,7 +18,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "off_chain_drep_registration", uniqueConstraints = {
-    @UniqueConstraint(name = "unique_off_chain_drep_regis",
+    @UniqueConstraint(name = "unique_off_chain_drep_registration",
         columnNames = {"drep_reg_tx_hash", "drep_reg_cert_index"})
 })
 @Getter
@@ -41,7 +39,6 @@ public class OffChainDrepRegistration extends BaseEntity {
   @Column(name = "content")
   private String content;
 
-  @Enumerated(EnumType.STRING)
   @Column(name = "check_valid", nullable = false, length = 64)
   private CheckValid checkValid;
 

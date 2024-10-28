@@ -11,11 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GovAnchorDTO extends AnchorDTO {
 
-    String govActionTxHash;
-    Long govActionIdx;
+    private String govActionTxHash;
+    private Long govActionIdx;
 
     public GovAnchorDTO(String anchorUrl, String anchorHash, Long slot, String govActionTxHash,
         Long govActionIdx, Integer retryCount) {
+
         super(anchorUrl, anchorHash, slot, retryCount);
         this.govActionIdx = govActionIdx;
         this.govActionTxHash = govActionTxHash;

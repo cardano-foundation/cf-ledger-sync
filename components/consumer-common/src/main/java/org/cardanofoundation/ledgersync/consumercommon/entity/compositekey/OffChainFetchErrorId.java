@@ -1,7 +1,8 @@
 package org.cardanofoundation.ledgersync.consumercommon.entity.compositekey;
 
-import jakarta.persistence.Column;
 import java.io.Serializable;
+
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class GovActionProposalAnchorCpId implements Serializable {
+public class OffChainFetchErrorId implements Serializable {
 
     @Column(
         name = "anchor_url",
@@ -27,5 +28,12 @@ public class GovActionProposalAnchorCpId implements Serializable {
         insertable = false,
         updatable = false
     )
-    private String anchor_hash;
+    private String anchorHash;
+
+    @Column(
+        name = "type",
+        insertable = false,
+        updatable = false
+    )
+    private Integer type;
 }

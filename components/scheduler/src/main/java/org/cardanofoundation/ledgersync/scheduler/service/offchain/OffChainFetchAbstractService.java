@@ -2,17 +2,6 @@ package org.cardanofoundation.ledgersync.scheduler.service.offchain;
 
 import static com.bloxbean.cardano.client.util.JsonFieldWriter.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.ChannelOption;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.SslProvider;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
-import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -23,15 +12,11 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Predicate;
+
 import javax.net.ssl.SSLException;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+
 import org.cardanofoundation.ledgersync.common.util.UrlUtil;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.AnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
@@ -42,6 +27,22 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.netty.channel.ChannelOption;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
+import jakarta.annotation.PostConstruct;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.HttpClient;
 
 
@@ -60,7 +61,7 @@ public abstract class OffChainFetchAbstractService<S, F, O extends OffChainFetch
         offChainAnchorsFetchResult = new ConcurrentLinkedQueue<>();
     }
 
-    public abstract S extractOffChainData(O offChainAnchorData, Integer maxRetry);
+    public abstract S extractOffChainData(O offChainAnchorData);
 
     public abstract F extractFetchError(O offChainAnchorData);
 
@@ -73,9 +74,9 @@ public abstract class OffChainFetchAbstractService<S, F, O extends OffChainFetch
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public List<S> getOffChainAnchorsFetch(Integer maxRetry) {
+    public List<S> getOffChainAnchorsFetch() {
         return offChainAnchorsFetchResult.stream()
-            .map(e -> this.extractOffChainData(e, maxRetry))
+            .map(this::extractOffChainData)
             .toList();
     }
 

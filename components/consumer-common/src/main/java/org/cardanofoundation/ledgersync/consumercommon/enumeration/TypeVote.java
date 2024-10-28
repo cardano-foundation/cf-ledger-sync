@@ -9,9 +9,11 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @Getter
 public enum TypeVote {
-    VOTING,
-    GOV_ACTION,
-    DREP_REGISTRATION,
-    CONSTITUTION,
-    COMMITTEE_DEREGISTRATION
+    VOTING(1),
+    GOV_ACTION(2),
+    DREP_REGISTRATION(3),
+    CONSTITUTION(4),
+    COMMITTEE_DEREGISTRATION(5);
+
+    int value;
 }

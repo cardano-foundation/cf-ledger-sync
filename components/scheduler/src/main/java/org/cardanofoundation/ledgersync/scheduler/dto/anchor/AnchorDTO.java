@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnchorDTO {
-    String anchorUrl;
-    String anchorHash;
-    Long slot;
-    Integer retryCount;
+    private String anchorUrl;
+    private String anchorHash;
+    private Long slot;
+    private Integer retryCount;
 }

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS off_chain_voting_data
     id                    bigint        PRIMARY KEY,
     voting_procedure_id   uuid          NOT NULL UNIQUE,
     content               jsonb,
-    check_valid           varchar(64)   NOT NULL,
+    check_valid           integer       NOT NULL,
     valid_at_slot         bigint
 );
 CREATE SEQUENCE off_chain_voting_data_id_seq
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS off_chain_gov_action
     gov_action_tx_hash    varchar(64)   NOT NULL,
     gov_action_idx        integer       NOT NULL,
     content               jsonb,
-    check_valid           varchar(64)   NOT NULL,
+    check_valid           integer       NOT NULL,
     valid_at_slot         bigint
 );
 ALTER TABLE ONLY off_chain_gov_action
@@ -58,11 +58,11 @@ CREATE TABLE IF NOT EXISTS off_chain_drep_registration
     drep_reg_tx_hash      varchar(64)   NOT NULL,
     drep_reg_cert_index   integer       NOT NULL,
     content               jsonb,
-    check_valid           varchar(64)   NOT NULL,
+    check_valid           integer       NOT NULL,
     valid_at_slot         bigint
 );
 ALTER TABLE ONLY off_chain_drep_registration
-    ADD CONSTRAINT unique_off_chain_drep_regis UNIQUE (drep_reg_tx_hash, drep_reg_cert_index);
+    ADD CONSTRAINT unique_off_chain_drep_registration UNIQUE (drep_reg_tx_hash, drep_reg_cert_index);
 CREATE SEQUENCE off_chain_drep_registration_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS off_chain_constitution
     id                        bigint        PRIMARY KEY,
     constitution_active_epoch integer       NOT NULL UNIQUE,
     content                   jsonb,
-    check_valid               varchar(64)   NOT NULL,
+    check_valid               integer       NOT NULL,
     valid_at_slot             bigint
 );
 
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS off_chain_committee_deregistration
     committee_dereg_tx_hash       varchar(64)   NOT NULL,
     committee_dereg_cert_index    integer       NOT NULL,
     content                       jsonb,
-    check_valid                   varchar(64)   NOT NULL,
+    check_valid                   integer       NOT NULL,
     valid_at_slot                 bigint
 );
 ALTER TABLE ONLY off_chain_committee_deregistration
@@ -130,16 +130,16 @@ ALTER COLUMN id SET DEFAULT nextval('off_chain_committee_deregistration_id_seq':
 
 CREATE TABLE IF NOT EXISTS off_chain_fetch_error
 (
-    id                    bigint          PRIMARY KEY,
+    id                    bigint                        PRIMARY KEY,
     anchor_url            varchar(2000),
     anchor_hash           varchar(64),
-    type_vote             varchar(64)      NOT NULL,
-    fetch_error           varchar(2000)    NOT NULL,
-    fetch_time            timestamp without time zone NOT NULL,
-    retry_count           integer default 0   NOT NULL
+    type                  integer                       NOT NULL,
+    fetch_error           varchar(2000)                 NOT NULL,
+    fetch_time            timestamp without time zone   NOT NULL,
+    retry_count           integer default 0             NOT NULL
 );
 ALTER TABLE ONLY off_chain_fetch_error
-    ADD CONSTRAINT unique_off_chain_fetch_error UNIQUE (anchor_url, anchor_hash, type_vote);
+    ADD CONSTRAINT unique_off_chain_fetch_error UNIQUE (anchor_url, anchor_hash, type);
 
 CREATE SEQUENCE off_chain_fetch_error_id_seq
     START WITH 1

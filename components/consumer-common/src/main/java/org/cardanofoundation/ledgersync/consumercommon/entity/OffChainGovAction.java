@@ -1,26 +1,26 @@
 package org.cardanofoundation.ledgersync.consumercommon.entity;
 
+import java.util.Objects;
+
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionId;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
+import org.cardanofoundation.ledgersync.consumercommon.validation.Hash32Type;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Type;
+
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionCpId;
-import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
-import org.cardanofoundation.ledgersync.consumercommon.validation.Hash32Type;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "off_chain_gov_action", uniqueConstraints = {
@@ -57,13 +57,12 @@ public class OffChainGovAction extends BaseEntity {
           updatable = false
       )
   )})
-  private OffChainGovActionCpId cpId;
+  private OffChainGovActionId govActionId;
 
   @Type(JsonType.class)
   @Column(name = "content")
   private String content;
 
-  @Enumerated(EnumType.STRING)
   @Column(name = "check_valid", nullable = false, length = 64)
   private CheckValid checkValid;
 

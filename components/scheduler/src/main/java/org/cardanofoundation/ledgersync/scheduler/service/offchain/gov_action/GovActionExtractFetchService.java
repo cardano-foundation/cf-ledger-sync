@@ -2,14 +2,15 @@ package org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorCpId;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionCpId;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionId;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.TypeVote;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainGovFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchAbstractService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -22,15 +23,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class GovActionExtractFetchService extends
-    OffChainFetchAbstractService<OffChainGovAction, OffChainFetchError, OffChainGovFetchResultDTO, GovAnchorDTO> {
+        OffChainFetchAbstractService<OffChainGovAction, OffChainFetchError, OffChainGovFetchResultDTO, GovAnchorDTO> {
+
+    @Value("${ledger-sync.scheduler.off-chain-data.retry-count}")
+    private Integer maxRetry;
 
     @Override
-    public OffChainGovAction extractOffChainData(OffChainGovFetchResultDTO offChainFetchResult, Integer maxRetry) {
+    public OffChainGovAction extractOffChainData(OffChainGovFetchResultDTO offChainFetchResult) {
         OffChainGovAction offChainGovActionData = new OffChainGovAction();
-        OffChainGovActionCpId offChainGovActionCpId = new OffChainGovActionCpId(
-            offChainFetchResult.getGovActionTxHash(), offChainFetchResult.getGovActionIdx());
+        OffChainGovActionId offChainGovActionId = new OffChainGovActionId(
+                offChainFetchResult.getGovActionTxHash(), offChainFetchResult.getGovActionIdx());
 
-        offChainGovActionData.setCpId(offChainGovActionCpId);
+        offChainGovActionData.setGovActionId(offChainGovActionId);
         offChainGovActionData.setGovActionTxHash(offChainFetchResult.getGovActionTxHash());
         offChainGovActionData.setGovActionIdx(offChainFetchResult.getGovActionIdx());
         offChainGovActionData.setContent(offChainFetchResult.getRawData());
@@ -47,19 +51,18 @@ public class GovActionExtractFetchService extends
 
     @Override
     public OffChainFetchError extractFetchError(OffChainGovFetchResultDTO offChainAnchorData) {
-        OffChainFetchError offChainVoteFetchError = new OffChainFetchError();
-        OffChainFetchErrorCpId offChainVoteFetchErrorId =
-            new OffChainFetchErrorCpId(
+        OffChainFetchError offChainFetchError = new OffChainFetchError();
+        OffChainFetchErrorId offChainVoteFetchErrorId = new OffChainFetchErrorId(
                 offChainAnchorData.getAnchorUrl(),
                 offChainAnchorData.getAnchorHash(),
-                TypeVote.GOV_ACTION);
+                TypeVote.GOV_ACTION.getValue());
 
-        offChainVoteFetchError.setCpId(offChainVoteFetchErrorId);
-        offChainVoteFetchError.setAnchorUrl(offChainAnchorData.getAnchorUrl());
-        offChainVoteFetchError.setAnchorHash(offChainAnchorData.getAnchorHash());
-        offChainVoteFetchError.setTypeVote(TypeVote.GOV_ACTION);
-        offChainVoteFetchError.setFetchError(offChainAnchorData.getFetchFailError());
-        return offChainVoteFetchError;
+        offChainFetchError.setOffChainFetchErrorId(offChainVoteFetchErrorId);
+        offChainFetchError.setAnchorUrl(offChainAnchorData.getAnchorUrl());
+        offChainFetchError.setAnchorHash(offChainAnchorData.getAnchorHash());
+        offChainFetchError.setType(TypeVote.GOV_ACTION.getValue());
+        offChainFetchError.setFetchError(offChainAnchorData.getFetchFailError());
+        return offChainFetchError;
     }
 
     @Override
