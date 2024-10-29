@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.constitution;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -9,14 +9,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainConstitution;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionId;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainConstitutionStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
-import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainGovActionStorage;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -28,55 +27,55 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-public class GovActionStoringService extends
-        OffChainStoringAbstractService<OffChainGovAction, OffChainFetchError> {
+public class ConstitutionStoringService extends
+        OffChainStoringAbstractService<OffChainConstitution, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;
-    final OffChainGovActionStorage offChainGovActionStorage;
+    final OffChainConstitutionStorage offChainConstitutionStorage;
 
     @Override
-    public void insertFetchData(Collection<OffChainGovAction> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainConstitution> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainGovAction::getGovActionId))
+                .filter(distinctByKey(OffChainConstitution::getConstitutionActiveEpoch))
                 .collect(Collectors.toList());
 
-        Set<OffChainGovActionId> offChainGovActionIds = offChainAnchorData.stream()
-                .map(OffChainGovAction::getGovActionId)
+        Set<Integer> constitutionActiveEpochs = offChainAnchorData.stream()
+                .map(OffChainConstitution::getConstitutionActiveEpoch)
                 .collect(Collectors.toSet());
 
-        Set<OffChainGovActionId> existingOffChainVoteGovActionIds = new HashSet<>(
-                offChainGovActionStorage.findByGovActionIdIn(offChainGovActionIds))
-                .stream().map(OffChainGovAction::getGovActionId)
+        Set<Integer> existingOffChainConstitutionActiveEpochs = new HashSet<>(
+                offChainConstitutionStorage.findByConstitutionActiveEpochIn(constitutionActiveEpochs))
+                .stream().map(OffChainConstitution::getConstitutionActiveEpoch)
                 .collect(Collectors.toSet());
 
-        List<OffChainGovAction> offChainDataToSave = offChainAnchorData.stream()
-                .filter(e -> !existingOffChainVoteGovActionIds.contains(e.getGovActionId()))
+        List<OffChainConstitution> offChainDataToSave = offChainAnchorData.stream()
+                .filter(e -> !existingOffChainConstitutionActiveEpochs.contains(e.getConstitutionActiveEpoch()))
                 .collect(Collectors.toList());
 
-        offChainGovActionStorage.saveAll(offChainDataToSave);
+        offChainConstitutionStorage.saveAll(offChainDataToSave);
     }
 
     @Override
-    public void updateFetchData(Collection<OffChainGovAction> offChainAnchorData) {
+    public void updateFetchData(Collection<OffChainConstitution> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainGovAction::getGovActionId))
+                .filter(distinctByKey(OffChainConstitution::getConstitutionActiveEpoch))
                 .collect(Collectors.toList());
 
-        Set<OffChainGovActionId> offChainGovActionIds = offChainAnchorData.stream()
-                .map(OffChainGovAction::getGovActionId)
+        Set<Integer> constitutionActiveEpochs = offChainAnchorData.stream()
+                .map(OffChainConstitution::getConstitutionActiveEpoch)
                 .collect(Collectors.toSet());
 
-        Map<OffChainGovActionId, OffChainGovAction> mapEntityById = offChainAnchorData.stream()
-                .collect(Collectors.toMap(OffChainGovAction::getGovActionId, Function.identity()));
+        Map<Integer, OffChainConstitution> mapEntityByEpoch = offChainAnchorData.stream()
+                .collect(Collectors.toMap(OffChainConstitution::getConstitutionActiveEpoch, Function.identity()));
 
-        Set<OffChainGovAction> offChainDataToSave = new HashSet<>(
-                offChainGovActionStorage.findByGovActionIdIn(offChainGovActionIds));
+        Set<OffChainConstitution> offChainDataToSave = new HashSet<>(
+                offChainConstitutionStorage.findByConstitutionActiveEpochIn(constitutionActiveEpochs));
 
         offChainDataToSave.forEach(e -> {
-            OffChainGovAction oc = mapEntityById.get(e.getGovActionId());
+            OffChainConstitution oc = mapEntityByEpoch.get(e.getConstitutionActiveEpoch());
             if (oc != null) {
                 e.setContent(oc.getContent());
                 e.setCheckValid(oc.getCheckValid());
@@ -84,7 +83,7 @@ public class GovActionStoringService extends
             }
         });
 
-        offChainGovActionStorage.saveAll(offChainDataToSave);
+        offChainConstitutionStorage.saveAll(offChainDataToSave);
     }
 
     @Override
@@ -119,8 +118,8 @@ public class GovActionStoringService extends
                 });
 
         List<OffChainFetchError> filterDataExpired = offChainFetchErrorData.stream()
-            .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
-            .collect(Collectors.toList());
+                .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
+                .collect(Collectors.toList());
 
         offChainFetchErrorStorage.saveAll(filterDataExpired);
     }

@@ -73,6 +73,7 @@ public class SchedulerConfiguration {
         offChainDataProperties.setInitialDelay(properties.getOffChainData().getInitialDelay());
         offChainDataProperties.setFixedDelayFetchError(properties.getOffChainData().getFixedDelayFetchError());
         offChainDataProperties.setInitialDelayFetchError(properties.getOffChainData().getInitialDelayFetchError());
+        offChainDataProperties.setRetryCount(properties.getOffChainData().getRetryCount());
         return offChainDataProperties;
     }
 

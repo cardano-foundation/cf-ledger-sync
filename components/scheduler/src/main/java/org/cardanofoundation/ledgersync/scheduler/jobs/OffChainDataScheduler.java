@@ -27,7 +27,7 @@ public class OffChainDataScheduler {
     public void fetchOffChain() {
         log.info("-----------Start job fetch pool offline data-----------");
         final var startTime = System.currentTimeMillis();
-       offChainPersistService.validateAndPersistData();
+        offChainPersistService.validateAndPersistData();
         log.info(
                 "----------End job fetch pool offline data, time taken: {} ms----------",
                 (System.currentTimeMillis() - startTime));

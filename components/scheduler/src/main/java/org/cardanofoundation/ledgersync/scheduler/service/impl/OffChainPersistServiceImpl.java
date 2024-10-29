@@ -16,13 +16,16 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
 
     final OffChainProcessPersistDataService govActionPersistServiceImpl;
     final OffChainProcessPersistDataService votingDataPersistServiceImpl;
+    final OffChainProcessPersistDataService constitutionPersistServiceImpl;
 
     public OffChainPersistServiceImpl(
         @Qualifier("govActionPersistServiceImpl") OffChainProcessPersistDataService govActionPersistServiceImpl,
-        @Qualifier("votingDataPersistServiceImpl") OffChainProcessPersistDataService votingDataPersistServiceImpl
+        @Qualifier("votingDataPersistServiceImpl") OffChainProcessPersistDataService votingDataPersistServiceImpl,
+        @Qualifier("constitutionPersistServiceImpl") OffChainProcessPersistDataService constitutionPersistServiceImpl
     ) {
         this.govActionPersistServiceImpl = govActionPersistServiceImpl;
         this.votingDataPersistServiceImpl = votingDataPersistServiceImpl;
+        this.constitutionPersistServiceImpl = constitutionPersistServiceImpl;
     }
 
     @Override
@@ -32,8 +35,8 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
 
         govActionPersistServiceImpl.process();
         votingDataPersistServiceImpl.process();
+        constitutionPersistServiceImpl.process();
 //        processDRepRegistrationData(startTime);
-//        processConstitutionData(startTime);
 //        processCommitteeDeregData(startTime);
 
         log.info("End validating off-chain data, taken time: {} ms", System.currentTimeMillis() - startTime);

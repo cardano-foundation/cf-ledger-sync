@@ -10,4 +10,5 @@ public class OffChainDataProperties {
     private long initialDelay;
     private long initialDelayFetchError;
     private long fixedDelayFetchError;
+    private int retryCount;
 }

@@ -6,11 +6,11 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffCh
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionId;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.TypeVote;
+import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainGovFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchAbstractService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -25,8 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GovActionExtractFetchService extends
         OffChainFetchAbstractService<OffChainGovAction, OffChainFetchError, OffChainGovFetchResultDTO, GovAnchorDTO> {
 
-    @Value("${ledger-sync.scheduler.off-chain-data.retry-count}")
-    private Integer maxRetry;
+    final SchedulerProperties properties;
 
     @Override
     public OffChainGovAction extractOffChainData(OffChainGovFetchResultDTO offChainFetchResult) {
@@ -40,7 +39,8 @@ public class GovActionExtractFetchService extends
         offChainGovActionData.setContent(offChainFetchResult.getRawData());
         offChainGovActionData.setValidAtSlot(offChainFetchResult.isValid() ? offChainFetchResult.getSlotNo() : null);
 
-        if (!offChainFetchResult.isValid() && (offChainFetchResult.getRetryCount() >= maxRetry - 1)) {
+        if (!offChainFetchResult.isValid()
+                && (offChainFetchResult.getRetryCount() >= properties.getOffChainData().getRetryCount() - 1)) {
             offChainGovActionData.setCheckValid(CheckValid.EXPIRED);
         } else {
             offChainGovActionData.setCheckValid(offChainFetchResult.isValid() ? CheckValid.VALID : CheckValid.INVALID);

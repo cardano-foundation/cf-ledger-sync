@@ -12,8 +12,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class OffChainGovFetchResultDTO extends OffChainFetchResultDTO {
-    String govActionTxHash;
-    Long govActionIdx;
+    private String govActionTxHash;
+    private Long govActionIdx;
 
     public OffChainGovFetchResultDTO(OffChainFetchResultDTO o) {
         super(o);

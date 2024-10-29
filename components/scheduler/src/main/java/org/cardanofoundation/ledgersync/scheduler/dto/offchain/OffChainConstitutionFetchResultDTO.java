@@ -1,7 +1,5 @@
 package org.cardanofoundation.ledgersync.scheduler.dto.offchain;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +11,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class OffChainVotingFetchResultDTO extends OffChainFetchResultDTO {
-    private UUID votingProcedureId;
+public class OffChainConstitutionFetchResultDTO extends OffChainFetchResultDTO {
+    private Integer constitutionActiveEpoch;
 
-    public OffChainVotingFetchResultDTO(OffChainFetchResultDTO o) {
+    public OffChainConstitutionFetchResultDTO(OffChainFetchResultDTO o) {
         super(o);
     }
 }

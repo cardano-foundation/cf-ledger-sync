@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainVotingData;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
+import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainVotingDataStorage;
@@ -30,8 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 public class VotingDataStoringService extends
         OffChainStoringAbstractService<OffChainVotingData, OffChainFetchError> {
 
-    private final OffChainFetchErrorStorage offChainFetchErrorStorage;
-    private final OffChainVotingDataStorage offChainVotingDataStorage;
+    final SchedulerProperties properties;
+    final OffChainFetchErrorStorage offChainFetchErrorStorage;
+    final OffChainVotingDataStorage offChainVotingDataStorage;
 
     @Override
     public void insertFetchData(Collection<OffChainVotingData> offChainAnchorData) {
@@ -116,6 +118,10 @@ public class VotingDataStoringService extends
                     }
                 });
 
-        offChainFetchErrorStorage.saveAll(offChainFetchErrorData);
+        List<OffChainFetchError> filterDataExpired = offChainFetchErrorData.stream()
+                .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
+                .collect(Collectors.toList());
+
+        offChainFetchErrorStorage.saveAll(filterDataExpired);
     }
 }

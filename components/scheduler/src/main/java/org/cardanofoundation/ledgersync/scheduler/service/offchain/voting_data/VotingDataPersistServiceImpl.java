@@ -2,9 +2,7 @@ package org.cardanofoundation.ledgersync.scheduler.service.offchain.voting_data;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
-import org.cardanofoundation.ledgersync.common.common.Era;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDataCheckpoint;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainVotingData;
@@ -36,19 +34,20 @@ public class VotingDataPersistServiceImpl implements OffChainProcessPersistDataS
     final VotingDataStoringService votingDataStoringService;
     final EraRepo eraRepo;
 
-
     @Override
     public void process() {
         long startTime = System.currentTimeMillis();
 
-        OffChainDataCheckpoint currentCheckpoint =  getCurrentCheckpoint(OffChainCheckpointType.VOTING);
+        OffChainDataCheckpoint currentCheckpoint = getCurrentCheckpoint(offChainDataCheckpointStorage, eraRepo,
+                OffChainCheckpointType.VOTING);
         long currentSlotNo = votingProcedureRepo.maxSlotNo().orElse(currentCheckpoint.getSlotNo());
         if (currentSlotNo - currentCheckpoint.getSlotNo() > MAX_TIME_QUERY) {
             currentSlotNo = currentCheckpoint.getSlotNo() + MAX_TIME_QUERY;
         }
 
-        List<VotingDataAnchorDTO> votingList = votingProcedureRepo.getAnchorInfoBySlotRange(currentCheckpoint.getSlotNo(),
-            currentSlotNo);
+        List<VotingDataAnchorDTO> votingList = votingProcedureRepo.getAnchorInfoBySlotRange(
+                currentCheckpoint.getSlotNo(),
+                currentSlotNo);
 
         votingDataExtractFetchService.initOffChainListData();
         votingDataExtractFetchService.crawlOffChainAnchors(votingList);
@@ -64,15 +63,6 @@ public class VotingDataPersistServiceImpl implements OffChainProcessPersistDataS
         offChainDataCheckpointStorage.save(currentCheckpoint);
 
         log.info("End fetching Voting procedure metadata, taken time: {} ms", System.currentTimeMillis() - startTime);
-    }
-
-    private OffChainDataCheckpoint getCurrentCheckpoint(OffChainCheckpointType cpType) {
-        Optional<OffChainDataCheckpoint> checkpoint = offChainDataCheckpointStorage.findFirstByType(cpType);
-        if (checkpoint.isEmpty()) {
-            Long starSlotAtEra = eraRepo.getStartSlotByEra(Era.CONWAY.getValue());
-            return OffChainDataCheckpoint.builder().slotNo(starSlotAtEra).type(cpType).build();
-        }
-        return checkpoint.get();
     }
 
 }

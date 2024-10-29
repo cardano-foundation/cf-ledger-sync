@@ -27,6 +27,7 @@ public class SchedulerProperties {
         private long initialDelay = 20000L;
         private long fixedDelayFetchError = 2000000L;
         private long initialDelayFetchError = 2000000L;
+        private int retryCount = 10;
     }
 
     @Getter
