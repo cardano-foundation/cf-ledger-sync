@@ -17,15 +17,18 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
     final OffChainProcessRetryDataService govActionRetryServiceImpl;
     final OffChainProcessRetryDataService votingDataRetryServiceImpl;
     final OffChainProcessRetryDataService constitutionRetryServiceImpl;
+    final OffChainProcessRetryDataService committeeDeregRetryServiceImpl;
 
     public OffChainRetryDataErrorServiceImpl(
         @Qualifier("govActionRetryServiceImpl") OffChainProcessRetryDataService govActionRetryServiceImpl,
         @Qualifier("votingDataRetryServiceImpl") OffChainProcessRetryDataService votingDataRetryServiceImpl,
-        @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl
+        @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl,
+        @Qualifier("committeeDeregRetryServiceImpl") OffChainProcessRetryDataService committeeDeregRetryServiceImpl
     ) {
         this.govActionRetryServiceImpl = govActionRetryServiceImpl;
         this.votingDataRetryServiceImpl = votingDataRetryServiceImpl;
         this.constitutionRetryServiceImpl = constitutionRetryServiceImpl;
+        this.committeeDeregRetryServiceImpl = committeeDeregRetryServiceImpl;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
         govActionRetryServiceImpl.process();
         votingDataRetryServiceImpl.process();
         constitutionRetryServiceImpl.process();
+        committeeDeregRetryServiceImpl.process();
 
         log.info("End retry error offchain data time taken: {} ms", System.currentTimeMillis() - startTime);
     }

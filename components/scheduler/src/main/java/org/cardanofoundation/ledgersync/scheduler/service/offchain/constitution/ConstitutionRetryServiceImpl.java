@@ -36,9 +36,9 @@ public class ConstitutionRetryServiceImpl implements OffChainProcessRetryDataSer
         constitutionExtractFetchService.crawlOffChainAnchors(listOffChainGov);
 
         List<OffChainFetchError> offChainFetchErrors = constitutionExtractFetchService.getOffChainAnchorsFetchError();
-        List<OffChainConstitution> offChainGovActionDataList = constitutionExtractFetchService.getOffChainAnchorsFetch();
+        List<OffChainConstitution> offChainDataList = constitutionExtractFetchService.getOffChainAnchorsFetch();
 
-        constitutionStoringService.updateFetchData(offChainGovActionDataList);
+        constitutionStoringService.updateFetchData(offChainDataList);
         constitutionStoringService.insertFetchFailData(offChainFetchErrors);
 
         log.info("End retrying to fetch Constitution metadata, taken time: {} ms",

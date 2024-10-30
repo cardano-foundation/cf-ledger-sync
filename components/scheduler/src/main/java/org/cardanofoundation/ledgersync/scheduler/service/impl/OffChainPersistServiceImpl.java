@@ -17,15 +17,18 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
     final OffChainProcessPersistDataService govActionPersistServiceImpl;
     final OffChainProcessPersistDataService votingDataPersistServiceImpl;
     final OffChainProcessPersistDataService constitutionPersistServiceImpl;
+    final OffChainProcessPersistDataService committeeDeregPersistServiceImpl;
 
     public OffChainPersistServiceImpl(
-        @Qualifier("govActionPersistServiceImpl") OffChainProcessPersistDataService govActionPersistServiceImpl,
-        @Qualifier("votingDataPersistServiceImpl") OffChainProcessPersistDataService votingDataPersistServiceImpl,
-        @Qualifier("constitutionPersistServiceImpl") OffChainProcessPersistDataService constitutionPersistServiceImpl
-    ) {
+            @Qualifier("govActionPersistServiceImpl") OffChainProcessPersistDataService govActionPersistServiceImpl,
+            @Qualifier("votingDataPersistServiceImpl") OffChainProcessPersistDataService votingDataPersistServiceImpl,
+            @Qualifier("constitutionPersistServiceImpl") OffChainProcessPersistDataService constitutionPersistServiceImpl,
+            @Qualifier("committeeDeregPersistServiceImpl") OffChainProcessPersistDataService committeeDeregPersistServiceImpl) {
+
         this.govActionPersistServiceImpl = govActionPersistServiceImpl;
         this.votingDataPersistServiceImpl = votingDataPersistServiceImpl;
         this.constitutionPersistServiceImpl = constitutionPersistServiceImpl;
+        this.committeeDeregPersistServiceImpl = committeeDeregPersistServiceImpl;
     }
 
     @Override
@@ -36,8 +39,7 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
         govActionPersistServiceImpl.process();
         votingDataPersistServiceImpl.process();
         constitutionPersistServiceImpl.process();
-//        processDRepRegistrationData(startTime);
-//        processCommitteeDeregData(startTime);
+        committeeDeregPersistServiceImpl.process();
 
         log.info("End validating off-chain data, taken time: {} ms", System.currentTimeMillis() - startTime);
     }

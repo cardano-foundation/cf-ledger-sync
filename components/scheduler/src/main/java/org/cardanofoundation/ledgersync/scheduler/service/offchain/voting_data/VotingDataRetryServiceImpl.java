@@ -36,9 +36,9 @@ public class VotingDataRetryServiceImpl implements OffChainProcessRetryDataServi
         votingDataExtractFetchService.crawlOffChainAnchors(listOffChainGov);
 
         List<OffChainFetchError> offChainFetchErrors = votingDataExtractFetchService.getOffChainAnchorsFetchError();
-        List<OffChainVotingData> offChainGovActionDataList = votingDataExtractFetchService.getOffChainAnchorsFetch();
+        List<OffChainVotingData> offChainDataList = votingDataExtractFetchService.getOffChainAnchorsFetch();
 
-        votingDataStoringService.updateFetchData(offChainGovActionDataList);
+        votingDataStoringService.updateFetchData(offChainDataList);
         votingDataStoringService.insertFetchFailData(offChainFetchErrors);
 
         log.info("End retrying to fetch Voting procedure metadata, taken time: {} ms",

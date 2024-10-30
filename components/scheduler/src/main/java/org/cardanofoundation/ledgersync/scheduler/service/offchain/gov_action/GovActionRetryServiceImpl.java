@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Qualifier("govActionRetryServiceImpl")
 public class GovActionRetryServiceImpl implements OffChainProcessRetryDataService {
 
-    final GovActionExtractFetchService offChainGovActionStoreService;
+    final GovActionExtractFetchService govActionExtractFetchService;
     final GovActionStoringService govActionStoringService;
     final OffChainGovActionStorage offChainGovActionStorage;
 
@@ -32,14 +32,14 @@ public class GovActionRetryServiceImpl implements OffChainProcessRetryDataServic
         long startTime = System.currentTimeMillis();
 
         List<GovAnchorDTO> listOffChainGov = offChainGovActionStorage.findByInvalid(CheckValid.INVALID);
-        offChainGovActionStoreService.initOffChainListData();
-        offChainGovActionStoreService.crawlOffChainAnchors(listOffChainGov);
+        govActionExtractFetchService.initOffChainListData();
+        govActionExtractFetchService.crawlOffChainAnchors(listOffChainGov);
 
-        List<OffChainFetchError> offChainVoteFetchErrors = offChainGovActionStoreService.getOffChainAnchorsFetchError();
-        List<OffChainGovAction> offChainVoteGovActionDataList = offChainGovActionStoreService.getOffChainAnchorsFetch();
+        List<OffChainFetchError> offChainFetchErrors = govActionExtractFetchService.getOffChainAnchorsFetchError();
+        List<OffChainGovAction> offChainDataList = govActionExtractFetchService.getOffChainAnchorsFetch();
 
-        govActionStoringService.updateFetchData(offChainVoteGovActionDataList);
-        govActionStoringService.insertFetchFailData(offChainVoteFetchErrors);
+        govActionStoringService.updateFetchData(offChainDataList);
+        govActionStoringService.insertFetchFailData(offChainFetchErrors);
 
         log.info("End retrying to fetch gov-action metadata, taken time: {} ms",
             System.currentTimeMillis() - startTime);

@@ -118,10 +118,10 @@ public class VotingDataStoringService extends
                     }
                 });
 
-        List<OffChainFetchError> filterDataExpired = offChainFetchErrorData.stream()
+        List<OffChainFetchError> filterDataNotExpired = offChainFetchErrorData.stream()
                 .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
                 .collect(Collectors.toList());
 
-        offChainFetchErrorStorage.saveAll(filterDataExpired);
+        offChainFetchErrorStorage.saveAll(filterDataNotExpired);
     }
 }
