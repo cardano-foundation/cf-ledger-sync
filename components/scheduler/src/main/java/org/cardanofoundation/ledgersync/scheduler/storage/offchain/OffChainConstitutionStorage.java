@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OffChainConstitutionStorage extends JpaRepository<OffChainConstitution, Long> {
 
-    List<OffChainConstitution> findByConstitutionActiveEpochIn(Set<Integer> constitutionActiveEpoch);
+    List<OffChainConstitution> findByConstitutionActiveEpochIn(Set<Integer> constitutionActiveEpochs);
 
     @Query("""
         SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.ConstitutionAnchorDTO(

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface OffChainCommitteeDeregStorage extends JpaRepository<OffChainCommitteeDeregistration, Long> {
 
     List<OffChainCommitteeDeregistration> findByCommitteeDeregistrationIdIn(
-            Set<OffChainCommitteeDeregistrationId> offChainFetchErrorCompoundId);
+            Set<OffChainCommitteeDeregistrationId> committeeDeregistrationIds);
 
     @Query("""
             SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.CommitteeDeregistrationDTO(

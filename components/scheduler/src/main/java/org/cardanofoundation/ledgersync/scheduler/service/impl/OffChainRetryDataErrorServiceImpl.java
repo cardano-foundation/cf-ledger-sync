@@ -18,17 +18,20 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
     final OffChainProcessRetryDataService votingDataRetryServiceImpl;
     final OffChainProcessRetryDataService constitutionRetryServiceImpl;
     final OffChainProcessRetryDataService committeeDeregRetryServiceImpl;
+    final OffChainProcessRetryDataService drepRegistrationRetryServiceImpl;
 
     public OffChainRetryDataErrorServiceImpl(
-        @Qualifier("govActionRetryServiceImpl") OffChainProcessRetryDataService govActionRetryServiceImpl,
-        @Qualifier("votingDataRetryServiceImpl") OffChainProcessRetryDataService votingDataRetryServiceImpl,
-        @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl,
-        @Qualifier("committeeDeregRetryServiceImpl") OffChainProcessRetryDataService committeeDeregRetryServiceImpl
-    ) {
+            @Qualifier("govActionRetryServiceImpl") OffChainProcessRetryDataService govActionRetryServiceImpl,
+            @Qualifier("votingDataRetryServiceImpl") OffChainProcessRetryDataService votingDataRetryServiceImpl,
+            @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl,
+            @Qualifier("committeeDeregRetryServiceImpl") OffChainProcessRetryDataService committeeDeregRetryServiceImpl,
+            @Qualifier("drepRegistrationRetryServiceImpl") OffChainProcessRetryDataService drepRegistrationRetryServiceImpl
+        ) {
         this.govActionRetryServiceImpl = govActionRetryServiceImpl;
         this.votingDataRetryServiceImpl = votingDataRetryServiceImpl;
         this.constitutionRetryServiceImpl = constitutionRetryServiceImpl;
         this.committeeDeregRetryServiceImpl = committeeDeregRetryServiceImpl;
+        this.drepRegistrationRetryServiceImpl = drepRegistrationRetryServiceImpl;
     }
 
     @Override
@@ -36,10 +39,11 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
         long startTime = System.currentTimeMillis();
         log.info("Start retry error offchain data");
 
-        govActionRetryServiceImpl.process();
-        votingDataRetryServiceImpl.process();
-        constitutionRetryServiceImpl.process();
-        committeeDeregRetryServiceImpl.process();
+       govActionRetryServiceImpl.process();
+       votingDataRetryServiceImpl.process();
+       constitutionRetryServiceImpl.process();
+       committeeDeregRetryServiceImpl.process();
+        drepRegistrationRetryServiceImpl.process();
 
         log.info("End retry error offchain data time taken: {} ms", System.currentTimeMillis() - startTime);
     }

@@ -18,17 +18,21 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
     final OffChainProcessPersistDataService votingDataPersistServiceImpl;
     final OffChainProcessPersistDataService constitutionPersistServiceImpl;
     final OffChainProcessPersistDataService committeeDeregPersistServiceImpl;
+    final OffChainProcessPersistDataService drepRegistrationPersistServiceImpl;
 
     public OffChainPersistServiceImpl(
             @Qualifier("govActionPersistServiceImpl") OffChainProcessPersistDataService govActionPersistServiceImpl,
             @Qualifier("votingDataPersistServiceImpl") OffChainProcessPersistDataService votingDataPersistServiceImpl,
             @Qualifier("constitutionPersistServiceImpl") OffChainProcessPersistDataService constitutionPersistServiceImpl,
-            @Qualifier("committeeDeregPersistServiceImpl") OffChainProcessPersistDataService committeeDeregPersistServiceImpl) {
+            @Qualifier("committeeDeregPersistServiceImpl") OffChainProcessPersistDataService committeeDeregPersistServiceImpl,
+            @Qualifier("drepRegistrationPersistServiceImpl") OffChainProcessPersistDataService drepRegistrationPersistServiceImpl
+        ) {
 
         this.govActionPersistServiceImpl = govActionPersistServiceImpl;
         this.votingDataPersistServiceImpl = votingDataPersistServiceImpl;
         this.constitutionPersistServiceImpl = constitutionPersistServiceImpl;
         this.committeeDeregPersistServiceImpl = committeeDeregPersistServiceImpl;
+        this.drepRegistrationPersistServiceImpl = drepRegistrationPersistServiceImpl;
     }
 
     @Override
@@ -36,10 +40,11 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
         long startTime = System.currentTimeMillis();
         log.info("Start validating off-chain data");
 
-        govActionPersistServiceImpl.process();
-        votingDataPersistServiceImpl.process();
-        constitutionPersistServiceImpl.process();
-        committeeDeregPersistServiceImpl.process();
+       govActionPersistServiceImpl.process();
+       votingDataPersistServiceImpl.process();
+       constitutionPersistServiceImpl.process();
+       committeeDeregPersistServiceImpl.process();
+        drepRegistrationPersistServiceImpl.process();
 
         log.info("End validating off-chain data, taken time: {} ms", System.currentTimeMillis() - startTime);
     }

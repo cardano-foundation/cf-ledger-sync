@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OffChainGovActionStorage extends JpaRepository<OffChainGovAction, Long> {
 
-    List<OffChainGovAction> findByGovActionIdIn(Set<OffChainGovActionId> offChainFetchErrorCompoundId);
+    List<OffChainGovAction> findByGovActionIdIn(Set<OffChainGovActionId> govActionIds);
 
     @Query("""
         SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO(
