@@ -24,7 +24,7 @@ public interface OffChainVotingDataStorage extends JpaRepository<OffChainVotingD
             vp.id,
             COALESCE(fe.retryCount, 0))
         FROM OffChainVotingData ov
-        LEFT JOIN VotingProcedureEntity vp
+        JOIN VotingProcedureEntity vp
             ON vp.id = ov.votingProcedureId
         LEFT JOIN OffChainFetchError fe
             ON fe.anchorUrl = vp.anchorUrl AND fe.anchorHash = vp.anchorHash

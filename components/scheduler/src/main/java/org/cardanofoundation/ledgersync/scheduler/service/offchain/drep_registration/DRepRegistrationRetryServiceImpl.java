@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-@Qualifier("drepRegistrationRetryServiceImpl")
+@Qualifier("dRepRegistrationRetryServiceImpl")
 public class DRepRegistrationRetryServiceImpl implements OffChainProcessRetryDataService {
 
     final DRepRegistrationExtractFetchService dRepRegistrationExtractFetchService;

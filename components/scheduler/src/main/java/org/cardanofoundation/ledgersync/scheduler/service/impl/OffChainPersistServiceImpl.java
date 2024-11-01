@@ -1,5 +1,10 @@
 package org.cardanofoundation.ledgersync.scheduler.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainPersistService;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessPersistDataService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,25 +19,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OffChainPersistServiceImpl implements OffChainPersistService {
 
+    final ExecutorService executor;
     final OffChainProcessPersistDataService govActionPersistServiceImpl;
     final OffChainProcessPersistDataService votingDataPersistServiceImpl;
     final OffChainProcessPersistDataService constitutionPersistServiceImpl;
     final OffChainProcessPersistDataService committeeDeregPersistServiceImpl;
-    final OffChainProcessPersistDataService drepRegistrationPersistServiceImpl;
+    final OffChainProcessPersistDataService dRepRegistrationPersistServiceImpl;
 
     public OffChainPersistServiceImpl(
+            @Qualifier("offChainExecutor") ExecutorService executor,
             @Qualifier("govActionPersistServiceImpl") OffChainProcessPersistDataService govActionPersistServiceImpl,
             @Qualifier("votingDataPersistServiceImpl") OffChainProcessPersistDataService votingDataPersistServiceImpl,
             @Qualifier("constitutionPersistServiceImpl") OffChainProcessPersistDataService constitutionPersistServiceImpl,
             @Qualifier("committeeDeregPersistServiceImpl") OffChainProcessPersistDataService committeeDeregPersistServiceImpl,
-            @Qualifier("drepRegistrationPersistServiceImpl") OffChainProcessPersistDataService drepRegistrationPersistServiceImpl
-        ) {
+            @Qualifier("dRepRegistrationPersistServiceImpl") OffChainProcessPersistDataService dRepRegistrationPersistServiceImpl) {
 
+        this.executor = executor;
         this.govActionPersistServiceImpl = govActionPersistServiceImpl;
         this.votingDataPersistServiceImpl = votingDataPersistServiceImpl;
         this.constitutionPersistServiceImpl = constitutionPersistServiceImpl;
         this.committeeDeregPersistServiceImpl = committeeDeregPersistServiceImpl;
-        this.drepRegistrationPersistServiceImpl = drepRegistrationPersistServiceImpl;
+        this.dRepRegistrationPersistServiceImpl = dRepRegistrationPersistServiceImpl;
     }
 
     @Override
@@ -40,12 +47,23 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
         long startTime = System.currentTimeMillis();
         log.info("Start validating off-chain data");
 
-       govActionPersistServiceImpl.process();
-       votingDataPersistServiceImpl.process();
-       constitutionPersistServiceImpl.process();
-       committeeDeregPersistServiceImpl.process();
-        drepRegistrationPersistServiceImpl.process();
+        try {
+            List<OffChainProcessPersistDataService> services = Arrays.asList(
+                govActionPersistServiceImpl,
+                votingDataPersistServiceImpl,
+                constitutionPersistServiceImpl,
+                committeeDeregPersistServiceImpl,
+                dRepRegistrationPersistServiceImpl);
 
+            List<CompletableFuture<Void>> futures = services.stream()
+                .map(service -> CompletableFuture.runAsync(service::process, executor))
+                .toList();
+
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+            throw new RuntimeException("aa");
+        } catch (Exception e) {
+            log.error("Error processing validating off-chain data tasks", e.getCause());
+        }
         log.info("End validating off-chain data, taken time: {} ms", System.currentTimeMillis() - startTime);
     }
 

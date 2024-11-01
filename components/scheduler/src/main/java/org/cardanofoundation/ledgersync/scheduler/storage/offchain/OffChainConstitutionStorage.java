@@ -23,7 +23,7 @@ public interface OffChainConstitutionStorage extends JpaRepository<OffChainConst
             ce.activeEpoch,
             COALESCE(fe.retryCount, 0))
         FROM OffChainConstitution c
-        LEFT JOIN ConstitutionEntity ce
+        JOIN ConstitutionEntity ce
             ON ce.activeEpoch = c.constitutionActiveEpoch
         LEFT JOIN OffChainFetchError fe
             ON fe.anchorUrl = ce.anchorUrl AND fe.anchorHash = ce.anchorHash

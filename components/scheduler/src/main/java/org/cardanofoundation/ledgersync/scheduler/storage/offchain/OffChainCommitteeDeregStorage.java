@@ -26,7 +26,7 @@ public interface OffChainCommitteeDeregStorage extends JpaRepository<OffChainCom
                 cd.certIndex,
                 COALESCE(fe.retryCount, 0))
             FROM OffChainCommitteeDeregistration ocd
-            LEFT JOIN CommitteeDeRegistrationEntity cd
+            JOIN CommitteeDeRegistrationEntity cd
                 ON cd.txHash = ocd.committeeDeregTxHash AND cd.certIndex = ocd.committeeDeregCertIndex
             LEFT JOIN OffChainFetchError fe
                 ON fe.anchorUrl = cd.anchorUrl AND fe.anchorHash = cd.anchorHash

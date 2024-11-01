@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-@Qualifier("drepRegistrationPersistServiceImpl")
+@Qualifier("dRepRegistrationPersistServiceImpl")
 public class DRepRegistrationPersistServiceImpl implements OffChainProcessPersistDataService {
 
     static final long MAX_TIME_QUERY = 432000L;

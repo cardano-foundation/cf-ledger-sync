@@ -25,7 +25,7 @@ public interface OffChainGovActionStorage extends JpaRepository<OffChainGovActio
             gap.index,
             COALESCE(fe.retryCount, 0))
         FROM OffChainGovAction oga
-        LEFT JOIN GovActionProposalEntity gap
+        JOIN GovActionProposalEntity gap
             ON gap.txHash = oga.govActionTxHash AND gap.index = oga.govActionIdx
         LEFT JOIN OffChainFetchError fe
             ON fe.anchorUrl = gap.anchorUrl AND fe.anchorHash = gap.anchorHash

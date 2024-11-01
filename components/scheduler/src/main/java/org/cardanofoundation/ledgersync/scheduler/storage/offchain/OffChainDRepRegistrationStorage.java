@@ -26,7 +26,7 @@ public interface OffChainDRepRegistrationStorage extends JpaRepository<OffChainD
                 cd.certIndex,
                 COALESCE(fe.retryCount, 0))
             FROM OffChainDRepRegistration odr
-            LEFT JOIN DRepRegistrationEntity cd
+            JOIN DRepRegistrationEntity cd
                 ON cd.txHash = odr.drepRegTxHash AND cd.certIndex = odr.drepRegCertIndex
             LEFT JOIN OffChainFetchError fe
                 ON fe.anchorUrl = cd.anchorUrl AND fe.anchorHash = cd.anchorHash

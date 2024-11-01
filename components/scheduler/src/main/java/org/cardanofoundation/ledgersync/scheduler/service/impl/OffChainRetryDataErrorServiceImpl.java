@@ -1,5 +1,11 @@
 package org.cardanofoundation.ledgersync.scheduler.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executors;
+
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,20 +24,19 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
     final OffChainProcessRetryDataService votingDataRetryServiceImpl;
     final OffChainProcessRetryDataService constitutionRetryServiceImpl;
     final OffChainProcessRetryDataService committeeDeregRetryServiceImpl;
-    final OffChainProcessRetryDataService drepRegistrationRetryServiceImpl;
+    final OffChainProcessRetryDataService dRepRegistrationRetryServiceImpl;
 
     public OffChainRetryDataErrorServiceImpl(
             @Qualifier("govActionRetryServiceImpl") OffChainProcessRetryDataService govActionRetryServiceImpl,
             @Qualifier("votingDataRetryServiceImpl") OffChainProcessRetryDataService votingDataRetryServiceImpl,
             @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl,
             @Qualifier("committeeDeregRetryServiceImpl") OffChainProcessRetryDataService committeeDeregRetryServiceImpl,
-            @Qualifier("drepRegistrationRetryServiceImpl") OffChainProcessRetryDataService drepRegistrationRetryServiceImpl
-        ) {
+        @Qualifier("dRepRegistrationRetryServiceImpl") OffChainProcessRetryDataService dRepRegistrationRetryServiceImpl) {
         this.govActionRetryServiceImpl = govActionRetryServiceImpl;
         this.votingDataRetryServiceImpl = votingDataRetryServiceImpl;
         this.constitutionRetryServiceImpl = constitutionRetryServiceImpl;
         this.committeeDeregRetryServiceImpl = committeeDeregRetryServiceImpl;
-        this.drepRegistrationRetryServiceImpl = drepRegistrationRetryServiceImpl;
+        this.dRepRegistrationRetryServiceImpl = dRepRegistrationRetryServiceImpl;
     }
 
     @Override
@@ -39,12 +44,23 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
         long startTime = System.currentTimeMillis();
         log.info("Start retry error offchain data");
 
-       govActionRetryServiceImpl.process();
-       votingDataRetryServiceImpl.process();
-       constitutionRetryServiceImpl.process();
-       committeeDeregRetryServiceImpl.process();
-        drepRegistrationRetryServiceImpl.process();
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
+            List<OffChainProcessRetryDataService> services = Arrays.asList(
+                govActionRetryServiceImpl,
+                votingDataRetryServiceImpl,
+                constitutionRetryServiceImpl,
+                committeeDeregRetryServiceImpl,
+                dRepRegistrationRetryServiceImpl);
+
+            List<CompletableFuture<Void>> futures = services.stream()
+                .map(service -> CompletableFuture.runAsync(service::process, executor))
+                .toList();
+
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        } catch (CompletionException e) {
+            log.error("Error processing retry tasks", e.getCause());
+        }
         log.info("End retry error offchain data time taken: {} ms", System.currentTimeMillis() - startTime);
     }
 
