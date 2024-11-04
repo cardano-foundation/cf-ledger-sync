@@ -5,7 +5,7 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
-import org.cardanofoundation.ledgersync.consumercommon.enumeration.TypeVote;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.GovOffchainType;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.DRepRegistrationDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainDRepRegistrationFetchResultDTO;
@@ -61,12 +61,12 @@ public class DRepRegistrationExtractFetchService extends
         OffChainFetchErrorId offChainVoteFetchErrorId = new OffChainFetchErrorId(
                 offChainAnchorData.getAnchorUrl(),
                 offChainAnchorData.getAnchorHash(),
-                TypeVote.DREP_REGISTRATION.getValue());
+                GovOffchainType.DREP_REGISTRATION.getValue());
 
         offChainFetchError.setOffChainFetchErrorId(offChainVoteFetchErrorId);
         offChainFetchError.setAnchorUrl(offChainAnchorData.getAnchorUrl());
         offChainFetchError.setAnchorHash(offChainAnchorData.getAnchorHash());
-        offChainFetchError.setType(TypeVote.DREP_REGISTRATION.getValue());
+        offChainFetchError.setType(GovOffchainType.DREP_REGISTRATION.getValue());
         offChainFetchError.setFetchError(offChainAnchorData.getFetchFailError());
         return offChainFetchError;
     }

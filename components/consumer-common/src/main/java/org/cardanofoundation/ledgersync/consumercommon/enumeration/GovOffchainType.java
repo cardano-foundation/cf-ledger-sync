@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Getter
-public enum TypeVote {
+public enum GovOffchainType {
     VOTING(1),
     GOV_ACTION(2),
     DREP_REGISTRATION(3),
