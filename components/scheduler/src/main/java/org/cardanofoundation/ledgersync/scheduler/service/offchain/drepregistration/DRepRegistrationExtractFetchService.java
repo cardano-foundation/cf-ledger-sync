@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.drep_registration;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.drepregistration;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
@@ -10,7 +10,7 @@ import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.DRepRegistrationDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainDRepRegistrationFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchService;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class DRepRegistrationExtractFetchService extends
-        OffChainFetchAbstractService<OffChainDRepRegistration, OffChainFetchError, OffChainDRepRegistrationFetchResultDTO, DRepRegistrationDTO> {
+        OffChainFetchService<OffChainDRepRegistration, OffChainFetchError, OffChainDRepRegistrationFetchResultDTO, DRepRegistrationDTO> {
 
     final SchedulerProperties properties;
 

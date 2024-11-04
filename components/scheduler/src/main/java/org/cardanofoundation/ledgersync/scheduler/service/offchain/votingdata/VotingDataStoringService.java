@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.drep_registration;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.votingdata;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -6,17 +6,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainVotingData;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
-import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainDRepRegistrationStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
+import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainVotingDataStorage;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -28,57 +28,55 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-public class DRepRegistrationStoringService extends
-        OffChainStoringAbstractService<OffChainDRepRegistration, OffChainFetchError> {
+public class VotingDataStoringService extends
+        OffChainStoringAbstractService<OffChainVotingData, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;
-    final OffChainDRepRegistrationStorage offChainDRepRegistrationStorage;
+    final OffChainVotingDataStorage offChainVotingDataStorage;
 
     @Override
-    public void insertFetchData(Collection<OffChainDRepRegistration> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainVotingData> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainDRepRegistration::getDrepRegistrationId))
+                .filter(distinctByKey(OffChainVotingData::getVotingProcedureId))
                 .collect(Collectors.toList());
 
-        Set<OffChainDRepRegistrationId> offChainDRepRegistrationIds = offChainAnchorData.stream()
-                .map(OffChainDRepRegistration::getDrepRegistrationId)
+        Set<UUID> votingProcedureIds = offChainAnchorData.stream()
+                .map(OffChainVotingData::getVotingProcedureId)
                 .collect(Collectors.toSet());
 
-        Set<OffChainDRepRegistrationId> existingOffChainDRepRegistrationIds = new HashSet<>(
-                offChainDRepRegistrationStorage.findByDrepRegistrationIdIn(offChainDRepRegistrationIds))
-                .stream().map(OffChainDRepRegistration::getDrepRegistrationId)
+        Set<UUID> existingOffChainVotingId = new HashSet<>(
+                offChainVotingDataStorage.findByVotingProcedureIdIn(votingProcedureIds))
+                .stream().map(OffChainVotingData::getVotingProcedureId)
                 .collect(Collectors.toSet());
 
-        List<OffChainDRepRegistration> offChainDataToSave = offChainAnchorData.stream()
-                .filter(e -> !existingOffChainDRepRegistrationIds.contains(e.getDrepRegistrationId()))
+        List<OffChainVotingData> offChainDataToSave = offChainAnchorData.stream()
+                .filter(e -> !existingOffChainVotingId.contains(e.getVotingProcedureId()))
                 .collect(Collectors.toList());
 
-        offChainDRepRegistrationStorage.saveAll(offChainDataToSave);
+        offChainVotingDataStorage.saveAll(offChainDataToSave);
     }
 
     @Override
-    public void updateFetchData(Collection<OffChainDRepRegistration> offChainAnchorData) {
+    public void updateFetchData(Collection<OffChainVotingData> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainDRepRegistration::getDrepRegistrationId))
+                .filter(distinctByKey(OffChainVotingData::getVotingProcedureId))
                 .collect(Collectors.toList());
 
-        Set<OffChainDRepRegistrationId> offChainDRepRegistrationIds = offChainAnchorData.stream()
-                .map(OffChainDRepRegistration::getDrepRegistrationId)
+        Set<UUID> votingProcedureIds = offChainAnchorData.stream()
+                .map(OffChainVotingData::getVotingProcedureId)
                 .collect(Collectors.toSet());
 
-        Map<OffChainDRepRegistrationId, OffChainDRepRegistration> mapEntityById = offChainAnchorData
-                .stream().collect(Collectors.toMap(
-                        OffChainDRepRegistration::getDrepRegistrationId,
-                        Function.identity()));
+        Map<UUID, OffChainVotingData> mapEntityById = offChainAnchorData.stream()
+                .collect(Collectors.toMap(OffChainVotingData::getVotingProcedureId, Function.identity()));
 
-        Set<OffChainDRepRegistration> offChainDataToSave = new HashSet<>(
-                offChainDRepRegistrationStorage.findByDrepRegistrationIdIn(offChainDRepRegistrationIds));
+        Set<OffChainVotingData> offChainDataToSave = new HashSet<>(
+                offChainVotingDataStorage.findByVotingProcedureIdIn(votingProcedureIds));
 
         offChainDataToSave.forEach(e -> {
-            OffChainDRepRegistration oc = mapEntityById.get(e.getDrepRegistrationId());
+            OffChainVotingData oc = mapEntityById.get(e.getVotingProcedureId());
             if (oc != null) {
                 e.setContent(oc.getContent());
                 e.setCheckValid(oc.getCheckValid());
@@ -86,7 +84,7 @@ public class DRepRegistrationStoringService extends
             }
         });
 
-        offChainDRepRegistrationStorage.saveAll(offChainDataToSave);
+        offChainVotingDataStorage.saveAll(offChainDataToSave);
     }
 
     @Override

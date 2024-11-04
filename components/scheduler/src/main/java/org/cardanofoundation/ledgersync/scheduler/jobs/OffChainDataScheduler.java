@@ -20,8 +20,6 @@ public class OffChainDataScheduler {
     final OffChainDataProperties offChainDataProperties;
 
     @Transactional
-//    @Scheduled(initialDelayString = "${ledger-sync.scheduler.off-chain-data.initial-delay}",
-//            fixedDelayString = "${ledger-sync.scheduler.off-chain-data.fixed-delay}")
     @Scheduled(initialDelayString = "#{offChainDataProperties.getInitialDelay() * 1000}",
             fixedDelayString = "#{offChainDataProperties.getFixedDelay() * 1000}")
     public void fetchOffChain() {

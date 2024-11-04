@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.govaction;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
@@ -10,7 +10,7 @@ import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainGovFetchResultDTO;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchService;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class GovActionExtractFetchService extends
-        OffChainFetchAbstractService<OffChainGovAction, OffChainFetchError, OffChainGovFetchResultDTO, GovAnchorDTO> {
+        OffChainFetchService<OffChainGovAction, OffChainFetchError, OffChainGovFetchResultDTO, GovAnchorDTO> {
 
     final SchedulerProperties properties;
 

@@ -48,7 +48,7 @@ import reactor.netty.http.client.HttpClient;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-public abstract class OffChainFetchAbstractService<S, F, O extends OffChainFetchResultDTO, T extends AnchorDTO> {
+public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDTO, T extends AnchorDTO> {
 
     static final int TIMEOUT = 30000;
     static final int READ_TIMEOUT = 19000;

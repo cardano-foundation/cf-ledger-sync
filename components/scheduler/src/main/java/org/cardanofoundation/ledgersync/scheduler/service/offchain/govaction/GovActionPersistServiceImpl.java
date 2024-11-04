@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.govaction;
 
 import java.sql.Timestamp;
 import java.util.List;

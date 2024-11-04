@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.committee_deregistration;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.committeederegistration;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.gov_action;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.committeederegistration;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -9,14 +9,14 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainCommitteeDeregistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainCommitteeDeregistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionId;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainCommitteeDeregStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
-import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainGovActionStorage;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -28,55 +28,57 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-public class GovActionStoringService extends
-        OffChainStoringAbstractService<OffChainGovAction, OffChainFetchError> {
+public class CommitteeDeregStoringService extends
+        OffChainStoringAbstractService<OffChainCommitteeDeregistration, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;
-    final OffChainGovActionStorage offChainGovActionStorage;
+    final OffChainCommitteeDeregStorage offChainCommitteeDeregStorage;
 
     @Override
-    public void insertFetchData(Collection<OffChainGovAction> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainCommitteeDeregistration> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainGovAction::getGovActionId))
+                .filter(distinctByKey(OffChainCommitteeDeregistration::getCommitteeDeregistrationId))
                 .collect(Collectors.toList());
 
-        Set<OffChainGovActionId> offChainGovActionIds = offChainAnchorData.stream()
-                .map(OffChainGovAction::getGovActionId)
+        Set<OffChainCommitteeDeregistrationId> offChainCommitteeDeregIds = offChainAnchorData.stream()
+                .map(OffChainCommitteeDeregistration::getCommitteeDeregistrationId)
                 .collect(Collectors.toSet());
 
-        Set<OffChainGovActionId> existingOffChainVoteGovActionIds = new HashSet<>(
-                offChainGovActionStorage.findByGovActionIdIn(offChainGovActionIds))
-                .stream().map(OffChainGovAction::getGovActionId)
+        Set<OffChainCommitteeDeregistrationId> existingOffChainCommitteeDeregIds = new HashSet<>(
+                offChainCommitteeDeregStorage.findByCommitteeDeregistrationIdIn(offChainCommitteeDeregIds))
+                .stream().map(OffChainCommitteeDeregistration::getCommitteeDeregistrationId)
                 .collect(Collectors.toSet());
 
-        List<OffChainGovAction> offChainDataToSave = offChainAnchorData.stream()
-                .filter(e -> !existingOffChainVoteGovActionIds.contains(e.getGovActionId()))
+        List<OffChainCommitteeDeregistration> offChainDataToSave = offChainAnchorData.stream()
+                .filter(e -> !existingOffChainCommitteeDeregIds.contains(e.getCommitteeDeregistrationId()))
                 .collect(Collectors.toList());
 
-        offChainGovActionStorage.saveAll(offChainDataToSave);
+        offChainCommitteeDeregStorage.saveAll(offChainDataToSave);
     }
 
     @Override
-    public void updateFetchData(Collection<OffChainGovAction> offChainAnchorData) {
+    public void updateFetchData(Collection<OffChainCommitteeDeregistration> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainGovAction::getGovActionId))
+                .filter(distinctByKey(OffChainCommitteeDeregistration::getCommitteeDeregistrationId))
                 .collect(Collectors.toList());
 
-        Set<OffChainGovActionId> offChainGovActionIds = offChainAnchorData.stream()
-                .map(OffChainGovAction::getGovActionId)
+        Set<OffChainCommitteeDeregistrationId> offChainCommitteeDeregIds = offChainAnchorData.stream()
+                .map(OffChainCommitteeDeregistration::getCommitteeDeregistrationId)
                 .collect(Collectors.toSet());
 
-        Map<OffChainGovActionId, OffChainGovAction> mapEntityById = offChainAnchorData.stream()
-                .collect(Collectors.toMap(OffChainGovAction::getGovActionId, Function.identity()));
+        Map<OffChainCommitteeDeregistrationId, OffChainCommitteeDeregistration> mapEntityById = offChainAnchorData
+                .stream().collect(Collectors.toMap(
+                        OffChainCommitteeDeregistration::getCommitteeDeregistrationId,
+                        Function.identity()));
 
-        Set<OffChainGovAction> offChainDataToSave = new HashSet<>(
-                offChainGovActionStorage.findByGovActionIdIn(offChainGovActionIds));
+        Set<OffChainCommitteeDeregistration> offChainDataToSave = new HashSet<>(
+                offChainCommitteeDeregStorage.findByCommitteeDeregistrationIdIn(offChainCommitteeDeregIds));
 
         offChainDataToSave.forEach(e -> {
-            OffChainGovAction oc = mapEntityById.get(e.getGovActionId());
+            OffChainCommitteeDeregistration oc = mapEntityById.get(e.getCommitteeDeregistrationId());
             if (oc != null) {
                 e.setContent(oc.getContent());
                 e.setCheckValid(oc.getCheckValid());
@@ -84,7 +86,7 @@ public class GovActionStoringService extends
             }
         });
 
-        offChainGovActionStorage.saveAll(offChainDataToSave);
+        offChainCommitteeDeregStorage.saveAll(offChainDataToSave);
     }
 
     @Override
@@ -119,8 +121,8 @@ public class GovActionStoringService extends
                 });
 
         List<OffChainFetchError> filterDataNotExpired = offChainFetchErrorData.stream()
-            .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
-            .collect(Collectors.toList());
+                .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
+                .collect(Collectors.toList());
 
         offChainFetchErrorStorage.saveAll(filterDataNotExpired);
     }

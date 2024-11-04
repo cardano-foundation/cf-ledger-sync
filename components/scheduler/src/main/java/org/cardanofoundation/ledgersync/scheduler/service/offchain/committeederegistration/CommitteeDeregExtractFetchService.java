@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.committee_deregistration;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.committeederegistration;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainCommitteeDeregistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
@@ -10,7 +10,7 @@ import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.CommitteeDeregistrationDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainCommitteeDeregFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchService;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class CommitteeDeregExtractFetchService extends
-        OffChainFetchAbstractService<OffChainCommitteeDeregistration, OffChainFetchError, OffChainCommitteeDeregFetchResultDTO, CommitteeDeregistrationDTO> {
+        OffChainFetchService<OffChainCommitteeDeregistration, OffChainFetchError, OffChainCommitteeDeregFetchResultDTO, CommitteeDeregistrationDTO> {
 
     final SchedulerProperties properties;
 

@@ -9,7 +9,7 @@ import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.ConstitutionAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainConstitutionFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchService;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ConstitutionExtractFetchService extends
-        OffChainFetchAbstractService<OffChainConstitution, OffChainFetchError, OffChainConstitutionFetchResultDTO, ConstitutionAnchorDTO> {
+        OffChainFetchService<OffChainConstitution, OffChainFetchError, OffChainConstitutionFetchResultDTO, ConstitutionAnchorDTO> {
 
     final SchedulerProperties properties;
 

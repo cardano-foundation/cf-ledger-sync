@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.voting_data;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.govaction;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -6,17 +6,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainVotingData;
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainGovAction;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainGovActionId;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
-import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainVotingDataStorage;
+import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainGovActionStorage;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -28,55 +28,55 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-public class VotingDataStoringService extends
-        OffChainStoringAbstractService<OffChainVotingData, OffChainFetchError> {
+public class GovActionStoringService extends
+        OffChainStoringAbstractService<OffChainGovAction, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;
-    final OffChainVotingDataStorage offChainVotingDataStorage;
+    final OffChainGovActionStorage offChainGovActionStorage;
 
     @Override
-    public void insertFetchData(Collection<OffChainVotingData> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainGovAction> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainVotingData::getVotingProcedureId))
+                .filter(distinctByKey(OffChainGovAction::getGovActionId))
                 .collect(Collectors.toList());
 
-        Set<UUID> votingProcedureIds = offChainAnchorData.stream()
-                .map(OffChainVotingData::getVotingProcedureId)
+        Set<OffChainGovActionId> offChainGovActionIds = offChainAnchorData.stream()
+                .map(OffChainGovAction::getGovActionId)
                 .collect(Collectors.toSet());
 
-        Set<UUID> existingOffChainVotingId = new HashSet<>(
-                offChainVotingDataStorage.findByVotingProcedureIdIn(votingProcedureIds))
-                .stream().map(OffChainVotingData::getVotingProcedureId)
+        Set<OffChainGovActionId> existingOffChainVoteGovActionIds = new HashSet<>(
+                offChainGovActionStorage.findByGovActionIdIn(offChainGovActionIds))
+                .stream().map(OffChainGovAction::getGovActionId)
                 .collect(Collectors.toSet());
 
-        List<OffChainVotingData> offChainDataToSave = offChainAnchorData.stream()
-                .filter(e -> !existingOffChainVotingId.contains(e.getVotingProcedureId()))
+        List<OffChainGovAction> offChainDataToSave = offChainAnchorData.stream()
+                .filter(e -> !existingOffChainVoteGovActionIds.contains(e.getGovActionId()))
                 .collect(Collectors.toList());
 
-        offChainVotingDataStorage.saveAll(offChainDataToSave);
+        offChainGovActionStorage.saveAll(offChainDataToSave);
     }
 
     @Override
-    public void updateFetchData(Collection<OffChainVotingData> offChainAnchorData) {
+    public void updateFetchData(Collection<OffChainGovAction> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainVotingData::getVotingProcedureId))
+                .filter(distinctByKey(OffChainGovAction::getGovActionId))
                 .collect(Collectors.toList());
 
-        Set<UUID> votingProcedureIds = offChainAnchorData.stream()
-                .map(OffChainVotingData::getVotingProcedureId)
+        Set<OffChainGovActionId> offChainGovActionIds = offChainAnchorData.stream()
+                .map(OffChainGovAction::getGovActionId)
                 .collect(Collectors.toSet());
 
-        Map<UUID, OffChainVotingData> mapEntityById = offChainAnchorData.stream()
-                .collect(Collectors.toMap(OffChainVotingData::getVotingProcedureId, Function.identity()));
+        Map<OffChainGovActionId, OffChainGovAction> mapEntityById = offChainAnchorData.stream()
+                .collect(Collectors.toMap(OffChainGovAction::getGovActionId, Function.identity()));
 
-        Set<OffChainVotingData> offChainDataToSave = new HashSet<>(
-                offChainVotingDataStorage.findByVotingProcedureIdIn(votingProcedureIds));
+        Set<OffChainGovAction> offChainDataToSave = new HashSet<>(
+                offChainGovActionStorage.findByGovActionIdIn(offChainGovActionIds));
 
         offChainDataToSave.forEach(e -> {
-            OffChainVotingData oc = mapEntityById.get(e.getVotingProcedureId());
+            OffChainGovAction oc = mapEntityById.get(e.getGovActionId());
             if (oc != null) {
                 e.setContent(oc.getContent());
                 e.setCheckValid(oc.getCheckValid());
@@ -84,7 +84,7 @@ public class VotingDataStoringService extends
             }
         });
 
-        offChainVotingDataStorage.saveAll(offChainDataToSave);
+        offChainGovActionStorage.saveAll(offChainDataToSave);
     }
 
     @Override
@@ -119,8 +119,8 @@ public class VotingDataStoringService extends
                 });
 
         List<OffChainFetchError> filterDataNotExpired = offChainFetchErrorData.stream()
-                .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
-                .collect(Collectors.toList());
+            .filter(e -> e.getRetryCount() <= properties.getOffChainData().getRetryCount())
+            .collect(Collectors.toList());
 
         offChainFetchErrorStorage.saveAll(filterDataNotExpired);
     }

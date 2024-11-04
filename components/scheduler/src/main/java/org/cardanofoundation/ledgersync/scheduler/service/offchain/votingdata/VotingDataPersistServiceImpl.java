@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.voting_data;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.votingdata;
 
 import java.sql.Timestamp;
 import java.util.List;

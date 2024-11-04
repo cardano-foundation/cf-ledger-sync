@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.scheduler.service.offchain.drep_registration;
+package org.cardanofoundation.ledgersync.scheduler.service.offchain.drepregistration;
 
 import java.util.List;
 
