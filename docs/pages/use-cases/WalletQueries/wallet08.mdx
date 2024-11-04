@@ -83,7 +83,7 @@ The `SELECT ...` clause specifies the columns to be included in our results:
 - `ltb.lifetime_blocks`... the total number of blocks minted by the pool (calculated in the subquery).
 - `sa.view AS stake_account`...the stake address associated with the pool's rewards
 
-The `FROM pool_hash ph` clause specifies that we are selecting data from the [pool_hash](/../../schema.md#pool_hash)table, aliased as `ph`. This table likely stores core pool identification information.
+The `FROM pool_hash ph` clause specifies that we are selecting data from the [pool_hash](/../../schema.md#pool_hash)table, aliased as `ph`. This table stores core pool identification information.
 
 `LEFT JOIN pool_offline_data po ON ...` performs a left `JOIN` with the [pool_offline_data](/../../schema.md#pool_offline_data) table. It matches rows based on `pool_id` and ensures that if multiple entries exist for the same pool, only the latest one is selected (using a subquery to find the maximum id).
 
