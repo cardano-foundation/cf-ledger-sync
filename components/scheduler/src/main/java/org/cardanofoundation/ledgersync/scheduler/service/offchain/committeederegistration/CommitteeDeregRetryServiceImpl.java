@@ -5,6 +5,7 @@ import java.util.List;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainCommitteeDeregistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.GovOffchainType;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.CommitteeDeregistrationDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainCommitteeDeregStorage;
@@ -32,7 +33,7 @@ public class CommitteeDeregRetryServiceImpl implements OffChainProcessRetryDataS
         long startTime = System.currentTimeMillis();
 
         List<CommitteeDeregistrationDTO> listOffChainCommitteeDereg = offChainCommitteeDeregStorage
-                .findByInvalid(CheckValid.INVALID);
+                .findByInvalid(CheckValid.INVALID, GovOffchainType.COMMITTEE_DEREGISTRATION.getValue());
 
         committeeDeregExtractFetchService.initOffChainListData();
         committeeDeregExtractFetchService.crawlOffChainAnchors(listOffChainCommitteeDereg);

@@ -2,6 +2,7 @@ package org.cardanofoundation.ledgersync.scheduler.service.offchain;
 
 import static com.bloxbean.cardano.client.util.JsonFieldWriter.mapper;
 
+import com.bloxbean.cardano.client.crypto.Blake2bUtil;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -13,15 +14,17 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import java.util.stream.Collectors;
 import javax.net.ssl.SSLException;
 
+import org.cardanofoundation.ledgersync.common.util.HexUtil;
 import org.cardanofoundation.ledgersync.common.util.UrlUtil;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.AnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +47,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.HttpClient;
-
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
@@ -69,6 +71,12 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
 
     final ObjectMapper objectMapper = new ObjectMapper();
 
+    protected final ExecutorService executor;
+
+    protected OffChainFetchService(ExecutorService executor) {
+        this.executor = executor;
+    }
+
     @PostConstruct
     void setup() {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -77,26 +85,34 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
     public List<S> getOffChainAnchorsFetch() {
         return offChainAnchorsFetchResult.stream()
             .map(this::extractOffChainData)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public List<F> getOffChainAnchorsFetchError() {
         return offChainAnchorsFetchResult.stream()
             .filter(offChainFetchResult -> !offChainFetchResult.isValid())
             .map(this::extractFetchError)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public void crawlOffChainAnchors(Collection<T> anchors) {
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-        Set<T> anchorSet = new HashSet<>(anchors);
-        anchorSet.forEach(anchor -> futures.add(fetchAnchorUrl(anchor)));
-        futures.forEach(CompletableFuture::join);
+        try {
+            List<CompletableFuture<Void>> futures = new ArrayList<>();
+            Set<T> anchorSet = new HashSet<>(anchors);
+
+            anchorSet.forEach(anchor -> futures
+                .add(CompletableFuture.supplyAsync(() -> fetchAnchorUrl(anchor), executor)
+                    .thenCompose(e -> e)));
+
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        } catch (Exception e) {
+            log.error("Error when run thread pool in crawl url - ", e.getCause());
+        }
     }
 
     private CompletableFuture<Void> fetchAnchorUrl(T anchor) {
         try {
-            if (!UrlUtil.isUrl(anchor.getAnchorUrl())) {
+            if (!UrlUtil.isUrlValid(anchor.getAnchorUrl())) {
                 handleFetchFailure("Invalid URL", anchor, null);
                 return CompletableFuture.completedFuture(null);
             }
@@ -109,9 +125,11 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
                 .timeout(Duration.ofMillis(TIMEOUT))
                 .doOnError(Exception.class, throwable -> {
                     assert throwable != null;
-                    handleFetchFailure(throwable.getMessage(), anchor, null);
-                    }
-                )
+                    handleFetchFailure(
+                        throwable.getCause() == null ? throwable.getMessage() : throwable.getCause().getMessage()
+                        , anchor
+                        , null);
+                })
                 .toFuture()
                 .thenAccept(responseEntity -> handleResponse(responseEntity, anchor))
                 .exceptionally(
@@ -131,7 +149,7 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         HttpStatusCode statusCode = response.getStatusCode();
 
         // if content type is not supported, then send to fail queue
-        if (HttpStatus.OK.equals(statusCode) &&
+        if (statusCode.is2xxSuccessful() &&
             Objects.requireNonNull(response.getHeaders().get(HttpHeaders.CONTENT_TYPE)).stream()
             .noneMatch(
                 contentType ->
@@ -146,7 +164,7 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         }
 
         // if status code is not OK, then send to fail queue
-        if (!HttpStatus.OK.equals(statusCode)) {
+        if (!statusCode.is2xxSuccessful()) {
             handleFetchFailure(statusCode.toString(), anchor, null);
             return;
         }
@@ -159,14 +177,21 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
 
         var responseBody = response.getBody();
         if (Objects.nonNull(responseBody)) {
+            // check anchor url and anchor hash is match
+            if (!isUrlAndHashValid(responseBody.getBytes(StandardCharsets.UTF_8), anchor)) {
+                return;
+            }
+
             try {
+                // check json format
                 JsonNode checkJsonContent = mapper.readTree(responseBody);
 
                 // check CIPs later - save to fetch error if JSON not match CIPs
                 handleFetchSuccess(anchor, responseBody);
             } catch (JsonProcessingException e) {
                 handleFetchFailure(
-                    "Error Anchor: JSON parser error from when fetching metadata from " + anchor.getAnchorUrl(), anchor,
+                    "Error Anchor: JSON parser error from when fetching metadata from " + anchor.getAnchorUrl(),
+                    anchor,
                     null);
                 log.info("Error when parse data to object from URL: {}", e.getMessage());
             }
@@ -209,6 +234,23 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         offChainAnchorsFetchResult.add(ocFetchResult);
     }
 
+    private boolean isUrlAndHashValid(byte[] responseToBytes, T anchor) {
+        byte[] shaInBytes = Blake2bUtil.blake2bHash256(responseToBytes);
+        String hashFromResponse = HexUtil.bytesToHex(shaInBytes);
+
+        if (!hashFromResponse.equals(anchor.getAnchorHash())) {
+            handleFetchFailure(
+                "Hash mismatch when fetching metadata from "
+                    + anchor.getAnchorUrl()
+                    + ". Expected \"" + anchor.getAnchorHash()
+                    + "\" but got \"" + hashFromResponse + "\".",
+                anchor,
+                null);
+            return false;
+        }
+        return true;
+    }
+
     private static WebClient buildWebClient() throws SSLException {
         var sslContext =
             SslContextBuilder.forClient()
@@ -235,6 +277,7 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         return WebClient.builder()
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .clientConnector(new ReactorClientHttpConnector(httpClient))
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(512 * 1024))
             .build();
     }
 }

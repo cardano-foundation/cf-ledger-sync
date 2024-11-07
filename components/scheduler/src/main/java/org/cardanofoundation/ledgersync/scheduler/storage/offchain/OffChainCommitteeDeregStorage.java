@@ -29,8 +29,8 @@ public interface OffChainCommitteeDeregStorage extends JpaRepository<OffChainCom
             JOIN CommitteeDeRegistrationEntity cd
                 ON cd.txHash = ocd.committeeDeregTxHash AND cd.certIndex = ocd.committeeDeregCertIndex
             LEFT JOIN OffChainFetchError fe
-                ON fe.anchorUrl = cd.anchorUrl AND fe.anchorHash = cd.anchorHash
+                ON fe.anchorUrl = cd.anchorUrl AND fe.anchorHash = cd.anchorHash AND fe.type = :type
             WHERE ocd.checkValid = :checkValid
             """)
-    List<CommitteeDeregistrationDTO> findByInvalid(CheckValid checkValid);
+    List<CommitteeDeregistrationDTO> findByInvalid(CheckValid checkValid, Integer type);
 }

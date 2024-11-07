@@ -60,7 +60,6 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
                 .toList();
 
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-            throw new RuntimeException("aa");
         } catch (Exception e) {
             log.error("Error processing validating off-chain data tasks", e.getCause());
         }

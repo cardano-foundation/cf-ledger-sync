@@ -5,6 +5,7 @@ import java.util.List;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.GovOffchainType;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.DRepRegistrationDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainDRepRegistrationStorage;
@@ -32,7 +33,7 @@ public class DRepRegistrationRetryServiceImpl implements OffChainProcessRetryDat
         long startTime = System.currentTimeMillis();
 
         List<DRepRegistrationDTO> listOffChainDRepRegistration = offChainDRepRegistrationStorage
-                .findByInvalid(CheckValid.INVALID);
+                .findByInvalid(CheckValid.INVALID, GovOffchainType.DREP_REGISTRATION.getValue());
 
         dRepRegistrationExtractFetchService.initOffChainListData();
         dRepRegistrationExtractFetchService.crawlOffChainAnchors(listOffChainDRepRegistration);

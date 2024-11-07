@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataErrorService {
 
+    final ExecutorService executor;
     final OffChainProcessRetryDataService govActionRetryServiceImpl;
     final OffChainProcessRetryDataService votingDataRetryServiceImpl;
     final OffChainProcessRetryDataService constitutionRetryServiceImpl;
@@ -27,11 +28,14 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
     final OffChainProcessRetryDataService dRepRegistrationRetryServiceImpl;
 
     public OffChainRetryDataErrorServiceImpl(
+            @Qualifier("offChainExecutor") ExecutorService executor,
             @Qualifier("govActionRetryServiceImpl") OffChainProcessRetryDataService govActionRetryServiceImpl,
             @Qualifier("votingDataRetryServiceImpl") OffChainProcessRetryDataService votingDataRetryServiceImpl,
             @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl,
             @Qualifier("committeeDeregRetryServiceImpl") OffChainProcessRetryDataService committeeDeregRetryServiceImpl,
-        @Qualifier("dRepRegistrationRetryServiceImpl") OffChainProcessRetryDataService dRepRegistrationRetryServiceImpl) {
+            @Qualifier("dRepRegistrationRetryServiceImpl") OffChainProcessRetryDataService dRepRegistrationRetryServiceImpl) {
+
+        this.executor = executor;
         this.govActionRetryServiceImpl = govActionRetryServiceImpl;
         this.votingDataRetryServiceImpl = votingDataRetryServiceImpl;
         this.constitutionRetryServiceImpl = constitutionRetryServiceImpl;
@@ -44,8 +48,7 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
         long startTime = System.currentTimeMillis();
         log.info("Start retry error offchain data");
 
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-
+        try {
             List<OffChainProcessRetryDataService> services = Arrays.asList(
                 govActionRetryServiceImpl,
                 votingDataRetryServiceImpl,

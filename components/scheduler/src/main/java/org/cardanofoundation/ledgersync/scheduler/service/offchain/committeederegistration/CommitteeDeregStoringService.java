@@ -14,7 +14,7 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainCommitteeDeregistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainCommitteeDeregStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class CommitteeDeregStoringService extends
-        OffChainStoringAbstractService<OffChainCommitteeDeregistration, OffChainFetchError> {
+        OffChainStoringService<OffChainCommitteeDeregistration, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;

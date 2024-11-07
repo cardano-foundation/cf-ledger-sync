@@ -13,7 +13,7 @@ import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainConstituti
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
-import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringAbstractService;
+import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainStoringService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainConstitutionStorage;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainFetchErrorStorage;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ConstitutionStoringService extends
-        OffChainStoringAbstractService<OffChainConstitution, OffChainFetchError> {
+        OffChainStoringService<OffChainConstitution, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;

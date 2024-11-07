@@ -1,5 +1,7 @@
 package org.cardanofoundation.ledgersync.scheduler.service.offchain.constitution;
 
+import java.util.concurrent.ExecutorService;
+
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainConstitution;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
@@ -10,21 +12,26 @@ import org.cardanofoundation.ledgersync.scheduler.dto.anchor.ConstitutionAnchorD
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainConstitutionFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@RequiredArgsConstructor
 public class ConstitutionExtractFetchService extends
         OffChainFetchService<OffChainConstitution, OffChainFetchError, OffChainConstitutionFetchResultDTO, ConstitutionAnchorDTO> {
 
     final SchedulerProperties properties;
+
+    public ConstitutionExtractFetchService(SchedulerProperties properties,
+            @Qualifier("offChainExecutor") ExecutorService executor) {
+        super(executor);
+        this.properties = properties;
+    }
 
     @Override
     public OffChainConstitution extractOffChainData(OffChainConstitutionFetchResultDTO offChainFetchResult) {

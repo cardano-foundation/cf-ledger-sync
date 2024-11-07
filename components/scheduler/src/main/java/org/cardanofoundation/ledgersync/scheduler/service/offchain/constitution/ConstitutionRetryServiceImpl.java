@@ -5,6 +5,7 @@ import java.util.List;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainConstitution;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.GovOffchainType;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.ConstitutionAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainConstitutionStorage;
@@ -31,7 +32,8 @@ public class ConstitutionRetryServiceImpl implements OffChainProcessRetryDataSer
     public void process() {
         long startTime = System.currentTimeMillis();
 
-        List<ConstitutionAnchorDTO> listOffChainGov = offChainConstitutionStorage.findByInvalid(CheckValid.INVALID);
+        List<ConstitutionAnchorDTO> listOffChainGov = offChainConstitutionStorage.findByInvalid(CheckValid.INVALID,
+            GovOffchainType.CONSTITUTION.getValue());
         constitutionExtractFetchService.initOffChainListData();
         constitutionExtractFetchService.crawlOffChainAnchors(listOffChainGov);
 

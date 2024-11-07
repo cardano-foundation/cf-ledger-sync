@@ -5,6 +5,7 @@ import java.util.List;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainVotingData;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
+import org.cardanofoundation.ledgersync.consumercommon.enumeration.GovOffchainType;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.VotingDataAnchorDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
 import org.cardanofoundation.ledgersync.scheduler.storage.offchain.OffChainVotingDataStorage;
@@ -31,7 +32,8 @@ public class VotingDataRetryServiceImpl implements OffChainProcessRetryDataServi
     public void process() {
         long startTime = System.currentTimeMillis();
 
-        List<VotingDataAnchorDTO> listOffChainGov = offChainVotingDataStorage.findByInvalid(CheckValid.INVALID);
+        List<VotingDataAnchorDTO> listOffChainGov = offChainVotingDataStorage.findByInvalid(CheckValid.INVALID,
+            GovOffchainType.VOTING.getValue());
         votingDataExtractFetchService.initOffChainListData();
         votingDataExtractFetchService.crawlOffChainAnchors(listOffChainGov);
 

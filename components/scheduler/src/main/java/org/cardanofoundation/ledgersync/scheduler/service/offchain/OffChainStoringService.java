@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.Function;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class OffChainStoringAbstractService<E, F> {
+public abstract class OffChainStoringService<E, F> {
     public abstract void insertFetchData(Collection<E> offChainAnchorData);
 
     public abstract void updateFetchData(Collection<E> offChainAnchorData);

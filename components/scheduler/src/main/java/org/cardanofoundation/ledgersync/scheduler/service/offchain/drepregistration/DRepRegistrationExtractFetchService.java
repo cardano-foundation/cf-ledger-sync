@@ -1,5 +1,7 @@
 package org.cardanofoundation.ledgersync.scheduler.service.offchain.drepregistration;
 
+import java.util.concurrent.ExecutorService;
+
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
@@ -11,21 +13,26 @@ import org.cardanofoundation.ledgersync.scheduler.dto.anchor.DRepRegistrationDTO
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainDRepRegistrationFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.dto.offchain.OffChainFetchResultDTO;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainFetchService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@RequiredArgsConstructor
 public class DRepRegistrationExtractFetchService extends
         OffChainFetchService<OffChainDRepRegistration, OffChainFetchError, OffChainDRepRegistrationFetchResultDTO, DRepRegistrationDTO> {
 
     final SchedulerProperties properties;
+
+    public DRepRegistrationExtractFetchService(SchedulerProperties properties,
+            @Qualifier("offChainExecutor") ExecutorService executor) {
+        super(executor);
+        this.properties = properties;
+    }
 
     @Override
     public OffChainDRepRegistration extractOffChainData(

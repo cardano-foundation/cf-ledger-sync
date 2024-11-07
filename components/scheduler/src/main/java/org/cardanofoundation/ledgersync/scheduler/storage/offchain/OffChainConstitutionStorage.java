@@ -26,8 +26,8 @@ public interface OffChainConstitutionStorage extends JpaRepository<OffChainConst
         JOIN ConstitutionEntity ce
             ON ce.activeEpoch = c.constitutionActiveEpoch
         LEFT JOIN OffChainFetchError fe
-            ON fe.anchorUrl = ce.anchorUrl AND fe.anchorHash = ce.anchorHash
+            ON fe.anchorUrl = ce.anchorUrl AND fe.anchorHash = ce.anchorHash AND fe.type = :type
         WHERE c.checkValid = :checkValid
         """)
-    List<ConstitutionAnchorDTO> findByInvalid(CheckValid checkValid);
+    List<ConstitutionAnchorDTO> findByInvalid(CheckValid checkValid, Integer type);
 }

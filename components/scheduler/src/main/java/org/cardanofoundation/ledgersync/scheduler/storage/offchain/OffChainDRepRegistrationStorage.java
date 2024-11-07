@@ -29,8 +29,8 @@ public interface OffChainDRepRegistrationStorage extends JpaRepository<OffChainD
             JOIN DRepRegistrationEntity cd
                 ON cd.txHash = odr.drepRegTxHash AND cd.certIndex = odr.drepRegCertIndex
             LEFT JOIN OffChainFetchError fe
-                ON fe.anchorUrl = cd.anchorUrl AND fe.anchorHash = cd.anchorHash
+                ON fe.anchorUrl = cd.anchorUrl AND fe.anchorHash = cd.anchorHash AND fe.type = :type
             WHERE odr.checkValid = :checkValid
             """)
-    List<DRepRegistrationDTO> findByInvalid(CheckValid checkValid);
+    List<DRepRegistrationDTO> findByInvalid(CheckValid checkValid, Integer type);
 }

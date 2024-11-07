@@ -27,8 +27,8 @@ public interface OffChainVotingDataStorage extends JpaRepository<OffChainVotingD
         JOIN VotingProcedureEntity vp
             ON vp.id = ov.votingProcedureId
         LEFT JOIN OffChainFetchError fe
-            ON fe.anchorUrl = vp.anchorUrl AND fe.anchorHash = vp.anchorHash
+            ON fe.anchorUrl = vp.anchorUrl AND fe.anchorHash = vp.anchorHash AND fe.type = :type
         WHERE ov.checkValid = :checkValid
         """)
-    List<VotingDataAnchorDTO> findByInvalid(CheckValid checkValid);
+    List<VotingDataAnchorDTO> findByInvalid(CheckValid checkValid, Integer type);
 }

@@ -28,8 +28,8 @@ public interface OffChainGovActionStorage extends JpaRepository<OffChainGovActio
         JOIN GovActionProposalEntity gap
             ON gap.txHash = oga.govActionTxHash AND gap.index = oga.govActionIdx
         LEFT JOIN OffChainFetchError fe
-            ON fe.anchorUrl = gap.anchorUrl AND fe.anchorHash = gap.anchorHash
+            ON fe.anchorUrl = gap.anchorUrl AND fe.anchorHash = gap.anchorHash AND fe.type = :type
         WHERE oga.checkValid = :checkValid
         """)
-    List<GovAnchorDTO> findByInvalid(CheckValid checkValid);
+    List<GovAnchorDTO> findByInvalid(CheckValid checkValid, Integer type);
 }
