@@ -3,12 +3,19 @@ package org.cardanofoundation.ledgersync.scheduler.service.offchain;
 import static com.bloxbean.cardano.client.util.JsonFieldWriter.mapper;
 
 import com.bloxbean.cardano.client.crypto.Blake2bUtil;
+import com.github.jsonldjava.core.DocumentLoader;
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.utils.JsonUtils;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -186,6 +193,14 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
                 // check json format
                 JsonNode checkJsonContent = mapper.readTree(responseBody);
 
+                if (!isValidJsonLd(responseBody)){
+                    handleFetchFailure(
+                        "Response content is not in JSON-LD format or IRI not valid.",
+                        anchor,
+                        responseBody);
+                    return;
+                }
+
                 // check CIPs later - save to fetch error if JSON not match CIPs
                 handleFetchSuccess(anchor, responseBody);
             } catch (JsonProcessingException e) {
@@ -277,7 +292,22 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         return WebClient.builder()
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .clientConnector(new ReactorClientHttpConnector(httpClient))
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(512 * 1024))
+            .codecs(configure -> configure.defaultCodecs().maxInMemorySize(512 * 1024))
             .build();
+    }
+
+    public static boolean isValidJsonLd(String jsonContent) {
+        try {
+            Object jsonObject = JsonUtils.fromString(jsonContent);
+
+            JsonLdOptions options = new JsonLdOptions();
+            options.setDocumentLoader(new DocumentLoader());
+
+            Map<String, Object> compacted = JsonLdProcessor.compact(jsonObject, null, options);
+
+            return !compacted.isEmpty();
+        } catch (IOException | JsonLdError e) {
+            return false;
+        }
     }
 }

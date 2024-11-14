@@ -24,7 +24,7 @@ public interface VotingProcedureRepo extends JpaRepository<VotingProcedureEntity
     @Query("""
         SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.VotingDataAnchorDTO(vp.anchorUrl, vp.anchorHash, vp.slot, vp.id, 0)
         FROM VotingProcedureEntity vp
-        WHERE vp.slot > :fromSlot and vp.slot <= :toSlot
+        WHERE vp.slot >= :fromSlot and vp.slot <= :toSlot
         AND vp.anchorUrl IS NOT NULL
         AND vp.anchorHash IS NOT NULL
         AND NOT EXISTS (SELECT 1 FROM OffChainVotingData oc WHERE oc.votingProcedureId = vp.id)

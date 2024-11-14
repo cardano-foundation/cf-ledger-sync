@@ -3,7 +3,7 @@ package org.cardanofoundation.ledgersync.scheduler.storage.offchain;
 import java.util.List;
 import java.util.Set;
 
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDrepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.CheckValid;
 import org.cardanofoundation.ledgersync.scheduler.dto.anchor.DRepRegistrationDTO;
@@ -12,9 +12,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OffChainDRepRegistrationStorage extends JpaRepository<OffChainDRepRegistration, Long> {
+public interface OffChainDRepRegistrationStorage extends JpaRepository<OffChainDrepRegistration, Long> {
 
-    List<OffChainDRepRegistration> findByDrepRegistrationIdIn(
+    List<OffChainDrepRegistration> findByDrepRegistrationIdIn(
             Set<OffChainDRepRegistrationId> dRepRegistrationIds);
 
     @Query("""
@@ -25,7 +25,7 @@ public interface OffChainDRepRegistrationStorage extends JpaRepository<OffChainD
                 cd.txHash,
                 cd.certIndex,
                 COALESCE(fe.retryCount, 0))
-            FROM OffChainDRepRegistration odr
+            FROM OffChainDrepRegistration odr
             JOIN DRepRegistrationEntity cd
                 ON cd.txHash = odr.drepRegTxHash AND cd.certIndex = odr.drepRegCertIndex
             LEFT JOIN OffChainFetchError fe

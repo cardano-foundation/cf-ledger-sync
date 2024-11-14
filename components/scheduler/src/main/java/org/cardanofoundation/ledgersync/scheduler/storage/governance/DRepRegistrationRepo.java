@@ -30,10 +30,10 @@ public interface DRepRegistrationRepo extends JpaRepository<DRepRegistrationEnti
             dr.certIndex,
             0)
         FROM DRepRegistrationEntity dr
-        WHERE dr.slot > :fromSlot and dr.slot <= :toSlot
+        WHERE dr.slot >= :fromSlot and dr.slot <= :toSlot
         AND dr.anchorUrl IS NOT NULL
         AND dr.anchorHash IS NOT NULL
-        AND NOT EXISTS (SELECT 1 FROM OffChainDRepRegistration oc 
+        AND NOT EXISTS (SELECT 1 FROM OffChainDrepRegistration oc
                         WHERE oc.drepRegTxHash = dr.txHash AND oc.drepRegCertIndex = dr.certIndex)
         """)
     List<DRepRegistrationDTO> getAnchorInfoBySlotRange(@Param("fromSlot") Long fromSlot, @Param("toSlot") Long toSlot);

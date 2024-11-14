@@ -23,7 +23,7 @@ public interface ConstitutionRepo extends JpaRepository<ConstitutionEntity, Inte
     @Query("""
         SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.ConstitutionAnchorDTO(ce.anchorUrl, ce.anchorHash, ce.slot, ce.id, 0)
         FROM ConstitutionEntity ce
-        WHERE ce.slot > :fromSlot and ce.slot <= :toSlot
+        WHERE ce.slot >= :fromSlot and ce.slot <= :toSlot
         AND ce.anchorUrl IS NOT NULL
         AND ce.anchorHash IS NOT NULL
         AND NOT EXISTS (SELECT 1 FROM OffChainConstitution oc WHERE oc.constitutionActiveEpoch = ce.activeEpoch)

@@ -30,7 +30,7 @@ public interface CommitteeDeregistrationRepo extends JpaRepository<CommitteeDeRe
             cd.certIndex,
             0)
         FROM CommitteeDeRegistrationEntity cd
-        WHERE cd.slot > :fromSlot and cd.slot <= :toSlot
+        WHERE cd.slot >= :fromSlot and cd.slot <= :toSlot
         AND cd.anchorUrl IS NOT NULL
         AND cd.anchorHash IS NOT NULL
         AND NOT EXISTS (SELECT 1 FROM OffChainCommitteeDeregistration oc 

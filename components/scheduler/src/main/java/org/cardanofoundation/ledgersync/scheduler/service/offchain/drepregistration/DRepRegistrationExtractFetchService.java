@@ -2,7 +2,7 @@ package org.cardanofoundation.ledgersync.scheduler.service.offchain.drepregistra
 
 import java.util.concurrent.ExecutorService;
 
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDrepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class DRepRegistrationExtractFetchService extends
-        OffChainFetchService<OffChainDRepRegistration, OffChainFetchError, OffChainDRepRegistrationFetchResultDTO, DRepRegistrationDTO> {
+        OffChainFetchService<OffChainDrepRegistration, OffChainFetchError, OffChainDRepRegistrationFetchResultDTO, DRepRegistrationDTO> {
 
     final SchedulerProperties properties;
 
@@ -35,10 +35,10 @@ public class DRepRegistrationExtractFetchService extends
     }
 
     @Override
-    public OffChainDRepRegistration extractOffChainData(
+    public OffChainDrepRegistration extractOffChainData(
             OffChainDRepRegistrationFetchResultDTO offChainFetchResult) {
 
-        OffChainDRepRegistration offChainDrepRegistrationData = new OffChainDRepRegistration();
+        OffChainDrepRegistration offChainDrepRegistrationData = new OffChainDrepRegistration();
 
         OffChainDRepRegistrationId offChainDrepRegistrationId = new OffChainDRepRegistrationId(
                 offChainFetchResult.getDrepRegTxHash(), offChainFetchResult.getDrepRegCertIndex());

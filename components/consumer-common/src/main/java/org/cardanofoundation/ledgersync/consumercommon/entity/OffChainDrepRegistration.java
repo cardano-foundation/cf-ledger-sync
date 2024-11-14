@@ -32,7 +32,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class OffChainDRepRegistration extends BaseEntity {
+public class OffChainDrepRegistration extends BaseEntity {
 
   @Column(name = "drep_reg_tx_hash", nullable = false)
   @Hash32Type
@@ -77,7 +77,7 @@ public class OffChainDRepRegistration extends BaseEntity {
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
       return false;
     }
-    OffChainDRepRegistration that = (OffChainDRepRegistration) o;
+    OffChainDrepRegistration that = (OffChainDrepRegistration) o;
     return id != null && Objects.equals(id, that.id);
   }
 

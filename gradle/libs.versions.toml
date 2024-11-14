@@ -32,3 +32,5 @@ junit-api="org.junit.jupiter:junit-jupiter-api:5.9.0"
 assertj-core="org.assertj:assertj-core:3.25.1"
 
 hypersistence-utils-hibernate="io.hypersistence:hypersistence-utils-hibernate-63:3.7.1"
+
+jsonld-java="com.github.jsonld-java:jsonld-java:0.13.6"

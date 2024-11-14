@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDRepRegistration;
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDrepRegistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
@@ -29,29 +29,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class DRepRegistrationStoringService extends
-        OffChainStoringService<OffChainDRepRegistration, OffChainFetchError> {
+        OffChainStoringService<OffChainDrepRegistration, OffChainFetchError> {
 
     final SchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;
     final OffChainDRepRegistrationStorage offChainDRepRegistrationStorage;
 
     @Override
-    public void insertFetchData(Collection<OffChainDRepRegistration> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainDrepRegistration> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainDRepRegistration::getDrepRegistrationId))
+                .filter(distinctByKey(OffChainDrepRegistration::getDrepRegistrationId))
                 .collect(Collectors.toList());
 
         Set<OffChainDRepRegistrationId> offChainDRepRegistrationIds = offChainAnchorData.stream()
-                .map(OffChainDRepRegistration::getDrepRegistrationId)
+                .map(OffChainDrepRegistration::getDrepRegistrationId)
                 .collect(Collectors.toSet());
 
         Set<OffChainDRepRegistrationId> existingOffChainDRepRegistrationIds = new HashSet<>(
                 offChainDRepRegistrationStorage.findByDrepRegistrationIdIn(offChainDRepRegistrationIds))
-                .stream().map(OffChainDRepRegistration::getDrepRegistrationId)
+                .stream().map(OffChainDrepRegistration::getDrepRegistrationId)
                 .collect(Collectors.toSet());
 
-        List<OffChainDRepRegistration> offChainDataToSave = offChainAnchorData.stream()
+        List<OffChainDrepRegistration> offChainDataToSave = offChainAnchorData.stream()
                 .filter(e -> !existingOffChainDRepRegistrationIds.contains(e.getDrepRegistrationId()))
                 .collect(Collectors.toList());
 
@@ -59,26 +59,26 @@ public class DRepRegistrationStoringService extends
     }
 
     @Override
-    public void updateFetchData(Collection<OffChainDRepRegistration> offChainAnchorData) {
+    public void updateFetchData(Collection<OffChainDrepRegistration> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainDRepRegistration::getDrepRegistrationId))
+                .filter(distinctByKey(OffChainDrepRegistration::getDrepRegistrationId))
                 .collect(Collectors.toList());
 
         Set<OffChainDRepRegistrationId> offChainDRepRegistrationIds = offChainAnchorData.stream()
-                .map(OffChainDRepRegistration::getDrepRegistrationId)
+                .map(OffChainDrepRegistration::getDrepRegistrationId)
                 .collect(Collectors.toSet());
 
-        Map<OffChainDRepRegistrationId, OffChainDRepRegistration> mapEntityById = offChainAnchorData
+        Map<OffChainDRepRegistrationId, OffChainDrepRegistration> mapEntityById = offChainAnchorData
                 .stream().collect(Collectors.toMap(
-                        OffChainDRepRegistration::getDrepRegistrationId,
+                        OffChainDrepRegistration::getDrepRegistrationId,
                         Function.identity()));
 
-        Set<OffChainDRepRegistration> offChainDataToSave = new HashSet<>(
+        Set<OffChainDrepRegistration> offChainDataToSave = new HashSet<>(
                 offChainDRepRegistrationStorage.findByDrepRegistrationIdIn(offChainDRepRegistrationIds));
 
         offChainDataToSave.forEach(e -> {
-            OffChainDRepRegistration oc = mapEntityById.get(e.getDrepRegistrationId());
+            OffChainDrepRegistration oc = mapEntityById.get(e.getDrepRegistrationId());
             if (oc != null) {
                 e.setContent(oc.getContent());
                 e.setCheckValid(oc.getCheckValid());

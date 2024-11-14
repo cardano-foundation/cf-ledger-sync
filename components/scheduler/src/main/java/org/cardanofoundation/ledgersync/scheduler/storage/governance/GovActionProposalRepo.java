@@ -21,7 +21,7 @@ public interface GovActionProposalRepo extends JpaRepository<GovActionProposalEn
     @Query("""
         SELECT new org.cardanofoundation.ledgersync.scheduler.dto.anchor.GovAnchorDTO(gap.anchorUrl, gap.anchorHash, gap.slot, gap.txHash, gap.index, 0)
         FROM GovActionProposalEntity gap
-        WHERE gap.slot > :fromSlot and gap.slot <= :toSlot
+        WHERE gap.slot >= :fromSlot and gap.slot <= :toSlot
         AND gap.anchorUrl IS NOT NULL
         AND gap.anchorHash IS NOT NULL
         AND NOT EXISTS (SELECT 1 FROM OffChainGovAction oc WHERE oc.govActionTxHash = gap.txHash AND oc.govActionIdx = gap.index)
