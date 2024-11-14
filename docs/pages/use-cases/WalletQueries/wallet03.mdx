@@ -135,14 +135,14 @@ This SELECT statement calculates the net ADA amount involved in transactions whe
 `outgoing` labels these transactions as outgoing.
 
 `FROM tx_out JOIN tx ON tx.id = tx_out.tx_id ...` 
-This FROM statement starts by looking at [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) (transaction outputs) and joins it with the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) 
+This FROM statement starts by looking at [tx_out](/../../schema.md#tx_out) (transaction outputs) and joins it with the [tx](/../../schema.md#tx) 
 (transactions) table, linking them based on transaction IDs.
 
 `LEFT JOIN ( SELECT ... ) AS inp ON inp.inp_txid = tx.id` is a subquery aliased as `inp`. It looks for transactions where the given address is an input (or sender) and calculates the total input value `inp_value` for those transactions. 
 
-`LEFT JOIN` includes all rows from the left table [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) even if there's no match in the subquery `inp`. 
+`LEFT JOIN` includes all rows from the left table [tx](/../../schema.md#tx) even if there's no match in the subquery `inp`. 
 
-`JOIN block ON block.id = tx.block_id` joins the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table to get block-related information (timestamp, block number, slot number).
+`JOIN block ON block.id = tx.block_id` joins the [block](/../../schema.md#block) table to get block-related information (timestamp, block number, slot number).
 
 `WHERE tx_out.address = '...'` filters results to only include transactions where the specified address is an output. 
 
@@ -154,10 +154,10 @@ This FROM statement starts by looking at [tx_out](https://github.com/cardano-fou
 
 `SELECT sum(tx_out.value) AS ADA_amount, 'incoming' AS direction, ...` calculates the total ADA amount for incoming transactions. 
 
-`incoming` labels these transactions as incoming. `FROM tx_in JOIN tx_out ON ... JOIN tx ON ... JOIN block ON ...` similar joins as in the first part, but starts from [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) (transaction inputs).
+`incoming` labels these transactions as incoming. `FROM tx_in JOIN tx_out ON ... JOIN tx ON ... JOIN block ON ...` similar joins as in the first part, but starts from [tx_in](/../../schema.md#tx_in) (transaction inputs).
 
 `WHERE tx_out.address = '...' AND NOT EXISTS (SELECT 1 AS txid FROM tx_out WHERE ...)` filters to include transactions where:
-- The address is an input (via [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) linked to [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in)).
+- The address is an input (via [tx_out](/../../schema.md#tx_out) linked to [tx_in](/../../schema.md#tx_in)).
 - The address is not an output in the same transaction (using NOT EXISTS).
 
 `GROUP BY tx_hash, ...` groups the results similarly to the first part.
@@ -195,18 +195,18 @@ Expected results format
 
 🔎  Let's take a closer look at each part of the query. 
 
-`SELECT tw."key" AS Transaction_Signatories` selects the `key` column from the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table and renames it as `Transaction_Signatories` in the output.
+`SELECT tw."key" AS Transaction_Signatories` selects the `key` column from the [tx_witnesses](/../../schema.md#tx_witnesses) table and renames it as `Transaction_Signatories` in the output.
 
-`FROM tx` means the query is looking in the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table.
+`FROM tx` means the query is looking in the [tx](/../../schema.md#tx) table.
 
-`LEFT JOIN tx_witnesses tw ON tx.id = tw.tx_id` performs a LEFT JOIN with the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
-`LEFT JOIN tx_witnesses tw ON tx.id = tw.tx_id` performs a LEFT JOIN with the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
+`LEFT JOIN tx_witnesses tw ON tx.id = tw.tx_id` performs a LEFT JOIN with the [tx_witnesses](/../../schema.md#tx_witnesses) table.
+`LEFT JOIN tx_witnesses tw ON tx.id = tw.tx_id` performs a LEFT JOIN with the [tx_witnesses](/../../schema.md#tx_witnesses) table.
 
-The `JOIN` condition `tx.id = tw.tx_id` connects rows from both tables where the `id` in the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table matches the `tx_id` in the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table.
+The `JOIN` condition `tx.id = tw.tx_id` connects rows from both tables where the `id` in the [tx](/../../schema.md#tx) table matches the `tx_id` in the [tx_witnesses](/../../schema.md#tx_witnesses) table.
 
-`LEFT JOIN` ensures that all rows from the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table are included in the result, even if there's no corresponding match in the [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) table. In such cases, the columns from [tx_witnesses](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_witnesses) will have NULL values.
+`LEFT JOIN` ensures that all rows from the [tx](/../../schema.md#tx) table are included in the result, even if there's no corresponding match in the [tx_witnesses](/../../schema.md#tx_witnesses) table. In such cases, the columns from [tx_witnesses](/../../schema.md#tx_witnesses) will have NULL values.
 
-`WHERE tx.hash = '3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7'` is a filtering condition restricting the output to only those rows where the hash column in the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table matches the provided specific hash value.
+`WHERE tx.hash = '3565bb0621d56ff3349f014a41c7c4c9f5614288a4b00abbe76d3b41becc9da7'` is a filtering condition restricting the output to only those rows where the hash column in the [tx](/../../schema.md#tx) table matches the provided specific hash value.
 
 ### 3.3 Retrieve Native Asset details
 
@@ -294,10 +294,10 @@ The main query selects everything prefixed `tx_detail` by combining the results 
 ### First Subquery focuses on Outputs
 
 `SELECT 'output' AS direction, ...` labels each row as an 'output'.
-`FROM tx LEFT JOIN tx_out ...` starts from the [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table and joins with [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) (transaction outputs) table to get output details.
+`FROM tx LEFT JOIN tx_out ...` starts from the [tx](/../../schema.md#tx) table and joins with [tx_out](/../../schema.md#tx_out) (transaction outputs) table to get output details.
 `LEFT JOIN stake_address ...` joins with `stake_address` to get associated stake address information.
 `LEFT JOIN ma_tx_out ... LEFT JOIN multi_asset ...` joins to gather details about any native assets involved in the outputs.
-`LEFT JOIN block b ...` joins with [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) to get block-related info.  
+`LEFT JOIN block b ...` joins with [block](/../../schema.md#block) to get block-related info.  
 `WHERE tx.hash = '...'` filters to focus only on the specific transaction.
 `GROUP BY ...` groups results to avoid redundancy, especially when multiple native assets are involved in an output.
 `NULL AS utxo` sets the utxo column to `NULL` for outputs, as UTXOs are relevant to inputs.
@@ -305,7 +305,7 @@ The main query selects everything prefixed `tx_detail` by combining the results 
 ### Second Subquery focuses on Inputs
 
 `SELECT 'input' AS direction, ...` labels each row as an 'input'.
-`FROM tx LEFT JOIN tx_in ...` starts from [tx](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx) table and joins with [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) (transaction inputs) table.
+`FROM tx LEFT JOIN tx_in ...` starts from [tx](/../../schema.md#tx) table and joins with [tx_in](/../../schema.md#tx_in) (transaction inputs) table.
 `LEFT JOIN tx_out ... LEFT JOIN tx txin ...` traces back from the input to the original output it's spending, to get details about that output.
 Other joins and `WHERE` clause are similar to the first subquery.
 `txin.hash AS utxo` includes the hash of the transaction that created the spent output, representing the UTXO.

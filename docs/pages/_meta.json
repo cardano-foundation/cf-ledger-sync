@@ -4,6 +4,7 @@
   "docker": "Run with Docker Compose",
   "schema": "Schema",
   "build_run": "Build & Run",
+  "live_n2c_data": "Live data from Node",
   "applications": {
     "title": "Applications"
   },

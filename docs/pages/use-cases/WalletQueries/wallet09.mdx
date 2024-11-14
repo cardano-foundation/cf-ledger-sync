@@ -46,13 +46,13 @@ In this SQL query, we retrieve information about blocks associated with a specif
 - `ROW_NUMBER() OVER (ORDER BY bk.epoch_no)` assigns a sequential row number to each block, starting from 1, and then ordered chronologically by epoch number. This tracks the order in which the stake pool created blocks over time.
 
 ### FROM pool_hash ph
-- Looks in the table [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash), which stores information about stake pools, and assigns it the alias `ph`.
+- Looks in the table [pool_hash](/../../schema.md#pool_hash), which stores information about stake pools, and assigns it the alias `ph`.
 
 ### JOIN slot_leader sl ON sl.pool_hash_id = ph.id
-Joins the [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) table with the [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) table. The connection is made based on the matching `id` from [pool_hash](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#pool_hash) and `pool_hash_id` from [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader). The [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) table provides us with information about which stake pool was selected to lead a particular slot and potentially create a block.
+Joins the [pool_hash](/../../schema.md#pool_hash) table with the [slot_leader](/../../schema.md#slot_leader) table. The connection is made based on the matching `id` from [pool_hash](/../../schema.md#pool_hash) and `pool_hash_id` from [slot_leader](/../../schema.md#slot_leader). The [slot_leader](/../../schema.md#slot_leader) table provides us with information about which stake pool was selected to lead a particular slot and potentially create a block.
 
 ### JOIN block bk ON bk.slot_leader_id = sl.id
-Joins the result of the previous join with the [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block) table. The connection is based on matching the `id` from [slot_leader](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#slot_leader) with `slot_leader_id` from [block](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#block). The block table stores detailed information about each block on the blockchain.
+Joins the result of the previous join with the [block](/../../schema.md#block) table. The connection is based on matching the `id` from [slot_leader](/../../schema.md#slot_leader) with `slot_leader_id` from [block](/../../schema.md#block). The block table stores detailed information about each block on the blockchain.
 
 ### WHERE ph.view = 'pool12dd0mg935mzx6rdaykngqj8aeqxrtjltg5jtdccrt7p0x78rc38'
 This `WHERE' clause restricts the results to only show blocks created by the stake pool with the specific view id we give the query. 

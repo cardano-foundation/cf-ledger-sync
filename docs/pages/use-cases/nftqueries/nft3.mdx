@@ -51,13 +51,13 @@ daf494081cbb6872c6303d04697e5d10d4db8a69e4229beda69dd0af | CRAZYMARY	| 250,000,0
 
 🔎 Let's zoom in to understand at each part of the query. 
 
-`FROM ma_tx_out mto` looking at the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table, which tracks the association between multi-assets and transaction outputs.
+`FROM ma_tx_out mto` looking at the [ma_tx_out](/../../schema.md#ma_tx_out) table, which tracks the association between multi-assets and transaction outputs.
 
-`JOIN multi_asset ma ON ma.id = mto.ident` joins the [ma_tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_out) table with the [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table to get details about the assets themselves, such as their policy id and name.
+`JOIN multi_asset ma ON ma.id = mto.ident` joins the [ma_tx_out](/../../schema.md#ma_tx_out) table with the [multi_asset](/../../schema.md#multi_asset) table to get details about the assets themselves, such as their policy id and name.
 
-`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins with the [tx_out](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_out) table to get information about the transaction outputs where these assets reside, including the address that owns them.
+`JOIN tx_out ON mto.tx_out_id = tx_out.id` joins with the [tx_out](/../../schema.md#tx_out) table to get information about the transaction outputs where these assets reside, including the address that owns them.
 
-`LEFT JOIN tx_in ti ON ...:` attempts a left join with the [tx_in](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_in) table to identify any transaction inputs that might have spent these transaction outputs.
+`LEFT JOIN tx_in ti ON ...:` attempts a left join with the [tx_in](/../../schema.md#tx_in) table to identify any transaction inputs that might have spent these transaction outputs.
 
 `WHERE tx_out.address = '...' AND ti.tx_out_id IS NULL` filters the results to only include assets held by the specified address.
 

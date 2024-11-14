@@ -50,7 +50,7 @@ Expected results format
 SELECT tm.json
 ```
 
-This part of the query specifies that we want to retrieve the `json` column from the [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata) table.
+This part of the query specifies that we want to retrieve the `json` column from the [tx_metadata](/../../schema.md#tx_metadata) table.
 
 ### From ma_tx_mint Table with Joins
 
@@ -60,9 +60,9 @@ JOIN tx_metadata tm ON tm.tx_id = mtm.tx_id
 JOIN multi_asset ma ON ma.id = mtm.ident
 ```
 
-The data is being retrieved from the [ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint) table, aliased as `mtm`.
+The data is being retrieved from the [ma_tx_mint](/../../schema.md#ma_tx_mint) table, aliased as `mtm`.
 
-The query joins the [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata) table `tm`, using the `tx_id` (transaction id) column. The [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) table, alised `ma`, is joined with the `indent` column. using `ma.id = mtm.ident`.
+The query joins the [tx_metadata](/../../schema.md#tx_metadata) table `tm`, using the `tx_id` (transaction id) column. The [multi_asset](/../../schema.md#multi_asset) table, alised `ma`, is joined with the `indent` column. using `ma.id = mtm.ident`.
 
 ### Filter by Fingerprint and Metadata Key
 
@@ -87,7 +87,7 @@ The results are ordered by `mtm.id` in descending order, which means the most re
 ### Summary 
 The query retrieves the JSON metadata for a specific asset by:
 
-- Joining the [ma_tx_mint](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#ma_tx_mint), [tx_metadata](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#tx_metadata), and [multi_asset](https://github.com/cardano-foundation/cf-ledger-sync/blob/main/docs/pages/schema.md#multi_asset) tables from Ledger Sync's database schema.
+- Joining the [ma_tx_mint](/../../schema.md#ma_tx_mint), [tx_metadata](/../../schema.md#tx_metadata), and [multi_asset](/../../schema.md#multi_asset) tables from Ledger Sync's database schema.
 - Filtering by the asset's fingerprint and extract the JSON metadata associated with the minting transaction, specifically the metadata related to the NFT standard (721). This metadata contains details about the NFT's name, image, policy ID, etc.
 - Ordering by the most recent minting transaction and limiting the result to one.
 
