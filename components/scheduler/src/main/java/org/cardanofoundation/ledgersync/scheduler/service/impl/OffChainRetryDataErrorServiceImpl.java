@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 
+import java.util.concurrent.locks.Lock;
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataErrorService {
 
     final ExecutorService executor;
+    final Lock lock;
     final OffChainProcessRetryDataService govActionRetryServiceImpl;
     final OffChainProcessRetryDataService votingDataRetryServiceImpl;
     final OffChainProcessRetryDataService constitutionRetryServiceImpl;
@@ -29,6 +31,7 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
 
     public OffChainRetryDataErrorServiceImpl(
             @Qualifier("offChainExecutor") ExecutorService executor,
+            @Qualifier("virtualThreadLock") Lock lock,
             @Qualifier("govActionRetryServiceImpl") OffChainProcessRetryDataService govActionRetryServiceImpl,
             @Qualifier("votingDataRetryServiceImpl") OffChainProcessRetryDataService votingDataRetryServiceImpl,
             @Qualifier("constitutionRetryServiceImpl") OffChainProcessRetryDataService constitutionRetryServiceImpl,
@@ -36,6 +39,7 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
             @Qualifier("dRepRegistrationRetryServiceImpl") OffChainProcessRetryDataService dRepRegistrationRetryServiceImpl) {
 
         this.executor = executor;
+        this.lock = lock;
         this.govActionRetryServiceImpl = govActionRetryServiceImpl;
         this.votingDataRetryServiceImpl = votingDataRetryServiceImpl;
         this.constitutionRetryServiceImpl = constitutionRetryServiceImpl;
@@ -45,6 +49,8 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
 
     @Override
     public void retryOffChainErrorData() {
+        lock.lock();
+        lock.tryLock();
         long startTime = System.currentTimeMillis();
         log.info("Start retry error offchain data");
 
@@ -63,6 +69,8 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         } catch (CompletionException e) {
             log.error("Error processing retry tasks", e.getCause());
+        } finally {
+            lock.unlock();
         }
         log.info("End retry error offchain data time taken: {} ms", System.currentTimeMillis() - startTime);
     }

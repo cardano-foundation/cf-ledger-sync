@@ -1,5 +1,7 @@
 package org.cardanofoundation.ledgersync.scheduler.config;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,14 +15,21 @@ import jakarta.annotation.PreDestroy;
 public class ExecutorConfig {
     
     private final ExecutorService executor;
+    private final Lock lock;
     
     public ExecutorConfig() {
         this.executor = Executors.newVirtualThreadPerTaskExecutor();
+        this.lock = new ReentrantLock();
     }
     
     @Bean(name = "offChainExecutor")
     public ExecutorService virtualThreadExecutor() {
         return executor;
+    }
+
+    @Bean(name = "virtualThreadLock")
+    public Lock executorLock() {
+        return lock;
     }
     
     @PreDestroy
