@@ -6,6 +6,7 @@ ARG --global DOCKER_IMAGES_TARGETS="ledger-sync aggregation streamer scheduler"
 
 ARG --global DOCKER_IMAGE_PREFIX="cf-ledger-sync"
 ARG --global DOCKER_IMAGES_EXTRA_TAGS=""
+ARG --global DOCKER_IMAGES_LABELS=""
 ARG --global DOCKER_REGISTRIES=""
 ARG --global PUSH=false
 
@@ -27,9 +28,11 @@ TEMPLATED_DOCKERFILE_BUILD:
   FUNCTION
   ARG DOCKERFILE_TARGET
   ARG DOCKER_IMAGE_NAME
-  FROM DOCKERFILE --build-arg GRADLE_BUILD_ARGS=${GRADLE_BUILD_ARGS} -f Dockerfile --target ${DOCKERFILE_TARGET} .
+  WAIT
+    FROM DOCKERFILE --build-arg GRADLE_BUILD_ARGS=${GRADLE_BUILD_ARGS} -f Dockerfile --target ${DOCKERFILE_TARGET} .
+    DO functions+DOCKER_LABELS --LABELS="${DOCKER_IMAGES_LABELS}"
+  END
   SAVE IMAGE ${DOCKER_IMAGE_NAME}:latest
-
 
 gradle-build:
   FROM DOCKERFILE \
