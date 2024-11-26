@@ -9,7 +9,7 @@ localCardanoNode:
   socatPort: 3100
   image:
     repository: ghcr.io/blinklabs-io/cardano-node
-    tag: 9.1.0-2
+    tag: 10.1.2-1
   mithrilRestore: "true"
   tolerations: null
   affinity: null
