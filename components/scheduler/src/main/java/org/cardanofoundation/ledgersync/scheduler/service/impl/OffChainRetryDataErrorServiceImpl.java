@@ -1,11 +1,13 @@
 package org.cardanofoundation.ledgersync.scheduler.service.impl;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessRetryDataService;
@@ -49,28 +51,34 @@ public class OffChainRetryDataErrorServiceImpl implements OffChainRetryDataError
 
     @Override
     public void retryOffChainErrorData() {
-        lock.lock();
-        lock.tryLock();
         long startTime = System.currentTimeMillis();
-        log.info("Start retry error offchain data");
-
         try {
-            List<OffChainProcessRetryDataService> services = Arrays.asList(
-                govActionRetryServiceImpl,
-                votingDataRetryServiceImpl,
-                constitutionRetryServiceImpl,
-                committeeDeregRetryServiceImpl,
-                dRepRegistrationRetryServiceImpl);
+            if (lock.tryLock(4, TimeUnit.MINUTES)) {
+                try {
+                    log.info("Start retry error offchain data");
+                    List<OffChainProcessRetryDataService> services = Arrays.asList(
+                        govActionRetryServiceImpl,
+                        votingDataRetryServiceImpl,
+                        constitutionRetryServiceImpl,
+                        committeeDeregRetryServiceImpl,
+                        dRepRegistrationRetryServiceImpl);
 
-            List<CompletableFuture<Void>> futures = services.stream()
-                .map(service -> CompletableFuture.runAsync(service::process, executor))
-                .toList();
+                    List<CompletableFuture<Void>> futures = services.stream()
+                        .map(service -> CompletableFuture.runAsync(service::process, executor))
+                        .toList();
 
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        } catch (CompletionException e) {
-            log.error("Error processing retry tasks", e.getCause());
-        } finally {
-            lock.unlock();
+                    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+                } catch (CompletionException e) {
+                    log.error("Error processing retry tasks", e.getCause());
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                log.error("Thread could not acquire the lock (timeout when retry error offchain)");
+            }
+        } catch (InterruptedException e) {
+            log.error("thread is interrupted: ", e.getCause());
         }
         log.info("End retry error offchain data time taken: {} ms", System.currentTimeMillis() - startTime);
     }

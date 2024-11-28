@@ -1,10 +1,13 @@
 package org.cardanofoundation.ledgersync.scheduler.service.impl;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import org.cardanofoundation.ledgersync.scheduler.service.OffChainPersistService;
 import org.cardanofoundation.ledgersync.scheduler.service.offchain.OffChainProcessPersistDataService;
@@ -48,27 +51,33 @@ public class OffChainPersistServiceImpl implements OffChainPersistService {
 
     @Override
     public void validateAndPersistData() {
-        lock.lock();
         long startTime = System.currentTimeMillis();
-        log.info("Start validating off-chain data");
-
         try {
-            List<OffChainProcessPersistDataService> services = Arrays.asList(
-                govActionPersistServiceImpl,
-                votingDataPersistServiceImpl,
-                constitutionPersistServiceImpl,
-                committeeDeregPersistServiceImpl,
-                dRepRegistrationPersistServiceImpl);
+            if (lock.tryLock(4, TimeUnit.MINUTES)) {
+                try {
+                    log.info("Start validating off-chain data");
+                    List<OffChainProcessPersistDataService> services = Arrays.asList(
+                        govActionPersistServiceImpl,
+                        votingDataPersistServiceImpl,
+                        constitutionPersistServiceImpl,
+                        committeeDeregPersistServiceImpl,
+                        dRepRegistrationPersistServiceImpl);
 
-            List<CompletableFuture<Void>> futures = services.stream()
-                .map(service -> CompletableFuture.runAsync(service::process, executor))
-                .toList();
+                    List<CompletableFuture<Void>> futures = services.stream()
+                        .map(service -> CompletableFuture.runAsync(service::process, executor))
+                        .toList();
 
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        } catch (Exception e) {
-            log.error("Error processing validating off-chain data tasks", e.getCause());
-        } finally {
-            lock.unlock();
+                    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+                } catch (CompletionException e) {
+                    log.error("Error processing validating off-chain data tasks", e.getCause());
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                log.error("Thread could not acquire the lock (timeout when retry error offchain)");
+            }
+        } catch (InterruptedException e) {
+            log.error("thread is interrupted: ", e.getCause());
         }
         log.info("End validating off-chain data, taken time: {} ms", System.currentTimeMillis() - startTime);
     }
