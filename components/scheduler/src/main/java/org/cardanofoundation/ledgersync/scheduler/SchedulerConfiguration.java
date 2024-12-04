@@ -29,7 +29,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableConfigurationProperties(SchedulerProperties.class)
 @ComponentScan(basePackages = {"org.cardanofoundation.ledgersync.scheduler"})
 @EnableJpaRepositories(basePackages = {"org.cardanofoundation.ledgersync.scheduler"})
-@EntityScan(basePackages = {"org.cardanofoundation.ledgersync.scheduler"})
+@EntityScan(basePackages = {"org.cardanofoundation.ledgersync.scheduler",
+                            "com.bloxbean.cardano.yaci.store.core",
+                            "com.bloxbean.cardano.yaci.store.governance"})
 @EnableTransactionManagement
 @EnableScheduling
 @EnableAsync
