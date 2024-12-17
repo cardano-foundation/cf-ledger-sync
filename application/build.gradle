@@ -16,6 +16,7 @@ dependencies {
 
     implementation project(':components:common')
     implementation project(':components:consumer-common')
+    implementation project(':components:govoffchain-scheduler')
     implementation project(':components:scheduler')
     implementation project(':components:healthcheck')
 

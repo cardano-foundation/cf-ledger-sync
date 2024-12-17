@@ -1,5 +1,7 @@
 package org.cardanofoundation.ledgersync.scheduler.config;
 
+import java.util.concurrent.Executor;
+
 import org.cardanofoundation.ledgersync.scheduler.SchedulerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -9,8 +11,6 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-
-import java.util.concurrent.Executor;
 
 @ConditionalOnProperty(
         prefix = "ledger-sync.scheduler",

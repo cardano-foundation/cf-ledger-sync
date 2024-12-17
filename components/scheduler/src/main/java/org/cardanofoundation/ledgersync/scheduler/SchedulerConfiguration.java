@@ -1,10 +1,7 @@
 package org.cardanofoundation.ledgersync.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cardanofoundation.ledgersync.scheduler.jobs.OffChainDataScheduler;
 import org.cardanofoundation.ledgersync.scheduler.jobs.PoolOfflineDataScheduler;
-import org.cardanofoundation.ledgersync.scheduler.service.OffChainPersistService;
-import org.cardanofoundation.ledgersync.scheduler.service.OffChainRetryDataErrorService;
 import org.cardanofoundation.ledgersync.scheduler.service.PoolOfflineDataFetchingService;
 import org.cardanofoundation.ledgersync.scheduler.service.PoolOfflineDataStoringService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +17,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @ConditionalOnProperty(
-        prefix = "ledger-sync.scheduler",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true
+    prefix = "ledger-sync.scheduler",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true
 )
 @Configuration
 @EnableConfigurationProperties(SchedulerProperties.class)
 @ComponentScan(basePackages = {"org.cardanofoundation.ledgersync.scheduler"})
 @EnableJpaRepositories(basePackages = {"org.cardanofoundation.ledgersync.scheduler"})
-@EntityScan(basePackages = {"org.cardanofoundation.ledgersync.scheduler",
-                            "com.bloxbean.cardano.yaci.store.core",
-                            "com.bloxbean.cardano.yaci.store.governance"})
+@EntityScan(basePackages = {"org.cardanofoundation.ledgersync.scheduler"})
 @EnableTransactionManagement
 @EnableScheduling
 @EnableAsync
@@ -43,21 +38,11 @@ public class SchedulerConfiguration {
 
     @Bean
     public PoolOfflineDataScheduler poolOfflineDataScheduler(PoolOfflineDataStoringService poolOfflineDataStoringService,
-                                                             PoolOfflineDataFetchingService poolOfflineDataFetchingService,
-                                                             PoolOfflineDataProperties poolOfflineDataProperties) {
+        PoolOfflineDataFetchingService poolOfflineDataFetchingService,
+        PoolOfflineDataProperties poolOfflineDataProperties) {
         log.info("<<< Enable PoolOfflineDataScheduler >>>");
         log.info("PoolOfflineDataScheduler: fixed delay time {} sec", poolOfflineDataProperties.getFixedDelay());
         return new PoolOfflineDataScheduler(poolOfflineDataStoringService, poolOfflineDataFetchingService, poolOfflineDataProperties);
-    }
-
-    @Bean
-    public OffChainDataScheduler offChainVotingDataScheduler(
-        OffChainPersistService offChainPersistService,
-        OffChainRetryDataErrorService offChainDataFetchingErrorService,
-        OffChainDataProperties offChainDataProperties) {
-        log.info("<<< Enable OffChainDataScheduler >>>");
-        log.info("OffChainDataScheduler: fixed delay time {} sec", offChainDataProperties.getFixedDelay());
-        return new OffChainDataScheduler(offChainPersistService, offChainDataFetchingErrorService, offChainDataProperties);
     }
 
     @Bean
@@ -66,17 +51,6 @@ public class SchedulerConfiguration {
         poolOfflineDataProperties.setFixedDelay(properties.getPoolOfflineData().getFixedDelay());
         poolOfflineDataProperties.setInitialDelay(properties.getPoolOfflineData().getInitialDelay());
         return poolOfflineDataProperties;
-    }
-
-    @Bean
-    OffChainDataProperties offChainDataProperties() {
-        OffChainDataProperties offChainDataProperties = new OffChainDataProperties();
-        offChainDataProperties.setFixedDelay(properties.getOffChainData().getFixedDelay());
-        offChainDataProperties.setInitialDelay(properties.getOffChainData().getInitialDelay());
-        offChainDataProperties.setFixedDelayFetchError(properties.getOffChainData().getFixedDelayFetchError());
-        offChainDataProperties.setInitialDelayFetchError(properties.getOffChainData().getInitialDelayFetchError());
-        offChainDataProperties.setRetryCount(properties.getOffChainData().getRetryCount());
-        return offChainDataProperties;
     }
 
 }

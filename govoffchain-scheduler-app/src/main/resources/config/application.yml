@@ -1,0 +1,62 @@
+spring:
+  # Datasource specific configs
+  datasource:
+    # Hikari specific configs
+    hikari:
+      pool-name: explorer-consumer-pool
+      minimum-idle: 10 #minimum number of idle connections maintained by HikariCP in a connection pool
+      maximum-pool-size: ${MAXIMUM_POOL_SIZE:48} #maximum pool size
+      idle-timeout: 300000 #maximum idle time for connection
+      max-lifetime: 900000 #maximum lifetime in milliseconds of a connection in the pool after it is closed.
+      connection-timeout: 50000 #maximum number of milliseconds that a client will wait for a connection
+      auto-commit: true #default auto-commit behavior.
+      connection-init-sql: SELECT 1
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+  # JPA specific configs
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.batch_size: 1000
+        show_sql: false
+        format_sql: true
+        order_inserts: true
+        order_updates: true
+        hbm2ddl:
+          auto: none
+  codec:
+    max-in-memory-size: 10MB
+#      props: |
+#        max.poll.records: 10
+#        fetch.min.bytes: 123456
+#    prefix: "explorer-consumer-local"
+logging:
+  level:
+    org.cardanofoundation: ${LOG:TRACE}
+server:
+  port: 8081
+
+ledger-sync:
+  scheduler:
+    off-chain-data:
+      retry-count: ${OFF_CHAIN_RETRY_COUNT:10}
+      fixed-delay: ${OFF_CHAIN_DATA_FIXED_DELAY:60}
+      initial-delay: ${OFF_CHAIN_DATA_INIT_DELAY:20}
+      fixed-delay-fetch-error: ${OFF_CHAIN_DATA_FIXED_DELAY_FETCH_ERROR:86400}
+      initial-delay-fetch-error: ${OFF_CHAIN_DATA_INIT_DELAY__FETCH_ERROR:20}
+    enabled: true
+    pool-offline-data:
+      fixed-delay: ${POOL_OFFLINE_DATA_FIXED_DELAY:172800}
+      initial-delay: ${POOL_OFFLINE_DATA_INIT_DELAY:20000}
