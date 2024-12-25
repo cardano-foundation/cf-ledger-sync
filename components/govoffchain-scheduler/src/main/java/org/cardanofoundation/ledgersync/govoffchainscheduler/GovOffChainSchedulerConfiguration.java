@@ -40,15 +40,6 @@ public class GovOffChainSchedulerConfiguration {
     @Autowired
     GovOffChainSchedulerProperties properties;
 
-//    @Bean
-//    public PoolOfflineDataScheduler poolOfflineDataScheduler(PoolOfflineDataStoringService poolOfflineDataStoringService,
-//                                                             PoolOfflineDataFetchingService poolOfflineDataFetchingService,
-//                                                             PoolOfflineDataProperties poolOfflineDataProperties) {
-//        log.info("<<< Enable PoolOfflineDataScheduler >>>");
-//        log.info("PoolOfflineDataScheduler: fixed delay time {} sec", poolOfflineDataProperties.getFixedDelay());
-//        return new PoolOfflineDataScheduler(poolOfflineDataStoringService, poolOfflineDataFetchingService, poolOfflineDataProperties);
-//    }
-
     @Bean
     public OffChainDataScheduler offChainVotingDataScheduler(
         OffChainPersistService offChainPersistService,
@@ -58,14 +49,6 @@ public class GovOffChainSchedulerConfiguration {
         log.info("OffChainDataScheduler: fixed delay time {} sec", offChainDataProperties.getFixedDelay());
         return new OffChainDataScheduler(offChainPersistService, offChainDataFetchingErrorService, offChainDataProperties);
     }
-
-//    @Bean
-//    PoolOfflineDataProperties poolOfflineDataProperties() {
-//        PoolOfflineDataProperties poolOfflineDataProperties = new PoolOfflineDataProperties();
-//        poolOfflineDataProperties.setFixedDelay(properties.getPoolOfflineData().getFixedDelay());
-//        poolOfflineDataProperties.setInitialDelay(properties.getPoolOfflineData().getInitialDelay());
-//        return poolOfflineDataProperties;
-//    }
 
     @Bean
     OffChainDataProperties offChainDataProperties() {
