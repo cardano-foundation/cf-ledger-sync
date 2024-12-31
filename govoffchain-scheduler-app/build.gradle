@@ -6,6 +6,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-configuration-processor'
 	implementation project(':components:govoffchain-scheduler')
+	implementation(libs.yaci.store.starter)
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	compileOnly(libs.lombok)

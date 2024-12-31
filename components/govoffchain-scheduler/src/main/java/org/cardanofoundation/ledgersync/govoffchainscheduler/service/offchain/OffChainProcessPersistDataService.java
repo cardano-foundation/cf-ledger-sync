@@ -17,9 +17,9 @@ public interface OffChainProcessPersistDataService {
             OffChainCheckpointType cpType) {
 
         Optional<OffChainDataCheckpoint> checkpoint = offChainDataCheckpointStorage.findFirstByType(cpType);
-        if (checkpoint.isEmpty()) {
+        if (checkpoint.isEmpty() || checkpoint.get().getSlotNo() == 0) {
             Long starSlotAtEra = eraRepo.getStartSlotByEra(Era.CONWAY.getValue());
-            return OffChainDataCheckpoint.builder().slotNo(starSlotAtEra).type(cpType).build();
+            return OffChainDataCheckpoint.builder().slotNo(starSlotAtEra == null ? 0 : starSlotAtEra).type(cpType).build();
         }
         return checkpoint.get();
     }

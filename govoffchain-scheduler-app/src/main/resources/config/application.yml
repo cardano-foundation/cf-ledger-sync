@@ -36,17 +36,29 @@ spring:
         order_updates: true
         hbm2ddl:
           auto: none
+    ## Flyway config
+  flyway:
+    enabled: true
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    group: true
+    sql-migration-prefix: V
+    sql-migration-separator: __
+    sql-migration-suffixes: .sql
+    locations:
+      - classpath:db/govoffchain
+      - classpath:db/store/{vendor}
+    validate-on-migrate: ${FLYWAY_VALIDATE:false}
+    create-schemas: ${ALLOW_CREATE_SCHEMA:true}
+    out-of-order: true
   codec:
     max-in-memory-size: 10MB
-#      props: |
-#        max.poll.records: 10
-#        fetch.min.bytes: 123456
-#    prefix: "explorer-consumer-local"
 logging:
   level:
-    org.cardanofoundation: ${LOG:TRACE}
+    org.cardanofoundation: ${LOG:INFO}
 server:
-  port: 8081
+  port: 8082
 
 ledger-sync:
   scheduler:
@@ -57,6 +69,3 @@ ledger-sync:
       fixed-delay-fetch-error: ${OFF_CHAIN_DATA_FIXED_DELAY_FETCH_ERROR:86400}
       initial-delay-fetch-error: ${OFF_CHAIN_DATA_INIT_DELAY__FETCH_ERROR:20}
     enabled: true
-    pool-offline-data:
-      fixed-delay: ${POOL_OFFLINE_DATA_FIXED_DELAY:172800}
-      initial-delay: ${POOL_OFFLINE_DATA_INIT_DELAY:20000}
