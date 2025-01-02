@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.drepregistration;
+package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.drep;
 
 import java.util.concurrent.ExecutorService;
 

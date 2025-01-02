@@ -1,6 +1,5 @@
-package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.votingdata;
+package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.voting;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDataCheckpoint;
@@ -41,6 +40,8 @@ public class VotingDataPersistServiceImpl implements OffChainProcessPersistDataS
         OffChainDataCheckpoint currentCheckpoint = getCurrentCheckpoint(offChainDataCheckpointStorage, eraRepo,
                 OffChainCheckpointType.VOTING);
         long currentSlotNo = votingProcedureRepo.maxSlotNo().orElse(currentCheckpoint.getSlotNo());
+
+        // Limit the amount of query data per job run
         if (currentSlotNo - currentCheckpoint.getSlotNo() > MAX_TIME_QUERY) {
             currentSlotNo = currentCheckpoint.getSlotNo() + MAX_TIME_QUERY;
         }
@@ -59,7 +60,6 @@ public class VotingDataPersistServiceImpl implements OffChainProcessPersistDataS
         votingDataStoringService.insertFetchFailData(offChainFetchErrors);
 
         currentCheckpoint.setSlotNo(currentSlotNo);
-        currentCheckpoint.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         offChainDataCheckpointStorage.save(currentCheckpoint);
 
         log.info("End fetching Voting procedure metadata, taken time: {} ms", System.currentTimeMillis() - startTime);

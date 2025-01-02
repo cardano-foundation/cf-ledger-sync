@@ -1,13 +1,5 @@
 package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain;
 
-import static com.bloxbean.cardano.client.util.JsonFieldWriter.mapper;
-
-import com.bloxbean.cardano.client.crypto.Blake2bUtil;
-import com.github.jsonldjava.core.DocumentLoader;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.utils.JsonUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -23,8 +15,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import java.util.stream.Collectors;
+
 import javax.net.ssl.SSLException;
 
 import org.cardanofoundation.ledgersync.common.util.HexUtil;
@@ -38,10 +30,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.bloxbean.cardano.client.crypto.Blake2bUtil;
+import static com.bloxbean.cardano.client.util.JsonFieldWriter.mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jsonldjava.core.DocumentLoader;
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.utils.JsonUtils;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -119,6 +118,7 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
 
     private CompletableFuture<Void> fetchAnchorUrl(T anchor) {
         try {
+            // TODO: if anchor url is ipfs format -> handle later
             if (!UrlUtil.isUrlValid(anchor.getAnchorUrl())) {
                 handleFetchFailure("Invalid URL", anchor, null);
                 return CompletableFuture.completedFuture(null);
@@ -183,37 +183,40 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         }
 
         var responseBody = response.getBody();
-        if (Objects.nonNull(responseBody)) {
-            // check anchor url and anchor hash is match
-            if (!isUrlAndHashValid(responseBody.getBytes(StandardCharsets.UTF_8), anchor)) {
-                return;
-            }
+        if (Objects.isNull(responseBody)) {
+            handleFetchFailure(
+                    "Error Anchor: response body is null when fetching metadata from " + anchor.getAnchorUrl(), anchor,
+                    null);
+            return;
+        }
 
-            try {
-                // check json format
-                JsonNode checkJsonContent = mapper.readTree(responseBody);
+        // check anchor url and anchor hash is match
+        if (!checkUrlAndHashValid(responseBody.getBytes(StandardCharsets.UTF_8), anchor)) {
+            return;
+        }
 
-                if (!isValidJsonLd(responseBody)){
-                    handleFetchFailure(
+        try {
+            // check json format
+            JsonNode checkJsonContent = mapper.readTree(responseBody);
+
+            if (!isValidJsonLd(responseBody)) {
+                handleFetchFailure(
                         "Response content is not in JSON-LD format or IRI not valid.",
                         anchor,
                         responseBody);
-                    return;
-                }
+                return;
+            }
+            
+            /* TODO: add other json content validation handling logic if needed */ 
 
-                // check CIPs later - save to fetch error if JSON not match CIPs
-                handleFetchSuccess(anchor, responseBody);
-            } catch (JsonProcessingException e) {
-                handleFetchFailure(
+            // check CIPs later - save to fetch error if JSON not match CIPs
+            handleFetchSuccess(anchor, responseBody);
+        } catch (JsonProcessingException e) {
+            handleFetchFailure(
                     "Error Anchor: JSON parser error from when fetching metadata from " + anchor.getAnchorUrl(),
                     anchor,
                     null);
-                log.info("Error when parse data to object from URL: {}", e.getMessage());
-            }
-        } else {
-            handleFetchFailure(
-                "Error Anchor: response body is null when fetching metadata from " + anchor.getAnchorUrl(), anchor,
-                null);
+            log.info("Error when parse data to object from URL: {}", e.getMessage());
         }
     }
 
@@ -249,7 +252,7 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
         offChainAnchorsFetchResult.add(ocFetchResult);
     }
 
-    private boolean isUrlAndHashValid(byte[] responseToBytes, T anchor) {
+    private boolean checkUrlAndHashValid(byte[] responseToBytes, T anchor) {
         byte[] shaInBytes = Blake2bUtil.blake2bHash256(responseToBytes);
         String hashFromResponse = HexUtil.bytesToHex(shaInBytes);
 
@@ -296,7 +299,7 @@ public abstract class OffChainFetchService<S, F, O extends OffChainFetchResultDT
             .build();
     }
 
-    public static boolean isValidJsonLd(String jsonContent) {
+    private boolean isValidJsonLd(String jsonContent) {
         try {
             Object jsonObject = JsonUtils.fromString(jsonContent);
 

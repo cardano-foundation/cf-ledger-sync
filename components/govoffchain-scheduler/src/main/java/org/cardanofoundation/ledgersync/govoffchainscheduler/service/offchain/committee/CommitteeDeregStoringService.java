@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.drepregistration;
+package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.committee;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -9,13 +9,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainDrepRegistration;
+import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainCommitteeDeregistration;
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainFetchError;
-import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainDRepRegistrationId;
+import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainCommitteeDeregistrationId;
 import org.cardanofoundation.ledgersync.consumercommon.entity.compositekey.OffChainFetchErrorId;
 import org.cardanofoundation.ledgersync.govoffchainscheduler.GovOffChainSchedulerProperties;
 import org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.OffChainStoringService;
-import org.cardanofoundation.ledgersync.govoffchainscheduler.storage.offchain.OffChainDRepRegistrationStorage;
+import org.cardanofoundation.ledgersync.govoffchainscheduler.storage.offchain.OffChainCommitteeDeregStorage;
 import org.cardanofoundation.ledgersync.govoffchainscheduler.storage.offchain.OffChainFetchErrorStorage;
 import org.springframework.stereotype.Component;
 
@@ -28,57 +28,57 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @RequiredArgsConstructor
-public class DRepRegistrationStoringService extends
-        OffChainStoringService<OffChainDrepRegistration, OffChainFetchError> {
+public class CommitteeDeregStoringService extends
+        OffChainStoringService<OffChainCommitteeDeregistration, OffChainFetchError> {
 
     final GovOffChainSchedulerProperties properties;
     final OffChainFetchErrorStorage offChainFetchErrorStorage;
-    final OffChainDRepRegistrationStorage offChainDRepRegistrationStorage;
+    final OffChainCommitteeDeregStorage offChainCommitteeDeregStorage;
 
     @Override
-    public void insertFetchData(Collection<OffChainDrepRegistration> offChainAnchorData) {
+    public void insertFetchData(Collection<OffChainCommitteeDeregistration> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainDrepRegistration::getDrepRegistrationId))
+                .filter(distinctByKey(OffChainCommitteeDeregistration::getCommitteeDeregistrationId))
                 .collect(Collectors.toList());
 
-        Set<OffChainDRepRegistrationId> offChainDRepRegistrationIds = offChainAnchorData.stream()
-                .map(OffChainDrepRegistration::getDrepRegistrationId)
+        Set<OffChainCommitteeDeregistrationId> offChainCommitteeDeregIds = offChainAnchorData.stream()
+                .map(OffChainCommitteeDeregistration::getCommitteeDeregistrationId)
                 .collect(Collectors.toSet());
 
-        Set<OffChainDRepRegistrationId> existingOffChainDRepRegistrationIds = new HashSet<>(
-                offChainDRepRegistrationStorage.findByDrepRegistrationIdIn(offChainDRepRegistrationIds))
-                .stream().map(OffChainDrepRegistration::getDrepRegistrationId)
+        Set<OffChainCommitteeDeregistrationId> existingOffChainCommitteeDeregIds = new HashSet<>(
+                offChainCommitteeDeregStorage.findByCommitteeDeregistrationIdIn(offChainCommitteeDeregIds))
+                .stream().map(OffChainCommitteeDeregistration::getCommitteeDeregistrationId)
                 .collect(Collectors.toSet());
 
-        List<OffChainDrepRegistration> offChainDataToSave = offChainAnchorData.stream()
-                .filter(e -> !existingOffChainDRepRegistrationIds.contains(e.getDrepRegistrationId()))
+        List<OffChainCommitteeDeregistration> offChainDataToSave = offChainAnchorData.stream()
+                .filter(e -> !existingOffChainCommitteeDeregIds.contains(e.getCommitteeDeregistrationId()))
                 .collect(Collectors.toList());
 
-        offChainDRepRegistrationStorage.saveAll(offChainDataToSave);
+        offChainCommitteeDeregStorage.saveAll(offChainDataToSave);
     }
 
     @Override
-    public void updateFetchData(Collection<OffChainDrepRegistration> offChainAnchorData) {
+    public void updateFetchData(Collection<OffChainCommitteeDeregistration> offChainAnchorData) {
 
         offChainAnchorData = offChainAnchorData.stream()
-                .filter(distinctByKey(OffChainDrepRegistration::getDrepRegistrationId))
+                .filter(distinctByKey(OffChainCommitteeDeregistration::getCommitteeDeregistrationId))
                 .collect(Collectors.toList());
 
-        Set<OffChainDRepRegistrationId> offChainDRepRegistrationIds = offChainAnchorData.stream()
-                .map(OffChainDrepRegistration::getDrepRegistrationId)
+        Set<OffChainCommitteeDeregistrationId> offChainCommitteeDeregIds = offChainAnchorData.stream()
+                .map(OffChainCommitteeDeregistration::getCommitteeDeregistrationId)
                 .collect(Collectors.toSet());
 
-        Map<OffChainDRepRegistrationId, OffChainDrepRegistration> mapEntityById = offChainAnchorData
+        Map<OffChainCommitteeDeregistrationId, OffChainCommitteeDeregistration> mapEntityById = offChainAnchorData
                 .stream().collect(Collectors.toMap(
-                        OffChainDrepRegistration::getDrepRegistrationId,
+                        OffChainCommitteeDeregistration::getCommitteeDeregistrationId,
                         Function.identity()));
 
-        Set<OffChainDrepRegistration> offChainDataToSave = new HashSet<>(
-                offChainDRepRegistrationStorage.findByDrepRegistrationIdIn(offChainDRepRegistrationIds));
+        Set<OffChainCommitteeDeregistration> offChainDataToSave = new HashSet<>(
+                offChainCommitteeDeregStorage.findByCommitteeDeregistrationIdIn(offChainCommitteeDeregIds));
 
         offChainDataToSave.forEach(e -> {
-            OffChainDrepRegistration oc = mapEntityById.get(e.getDrepRegistrationId());
+            OffChainCommitteeDeregistration oc = mapEntityById.get(e.getCommitteeDeregistrationId());
             if (oc != null) {
                 e.setContent(oc.getContent());
                 e.setCheckValid(oc.getCheckValid());
@@ -86,7 +86,7 @@ public class DRepRegistrationStoringService extends
             }
         });
 
-        offChainDRepRegistrationStorage.saveAll(offChainDataToSave);
+        offChainCommitteeDeregStorage.saveAll(offChainDataToSave);
     }
 
     @Override

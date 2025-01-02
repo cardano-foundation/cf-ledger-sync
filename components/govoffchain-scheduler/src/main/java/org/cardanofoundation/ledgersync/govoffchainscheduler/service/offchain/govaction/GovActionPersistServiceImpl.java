@@ -41,6 +41,8 @@ public class GovActionPersistServiceImpl implements OffChainProcessPersistDataSe
         OffChainDataCheckpoint currentCheckpoint = getCurrentCheckpoint(offChainDataCheckpointStorage, eraRepo,
                 OffChainCheckpointType.GOV_ACTION);
         long currentSlotNo = govActionProposalRepo.maxSlotNo().orElse(currentCheckpoint.getSlotNo());
+
+        // Limit the amount of query data per job run
         if (currentSlotNo - currentCheckpoint.getSlotNo() > MAX_TIME_QUERY) {
             currentSlotNo = currentCheckpoint.getSlotNo() + MAX_TIME_QUERY;
         }
@@ -58,7 +60,6 @@ public class GovActionPersistServiceImpl implements OffChainProcessPersistDataSe
         govActionStoringService.insertFetchFailData(offChainFetchErrors);
 
         currentCheckpoint.setSlotNo(currentSlotNo);
-        currentCheckpoint.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         offChainDataCheckpointStorage.save(currentCheckpoint);
 
         log.info("End fetching gov action metadata, taken time: {} ms", System.currentTimeMillis() - startTime);

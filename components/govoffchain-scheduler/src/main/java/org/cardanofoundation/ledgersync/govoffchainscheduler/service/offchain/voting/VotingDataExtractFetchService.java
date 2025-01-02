@@ -1,4 +1,4 @@
-package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.votingdata;
+package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.voting;
 
 import java.util.concurrent.ExecutorService;
 

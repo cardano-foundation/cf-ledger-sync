@@ -1,6 +1,5 @@
-package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.committeederegistration;
+package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain.committee;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.cardanofoundation.ledgersync.consumercommon.entity.OffChainCommitteeDeregistration;
@@ -41,6 +40,8 @@ public class CommitteeDeregPersistServiceImpl implements OffChainProcessPersistD
         OffChainDataCheckpoint currentCheckpoint = getCurrentCheckpoint(offChainDataCheckpointStorage, eraRepo,
                 OffChainCheckpointType.COMMITTEE_DEREGISTRATION);
         long currentSlotNo = committeeDeregistrationRepo.maxSlotNo().orElse(currentCheckpoint.getSlotNo());
+
+        // Limit the amount of query data per job run
         if (currentSlotNo - currentCheckpoint.getSlotNo() > MAX_TIME_QUERY) {
             currentSlotNo = currentCheckpoint.getSlotNo() + MAX_TIME_QUERY;
         }
@@ -59,7 +60,6 @@ public class CommitteeDeregPersistServiceImpl implements OffChainProcessPersistD
         committeeDeregStoringService.insertFetchFailData(offChainFetchErrors);
 
         currentCheckpoint.setSlotNo(currentSlotNo);
-        currentCheckpoint.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         offChainDataCheckpointStorage.save(currentCheckpoint);
 
         log.info("End fetching Committee Deregistration metadata, taken time: {} ms",

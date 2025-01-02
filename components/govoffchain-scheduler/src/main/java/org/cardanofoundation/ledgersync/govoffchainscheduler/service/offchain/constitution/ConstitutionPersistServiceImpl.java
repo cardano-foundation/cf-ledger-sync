@@ -41,6 +41,8 @@ public class ConstitutionPersistServiceImpl implements OffChainProcessPersistDat
         OffChainDataCheckpoint currentCheckpoint = getCurrentCheckpoint(offChainDataCheckpointStorage, eraRepo,
                 OffChainCheckpointType.CONSTITUTION);
         long currentSlotNo = constitutionRepo.maxSlotNo().orElse(currentCheckpoint.getSlotNo());
+
+        // Limit the amount of query data per job run
         if (currentSlotNo - currentCheckpoint.getSlotNo() > MAX_TIME_QUERY) {
             currentSlotNo = currentCheckpoint.getSlotNo() + MAX_TIME_QUERY;
         }
@@ -59,7 +61,6 @@ public class ConstitutionPersistServiceImpl implements OffChainProcessPersistDat
         constitutionStoringService.insertFetchFailData(offChainFetchErrors);
 
         currentCheckpoint.setSlotNo(currentSlotNo);
-        currentCheckpoint.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         offChainDataCheckpointStorage.save(currentCheckpoint);
 
         log.info("End fetching Constitution metadata, taken time: {} ms", System.currentTimeMillis() - startTime);

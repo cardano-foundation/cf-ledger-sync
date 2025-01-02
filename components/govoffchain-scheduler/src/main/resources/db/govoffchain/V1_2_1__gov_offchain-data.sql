@@ -159,7 +159,6 @@ ALTER COLUMN id SET DEFAULT nextval('off_chain_fetch_error_id_seq'::regclass);
 CREATE TABLE IF NOT EXISTS off_chain_data_checkpoint
 (
     id          bigint PRIMARY KEY,
-    block_no    bigint,
     slot_no     bigint,
     type        varchar(64)   UNIQUE,
     update_time timestamp without time zone NOT NULL

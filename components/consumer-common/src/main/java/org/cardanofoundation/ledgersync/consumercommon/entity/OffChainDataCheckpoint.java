@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.cardanofoundation.ledgersync.consumercommon.enumeration.OffChainCheckpointType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "off_chain_data_checkpoint")
@@ -22,9 +23,6 @@ import org.cardanofoundation.ledgersync.consumercommon.enumeration.OffChainCheck
 @SuperBuilder(toBuilder = true)
 public class OffChainDataCheckpoint extends BaseEntity {
 
-    @Column(name = "block_no")
-    private Long blockNo;
-
     @Column(name = "slot_no")
     private Long slotNo;
 
@@ -32,6 +30,7 @@ public class OffChainDataCheckpoint extends BaseEntity {
     @Column(name = "type")
     private OffChainCheckpointType type;
 
+    @UpdateTimestamp
     @Column(name = "update_time")
     private Timestamp updateTime;
 }

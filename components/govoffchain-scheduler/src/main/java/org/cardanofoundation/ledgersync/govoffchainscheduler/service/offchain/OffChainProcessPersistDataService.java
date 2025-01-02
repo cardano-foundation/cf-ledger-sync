@@ -1,5 +1,6 @@
 package org.cardanofoundation.ledgersync.govoffchainscheduler.service.offchain;
 
+import com.bloxbean.cardano.yaci.store.core.storage.impl.model.EraEntity;
 import java.util.Optional;
 
 import org.cardanofoundation.ledgersync.common.common.Era;
@@ -17,7 +18,7 @@ public interface OffChainProcessPersistDataService {
             OffChainCheckpointType cpType) {
 
         Optional<OffChainDataCheckpoint> checkpoint = offChainDataCheckpointStorage.findFirstByType(cpType);
-        if (checkpoint.isEmpty() || checkpoint.get().getSlotNo() == 0) {
+        if (checkpoint.isEmpty()) {
             Long starSlotAtEra = eraRepo.getStartSlotByEra(Era.CONWAY.getValue());
             return OffChainDataCheckpoint.builder().slotNo(starSlotAtEra == null ? 0 : starSlotAtEra).type(cpType).build();
         }
