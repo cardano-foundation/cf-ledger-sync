@@ -21,7 +21,7 @@ public interface ConstitutionRepo extends JpaRepository<ConstitutionEntity, Inte
     Optional<Long> maxSlotNo();
 
     @Query("""
-        SELECT new org.cardanofoundation.ledgersync.govoffchainscheduler.dto.anchor.ConstitutionAnchorDTO(ce.anchorUrl, ce.anchorHash, ce.slot, ce.id, 0)
+        SELECT new org.cardanofoundation.ledgersync.govoffchainscheduler.dto.anchor.ConstitutionAnchorDTO(ce.anchorUrl, ce.anchorHash, ce.slot, ce.activeEpoch, 0)
         FROM ConstitutionEntity ce
         WHERE ce.slot >= :fromSlot and ce.slot <= :toSlot
         AND ce.anchorUrl IS NOT NULL
