@@ -3,7 +3,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation(libs.cardano.client.lib)
-    api(libs.yaci.store.starter)
+    api(libs.yaci.store.starter) {
+        exclude group: 'com.bloxbean.cardano', module: 'yaci'
+        exclude group: 'com.bloxbean.cardano', module: 'cardano-client-lib'
+    }
+    implementation(libs.yaci)
+    implementation(libs.cardano.client.lib)
+
     implementation(libs.yaci.store.utxo.starter)
     implementation(libs.yaci.store.account.starter)
 
