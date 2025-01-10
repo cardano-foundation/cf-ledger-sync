@@ -1,4 +1,5 @@
 [libraries]
+yaci = "com.bloxbean.cardano:yaci:0.3.4.1"
 yaci-store-starter="com.bloxbean.cardano:yaci-store-spring-boot-starter:0.1.0-rc6"
 yaci-store-utxo-starter="com.bloxbean.cardano:yaci-store-utxo-spring-boot-starter:0.1.0-rc6"
 yaci-store-account-starter="com.bloxbean.cardano:yaci-store-account-spring-boot-starter:0.1.0-rc6"
@@ -7,7 +8,7 @@ yaci-store-governance-starter="com.bloxbean.cardano:yaci-store-governance-spring
 yaci-store-admin-starter="com.bloxbean.cardano:yaci-store-admin-spring-boot-starter:0.1.0-rc6"
 yaci-store-events="com.bloxbean.cardano:yaci-store-events:0.1.0-rc6"
 yaci-store-epoch-starter="com.bloxbean.cardano:yaci-store-epoch-spring-boot-starter:0.1.0-rc6"
-cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.6.0"
+cardano-client-lib="com.bloxbean.cardano:cardano-client-lib:0.6.2"
 snakeyaml="org.yaml:snakeyaml:2.0"
 guava="com.google.guava:guava:33.0.0-jre"
 log4j-api="org.apache.logging.log4j:log4j-api:2.22.1"

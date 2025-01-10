@@ -13,7 +13,13 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
     implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
 
-    implementation(libs.yaci.store.starter)
+    implementation(libs.yaci.store.starter) {
+        exclude group: 'com.bloxbean.cardano', module: 'yaci'
+        exclude group: 'com.bloxbean.cardano', module: 'cardano-client-lib'
+    }
+    implementation(libs.yaci)
+    implementation(libs.cardano.client.lib)
+
     implementation(libs.yaci.store.remote.starter)
 
     runtimeOnly 'org.postgresql:postgresql'
