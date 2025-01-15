@@ -5,6 +5,7 @@ yaci-store-utxo-starter="com.bloxbean.cardano:yaci-store-utxo-spring-boot-starte
 yaci-store-account-starter="com.bloxbean.cardano:yaci-store-account-spring-boot-starter:0.1.0-rc6"
 yaci-store-remote-starter="com.bloxbean.cardano:yaci-store-remote-spring-boot-starter:0.1.0-rc6"
 yaci-store-governance-starter="com.bloxbean.cardano:yaci-store-governance-spring-boot-starter:0.1.0-rc6"
+yaci-store-governance="com.bloxbean.cardano:yaci-store-governance:0.1.0-rc6"
 yaci-store-admin-starter="com.bloxbean.cardano:yaci-store-admin-spring-boot-starter:0.1.0-rc6"
 yaci-store-events="com.bloxbean.cardano:yaci-store-events:0.1.0-rc6"
 yaci-store-epoch-starter="com.bloxbean.cardano:yaci-store-epoch-spring-boot-starter:0.1.0-rc6"
@@ -33,3 +34,5 @@ junit-api="org.junit.jupiter:junit-jupiter-api:5.9.0"
 assertj-core="org.assertj:assertj-core:3.25.1"
 
 hypersistence-utils-hibernate="io.hypersistence:hypersistence-utils-hibernate-63:3.7.1"
+
+jsonld-java="com.github.jsonld-java:jsonld-java:0.13.6"

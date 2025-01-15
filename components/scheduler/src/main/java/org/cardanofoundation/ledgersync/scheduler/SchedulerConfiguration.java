@@ -17,10 +17,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @ConditionalOnProperty(
-        prefix = "ledger-sync.scheduler",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true
+    prefix = "ledger-sync.scheduler",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true
 )
 @Configuration
 @EnableConfigurationProperties(SchedulerProperties.class)
@@ -38,8 +38,8 @@ public class SchedulerConfiguration {
 
     @Bean
     public PoolOfflineDataScheduler poolOfflineDataScheduler(PoolOfflineDataStoringService poolOfflineDataStoringService,
-                                                             PoolOfflineDataFetchingService poolOfflineDataFetchingService,
-                                                             PoolOfflineDataProperties poolOfflineDataProperties) {
+        PoolOfflineDataFetchingService poolOfflineDataFetchingService,
+        PoolOfflineDataProperties poolOfflineDataProperties) {
         log.info("<<< Enable PoolOfflineDataScheduler >>>");
         log.info("PoolOfflineDataScheduler: fixed delay time {} sec", poolOfflineDataProperties.getFixedDelay());
         return new PoolOfflineDataScheduler(poolOfflineDataStoringService, poolOfflineDataFetchingService, poolOfflineDataProperties);
