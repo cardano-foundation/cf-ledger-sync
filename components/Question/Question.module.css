@@ -1,0 +1,31 @@
+.questionWrapper {
+  display: flex;
+  border-radius: 16px;
+  background-color: var(--color-lightest);
+  width: 100%;
+}
+
+.questionLink {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  width: 100%;
+}
+
+.questionText {
+  color: var(--color-gray-1000);
+  line-height: 28px;
+  font-size: 20px;
+  font-weight: 200;
+  letter-spacing: -0.01em;
+}
+
+.questionCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 100%;
+  border: 2px solid var(--color-gray-400);
+  flex-shrink: 0;
+}

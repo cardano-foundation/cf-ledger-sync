@@ -1,0 +1,3874 @@
+{
+  "vertices": [
+    [
+      "A",
+      {
+        "id": "A",
+        "labelType": "string",
+        "domId": "flowchart-A-0",
+        "styles": [],
+        "classes": [],
+        "text": "Start",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "B1",
+      {
+        "id": "B1",
+        "labelType": "string",
+        "domId": "flowchart-B1-1",
+        "styles": [],
+        "classes": [],
+        "text": "Do you know what application you want to develop?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "C1",
+      {
+        "id": "C1",
+        "labelType": "string",
+        "domId": "flowchart-C1-3",
+        "styles": [],
+        "classes": [],
+        "text": "Yes, I know what I want to build",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "C2",
+      {
+        "id": "C2",
+        "labelType": "text",
+        "domId": "flowchart-C2-5",
+        "styles": [],
+        "classes": [],
+        "text": "No, I'm exploring",
+        "props": {},
+        "type": "rect"
+      }
+    ],
+    [
+      "C3",
+      {
+        "id": "C3",
+        "labelType": "string",
+        "domId": "flowchart-C3-8",
+        "styles": [],
+        "classes": [],
+        "text": "I have an idea and want to focus on coding",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "newLines",
+      {
+        "id": "newLines",
+        "labelType": "text",
+        "domId": "flowchart-newLines-10",
+        "styles": [],
+        "classes": [],
+        "text": "## Pros:\n - **Developer-Friendly** - Provides API's SDK's, and ready-to-use environments for a smoother development experience.\n - **Plug-and-Play Extension** - Customize your stack with pre-built extensions and managed service\n ## Cons:\n - **Cost and migration considerations** - Relying on third-party platform may led to higher costs and migration challenges.\n - **Limited Customization** - Managed services may not offer full flexibility for highly specific implementations.",
+        "props": {},
+        "type": "rect"
+      }
+    ],
+    [
+      "H1",
+      {
+        "id": "H1",
+        "labelType": "string",
+        "domId": "flowchart-H1-13",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Use BaaS: Demeter.run",
+        "type": "square",
+        "props": {},
+        "link": "storage/java"
+      }
+    ],
+    [
+      "D1",
+      {
+        "id": "D1",
+        "labelType": "string",
+        "domId": "flowchart-D1-15",
+        "styles": [],
+        "classes": [],
+        "text": "How is your solution designed to access blockchain data?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "E1",
+      {
+        "id": "E1",
+        "labelType": "string",
+        "domId": "flowchart-E1-17",
+        "styles": [],
+        "classes": [],
+        "text": "Through a ready to use sandbox cloud environment (BaaS)",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "E2",
+      {
+        "id": "E2",
+        "labelType": "string",
+        "domId": "flowchart-E2-18",
+        "styles": [],
+        "classes": [],
+        "text": "Simply calling APIs.",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "E3",
+      {
+        "id": "E3",
+        "labelType": "string",
+        "domId": "flowchart-E3-19",
+        "styles": [],
+        "classes": [],
+        "text": "Serverless or client-side application, using off-chain libraries / SDKs and their embedded data providers.",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "E4",
+      {
+        "id": "E4",
+        "labelType": "string",
+        "domId": "flowchart-E4-20",
+        "styles": [],
+        "classes": [],
+        "text": "Hosting my own infrastructure and chain indexer solution",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "PO",
+      {
+        "id": "PO",
+        "labelType": "string",
+        "domId": "flowchart-PO-24",
+        "styles": [],
+        "classes": [],
+        "text": "Blockfrost",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "P1",
+      {
+        "id": "P1",
+        "labelType": "string",
+        "domId": "flowchart-P1-25",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Apollo",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/Salvionied/apollo"
+      }
+    ],
+    [
+      "P2",
+      {
+        "id": "P2",
+        "labelType": "string",
+        "domId": "flowchart-P2-26",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "go-cardano-serialization",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/fivebinaries/go-cardano-serialization"
+      }
+    ],
+    [
+      "F1",
+      {
+        "id": "F1",
+        "labelType": "string",
+        "domId": "flowchart-F1-28",
+        "styles": [],
+        "classes": [],
+        "text": "What language are you proficient in?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "G1",
+      {
+        "id": "G1",
+        "labelType": "string",
+        "domId": "flowchart-G1-30",
+        "styles": [],
+        "classes": [],
+        "text": "Haskell",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G2",
+      {
+        "id": "G2",
+        "labelType": "string",
+        "domId": "flowchart-G2-31",
+        "styles": [],
+        "classes": [],
+        "text": "Rust",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G3",
+      {
+        "id": "G3",
+        "labelType": "string",
+        "domId": "flowchart-G3-32",
+        "styles": [],
+        "classes": [],
+        "text": "Java",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G4",
+      {
+        "id": "G4",
+        "labelType": "string",
+        "domId": "flowchart-G4-33",
+        "styles": [],
+        "classes": [],
+        "text": "JavaScript, TypeScript",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G5",
+      {
+        "id": "G5",
+        "labelType": "string",
+        "domId": "flowchart-G5-34",
+        "styles": [],
+        "classes": [],
+        "text": "Python",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G6",
+      {
+        "id": "G6",
+        "labelType": "string",
+        "domId": "flowchart-G6-35",
+        "styles": [],
+        "classes": [],
+        "text": "Go",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G7",
+      {
+        "id": "G7",
+        "labelType": "string",
+        "domId": "flowchart-G7-36",
+        "styles": [],
+        "classes": [],
+        "text": "ELM",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G8",
+      {
+        "id": "G8",
+        "labelType": "string",
+        "domId": "flowchart-G8-37",
+        "styles": [],
+        "classes": [],
+        "text": ".NET, C#",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G9",
+      {
+        "id": "G9",
+        "labelType": "string",
+        "domId": "flowchart-G9-38",
+        "styles": [],
+        "classes": [],
+        "text": "C",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G10",
+      {
+        "id": "G10",
+        "labelType": "string",
+        "domId": "flowchart-G10-39",
+        "styles": [],
+        "classes": [],
+        "text": "Elixir",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "G11",
+      {
+        "id": "G11",
+        "labelType": "string",
+        "domId": "flowchart-G11-40",
+        "styles": [],
+        "classes": [],
+        "text": "Kotlin",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "Q1",
+      {
+        "id": "Q1",
+        "labelType": "string",
+        "domId": "flowchart-Q1-42",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "ELM Cardano",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/elm-cardano/elm-cardano"
+      }
+    ],
+    [
+      "Q2",
+      {
+        "id": "Q2",
+        "labelType": "string",
+        "domId": "flowchart-Q2-43",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kuber",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/dQuadrant/kuber"
+      }
+    ],
+    [
+      "Q3",
+      {
+        "id": "Q3",
+        "labelType": "string",
+        "domId": "flowchart-Q3-44",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO RPC Haskell-SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/utxorpc/haskell-sdk"
+      }
+    ],
+    [
+      "L1",
+      {
+        "id": "L1",
+        "labelType": "string",
+        "domId": "flowchart-L1-46",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano Serialization Lib",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/Emurgo/cardano-serialization-lib"
+      }
+    ],
+    [
+      "L2",
+      {
+        "id": "L2",
+        "labelType": "string",
+        "domId": "flowchart-L2-47",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano Multiplatform Lib",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/dcSpark/cardano-multiplatform-lib#cardano-multiplatform-lib"
+      }
+    ],
+    [
+      "L3",
+      {
+        "id": "L3",
+        "labelType": "string",
+        "domId": "flowchart-L3-48",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Oura",
+        "type": "square",
+        "props": {},
+        "link": "https://oura.txpipe.io/v2"
+      }
+    ],
+    [
+      "L4",
+      {
+        "id": "L4",
+        "labelType": "string",
+        "domId": "flowchart-L4-49",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Pallas",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/pallas"
+      }
+    ],
+    [
+      "L5",
+      {
+        "id": "L5",
+        "labelType": "string",
+        "domId": "flowchart-L5-50",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Pallas.NET",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/SAIB-Inc/Pallas.NET"
+      }
+    ],
+    [
+      "L6",
+      {
+        "id": "L6",
+        "labelType": "string",
+        "domId": "flowchart-L6-51",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Wisky",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/sidan-lab/whisky"
+      }
+    ],
+    [
+      "L7",
+      {
+        "id": "L7",
+        "labelType": "string",
+        "domId": "flowchart-L7-52",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO RPC Rust-SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/utxorpc/rust-sdk"
+      }
+    ],
+    [
+      "M1",
+      {
+        "id": "M1",
+        "labelType": "string",
+        "domId": "flowchart-M1-54",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano Client Lib (CCL)",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/cardano-client-lib"
+      }
+    ],
+    [
+      "M2",
+      {
+        "id": "M2",
+        "labelType": "string",
+        "domId": "flowchart-M2-55",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Koios Java Client",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/cardano-community/koios-java-client"
+      }
+    ],
+    [
+      "M3",
+      {
+        "id": "M3",
+        "labelType": "string",
+        "domId": "flowchart-M3-56",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Ogmios Java Client",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/adabox-aio/ogmios-java-client"
+      }
+    ],
+    [
+      "M4",
+      {
+        "id": "M4",
+        "labelType": "string",
+        "domId": "flowchart-M4-57",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/yaci-store"
+      }
+    ],
+    [
+      "M5",
+      {
+        "id": "M5",
+        "labelType": "string",
+        "domId": "flowchart-M5-58",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "cf-java-rewards-calculation",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/cardano-foundation/cf-java-rewards-calculation"
+      }
+    ],
+    [
+      "N1",
+      {
+        "id": "N1",
+        "labelType": "string",
+        "domId": "flowchart-N1-60",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "MeshJS or Mesh SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://meshjs.dev/"
+      }
+    ],
+    [
+      "N2",
+      {
+        "id": "N2",
+        "labelType": "string",
+        "domId": "flowchart-N2-61",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Lucid",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/spacebudz/lucid"
+      }
+    ],
+    [
+      "N3",
+      {
+        "id": "N3",
+        "labelType": "string",
+        "domId": "flowchart-N3-62",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Lucid Evolution",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/Anastasia-Labs/lucid-evolution"
+      }
+    ],
+    [
+      "N4",
+      {
+        "id": "N4",
+        "labelType": "string",
+        "domId": "flowchart-N4-63",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Blaze-Cardano",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/butaneprotocol/blaze-cardano"
+      }
+    ],
+    [
+      "N5",
+      {
+        "id": "N5",
+        "labelType": "string",
+        "domId": "flowchart-N5-64",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Plu-ts",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/HarmonicLabs/plu-ts"
+      }
+    ],
+    [
+      "N6",
+      {
+        "id": "N6",
+        "labelType": "string",
+        "domId": "flowchart-N6-65",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano-JS-SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/input-output-hk/cardano-js-sdk"
+      }
+    ],
+    [
+      "N7",
+      {
+        "id": "N7",
+        "labelType": "string",
+        "domId": "flowchart-N7-66",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "TyphonJS",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/StricaHQ/typhonjs"
+      }
+    ],
+    [
+      "N8",
+      {
+        "id": "N8",
+        "labelType": "string",
+        "domId": "flowchart-N8-67",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano Web3.js",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/xray-network/cardano-web3-js"
+      }
+    ],
+    [
+      "N9",
+      {
+        "id": "N9",
+        "labelType": "string",
+        "domId": "flowchart-N9-68",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Buildooor",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/HarmonicLabs/buildooor"
+      }
+    ],
+    [
+      "N10",
+      {
+        "id": "N10",
+        "labelType": "string",
+        "domId": "flowchart-N10-69",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO RPC Web-SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/utxorpc/web-sdk"
+      }
+    ],
+    [
+      "O1",
+      {
+        "id": "O1",
+        "labelType": "string",
+        "domId": "flowchart-O1-71",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Koios Python",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/cardano-community/koios-python"
+      }
+    ],
+    [
+      "O2",
+      {
+        "id": "O2",
+        "labelType": "string",
+        "domId": "flowchart-O2-72",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "PyCardano",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/cffls/pycardano"
+      }
+    ],
+    [
+      "O3",
+      {
+        "id": "O3",
+        "labelType": "string",
+        "domId": "flowchart-O3-73",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Automint",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/creativequotient/automint"
+      }
+    ],
+    [
+      "O4",
+      {
+        "id": "O4",
+        "labelType": "string",
+        "domId": "flowchart-O4-74",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Koios Python",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/cardano-community/koios-python"
+      }
+    ],
+    [
+      "O5",
+      {
+        "id": "O5",
+        "labelType": "string",
+        "domId": "flowchart-O5-75",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "NFT Vending Machine",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/thaddeusdiamond/cardano-nft-vending-machine"
+      }
+    ],
+    [
+      "O6",
+      {
+        "id": "O6",
+        "labelType": "string",
+        "domId": "flowchart-O6-76",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO RPC Python-SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/utxorpc/python-sdk"
+      }
+    ],
+    [
+      "P3",
+      {
+        "id": "P3",
+        "labelType": "string",
+        "domId": "flowchart-P3-80",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano Node API",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/blinklabs-io/cardano-node-api"
+      }
+    ],
+    [
+      "P4",
+      {
+        "id": "P4",
+        "labelType": "string",
+        "domId": "flowchart-P4-81",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO RPC Go SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/utxorpc/go-sdk"
+      }
+    ],
+    [
+      "R1",
+      {
+        "id": "R1",
+        "labelType": "string",
+        "domId": "flowchart-R1-85",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Argus",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/SAIB-Inc/Argus"
+      }
+    ],
+    [
+      "R2",
+      {
+        "id": "R2",
+        "labelType": "string",
+        "domId": "flowchart-R2-86",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "CardanoSharp Wallet",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/CardanoSharp/cardanosharp-wallet"
+      }
+    ],
+    [
+      "R3",
+      {
+        "id": "R3",
+        "labelType": "string",
+        "domId": "flowchart-R3-87",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Pallas.NET",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/SAIB-Inc/Pallas.NET"
+      }
+    ],
+    [
+      "R4",
+      {
+        "id": "R4",
+        "labelType": "string",
+        "domId": "flowchart-R4-88",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO RPC donet-SDK",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/utxorpc/dotnet-sdk"
+      }
+    ],
+    [
+      "S1",
+      {
+        "id": "S1",
+        "labelType": "string",
+        "domId": "flowchart-S1-90",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano-C",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/Biglup/cardano-c"
+      }
+    ],
+    [
+      "S2",
+      {
+        "id": "S2",
+        "labelType": "string",
+        "domId": "flowchart-S2-91",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "libCardano",
+        "type": "square",
+        "props": {},
+        "link": "https://gitlab.com/viperscience/libcardano"
+      }
+    ],
+    [
+      "T1",
+      {
+        "id": "T1",
+        "labelType": "string",
+        "domId": "flowchart-T1-93",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Xogmios",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/wowica/xogmios"
+      }
+    ],
+    [
+      "U1",
+      {
+        "id": "U1",
+        "labelType": "string",
+        "domId": "flowchart-U1-95",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kogmios",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/projectNEWM/kogmios"
+      }
+    ],
+    [
+      "BB1",
+      {
+        "id": "BB1",
+        "labelType": "string",
+        "domId": "flowchart-BB1-97",
+        "styles": [],
+        "classes": [],
+        "text": "Does your application requires just live data or historical data too?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "AB1",
+      {
+        "id": "AB1",
+        "labelType": "string",
+        "domId": "flowchart-AB1-99",
+        "styles": [],
+        "classes": [],
+        "text": "Solutions",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AG1",
+      {
+        "id": "AG1",
+        "labelType": "string",
+        "domId": "flowchart-AG1-101",
+        "styles": [],
+        "classes": [],
+        "text": "Native Cardano Node libraries and APIs",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AJ1",
+      {
+        "id": "AJ1",
+        "labelType": "string",
+        "domId": "flowchart-AJ1-102",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Ogmios - Haskell",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/CardanoSolutions/ogmios"
+      }
+    ],
+    [
+      "AJ2",
+      {
+        "id": "AJ2",
+        "labelType": "string",
+        "domId": "flowchart-AJ2-103",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Oura - Rust",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/oura"
+      }
+    ],
+    [
+      "AJ3",
+      {
+        "id": "AJ3",
+        "labelType": "string",
+        "domId": "flowchart-AJ3-104",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "UTxO-RPC - Rust",
+        "type": "square",
+        "props": {},
+        "link": "https://utxorpc.org/cardano"
+      }
+    ],
+    [
+      "AJ4",
+      {
+        "id": "AJ4",
+        "labelType": "string",
+        "domId": "flowchart-AJ4-105",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Adder - Go",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/blinklabs-io/adder"
+      }
+    ],
+    [
+      "AJ5",
+      {
+        "id": "AJ5",
+        "labelType": "string",
+        "domId": "flowchart-AJ5-106",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci - Java",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/yaci"
+      }
+    ],
+    [
+      "AH1",
+      {
+        "id": "AH1",
+        "labelType": "string",
+        "domId": "flowchart-AH1-108",
+        "styles": [],
+        "classes": [],
+        "text": "Cardano Node API",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AH2",
+      {
+        "id": "AH2",
+        "labelType": "string",
+        "domId": "flowchart-AH2-109",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano CLI",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-cli"
+      }
+    ],
+    [
+      "CardanoNodeApiCodeExample",
+      {
+        "id": "CardanoNodeApiCodeExample",
+        "labelType": "text",
+        "domId": "flowchart-CardanoNodeApiCodeExample-111",
+        "styles": [],
+        "classes": [],
+        "text": "# Cardano Node API Example\n~~~go\n// Start API listener\n\tgo func() {\n\t\tif err := api.Start(cfg); err != nil {\n\t\t\tlogger.Error('failed to start API:', 'error', err)\n\t\t\tos.Exit(1)\n\t\t}\n\t}()\n~~~",
+        "props": {},
+        "type": "rect"
+      }
+    ],
+    [
+      "AB2",
+      {
+        "id": "AB2",
+        "labelType": "string",
+        "domId": "flowchart-AB2-114",
+        "styles": [],
+        "classes": [],
+        "text": "What features do you need?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "AB3",
+      {
+        "id": "AB3",
+        "labelType": "string",
+        "domId": "flowchart-AB3-116",
+        "styles": [],
+        "classes": [],
+        "text": "Data Completeness - Ledger State",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB4",
+      {
+        "id": "AB4",
+        "labelType": "string",
+        "domId": "flowchart-AB4-117",
+        "styles": [],
+        "classes": [],
+        "text": "Data API Acess",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB5",
+      {
+        "id": "AB5",
+        "labelType": "string",
+        "domId": "flowchart-AB5-118",
+        "styles": [],
+        "classes": [],
+        "text": "Lightweight",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB6",
+      {
+        "id": "AB6",
+        "labelType": "string",
+        "domId": "flowchart-AB6-119",
+        "styles": [],
+        "classes": [],
+        "text": "Selective / Custom / Scope Indexing",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB7",
+      {
+        "id": "AB7",
+        "labelType": "string",
+        "domId": "flowchart-AB7-120",
+        "styles": [],
+        "classes": [],
+        "text": "Aggregated data",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB8",
+      {
+        "id": "AB8",
+        "labelType": "string",
+        "domId": "flowchart-AB8-121",
+        "styles": [],
+        "classes": [],
+        "text": "Cardano data in CBOR format",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB9",
+      {
+        "id": "AB9",
+        "labelType": "string",
+        "domId": "flowchart-AB9-122",
+        "styles": [],
+        "classes": [],
+        "text": "Modular architecture",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB10",
+      {
+        "id": "AB10",
+        "labelType": "string",
+        "domId": "flowchart-AB10-123",
+        "styles": [],
+        "classes": [],
+        "text": "Fast Sync",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB11",
+      {
+        "id": "AB11",
+        "labelType": "string",
+        "domId": "flowchart-AB11-124",
+        "styles": [],
+        "classes": [],
+        "text": "Scalable",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB12",
+      {
+        "id": "AB12",
+        "labelType": "string",
+        "domId": "flowchart-AB12-125",
+        "styles": [],
+        "classes": [],
+        "text": "Docker availability",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB13",
+      {
+        "id": "AB13",
+        "labelType": "string",
+        "domId": "flowchart-AB13-126",
+        "styles": [],
+        "classes": [],
+        "text": "Database technology",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AB14",
+      {
+        "id": "AB14",
+        "labelType": "string",
+        "domId": "flowchart-AB14-127",
+        "styles": [],
+        "classes": [],
+        "text": "Streaming Technology",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AD1",
+      {
+        "id": "AD1",
+        "labelType": "string",
+        "domId": "flowchart-AD1-129",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano DB-Sync",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-db-sync/blob/master/doc/schema.md"
+      }
+    ],
+    [
+      "AD2",
+      {
+        "id": "AD2",
+        "labelType": "string",
+        "domId": "flowchart-AD2-130",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AD3",
+      {
+        "id": "AD3",
+        "labelType": "string",
+        "domId": "flowchart-AD3-132",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store - REST",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/yaci-store/tree/main/stores-api"
+      }
+    ],
+    [
+      "AD4",
+      {
+        "id": "AD4",
+        "labelType": "string",
+        "domId": "flowchart-AD4-133",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp - REST",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/dcSpark/carp/blob/main/docs/bin/openapi.json"
+      }
+    ],
+    [
+      "AD5",
+      {
+        "id": "AD5",
+        "labelType": "string",
+        "domId": "flowchart-AD5-134",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kupo - REST",
+        "type": "square",
+        "props": {},
+        "link": "https://cardanosolutions.github.io/kupo/#tag/Matches"
+      }
+    ],
+    [
+      "AD6",
+      {
+        "id": "AD6",
+        "labelType": "string",
+        "domId": "flowchart-AD6-135",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Cardano GraphQL - GraphQL",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/cardano-foundation/cardano-graphql"
+      }
+    ],
+    [
+      "AD7",
+      {
+        "id": "AD7",
+        "labelType": "string",
+        "domId": "flowchart-AD7-137",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kupo",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/CardanoSolutions/kupo"
+      }
+    ],
+    [
+      "AD8",
+      {
+        "id": "AD8",
+        "labelType": "string",
+        "domId": "flowchart-AD8-138",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AD9",
+      {
+        "id": "AD9",
+        "labelType": "string",
+        "domId": "flowchart-AD9-139",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://dcspark.github.io/carp/docs/requirements"
+      }
+    ],
+    [
+      "AD10",
+      {
+        "id": "AD10",
+        "labelType": "string",
+        "domId": "flowchart-AD10-141",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/yaci-store/tree/main/stores"
+      }
+    ],
+    [
+      "AD11",
+      {
+        "id": "AD11",
+        "labelType": "string",
+        "domId": "flowchart-AD11-142",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "DB-Sync",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-db-sync/blob/master/doc/configuration.md"
+      }
+    ],
+    [
+      "AD12",
+      {
+        "id": "AD12",
+        "labelType": "string",
+        "domId": "flowchart-AD12-143",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://dcspark.github.io/carp/docs/indexer/Tasks/"
+      }
+    ],
+    [
+      "AD13",
+      {
+        "id": "AD13",
+        "labelType": "string",
+        "domId": "flowchart-AD13-144",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kupo",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/CardanoSolutions/kupo/blob/master/src/Kupo/Data/Pattern.hs"
+      }
+    ],
+    [
+      "AD14",
+      {
+        "id": "AD14",
+        "labelType": "string",
+        "domId": "flowchart-AD14-145",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Mafoc",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/eyeinsky/mafoc"
+      }
+    ],
+    [
+      "AD15",
+      {
+        "id": "AD15",
+        "labelType": "string",
+        "domId": "flowchart-AD15-147",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Scrolls",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/scrolls"
+      }
+    ],
+    [
+      "AD16",
+      {
+        "id": "AD16",
+        "labelType": "string",
+        "domId": "flowchart-AD16-148",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/usage/aggregation-app-getting-started"
+      }
+    ],
+    [
+      "AD17",
+      {
+        "id": "AD17",
+        "labelType": "string",
+        "domId": "flowchart-AD17-150",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Mumak",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/mumak"
+      }
+    ],
+    [
+      "AD18",
+      {
+        "id": "AD18",
+        "labelType": "string",
+        "domId": "flowchart-AD18-152",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AD19",
+      {
+        "id": "AD19",
+        "labelType": "string",
+        "domId": "flowchart-AD19-153",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://dcspark.github.io/carp/docs/intro"
+      }
+    ],
+    [
+      "AD20",
+      {
+        "id": "AD20",
+        "labelType": "string",
+        "domId": "flowchart-AD20-155",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AD21",
+      {
+        "id": "AD21",
+        "labelType": "string",
+        "domId": "flowchart-AD21-156",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/dcSpark/carp"
+      }
+    ],
+    [
+      "AD22",
+      {
+        "id": "AD22",
+        "labelType": "string",
+        "domId": "flowchart-AD22-157",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "DB-Sync",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-db-sync/tree/master/doc"
+      }
+    ],
+    [
+      "AD23",
+      {
+        "id": "AD23",
+        "labelType": "string",
+        "domId": "flowchart-AD23-159",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "DB-Sync",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-db-sync/tree/master/doc"
+      }
+    ],
+    [
+      "AD24",
+      {
+        "id": "AD24",
+        "labelType": "string",
+        "domId": "flowchart-AD24-160",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AD25",
+      {
+        "id": "AD25",
+        "labelType": "string",
+        "domId": "flowchart-AD25-161",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kupo",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/CardanoSolutions/kupo"
+      }
+    ],
+    [
+      "AD26",
+      {
+        "id": "AD26",
+        "labelType": "string",
+        "domId": "flowchart-AD26-162",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Scrolls",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/scrolls"
+      }
+    ],
+    [
+      "AD27",
+      {
+        "id": "AD27",
+        "labelType": "string",
+        "domId": "flowchart-AD27-163",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/dcSpark/carp/"
+      }
+    ],
+    [
+      "AD28",
+      {
+        "id": "AD28",
+        "labelType": "string",
+        "domId": "flowchart-AD28-165",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/yaci-store/tree/main/docker"
+      }
+    ],
+    [
+      "AD29",
+      {
+        "id": "AD29",
+        "labelType": "string",
+        "domId": "flowchart-AD29-166",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "DB-Sync",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-db-sync/blob/master/doc/docker.md"
+      }
+    ],
+    [
+      "AD30",
+      {
+        "id": "AD30",
+        "labelType": "string",
+        "domId": "flowchart-AD30-167",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://dcspark.github.io/carp/docs/indexer/docker"
+      }
+    ],
+    [
+      "AD31",
+      {
+        "id": "AD31",
+        "labelType": "string",
+        "domId": "flowchart-AD31-168",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kupo",
+        "type": "square",
+        "props": {},
+        "link": "https://hub.docker.com/r/cardanosolutions/kupo"
+      }
+    ],
+    [
+      "AD32",
+      {
+        "id": "AD32",
+        "labelType": "string",
+        "domId": "flowchart-AD32-169",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Ogmios",
+        "type": "square",
+        "props": {},
+        "link": "https://hub.docker.com/r/cardanosolutions/ogmios"
+      }
+    ],
+    [
+      "AD33",
+      {
+        "id": "AD33",
+        "labelType": "string",
+        "domId": "flowchart-AD33-170",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Scrolls",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/scrolls/blob/main/testdrive/simple/docker-compose.yml"
+      }
+    ],
+    [
+      "AD34",
+      {
+        "id": "AD34",
+        "labelType": "string",
+        "domId": "flowchart-AD34-171",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Oura",
+        "type": "square",
+        "props": {},
+        "link": "https://txpipe.github.io/oura/installation/docker.html"
+      }
+    ],
+    [
+      "AD35",
+      {
+        "id": "AD35",
+        "labelType": "string",
+        "domId": "flowchart-AD35-172",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Mumak",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/mumak/tree/main/docker"
+      }
+    ],
+    [
+      "AD36",
+      {
+        "id": "AD36",
+        "labelType": "string",
+        "domId": "flowchart-AD36-174",
+        "styles": [],
+        "classes": [],
+        "text": "PotgresSQL",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AD37",
+      {
+        "id": "AD37",
+        "labelType": "string",
+        "domId": "flowchart-AD37-175",
+        "styles": [],
+        "classes": [],
+        "text": "MySQL",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AD38",
+      {
+        "id": "AD38",
+        "labelType": "string",
+        "domId": "flowchart-AD38-176",
+        "styles": [],
+        "classes": [],
+        "text": "SQLite",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AD39",
+      {
+        "id": "AD39",
+        "labelType": "string",
+        "domId": "flowchart-AD39-177",
+        "styles": [],
+        "classes": [],
+        "text": "H2",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AD40",
+      {
+        "id": "AD40",
+        "labelType": "string",
+        "domId": "flowchart-AD40-178",
+        "styles": [],
+        "classes": [],
+        "text": "Redis",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AE1",
+      {
+        "id": "AE1",
+        "labelType": "string",
+        "domId": "flowchart-AE1-180",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "DB-Sync",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/IntersectMBO/cardano-db-sync"
+      }
+    ],
+    [
+      "AE2",
+      {
+        "id": "AE2",
+        "labelType": "string",
+        "domId": "flowchart-AE2-181",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/bloxbean/yaci-store"
+      }
+    ],
+    [
+      "AE3",
+      {
+        "id": "AE3",
+        "labelType": "string",
+        "domId": "flowchart-AE3-182",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Mumak",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/mumak"
+      }
+    ],
+    [
+      "AE4",
+      {
+        "id": "AE4",
+        "labelType": "string",
+        "domId": "flowchart-AE4-183",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Carp",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/dcSpark/carp/"
+      }
+    ],
+    [
+      "AE5",
+      {
+        "id": "AE5",
+        "labelType": "string",
+        "domId": "flowchart-AE5-185",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AE6",
+      {
+        "id": "AE6",
+        "labelType": "string",
+        "domId": "flowchart-AE6-187",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Kupo",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/CardanoSolutions/kupo"
+      }
+    ],
+    [
+      "AE7",
+      {
+        "id": "AE7",
+        "labelType": "string",
+        "domId": "flowchart-AE7-189",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/"
+      }
+    ],
+    [
+      "AE8",
+      {
+        "id": "AE8",
+        "labelType": "string",
+        "domId": "flowchart-AE8-191",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Scrolls",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/txpipe/scrolls"
+      }
+    ],
+    [
+      "AE9",
+      {
+        "id": "AE9",
+        "labelType": "string",
+        "domId": "flowchart-AE9-193",
+        "styles": [],
+        "classes": [],
+        "text": "Spring Boots",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AF1",
+      {
+        "id": "AF1",
+        "labelType": "string",
+        "domId": "flowchart-AF1-195",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Yaci Store",
+        "type": "square",
+        "props": {},
+        "link": "https://store.yaci.xyz/design"
+      }
+    ]
+  ],
+  "edges": [
+    {
+      "start": "A",
+      "end": "B1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_A_B1_0"
+    },
+    {
+      "start": "B1",
+      "end": "C1",
+      "type": "arrow_point",
+      "text": "Yes",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_B1_C1_0"
+    },
+    {
+      "start": "B1",
+      "end": "C2",
+      "type": "arrow_point",
+      "text": "No",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_B1_C2_0"
+    },
+    {
+      "start": "B1",
+      "end": "C3",
+      "type": "arrow_point",
+      "text": "Not sure",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_B1_C3_0"
+    },
+    {
+      "start": "C2",
+      "end": "newLines",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_C2_newLines_0"
+    },
+    {
+      "start": "C3",
+      "end": "H1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_C3_H1_0"
+    },
+    {
+      "start": "C1",
+      "end": "D1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_C1_D1_0"
+    },
+    {
+      "start": "D1",
+      "end": "E1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_D1_E1_0"
+    },
+    {
+      "start": "D1",
+      "end": "E2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_D1_E2_0"
+    },
+    {
+      "start": "D1",
+      "end": "E3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_D1_E3_0"
+    },
+    {
+      "start": "D1",
+      "end": "E4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_D1_E4_0"
+    },
+    {
+      "start": "E1",
+      "end": "H1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E1_H1_0"
+    },
+    {
+      "start": "E2",
+      "end": "PO",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E2_PO_0"
+    },
+    {
+      "start": "E2",
+      "end": "P1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E2_P1_0"
+    },
+    {
+      "start": "E2",
+      "end": "P2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E2_P2_0"
+    },
+    {
+      "start": "E3",
+      "end": "F1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E3_F1_0"
+    },
+    {
+      "start": "F1",
+      "end": "G1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G1_0"
+    },
+    {
+      "start": "F1",
+      "end": "G2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G2_0"
+    },
+    {
+      "start": "F1",
+      "end": "G3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G3_0"
+    },
+    {
+      "start": "F1",
+      "end": "G4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G4_0"
+    },
+    {
+      "start": "F1",
+      "end": "G5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G5_0"
+    },
+    {
+      "start": "F1",
+      "end": "G6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G6_0"
+    },
+    {
+      "start": "F1",
+      "end": "G7",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G7_0"
+    },
+    {
+      "start": "F1",
+      "end": "G8",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G8_0"
+    },
+    {
+      "start": "F1",
+      "end": "G9",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G9_0"
+    },
+    {
+      "start": "F1",
+      "end": "G10",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G10_0"
+    },
+    {
+      "start": "F1",
+      "end": "G11",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_F1_G11_0"
+    },
+    {
+      "start": "G1",
+      "end": "Q1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G1_Q1_0"
+    },
+    {
+      "start": "G1",
+      "end": "Q2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G1_Q2_0"
+    },
+    {
+      "start": "G1",
+      "end": "Q3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G1_Q3_0"
+    },
+    {
+      "start": "G2",
+      "end": "L1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L1_0"
+    },
+    {
+      "start": "G2",
+      "end": "L2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L2_0"
+    },
+    {
+      "start": "G2",
+      "end": "L3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L3_0"
+    },
+    {
+      "start": "G2",
+      "end": "L4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L4_0"
+    },
+    {
+      "start": "G2",
+      "end": "L5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L5_0"
+    },
+    {
+      "start": "G2",
+      "end": "L6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L6_0"
+    },
+    {
+      "start": "G2",
+      "end": "L7",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G2_L7_0"
+    },
+    {
+      "start": "G3",
+      "end": "M1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G3_M1_0"
+    },
+    {
+      "start": "G3",
+      "end": "M2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G3_M2_0"
+    },
+    {
+      "start": "G3",
+      "end": "M3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G3_M3_0"
+    },
+    {
+      "start": "G3",
+      "end": "M4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G3_M4_0"
+    },
+    {
+      "start": "G3",
+      "end": "M5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G3_M5_0"
+    },
+    {
+      "start": "G4",
+      "end": "N1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N1_0"
+    },
+    {
+      "start": "G4",
+      "end": "N2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N2_0"
+    },
+    {
+      "start": "G4",
+      "end": "N3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N3_0"
+    },
+    {
+      "start": "G4",
+      "end": "N4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N4_0"
+    },
+    {
+      "start": "G4",
+      "end": "N5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N5_0"
+    },
+    {
+      "start": "G4",
+      "end": "N6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N6_0"
+    },
+    {
+      "start": "G4",
+      "end": "N7",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N7_0"
+    },
+    {
+      "start": "G4",
+      "end": "N8",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N8_0"
+    },
+    {
+      "start": "G4",
+      "end": "N9",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N9_0"
+    },
+    {
+      "start": "G4",
+      "end": "N10",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G4_N10_0"
+    },
+    {
+      "start": "G5",
+      "end": "O1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G5_O1_0"
+    },
+    {
+      "start": "G5",
+      "end": "O2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G5_O2_0"
+    },
+    {
+      "start": "G5",
+      "end": "O3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G5_O3_0"
+    },
+    {
+      "start": "G5",
+      "end": "O4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G5_O4_0"
+    },
+    {
+      "start": "G5",
+      "end": "O5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G5_O5_0"
+    },
+    {
+      "start": "G5",
+      "end": "O6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G5_O6_0"
+    },
+    {
+      "start": "G6",
+      "end": "P1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G6_P1_0"
+    },
+    {
+      "start": "G6",
+      "end": "P2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G6_P2_0"
+    },
+    {
+      "start": "G6",
+      "end": "P3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G6_P3_0"
+    },
+    {
+      "start": "G6",
+      "end": "P4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G6_P4_0"
+    },
+    {
+      "start": "G7",
+      "end": "Q1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G7_Q1_0"
+    },
+    {
+      "start": "G8",
+      "end": "R1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G8_R1_0"
+    },
+    {
+      "start": "G8",
+      "end": "R2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G8_R2_0"
+    },
+    {
+      "start": "G8",
+      "end": "R3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G8_R3_0"
+    },
+    {
+      "start": "G8",
+      "end": "R4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G8_R4_0"
+    },
+    {
+      "start": "G9",
+      "end": "S1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G9_S1_0"
+    },
+    {
+      "start": "G9",
+      "end": "S2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G9_S2_0"
+    },
+    {
+      "start": "G10",
+      "end": "T1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G10_T1_0"
+    },
+    {
+      "start": "G11",
+      "end": "U1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_G11_U1_0"
+    },
+    {
+      "start": "E4",
+      "end": "BB1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E4_BB1_0"
+    },
+    {
+      "start": "BB1",
+      "end": "AB1",
+      "type": "arrow_point",
+      "text": "Live Data",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_BB1_AB1_0"
+    },
+    {
+      "start": "AB1",
+      "end": "AG1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB1_AG1_0"
+    },
+    {
+      "start": "AB1",
+      "end": "AJ1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB1_AJ1_0"
+    },
+    {
+      "start": "AB1",
+      "end": "AJ2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB1_AJ2_0"
+    },
+    {
+      "start": "AB1",
+      "end": "AJ3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB1_AJ3_0"
+    },
+    {
+      "start": "AB1",
+      "end": "AJ4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB1_AJ4_0"
+    },
+    {
+      "start": "AB1",
+      "end": "AJ5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB1_AJ5_0"
+    },
+    {
+      "start": "AG1",
+      "end": "AH1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AG1_AH1_0"
+    },
+    {
+      "start": "AG1",
+      "end": "AH2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AG1_AH2_0"
+    },
+    {
+      "start": "AH1",
+      "end": "CardanoNodeApiCodeExample",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AH1_CardanoNodeApiCodeExample_0"
+    },
+    {
+      "start": "BB1",
+      "end": "AB2",
+      "type": "arrow_point",
+      "text": "Historical Data",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_BB1_AB2_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB3_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB4_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB5_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB6_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB7",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB7_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB8",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB8_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB9",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB9_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB10",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB10_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB11",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB11_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB12",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB12_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB13",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB13_0"
+    },
+    {
+      "start": "AB2",
+      "end": "AB14",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB2_AB14_0"
+    },
+    {
+      "start": "AB3",
+      "end": "AD1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB3_AD1_0"
+    },
+    {
+      "start": "AB3",
+      "end": "AD2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB3_AD2_0"
+    },
+    {
+      "start": "AB4",
+      "end": "AD3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB4_AD3_0"
+    },
+    {
+      "start": "AB4",
+      "end": "AD4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB4_AD4_0"
+    },
+    {
+      "start": "AB4",
+      "end": "AD5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB4_AD5_0"
+    },
+    {
+      "start": "AB4",
+      "end": "AD6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB4_AD6_0"
+    },
+    {
+      "start": "AB5",
+      "end": "AD7",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB5_AD7_0"
+    },
+    {
+      "start": "AB5",
+      "end": "AD8",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB5_AD8_0"
+    },
+    {
+      "start": "AB5",
+      "end": "AD9",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB5_AD9_0"
+    },
+    {
+      "start": "AB6",
+      "end": "AD10",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB6_AD10_0"
+    },
+    {
+      "start": "AB6",
+      "end": "AD11",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB6_AD11_0"
+    },
+    {
+      "start": "AB6",
+      "end": "AD12",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB6_AD12_0"
+    },
+    {
+      "start": "AB6",
+      "end": "AD13",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB6_AD13_0"
+    },
+    {
+      "start": "AB6",
+      "end": "AD14",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB6_AD14_0"
+    },
+    {
+      "start": "AB7",
+      "end": "AD15",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB7_AD15_0"
+    },
+    {
+      "start": "AB7",
+      "end": "AD16",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB7_AD16_0"
+    },
+    {
+      "start": "AB8",
+      "end": "AD17",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB8_AD17_0"
+    },
+    {
+      "start": "AB9",
+      "end": "AD18",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB9_AD18_0"
+    },
+    {
+      "start": "AB9",
+      "end": "AD19",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB9_AD19_0"
+    },
+    {
+      "start": "AB10",
+      "end": "AD20",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB10_AD20_0"
+    },
+    {
+      "start": "AB10",
+      "end": "AD21",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB10_AD21_0"
+    },
+    {
+      "start": "AB10",
+      "end": "AD22",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB10_AD22_0"
+    },
+    {
+      "start": "AB11",
+      "end": "AD23",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB11_AD23_0"
+    },
+    {
+      "start": "AB11",
+      "end": "AD24",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB11_AD24_0"
+    },
+    {
+      "start": "AB11",
+      "end": "AD25",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB11_AD25_0"
+    },
+    {
+      "start": "AB11",
+      "end": "AD26",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB11_AD26_0"
+    },
+    {
+      "start": "AB11",
+      "end": "AD27",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB11_AD27_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD28",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD28_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD29",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD29_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD30",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD30_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD31",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD31_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD32",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD32_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD33",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD33_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD34",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD34_0"
+    },
+    {
+      "start": "AB12",
+      "end": "AD35",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB12_AD35_0"
+    },
+    {
+      "start": "AB13",
+      "end": "AD36",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB13_AD36_0"
+    },
+    {
+      "start": "AB13",
+      "end": "AD37",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB13_AD37_0"
+    },
+    {
+      "start": "AB13",
+      "end": "AD38",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB13_AD38_0"
+    },
+    {
+      "start": "AB13",
+      "end": "AD39",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB13_AD39_0"
+    },
+    {
+      "start": "AB13",
+      "end": "AD40",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB13_AD40_0"
+    },
+    {
+      "start": "AD36",
+      "end": "AE1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD36_AE1_0"
+    },
+    {
+      "start": "AD36",
+      "end": "AE2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD36_AE2_0"
+    },
+    {
+      "start": "AD36",
+      "end": "AE3",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD36_AE3_0"
+    },
+    {
+      "start": "AD36",
+      "end": "AE4",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD36_AE4_0"
+    },
+    {
+      "start": "AD37",
+      "end": "AE5",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD37_AE5_0"
+    },
+    {
+      "start": "AD38",
+      "end": "AE6",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD38_AE6_0"
+    },
+    {
+      "start": "AD39",
+      "end": "AE7",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD39_AE7_0"
+    },
+    {
+      "start": "AD40",
+      "end": "AE8",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AD40_AE8_0"
+    },
+    {
+      "start": "AB14",
+      "end": "AE9",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AB14_AE9_0"
+    },
+    {
+      "start": "AE9",
+      "end": "AF1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_AE9_AF1_0"
+    }
+  ]
+}

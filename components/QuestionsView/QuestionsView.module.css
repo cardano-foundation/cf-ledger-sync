@@ -1,0 +1,26 @@
+.questionsView {
+  max-width: 628px;
+  flex-direction: column;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.questionsViewTitle {
+  color: var(--color-gray-1000);
+  font-size: 32px;
+  line-height: 44px;
+  letter-spacing: -0.005em;
+  margin-bottom: 24px;
+}
+
+.questionsViewPreviousAnswer {
+  color: var(--color-gray-800);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.questionsViewQuestions {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

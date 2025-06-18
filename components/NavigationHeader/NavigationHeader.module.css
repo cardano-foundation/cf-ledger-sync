@@ -1,0 +1,27 @@
+.navigationHeaderWrapper {
+  padding: 16px 64px;
+  background-color: var(--color-lightest);
+  width: 100%;
+}
+
+.navigationHeaderContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.navigationHeaderButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-gray-200);
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
