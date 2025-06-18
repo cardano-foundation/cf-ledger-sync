@@ -12,6 +12,10 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
+
+  @media (max-width: 1023px) {
+    gap: 8px;
+  }
 }
 
 .solutionName {
@@ -21,6 +25,11 @@
   line-height: 38px;
   letter-spacing: 0.01em;
   margin-bottom: 24px;
+
+  @media (max-width: 1023px) {
+    font-size: 20px;
+    line-height: 28px;
+  }
 }
 
 .solutionLink {
