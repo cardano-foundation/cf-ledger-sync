@@ -11,8 +11,8 @@ export type SolutionType = {
   name: string;
   url?: string;
   description?: string;
-  pros?: string;
-  cons?: string;
+  pros?: string[];
+  cons?: string[];
 };
 
 interface SolutionsViewProps {

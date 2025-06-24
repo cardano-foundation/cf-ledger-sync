@@ -1,0 +1,19 @@
+pros:
+  - "First solution available in the ecosystem with a vast variety of endpoints."
+cons:
+  - "Centralized"
+usuallyUsed:
+  - "Rapid prototyping or early-stage development"
+  - "Limited in-house infrastructure or DevOps resources"
+  - "Prefer convenience over infrastructure control"
+toolsAndUseCases:
+  - title: "Cardano DB-Sync (Haskell)"
+    text: "Used for solutions which requires Cardano node data completeness, as it synchronizes ALL data from the Cardano blockchain. This comes with trade-offs in both on-disk storage, runtime requirements and performances. Primary interface is a PostgreSQL database."
+  - title: "Kupo (Haskell)"
+    text: "Fast, lightweight, and configurable Cardano chain indexer. It syncs blockchain data by matching addresses in transaction outputs and builds a lookup table containing output references, values, datums, and scripts. Ideal for solutions which requires to monitor/track or resolve outputs by address, policy ID, or output reference for dApps, wallets, and explorers."
+  - title: "Oura (Rust)"
+    text: "Doesn't index any data, but it supports pluggable sinks where filtered data from the Cardano blockchain can be dumped into (e.g. Elastic Search or Kafka). It also supports a wider variety of events. All-in-all, a good fit for custom and elaborate solutions."
+  - title: "Adder (Go)"
+    text: "Similar to Oura, Adder is is an event-emitter coupled with filters. Therefore, it requires a backend storage or an additional solution for handling and serving events coming from the chain. It supports a variety of filters on addresses or assets albeit in a more direct way, being also a good fit for custom and elaborate solutions."
+  - title: "Yaci Store (Java)"
+    text: "Versatile and modular solution that can function as a library for custom indexing, an event stream processor, or a full-fledged chain indexer. When used as a library, it supports real-time event streaming, similar to Oura and Adder, or can be tailored for custom indexing needs. As a full-chain indexer, Yaci Store offers comprehensive data availability while maintaining a highly flexible and modular architecture, allowing developers to selectively enable components. This makes it ideal for niche solutions that require a balance between performance, customization, and data completeness. Main interface for full chain indexing is Postgres database, although it also supports MySQL and H2."

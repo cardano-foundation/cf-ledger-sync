@@ -3,8 +3,8 @@ flowchart TD
     B1 -- Yes --> C1["Yes, I know what I want to build"]
     B1 -- No --> C2@{ label: "No, I'm exploring" }
     B1 -- Not sure --> C3["I have an idea and want to focus on coding"]
-    C2 --> newLines@{ label: "## Pros:\n - **Developer-Friendly** - Provides API's SDK's, and ready-to-use environments for a smoother development experience.\n - **Plug-and-Play Extension** - Customize your stack with pre-built extensions and managed service\n ## Cons:\n - **Cost and migration considerations** - Relying on third-party platform may led to higher costs and migration challenges.\n - **Limited Customization** - Managed services may not offer full flexibility for highly specific implementations." }
-    C3 --> H1["Use BaaS: Demeter.run"]
+    C2 --> AA1["Visit our blueprint examples"]
+    C3 --> H1["java"]
     C1 --> D1{"How is your solution designed to access blockchain data?"}
     D1 --> E1["Through a ready to use sandbox cloud environment (BaaS)"] & E2["Simply calling APIs."] & E3["Serverless or client-side application, using off-chain libraries / SDKs and their embedded data providers."] & E4["Hosting my own infrastructure and chain indexer solution"]
     E1 --> H1
@@ -47,10 +47,15 @@ flowchart TD
     AD40 --> AE8["Scrolls"]
     AB14 --> AE9["Spring Boots"]
     AE9 --> AF1["Yaci Store"]
+    n1["Triangle"]
+    n2["Hexagon"]
+    n3["Filled Circle"]
 
     C2@{ shape: rect}
-    newLines@{ shape: rect}
     CardanoNodeApiCodeExample@{ shape: rect}
+    n1@{ shape: tri}
+    n2@{ shape: hex}
+    n3@{ shape: f-circ}
     click H1 "storage/java"
     click P1 "https://github.com/Salvionied/apollo"
     click P2 "https://github.com/fivebinaries/go-cardano-serialization"

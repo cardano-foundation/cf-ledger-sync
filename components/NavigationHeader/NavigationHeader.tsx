@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import logoIcon from "@/components/icons/logo.svg";
-import XIcon from "@/components/icons/X.svg";
+import XIcon from "@/components/icons/x.svg";
 
 import classes from "./NavigationHeader.module.css";
 

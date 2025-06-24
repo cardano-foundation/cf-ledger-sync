@@ -3,6 +3,7 @@
   border-radius: 16px;
   background-color: var(--color-lightest);
   width: 100%;
+  flex-direction: column;
 }
 
 .questionLink {
@@ -37,4 +38,37 @@
   border-radius: 100%;
   border: 2px solid var(--color-gray-400);
   flex-shrink: 0;
+}
+
+.questionProsAndCons {
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-blue);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.questionToolsAndUseCases {
+  display: flex;
+  background-color: var(--color-gray-800);
+  color: var(--color-lightest);
+  padding: 6px 10px;
+  border-radius: 48px;
+  line-height: 22px;
+  font-size: 16px;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.questionMoreOptionsWrapper {
+  display: flex;
+  margin-left: 24px;
+  margin-right: 24px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-top: 1px solid var(--color-gray-50);
+  align-items: center;
+  justify-content: space-between;
 }

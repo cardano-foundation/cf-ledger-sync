@@ -22,7 +22,9 @@ export const QuestionsView = ({
     <Layout gradient="blue">
       <div className={classes.questionsView}>
         {previousAnswer && (
-          <h3 className={classes.questionsViewPreviousAnswer}>{previousAnswer}</h3>
+          <h3 className={classes.questionsViewPreviousAnswer}>
+            {previousAnswer}
+          </h3>
         )}
         <h1 className={classes.questionsViewTitle}>{question}</h1>
         <div className={classes.questionsViewQuestions}>
@@ -35,14 +37,17 @@ export const QuestionsView = ({
 
             return nextVertex?.link ? (
               <Question
+                key={`question-${nextVertex.id}`}
                 text={edge.text || nextVertex.text}
                 link={nextVertex.link}
                 isExternal
+                id={nextVertex.id}
               />
             ) : (
               <Question
                 text={edge.text || nextVertex.text}
                 link={`/questionnaire/${nextVertex?.id}`}
+                id={nextVertex.id}
               />
             );
           })}
