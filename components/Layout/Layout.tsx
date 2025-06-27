@@ -10,20 +10,21 @@ import classes from "./Layout.module.css";
 interface LayoutProps {
   children: ReactNode;
   gradient: "orange" | "blue";
+  closeLink?: string;
 }
 
-export const Layout = ({ children, gradient }: LayoutProps) => {
+export const Layout = ({ children, gradient, closeLink }: LayoutProps) => {
   return (
     <div className={classes.layoutWrapper}>
-      <NavigationHeader />
-      <div className={classes.layoutContent}>{children}</div>
+      <NavigationHeader closeLink={closeLink} />
+      <main className={classes.layoutContent}>{children}</main>
 
       <div className={classes.layoutGradient}>
         {gradient === "blue" && (
-          <Image priority src={gradientBlue} alt="Gradient" />
+          <Image priority src={gradientBlue} alt="" />
         )}
         {gradient === "orange" && (
-          <Image priority src={gradientOrange} alt="Gradient" />
+          <Image priority src={gradientOrange} alt="" />
         )}
       </div>
     </div>

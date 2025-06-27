@@ -23,11 +23,11 @@
     left: 16px;
     right: 16px;
     top: 50%;
-    height: 80vh;
+    height: calc(100vh - 30px);
     width: calc(100vw - 32px);
     transform: translateY(-50%);
     border-radius: 16px;
-    padding: 16px 32px;
+    padding: 16px 24px;
   }
 }
 
@@ -35,6 +35,10 @@
   height: calc(100% - 56px);
   padding-top: 24px;
   padding-bottom: 24px;
+
+  &.collapsibleSidebarChildrenWrapperSmallPadding {
+    padding-top: 8px;
+  }
 
   @media (max-width: 1023px) {
     height: calc(100% - 48px);
@@ -53,12 +57,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 
 .collapsibleSidebarTitle {
   color: var(--color-gray-1000);
   line-height: 40px;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.05em;
   font-size: 28px;
 }
 
@@ -72,6 +77,7 @@
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
+  flex-shrink: 0;
 
   @media (max-width: 1023px) {
     overflow: auto;

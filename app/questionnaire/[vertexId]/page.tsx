@@ -2,9 +2,11 @@ import {
   loadDiagramData,
   parseVertexData,
   Vertex,
+  VertexWithLink,
 } from "@/app/utils/loadDiagramData";
 import { JSX } from "react";
 import { QuestionsView } from "@/components/QuestionsView/QuestionsView";
+import { SolutionsView } from "@/components/SolutionsView/SolutionsView";
 import { redirect } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -29,8 +31,27 @@ export default async function Page({
     });
   };
 
+  const findPreviousEdges = (vertice?: Vertex) => {
+    return data.edges.filter((edge) => {
+      return edge.end === vertice?.id;
+    });
+  };
+
+  const getPreviousQuestion = (currentVertex: Vertex) => {
+    const connectedEdges = findPreviousEdges(currentVertex);
+    const prevVertex = data.vertices.get(connectedEdges[0]?.start);
+    const prevVertexConnectedEdges = findPreviousEdges(prevVertex);
+
+    if (prevVertexConnectedEdges.length === 1 && prevVertex) {
+      return getPreviousQuestion(prevVertex);
+    }
+
+    return prevVertex;
+  };
+
   const renderQuestionChain = (
     question: Vertex | undefined,
+    previousAnswer?: string,
   ): JSX.Element | null => {
     if (!question) {
       return <div>Question not found</div>;
@@ -38,14 +59,17 @@ export default async function Page({
 
     const connectedEdges = findEdges(question);
     const nextVertex = data.vertices.get(connectedEdges[0]?.end);
+    const previousQuestions = getPreviousQuestion(currentQuestion);
 
     // If there are no connected edges and a link render it as an endpoint with data from yaml
-    if (
-      connectedEdges.length === 1 &&
-      nextVertex?.link &&
-      !nextVertex?.link.includes("https")
-    ) {
-      redirect(`/solutions/${nextVertex.id}`);
+    if (question && question.link && !question.link.includes("https")) {
+      return (
+        <SolutionsView
+          currentQuestion={question as VertexWithLink}
+          prevQuestionId={previousQuestions?.id}
+          closeLink={process?.env?.CLOSE_URL}
+        />
+      );
     }
 
     // If this question has a link, render it as an external link
@@ -55,20 +79,7 @@ export default async function Page({
 
     // If there's only one connected edge, render it as part of the QuestionsView
     if (connectedEdges.length === 1) {
-      const nextVertexConnectedEdges = findEdges(nextVertex);
-
-      if (!nextVertex) {
-        return null;
-      }
-
-      return (
-        <QuestionsView
-          vertexes={data.vertices}
-          answers={nextVertexConnectedEdges}
-          previousAnswer={question.text}
-          question={nextVertex.text}
-        />
-      );
+      return renderQuestionChain(nextVertex, question.text);
     }
 
     // If there are multiple edges, render them as answers
@@ -77,6 +88,9 @@ export default async function Page({
         vertexes={data.vertices}
         answers={connectedEdges}
         question={question.text}
+        previousAnswer={previousAnswer}
+        prevQuestionId={previousQuestions?.id}
+        closeLink={process?.env?.CLOSE_URL}
       />
     );
   };

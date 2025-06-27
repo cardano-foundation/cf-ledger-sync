@@ -1,15 +1,27 @@
 .solutionsViewWrapper {
-  max-width: 1281px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  padding-right: 64px;
+  padding-left: 64px;
 
   @media (max-width: 1023px) {
     margin-left: 0;
     margin-right: 0;
-    padding-right: 24px;
-    padding-left: 24px;
+    padding-right: 16px;
+    padding-left: 16px;
     width: 100%;
     max-width: 100%;
+  }
+}
+
+.solutionsViewContent {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1281px;
+
+  @media (max-width: 1023px) {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -20,22 +32,14 @@
   font-size: 16px;
   line-height: 22px;
   color: var(--color-gray-1000);
-  margin-bottom: 16px;
-
-  @media (max-width: 1023px) {
-    margin-bottom: 8px;
-  }
+  margin-bottom: 8px;
 }
 
 .solutionsViewTitleWrapper {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 32px;
-
-  @media (max-width: 1023px) {
-    margin-bottom: 16px;
-  }
+  margin-bottom: 24px;
 }
 
 .solutionsViewTitle {
@@ -63,7 +67,7 @@
 .solutionsViewCount {
   font-size: 24px;
   color: var(--color-gray-600);
-  letter-spacing: 0.05em;
+  letter-spacing: -0.05em;
   line-height: 44px;
 }
 

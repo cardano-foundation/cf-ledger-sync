@@ -5,6 +5,10 @@
   background-color: var(--color-lightest);
   width: 100%;
   padding: 24px;
+
+  @media (max-width: 1023px) {
+    padding: 16px;
+  }
 }
 
 .solutionContent {
@@ -34,12 +38,13 @@
   font-weight: 700;
   font-size: 26px;
   line-height: 38px;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
   margin-bottom: 24px;
 
   @media (max-width: 1023px) {
     font-size: 20px;
     line-height: 28px;
+    margin-bottom: 16px;
   }
 }
 

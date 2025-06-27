@@ -29,7 +29,7 @@ export const ProsAndCons = ({
         <ListWithTitle
           title={
             <>
-              <Image priority src={CheckIcon} alt="Pros Icon" />
+              <Image priority src={CheckIcon} alt="" />
               Pros:
             </>
           }
@@ -41,7 +41,7 @@ export const ProsAndCons = ({
         <ListWithTitle
           title={
             <>
-              <Image priority src={CrossIcon} alt="Cons Icon" />
+              <Image priority src={CrossIcon} alt="" />
               Cons:
             </>
           }
@@ -65,7 +65,7 @@ export const ProsAndCons = ({
           className={classes.prosAndConsLink}
         >
           <span className={classes.questionCircle}>Explore {name}</span>
-          <Image priority src={ArrowSquareOutIcon} alt={`Go to ${link}`} />
+          <Image priority src={ArrowSquareOutIcon} alt="" />
         </a>
       )}
     </div>

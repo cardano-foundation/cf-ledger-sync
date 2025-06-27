@@ -32,7 +32,9 @@ export const Solution = ({
             <CollapsibleSidebar
               title={name}
               trigger={
-                <button className={classes.solutionViewMore}>View more</button>
+                <button className={classes.solutionViewMore}>
+                  View more ({name})
+                </button>
               }
             >
               <ProsAndCons description={description} pros={pros} cons={cons} />

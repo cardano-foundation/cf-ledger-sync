@@ -26,14 +26,17 @@ type AdditionalDataType = {
 } | null;
 
 export const Question = ({ text, link, isExternal, id }: QuestionProps) => {
-  const filePath = path.join(process.cwd(), "questionsStorage", `${id}.yml`);
+  const filePath = path.join(
+    process.cwd(),
+    "storage",
+    "questions",
+    `${id}.yml`,
+  );
   let additionalData: AdditionalDataType = null;
   if (fs.existsSync(filePath)) {
     const fileOutput = fs.readFileSync(filePath, "utf-8");
     additionalData = yaml.load(fileOutput) as AdditionalDataType;
   }
-
-  console.log("additionalData", additionalData);
 
   return (
     <div className={classes.questionWrapper}>
@@ -65,10 +68,11 @@ export const Question = ({ text, link, isExternal, id }: QuestionProps) => {
             <CollapsibleSidebar
               title="Pros & cons"
               description={text}
+              hasSmallPadding
               trigger={
                 <button className={classes.questionProsAndCons}>
                   <span>View pros & cons</span>
-                  <Image priority src={ArrowRightIcon} alt="Arrow right icon" />
+                  <Image priority src={ArrowRightIcon} alt="" />
                 </button>
               }
             >
@@ -85,7 +89,7 @@ export const Question = ({ text, link, isExternal, id }: QuestionProps) => {
               title="Tools and use cases"
               trigger={
                 <button className={classes.questionToolsAndUseCases}>
-                  <Image priority src={NutIcon} alt="Tools icon" />
+                  <Image priority src={NutIcon} alt="" />
                   <span>Tools and use cases</span>
                 </button>
               }

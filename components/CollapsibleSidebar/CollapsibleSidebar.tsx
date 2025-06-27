@@ -8,6 +8,7 @@ import {
   Description,
   Close,
 } from "@radix-ui/react-dialog";
+import { clsx } from "clsx";
 import classes from "./CollapsibleSidebar.module.css";
 import Image from "next/image";
 import XIcon from "@/components/icons/x.svg";
@@ -17,6 +18,7 @@ interface CollapsibleSidebarProps {
   children: React.ReactNode;
   title: string;
   description?: string;
+  hasSmallPadding?: boolean;
 }
 
 export const CollapsibleSidebar = ({
@@ -24,6 +26,7 @@ export const CollapsibleSidebar = ({
   children,
   title,
   description,
+  hasSmallPadding,
 }: CollapsibleSidebarProps) => {
   return (
     <Root>
@@ -42,7 +45,11 @@ export const CollapsibleSidebar = ({
               </button>
             </Close>
           </div>
-          <div className={classes.collapsibleSidebarChildrenWrapper}>
+          <div
+            className={clsx(classes.collapsibleSidebarChildrenWrapper, {
+              [classes.collapsibleSidebarChildrenWrapperSmallPadding]: hasSmallPadding,
+            })}
+          >
             <div className={classes.collapsibleSidebarChildren}>
               {description && (
                 <Description className={classes.collapsibleSidebarDescription}>
