@@ -1,0 +1,7 @@
+name: "Blockfrost 2"
+description: "Lucid is a library designed to simplify creating Cardano transactions and writing off-chain code for Plutus contracts."
+pros:
+  - "First solution available in the ecosystem with a vast variety of endpoints."
+cons:
+  - "Centralized"
+url: "https://blockfrost.io/"

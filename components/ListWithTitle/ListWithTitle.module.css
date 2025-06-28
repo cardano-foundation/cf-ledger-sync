@@ -1,0 +1,29 @@
+.listWithTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.listWithTitleTitle {
+  display: flex;
+  gap: 12px;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  line-height: 28px;
+  font-weight: 700;
+  color: var(--color-gray-1000);
+}
+
+.listWithTitleList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 24px;
+}
+
+.listWithTitleItem {
+  color: var(--color-gray-800);
+  line-height: 24px;
+  font-size: 16px;
+  list-style: disc;
+}

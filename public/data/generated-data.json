@@ -1,0 +1,290 @@
+{
+  "vertices": [
+    [
+      "A",
+      {
+        "id": "A",
+        "labelType": "string",
+        "domId": "flowchart-A-0",
+        "styles": [],
+        "classes": [],
+        "text": "Start",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "B1",
+      {
+        "id": "B1",
+        "labelType": "string",
+        "domId": "flowchart-B1-1",
+        "styles": [],
+        "classes": [],
+        "text": "Do you know what application you want to develop?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "C1",
+      {
+        "id": "C1",
+        "labelType": "string",
+        "domId": "flowchart-C1-3",
+        "styles": [],
+        "classes": [],
+        "text": "Yes, I know what I want to build",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "C2",
+      {
+        "id": "C2",
+        "labelType": "text",
+        "domId": "flowchart-C2-5",
+        "styles": [],
+        "classes": [],
+        "text": "No, I'm exploring",
+        "props": {},
+        "type": "rect"
+      }
+    ],
+    [
+      "C3",
+      {
+        "id": "C3",
+        "labelType": "string",
+        "domId": "flowchart-C3-8",
+        "styles": [],
+        "classes": [],
+        "text": "I have an idea and want to focus on coding",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "AA1",
+      {
+        "id": "AA1",
+        "labelType": "string",
+        "domId": "flowchart-AA1-10",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Visit our blueprint examples",
+        "type": "square",
+        "props": {},
+        "link": "https://github.com/"
+      }
+    ],
+    [
+      "H1",
+      {
+        "id": "H1",
+        "labelType": "string",
+        "domId": "flowchart-H1-12",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "java",
+        "type": "square",
+        "props": {},
+        "link": "java"
+      }
+    ],
+    [
+      "D1",
+      {
+        "id": "D1",
+        "labelType": "string",
+        "domId": "flowchart-D1-14",
+        "styles": [],
+        "classes": [],
+        "text": "How is your solution designed to access blockchain data?",
+        "type": "diamond",
+        "props": {}
+      }
+    ],
+    [
+      "E1",
+      {
+        "id": "E1",
+        "labelType": "string",
+        "domId": "flowchart-E1-16",
+        "styles": [],
+        "classes": [],
+        "text": "Through a ready to use sandbox cloud environment (BaaS)",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "E2",
+      {
+        "id": "E2",
+        "labelType": "string",
+        "domId": "flowchart-E2-17",
+        "styles": [],
+        "classes": [],
+        "text": "Simply calling APIs.",
+        "type": "square",
+        "props": {}
+      }
+    ],
+    [
+      "P1",
+      {
+        "id": "P1",
+        "labelType": "string",
+        "domId": "flowchart-P1-21",
+        "styles": [],
+        "classes": [
+          "clickable"
+        ],
+        "text": "Apollo",
+        "type": "square",
+        "props": {},
+        "link": "simplyCallingAPI"
+      }
+    ]
+  ],
+  "edges": [
+    {
+      "start": "A",
+      "end": "B1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_A_B1_0"
+    },
+    {
+      "start": "B1",
+      "end": "C1",
+      "type": "arrow_point",
+      "text": "Yes",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_B1_C1_0"
+    },
+    {
+      "start": "B1",
+      "end": "C2",
+      "type": "arrow_point",
+      "text": "No",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_B1_C2_0"
+    },
+    {
+      "start": "B1",
+      "end": "C3",
+      "type": "arrow_point",
+      "text": "Not sure",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_B1_C3_0"
+    },
+    {
+      "start": "C2",
+      "end": "AA1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_C2_AA1_0"
+    },
+    {
+      "start": "C3",
+      "end": "H1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_C3_H1_0"
+    },
+    {
+      "start": "C1",
+      "end": "D1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_C1_D1_0"
+    },
+    {
+      "start": "D1",
+      "end": "E1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_D1_E1_0"
+    },
+    {
+      "start": "D1",
+      "end": "E2",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_D1_E2_0"
+    },
+    {
+      "start": "E1",
+      "end": "H1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E1_H1_0"
+    },
+    {
+      "start": "E2",
+      "end": "P1",
+      "type": "arrow_point",
+      "text": "",
+      "labelType": "text",
+      "classes": [],
+      "isUserDefinedId": false,
+      "stroke": "normal",
+      "length": 1,
+      "id": "L_E2_P1_0"
+    }
+  ]
+}

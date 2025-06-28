@@ -1,0 +1,21 @@
+.prosAndCons {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.prosAndConsDescription {
+  color: var(--color-gray-800);
+  line-height: 24px;
+  font-size: 16px;
+}
+
+.prosAndConsLink {
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-blue);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}

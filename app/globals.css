@@ -1,0 +1,12 @@
+@import "./preflight.css";
+
+:root {
+  --color-lightest: #fff;
+  --color-gray-1000: #272727;
+  --color-gray-800: #404040;
+  --color-gray-600: #808080;
+  --color-gray-400: #c6c6c6;
+  --color-gray-200: #d9d9d9;
+  --color-gray-50: #f2f2f2;
+  --color-blue: #0084ff;
+}
