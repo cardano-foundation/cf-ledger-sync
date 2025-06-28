@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
+import "./preflight.css";
 import "./globals.css";
 
 const switzer = localFont({

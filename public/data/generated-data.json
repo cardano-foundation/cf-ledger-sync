@@ -46,10 +46,13 @@
         "labelType": "text",
         "domId": "flowchart-C2-5",
         "styles": [],
-        "classes": [],
+        "classes": [
+          "clickable"
+        ],
         "text": "No, I'm exploring",
         "props": {},
-        "type": "rect"
+        "type": "rect",
+        "link": "https://github.com/"
       }
     ],
     [
@@ -66,27 +69,11 @@
       }
     ],
     [
-      "AA1",
-      {
-        "id": "AA1",
-        "labelType": "string",
-        "domId": "flowchart-AA1-10",
-        "styles": [],
-        "classes": [
-          "clickable"
-        ],
-        "text": "Visit our blueprint examples",
-        "type": "square",
-        "props": {},
-        "link": "https://github.com/"
-      }
-    ],
-    [
       "H1",
       {
         "id": "H1",
         "labelType": "string",
-        "domId": "flowchart-H1-12",
+        "domId": "flowchart-H1-10",
         "styles": [],
         "classes": [
           "clickable"
@@ -102,7 +89,7 @@
       {
         "id": "D1",
         "labelType": "string",
-        "domId": "flowchart-D1-14",
+        "domId": "flowchart-D1-12",
         "styles": [],
         "classes": [],
         "text": "How is your solution designed to access blockchain data?",
@@ -115,7 +102,7 @@
       {
         "id": "E1",
         "labelType": "string",
-        "domId": "flowchart-E1-16",
+        "domId": "flowchart-E1-14",
         "styles": [],
         "classes": [],
         "text": "Through a ready to use sandbox cloud environment (BaaS)",
@@ -128,7 +115,7 @@
       {
         "id": "E2",
         "labelType": "string",
-        "domId": "flowchart-E2-17",
+        "domId": "flowchart-E2-15",
         "styles": [],
         "classes": [],
         "text": "Simply calling APIs.",
@@ -141,7 +128,7 @@
       {
         "id": "P1",
         "labelType": "string",
-        "domId": "flowchart-P1-21",
+        "domId": "flowchart-P1-19",
         "styles": [],
         "classes": [
           "clickable"
@@ -201,18 +188,6 @@
       "stroke": "normal",
       "length": 1,
       "id": "L_B1_C3_0"
-    },
-    {
-      "start": "C2",
-      "end": "AA1",
-      "type": "arrow_point",
-      "text": "",
-      "labelType": "text",
-      "classes": [],
-      "isUserDefinedId": false,
-      "stroke": "normal",
-      "length": 1,
-      "id": "L_C2_AA1_0"
     },
     {
       "start": "C3",
