@@ -8,6 +8,7 @@ import { JSX } from "react";
 import { QuestionsView } from "@/components/QuestionsView/QuestionsView";
 import { SolutionsView } from "@/components/SolutionsView/SolutionsView";
 import { redirect } from "next/navigation";
+import { ErrorView } from "@/components/ErrorView/ErrorView";
 
 export async function generateStaticParams() {
   const data = loadDiagramData();
@@ -40,7 +41,8 @@ export default async function Page({
   const getPreviousQuestion = (currentVertex: Vertex) => {
     const connectedEdges = findPreviousEdges(currentVertex);
     const prevVertex = data.vertices.get(connectedEdges[0]?.start);
-    const prevVertexConnectedEdges = findPreviousEdges(prevVertex);
+
+    const prevVertexConnectedEdges = findEdges(prevVertex);
 
     if (prevVertexConnectedEdges.length === 1 && prevVertex) {
       return getPreviousQuestion(prevVertex);
@@ -54,7 +56,12 @@ export default async function Page({
     previousAnswer?: string,
   ): JSX.Element | null => {
     if (!question) {
-      return <div>Question not found</div>;
+      return (
+        <ErrorView
+          closeLink={process?.env?.CLOSE_URL}
+          startOverLink={process?.env?.FIRST_QUESTION_URL}
+        />
+      );
     }
 
     const connectedEdges = findEdges(question);
@@ -72,14 +79,14 @@ export default async function Page({
       );
     }
 
-    // If this question has a link, render it as an external link
-    if (question.link) {
-      redirect(question.link);
-    }
-
     // If there's only one connected edge, render it as part of the QuestionsView
     if (connectedEdges.length === 1) {
       return renderQuestionChain(nextVertex, question.text);
+    }
+
+    // If this question has a link, render it as an external link
+    if (question.link) {
+      redirect(question.link);
     }
 
     // If there are multiple edges, render them as answers

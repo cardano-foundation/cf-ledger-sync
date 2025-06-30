@@ -67,15 +67,6 @@ async function generateDiagramData() {
 		}
 
 		fs.writeFileSync(path.join(outputDir, "generated-data.json"), json);
-
-    // const directoryPath = path.join(process.cwd(), "storage", "java");
-    // fs.readdir(directoryPath, (err, files) => {
-    //   files.forEach((file) => {
-    //     const filePath = path.join(directoryPath, file);
-    //     const jsonData = fs.readFileSync(filePath, "utf-8");
-    //     console.log("jsonData", jsonData);
-    //   });
-    // });
 	} catch (error) {
 		throw new Error("Error extracting graph data: " + error.message);
 	}
