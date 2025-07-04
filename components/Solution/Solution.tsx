@@ -37,7 +37,13 @@ export const Solution = ({
                 </button>
               }
             >
-              <ProsAndCons description={description} pros={pros} cons={cons} />
+              <ProsAndCons
+                description={description}
+                pros={pros}
+                cons={cons}
+                name={name}
+                link={link}
+              />
             </CollapsibleSidebar>
           )}
 
