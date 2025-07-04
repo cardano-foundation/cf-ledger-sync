@@ -1,69 +1,17 @@
 flowchart TD
     A["Start"] --> B1{"Do you know what application you want to develop?"}
-    B1 -- YES - I know what I want to build --> C1["Yes, I know what I want to build"]
-    B1 -- NO - I'm exploring --> C2["No, I'm exploring - Use Cases"]
-    B1 -- NOT SURE - I have an idea and want to focus on coding --> C3["I have an idea and want to focus on coding - BaaS"]
-    C1 --> D1{"How is your solution designed to access blockchain data??"}
-    D1 --> E1["Through a ready to use sandbox cloud environment (BaaS)"] & E2["Simply calling APIs."] & E3["Serverless or client-side application, using off-chain libraries / SDKs and their embedded data providers."] & E4["Hosting my own infrastructure and chain indexer solution"]
-    E3 --> F1{"What language are you proficient in?"}
-    F1 --> G1["Haskell"] & G2["Rust"] & G3["Java"] & G4["JavaScript, TypeScript"] & G5["Python"] & G6["Go"] & G7["ELM"] & G8[".NET, C#"] & G9["C"] & G10["Elixir"] & G11["Kotlin"]
-    E4 --> BB1{"Does your application requires just live data or historical data too? ?"}
-    BB1 -- Live Data --> AB1["Solutions"]
-    BB1 -- Historical Data --> AB2{"What features do you need?"}
-    AB2 --> AB3["Data Completeness - Ledger State"] & AB4["Data API Acess"] & AB5["Lightweight"] & AB6["Selective / Custom / Scope Indexing"] & AB7["Aggregated data"] & AB8["Cardano data in CBOR format"] & AB9["Modular architecture"] & AB10["Fast Sync"] & AB11["Scalable"] & AB12["Docker availability"] & AB13["Database technology"] & AB14["Streaming Technology"]
-    AB13 --> AD36["PotgresSQL"] & AD37["MySQL"] & AD38["SQLite"] & AD39["H2"] & AD40["Redis"]
-    AB14 --> AE9["Spring Boots"]
+    B1 -- Yes --> C1["Yes, I know what I want to build"]
+    B1 -- No --> C2@{ label: "No, I'm exploring" }
+    B1 -- Not sure --> C3["I have an idea and want to focus on coding"]
+    C3 --> H1["java"]
+    C1 --> D1{"How is your solution designed to access blockchain data?"}
+    D1 --> E1["Through a ready to use sandbox cloud environment (BaaS)"] & E2["Simply calling APIs."]
+    E1 --> H1
+    E2 --> P1["Apollo"]
 
-
-    click C2 "https://github.com/cardano-foundation/cardano-template-and-ecosystem-monitoring"
-    click C3 "https://demeter.run/"
-
-
-    click E1 "https://demeter.run/"
-    click E2 "simplyCallingAPI"
-
-
-    click AB1 "liveData"
-
-
-    click G1 "haskell"
-    click G2 "rust"
-    click G3 "java"
-    click G4 "javaScript-TypeScript"
-    click G5 "python"
-    click G6 "go"
-    click G7 "elm"
-    click G8 "NET-CSharp"
-    click G9 "C"
-    click G10 "elixir"
-    click G11 "kotlin"
-
-
-    click AB3 "dataCompletness-LedgerState"
-    click AB4 "APIAccess"
-    click AB5 "lightweight"
-    click AB6 "customIndex"
-    click AB7 "aggregatedData"
-    click AB8 "cardanoDatainCBORFormat"
-    click AB9 "modularArchitecture"
-    click AB10 "fastSync"
-    click AB11 "scalable"
-    click AB12 "dockerAvailability"
-
-
-    click AD36 "databaseTechnology/PostgreSQL"
-    click AD37 "databaseTechnology/MySQL"
-    click AD38 "databaseTechnology/SQLite"
-    click AD39 "databaseTechnology/H2"
-    click AD40 "databaseTechnology/redis"
-
-
-    click AE9 "streamingTechnology/springBoot"
-
-
-
-
-
-
+    C2@{ shape: rect}
+    click C2 "https://github.com/"
+    click H1 "java"
+    click P1 "simplyCallingAPI"
 
 
