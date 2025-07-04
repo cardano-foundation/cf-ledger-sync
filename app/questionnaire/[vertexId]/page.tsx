@@ -86,7 +86,7 @@ export default async function Page({
 
     // If this question has a link, render it as an external link
     if (question.link) {
-      redirect(question.link);
+      return redirect(question.link);
     }
 
     // If there are multiple edges, render them as answers

@@ -53,7 +53,8 @@ export const QuestionsView = ({
                   return null;
                 }
 
-                return nextVertex?.link ? (
+                return nextVertex?.link &&
+                  nextVertex?.link.includes("https") ? (
                   <Question
                     key={`question-${nextVertex.id}`}
                     text={edge.text || nextVertex.text}
